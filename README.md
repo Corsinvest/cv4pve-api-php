@@ -53,6 +53,11 @@ foreach ($client->getNodes()->Index()->data as $node) {
 foreach ($client->getNodes()->get("pve1")->getQemu()->Vmlist()->data as $vm) {
     echo "\n" . $vm->vmid ." - " .$vm->name;
 }
+
+//loop snapshots
+foreach ($client->getNodes()->get("pve1")->getQemu()->get(100)->getSnapshot()->snapshotList()->data as $snap) {
+   echo "\n" . $snap->name;
+}
 ```
 
 Sample output version request:
@@ -74,4 +79,13 @@ object(stdClass)#9 (1) {
     string(8) "27769b1f"
   }
 }
+```
+
+The parameter indexed end with '[n]' in documentation (method createVM in Qemu parameter ide) require array whit key and value
+
+```php
+[
+  1 => "....",
+  3 => "....",
+]
 ```
