@@ -19,7 +19,7 @@ Recommended installation is using [Composer], if you do not have [Composer] what
 In the root of your project execute the following:
 
 ```sh
-$ composer require enterpriseve/enterpriseve-proxmoxve.api-php ~1.0
+$ composer require enterpriseve/enterpriseve.proxmoxve.api-php ~1.0
 ```
 
 Or add this to your `composer.json` file:
@@ -27,7 +27,7 @@ Or add this to your `composer.json` file:
 ```json
 {
     "require": {
-        "enterpriseve/enterpriseve-proxmoxve.api-php": "~1.0"
+        "enterpriseve/enterpriseve.proxmoxve.api-php": "~1.0"
     }
 }
 ```

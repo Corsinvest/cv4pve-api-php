@@ -1,5 +1,5 @@
 {
-    "name": "enterpriseve/enterpriseve-proxmoxve.api-php",
+    "name": "enterpriseve/enterpriseve.proxmoxve.api-php",
     "description": "ProxmoVE Client API PHP",
     "keywords": [
         "Proxmox",
