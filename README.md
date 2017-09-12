@@ -1,4 +1,4 @@
-# EnterpriseVE.ProxmoxVE.Api-PHP
+# eve2pve-api-php
 ProxmoVE Client API PHP
 
 General
@@ -19,7 +19,7 @@ Recommended installation is using [Composer], if you do not have [Composer] what
 In the root of your project execute the following:
 
 ```sh
-$ composer require enterpriseve/enterpriseve.proxmoxve.api-php ~1.0
+$ composer require enterpriseve/eve2pve-api-php ~1.0
 ```
 
 Or add this to your `composer.json` file:
@@ -27,7 +27,7 @@ Or add this to your `composer.json` file:
 ```json
 {
     "require": {
-        "enterpriseve/enterpriseve.proxmoxve.api-php": "~1.0"
+        "enterpriseve/eve2pve-api-php": "~1.0"
     }
 }
 ```
