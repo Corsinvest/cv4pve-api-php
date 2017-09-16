@@ -44,6 +44,13 @@ require_once 'vendor/autoload.php';
 $client = new EnterpriseVE\ProxmoxVE\Api\Client("192.168.0.24");
 $client->login('root','password','pam');
 
+//get version from get method
+var_dump($client->get('/version'));
+
+// $client->put
+// $client->post
+// $client->delete
+
 //loop nodes
 foreach ($client->getNodes()->Index()->data as $node) {
   echo "\n" . $node->id;

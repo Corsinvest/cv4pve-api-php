@@ -85,8 +85,19 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $this;
         }
 
+        /**
+         * Creation ticket from login.
+         * @param $userName user name or <username>@<relam>
+         * @param $password
+         * @param string $realm pam/pve or custom
+         */
         function login($userName, $password, $realm = "pam")
         {
+            $uData = explode("@", $userName);
+            if (count($uData) > 1) {
+                $userName = $uData[0];
+                $realm = $uData[1];
+            }
             $ticket = $this->getAccess()
                 ->getTicket()
                 ->createTicket($password, $userName, null, null, null, $realm);
@@ -94,14 +105,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->ticketPVEAuthCookie = $ticket->data->ticket;
         }
 
-        public function getHostName()
+        public function get($resource, $parms = [])
         {
-            return $this->hostName;
+            return $this->executeAction($resource, 'GET', $parms);
         }
 
-        public function getPort()
+        public function put($resource, $parms = [])
         {
-            return $this->port;
+            return $this->executeAction($resource, 'PUT', $parms);
+        }
+
+        public function post($resource, $parms = [])
+        {
+            return $this->executeAction($resource, 'POST', $parms);
+        }
+
+        public function delete($resource, $parms = [])
+        {
+            return $this->executeAction($resource, 'DELETE', $parms);
         }
 
         public function getCSRFPreventionToken()
@@ -112,6 +133,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function getPVEAuthCookie()
         {
             return $this->ticketPVEAuthCookie;
+        }
+
+        public function getHostName()
+        {
+            return $this->hostName;
+        }
+
+        public function getPort()
+        {
+            return $this->port;
         }
 
         private $cluster;
@@ -274,7 +305,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
 
         /**
          * Create a new replication job
-         * @param $id Replication Job ID. The ID is composed of a Guest ID and a job number, separated by a hyphen, i.e. '&amp;lt;GUEST>-&amp;lt;JOBNUM>'.
+         * @param $id Replication Job ID. The ID is composed of a Guest ID and a job number, separated by a hyphen, i.e. '&amp;lt;GUEST&amp;gt;-&amp;lt;JOBNUM&amp;gt;'.
          * @param $target Target node.
          * @param $type Section type.
          *   Enum: local
@@ -567,7 +598,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param $enable Flag to enable/disable a rule.
          * @param $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
          * @param $macro Use predefined standard macro.
-         * @param $pos Update rule at position &amp;lt;pos>.
+         * @param $pos Update rule at position &amp;lt;pos&amp;gt;.
          * @param $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
          * @param $source Restrict packet source address. This can refer to a single IP address, an IP set ('+ipsetname') or an IP alias definition. You can also specify an address range like '20.34.101.207-201.3.9.99', or a list of IP addresses and networks (entries are separated by comma). Please do not mix IPv4 and IPv6 addresses inside such lists.
          * @param $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
@@ -633,7 +664,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param $enable Flag to enable/disable a rule.
          * @param $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
          * @param $macro Use predefined standard macro.
-         * @param $moveto Move rule to new position &amp;lt;moveto>. Other arguments are ignored.
+         * @param $moveto Move rule to new position &amp;lt;moveto&amp;gt;. Other arguments are ignored.
          * @param $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
          * @param $source Restrict packet source address. This can refer to a single IP address, an IP set ('+ipsetname') or an IP alias definition. You can also specify an address range like '20.34.101.207-201.3.9.99', or a list of IP addresses and networks (entries are separated by comma). Please do not mix IPv4 and IPv6 addresses inside such lists.
          * @param $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
@@ -693,7 +724,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param $enable Flag to enable/disable a rule.
          * @param $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
          * @param $macro Use predefined standard macro.
-         * @param $pos Update rule at position &amp;lt;pos>.
+         * @param $pos Update rule at position &amp;lt;pos&amp;gt;.
          * @param $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
          * @param $source Restrict packet source address. This can refer to a single IP address, an IP set ('+ipsetname') or an IP alias definition. You can also specify an address range like '20.34.101.207-201.3.9.99', or a list of IP addresses and networks (entries are separated by comma). Please do not mix IPv4 and IPv6 addresses inside such lists.
          * @param $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
@@ -757,7 +788,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param $enable Flag to enable/disable a rule.
          * @param $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
          * @param $macro Use predefined standard macro.
-         * @param $moveto Move rule to new position &amp;lt;moveto>. Other arguments are ignored.
+         * @param $moveto Move rule to new position &amp;lt;moveto&amp;gt;. Other arguments are ignored.
          * @param $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
          * @param $source Restrict packet source address. This can refer to a single IP address, an IP set ('+ipsetname') or an IP alias definition. You can also specify an address range like '20.34.101.207-201.3.9.99', or a list of IP addresses and networks (entries are separated by comma). Please do not mix IPv4 and IPv6 addresses inside such lists.
          * @param $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
@@ -1113,7 +1144,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param $mode Backup mode.
          *   Enum: snapshot,suspend,stop
          * @param $node Only run if executed on this node.
-         * @param $pigz Use pigz instead of gzip when N>0. N=1 uses half of cores, N>1 uses N as thread count.
+         * @param $pigz Use pigz instead of gzip when N&amp;gt;0. N=1 uses half of cores, N&amp;gt;1 uses N as thread count.
          * @param $quiet Be quiet.
          * @param $remove Remove old backup files if there are more than 'maxfiles' backup files.
          * @param $script Use specified hook script.
@@ -1207,7 +1238,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param $mode Backup mode.
          *   Enum: snapshot,suspend,stop
          * @param $node Only run if executed on this node.
-         * @param $pigz Use pigz instead of gzip when N>0. N=1 uses half of cores, N>1 uses N as thread count.
+         * @param $pigz Use pigz instead of gzip when N&amp;gt;0. N=1 uses half of cores, N&amp;gt;1 uses N as thread count.
          * @param $quiet Be quiet.
          * @param $remove Remove old backup files if there are more than 'maxfiles' backup files.
          * @param $script Use specified hook script.
@@ -2445,7 +2476,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param $enable Flag to enable/disable a rule.
          * @param $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
          * @param $macro Use predefined standard macro.
-         * @param $pos Update rule at position &amp;lt;pos>.
+         * @param $pos Update rule at position &amp;lt;pos&amp;gt;.
          * @param $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
          * @param $source Restrict packet source address. This can refer to a single IP address, an IP set ('+ipsetname') or an IP alias definition. You can also specify an address range like '20.34.101.207-201.3.9.99', or a list of IP addresses and networks (entries are separated by comma). Please do not mix IPv4 and IPv6 addresses inside such lists.
          * @param $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
@@ -2513,7 +2544,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param $enable Flag to enable/disable a rule.
          * @param $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
          * @param $macro Use predefined standard macro.
-         * @param $moveto Move rule to new position &amp;lt;moveto>. Other arguments are ignored.
+         * @param $moveto Move rule to new position &amp;lt;moveto&amp;gt;. Other arguments are ignored.
          * @param $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
          * @param $source Restrict packet source address. This can refer to a single IP address, an IP set ('+ipsetname') or an IP alias definition. You can also specify an address range like '20.34.101.207-201.3.9.99', or a list of IP addresses and networks (entries are separated by comma). Please do not mix IPv4 and IPv6 addresses inside such lists.
          * @param $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
@@ -2802,7 +2833,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param $dhcp Enable DHCP.
          * @param $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param $enable Enable/disable firewall rules.
-         * @param $ipfilter Enable default IP filters. This is equivalent to adding an empty ipfilter-net&amp;lt;id> ipset for every interface. Such ipsets implicitly contain sane default restrictions such as restricting IPv6 link local addresses to the one derived from the interface's MAC address. For containers the configured IP addresses will be implicitly added.
+         * @param $ipfilter Enable default IP filters. This is equivalent to adding an empty ipfilter-net&amp;lt;id&amp;gt; ipset for every interface. Such ipsets implicitly contain sane default restrictions such as restricting IPv6 link local addresses to the one derived from the interface's MAC address. For containers the configured IP addresses will be implicitly added.
          * @param $log_level_in Log level for incoming traffic.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param $log_level_out Log level for outgoing traffic.
@@ -4087,7 +4118,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param $nameserver Sets DNS server IP address for a container. Create will automatically use the setting from the host if you neither set searchdomain nor nameserver.
          * @param $netN Specifies network interfaces for the container.
          * @param $onboot Specifies whether a VM will be started during system bootup.
-         * @param $ostype OS type. This is used to setup configuration inside the container, and corresponds to lxc setup scripts in /usr/share/lxc/config/&amp;lt;ostype>.common.conf. Value 'unmanaged' can be used to skip and OS specific setup.
+         * @param $ostype OS type. This is used to setup configuration inside the container, and corresponds to lxc setup scripts in /usr/share/lxc/config/&amp;lt;ostype&amp;gt;.common.conf. Value 'unmanaged' can be used to skip and OS specific setup.
          *   Enum: debian,ubuntu,centos,fedora,opensuse,archlinux,alpine,gentoo,unmanaged
          * @param $password Sets root password inside container.
          * @param $pool Add the VM to the specified pool.
@@ -4315,7 +4346,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param $nameserver Sets DNS server IP address for a container. Create will automatically use the setting from the host if you neither set searchdomain nor nameserver.
          * @param $netN Specifies network interfaces for the container.
          * @param $onboot Specifies whether a VM will be started during system bootup.
-         * @param $ostype OS type. This is used to setup configuration inside the container, and corresponds to lxc setup scripts in /usr/share/lxc/config/&amp;lt;ostype>.common.conf. Value 'unmanaged' can be used to skip and OS specific setup.
+         * @param $ostype OS type. This is used to setup configuration inside the container, and corresponds to lxc setup scripts in /usr/share/lxc/config/&amp;lt;ostype&amp;gt;.common.conf. Value 'unmanaged' can be used to skip and OS specific setup.
          *   Enum: debian,ubuntu,centos,fedora,opensuse,archlinux,alpine,gentoo,unmanaged
          * @param $protection Sets the protection flag of the container. This will prevent the CT or CT's disk remove/update operation.
          * @param $rootfs Use volume as container root.
@@ -4812,7 +4843,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param $enable Flag to enable/disable a rule.
          * @param $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
          * @param $macro Use predefined standard macro.
-         * @param $pos Update rule at position &amp;lt;pos>.
+         * @param $pos Update rule at position &amp;lt;pos&amp;gt;.
          * @param $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
          * @param $source Restrict packet source address. This can refer to a single IP address, an IP set ('+ipsetname') or an IP alias definition. You can also specify an address range like '20.34.101.207-201.3.9.99', or a list of IP addresses and networks (entries are separated by comma). Please do not mix IPv4 and IPv6 addresses inside such lists.
          * @param $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
@@ -4880,7 +4911,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param $enable Flag to enable/disable a rule.
          * @param $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
          * @param $macro Use predefined standard macro.
-         * @param $moveto Move rule to new position &amp;lt;moveto>. Other arguments are ignored.
+         * @param $moveto Move rule to new position &amp;lt;moveto&amp;gt;. Other arguments are ignored.
          * @param $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
          * @param $source Restrict packet source address. This can refer to a single IP address, an IP set ('+ipsetname') or an IP alias definition. You can also specify an address range like '20.34.101.207-201.3.9.99', or a list of IP addresses and networks (entries are separated by comma). Please do not mix IPv4 and IPv6 addresses inside such lists.
          * @param $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
@@ -5169,7 +5200,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param $dhcp Enable DHCP.
          * @param $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param $enable Enable/disable firewall rules.
-         * @param $ipfilter Enable default IP filters. This is equivalent to adding an empty ipfilter-net&amp;lt;id> ipset for every interface. Such ipsets implicitly contain sane default restrictions such as restricting IPv6 link local addresses to the one derived from the interface's MAC address. For containers the configured IP addresses will be implicitly added.
+         * @param $ipfilter Enable default IP filters. This is equivalent to adding an empty ipfilter-net&amp;lt;id&amp;gt; ipset for every interface. Such ipsets implicitly contain sane default restrictions such as restricting IPv6 link local addresses to the one derived from the interface's MAC address. For containers the configured IP addresses will be implicitly added.
          * @param $log_level_in Log level for incoming traffic.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param $log_level_out Log level for outgoing traffic.
@@ -6153,7 +6184,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param $maxfiles Maximal number of backup files per guest system.
          * @param $mode Backup mode.
          *   Enum: snapshot,suspend,stop
-         * @param $pigz Use pigz instead of gzip when N>0. N=1 uses half of cores, N>1 uses N as thread count.
+         * @param $pigz Use pigz instead of gzip when N&amp;gt;0. N=1 uses half of cores, N&amp;gt;1 uses N as thread count.
          * @param $quiet Be quiet.
          * @param $remove Remove old backup files if there are more than 'maxfiles' backup files.
          * @param $script Use specified hook script.
@@ -7563,7 +7594,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param $enable Flag to enable/disable a rule.
          * @param $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
          * @param $macro Use predefined standard macro.
-         * @param $pos Update rule at position &amp;lt;pos>.
+         * @param $pos Update rule at position &amp;lt;pos&amp;gt;.
          * @param $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
          * @param $source Restrict packet source address. This can refer to a single IP address, an IP set ('+ipsetname') or an IP alias definition. You can also specify an address range like '20.34.101.207-201.3.9.99', or a list of IP addresses and networks (entries are separated by comma). Please do not mix IPv4 and IPv6 addresses inside such lists.
          * @param $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
@@ -7629,7 +7660,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param $enable Flag to enable/disable a rule.
          * @param $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
          * @param $macro Use predefined standard macro.
-         * @param $moveto Move rule to new position &amp;lt;moveto>. Other arguments are ignored.
+         * @param $moveto Move rule to new position &amp;lt;moveto&amp;gt;. Other arguments are ignored.
          * @param $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
          * @param $source Restrict packet source address. This can refer to a single IP address, an IP set ('+ipsetname') or an IP alias definition. You can also specify an address range like '20.34.101.207-201.3.9.99', or a list of IP addresses and networks (entries are separated by comma). Please do not mix IPv4 and IPv6 addresses inside such lists.
          * @param $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
@@ -9012,7 +9043,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param $otp One-time password for Two-factor authentication.
          * @param $path Verify ticket, and check if user have access 'privs' on 'path'
          * @param $privs Verify ticket, and check if user have access 'privs' on 'path'
-         * @param $realm You can optionally pass the realm using this parameter. Normally the realm is simply added to the username &amp;lt;username>@&amp;lt;relam>.
+         * @param $realm You can optionally pass the realm using this parameter. Normally the realm is simply added to the username &amp;lt;username&amp;gt;@&amp;lt;relam&amp;gt;.
          * @return mixed
          */
         public function createTicket($password, $username, $otp = null, $path = null, $privs = null, $realm = null)
