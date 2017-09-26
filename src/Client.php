@@ -5,55 +5,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
     {
         protected $client;
 
-        protected function executeAction($resource, $method, $parms = [])
-        {
-            $url = "https://{$this->client->getHostName()}:{$this->client->getPort()}/api2/json{$resource}";
-            $cookies = [];
-            $headers = [];
-            if ($this->client->getPVEAuthCookie() != null) {
-                $cookies = ['PVEAuthCookie' => $this->client->getPVEAuthCookie()];
-                $headers = ['CSRFPreventionToken' => $this->client->getCSRFPreventionToken()];
-            }
-            //remove null parms
-            $parms = array_filter($parms, function ($value) {
-                return $value !== null;
-            });
-            $httpClient = new \GuzzleHttp\Client();
-            switch ($method) {
-                case 'GET':
-                    return $httpClient->get($url, [
-                        'verify' => false,
-                        'exceptions' => false,
-                        'cookies' => $cookies,
-                        'query' => $parms,
-                    ])->json(['object' => true]);
-                case 'POST':
-                    return $httpClient->post($url, [
-                        'verify' => false,
-                        'exceptions' => false,
-                        'cookies' => $cookies,
-                        'headers' => $headers,
-                        'body' => $parms,
-                    ])->json(['object' => true]);
-                case 'PUT':
-                    return $httpClient->put($url, [
-                        'verify' => false,
-                        'exceptions' => false,
-                        'cookies' => $cookies,
-                        'headers' => $headers,
-                        'body' => $parms,
-                    ])->json(['object' => true]);
-                case 'DELETE':
-                    return $httpClient->delete($url, [
-                        'verify' => false,
-                        'exceptions' => false,
-                        'cookies' => $cookies,
-                        'headers' => $headers,
-                        'body' => $parms,
-                    ])->json(['object' => true]);
-            }
-        }
-
         protected function addIndexedParmeter(&$parms, $name, $values)
         {
             if ($values == null) {
@@ -77,6 +28,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         private $ticketPVEAuthCookie;
         private $hostName;
         private $port;
+        private $reasonPhrase;
+        private $statusCode;
+        private $resultIsObject = true;
 
         function __construct($hostName, $port = 8006)
         {
@@ -85,11 +39,42 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $this;
         }
 
+        function getReasonPhrase()
+        {
+            return $this->reasonPhrase;
+        }
+
+        function getStatusCode()
+        {
+            return $this->statusCode;
+        }
+
+        function getResultIsObject()
+        {
+            return $this->resultIsObject;
+        }
+
+        function setResultIsObject($resultIsObject)
+        {
+            $this->resultIsObject = $resultIsObject;
+        }
+
+        public function getHostName()
+        {
+            return $this->hostName;
+        }
+
+        public function getPort()
+        {
+            return $this->port;
+        }
+
         /**
          * Creation ticket from login.
          * @param $userName user name or <username>@<relam>
          * @param $password
          * @param string $realm pam/pve or custom
+         * @return bool logged
          */
         function login($userName, $password, $realm = "pam")
         {
@@ -98,11 +83,21 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 $userName = $uData[0];
                 $realm = $uData[1];
             }
+
+            $oldResultIsObject = $this->getResultIsObject();
+            $this->setResultIsObject(true);
             $ticket = $this->getAccess()
                 ->getTicket()
                 ->createTicket($password, $userName, null, null, null, $realm);
-            $this->ticketCSRFPreventionToken = $ticket->data->CSRFPreventionToken;
-            $this->ticketPVEAuthCookie = $ticket->data->ticket;
+
+            $this->setResultIsObject($oldResultIsObject);
+            if ($ticket != null && $ticket->data != null) {
+                $this->ticketCSRFPreventionToken = $ticket->data->CSRFPreventionToken;
+                $this->ticketPVEAuthCookie = $ticket->data->ticket;
+
+                return true;
+            }
+            return false;
         }
 
         public function get($resource, $parms = [])
@@ -125,24 +120,61 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->executeAction($resource, 'DELETE', $parms);
         }
 
-        public function getCSRFPreventionToken()
+        private function executeAction($resource, $method, $parms = [])
         {
-            return $this->ticketCSRFPreventionToken;
+            $response = $this->requestResource($resource, $method, $parms);
+            $this->reasonPhrase = $response->getReasonPhrase();
+            $this->statusCode = $response->getStatusCode();
+            return $response->json(['object' => $this->resultIsObject]);
         }
 
-        public function getPVEAuthCookie()
+        private function requestResource($resource, $method, $parms = [])
         {
-            return $this->ticketPVEAuthCookie;
-        }
-
-        public function getHostName()
-        {
-            return $this->hostName;
-        }
-
-        public function getPort()
-        {
-            return $this->port;
+            $url = "https://{$this->getHostName()}:{$this->getPort()}/api2/json{$resource}";
+            $cookies = [];
+            $headers = [];
+            if ($this->ticketPVEAuthCookie != null) {
+                $cookies = ['PVEAuthCookie' => $this->ticketPVEAuthCookie];
+                $headers = ['CSRFPreventionToken' => $this->ticketCSRFPreventionToken];
+            }
+            //remove null parms
+            $parms = array_filter($parms, function ($value) {
+                return $value !== null;
+            });
+            $httpClient = new \GuzzleHttp\Client();
+            switch ($method) {
+                case 'GET':
+                    return $httpClient->get($url, [
+                        'verify' => false,
+                        'exceptions' => false,
+                        'cookies' => $cookies,
+                        'query' => $parms,
+                    ]);
+                case 'POST':
+                    return $httpClient->post($url, [
+                        'verify' => false,
+                        'exceptions' => false,
+                        'cookies' => $cookies,
+                        'headers' => $headers,
+                        'body' => $parms,
+                    ]);
+                case 'PUT':
+                    return $httpClient->put($url, [
+                        'verify' => false,
+                        'exceptions' => false,
+                        'cookies' => $cookies,
+                        'headers' => $headers,
+                        'body' => $parms,
+                    ]);
+                case 'DELETE':
+                    return $httpClient->delete($url, [
+                        'verify' => false,
+                        'exceptions' => false,
+                        'cookies' => $cookies,
+                        'headers' => $headers,
+                        'body' => $parms,
+                    ]);
+            }
         }
 
         private $cluster;
@@ -278,7 +310,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/cluster", 'GET');
+            return $this->client->get("/cluster");
         }
     }
 
@@ -300,7 +332,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/cluster/replication", 'GET');
+            return $this->client->get("/cluster/replication");
         }
 
         /**
@@ -326,7 +358,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'rate' => $rate,
                 'remove_job' => $remove_job,
                 'schedule' => $schedule];
-            $this->executeAction("/cluster/replication", 'POST', $parms);
+            $this->client->post("/cluster/replication", $parms);
         }
     }
 
@@ -349,7 +381,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['force' => $force,
                 'keep' => $keep];
-            $this->executeAction("/cluster/replication/{$this->id}", 'DELETE', $parms);
+            $this->client->delete("/cluster/replication/{$this->id}", $parms);
         }
 
         /**
@@ -358,7 +390,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function read()
         {
-            return $this->executeAction("/cluster/replication/{$this->id}", 'GET');
+            return $this->client->get("/cluster/replication/{$this->id}");
         }
 
         /**
@@ -381,7 +413,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'rate' => $rate,
                 'remove_job' => $remove_job,
                 'schedule' => $schedule];
-            $this->executeAction("/cluster/replication/{$this->id}", 'PUT', $parms);
+            $this->client->put("/cluster/replication/{$this->id}", $parms);
         }
     }
 
@@ -412,7 +444,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/cluster/config", 'GET');
+            return $this->client->get("/cluster/config");
         }
     }
 
@@ -429,7 +461,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function nodes()
         {
-            return $this->executeAction("/cluster/config/nodes", 'GET');
+            return $this->client->get("/cluster/config/nodes");
         }
     }
 
@@ -446,7 +478,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function totem()
         {
-            return $this->executeAction("/cluster/config/totem", 'GET');
+            return $this->client->get("/cluster/config/totem");
         }
     }
 
@@ -512,7 +544,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/cluster/firewall", 'GET');
+            return $this->client->get("/cluster/firewall");
         }
     }
 
@@ -534,7 +566,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function listSecurityGroups()
         {
-            return $this->executeAction("/cluster/firewall/groups", 'GET');
+            return $this->client->get("/cluster/firewall/groups");
         }
 
         /**
@@ -550,7 +582,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'comment' => $comment,
                 'digest' => $digest,
                 'rename' => $rename];
-            $this->executeAction("/cluster/firewall/groups", 'POST', $parms);
+            $this->client->post("/cluster/firewall/groups", $parms);
         }
     }
 
@@ -574,7 +606,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function deleteSecurityGroup()
         {
-            $this->executeAction("/cluster/firewall/groups/{$this->group}", 'DELETE');
+            $this->client->delete("/cluster/firewall/groups/{$this->group}");
         }
 
         /**
@@ -583,7 +615,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRules()
         {
-            return $this->executeAction("/cluster/firewall/groups/{$this->group}", 'GET');
+            return $this->client->get("/cluster/firewall/groups/{$this->group}");
         }
 
         /**
@@ -618,7 +650,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'proto' => $proto,
                 'source' => $source,
                 'sport' => $sport];
-            $this->executeAction("/cluster/firewall/groups/{$this->group}", 'POST', $parms);
+            $this->client->post("/cluster/firewall/groups/{$this->group}", $parms);
         }
     }
 
@@ -641,7 +673,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function deleteRule($digest = null)
         {
             $parms = ['digest' => $digest];
-            $this->executeAction("/cluster/firewall/groups/{$this->group}/{$this->pos}", 'DELETE', $parms);
+            $this->client->delete("/cluster/firewall/groups/{$this->group}/{$this->pos}", $parms);
         }
 
         /**
@@ -650,7 +682,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRule()
         {
-            return $this->executeAction("/cluster/firewall/groups/{$this->group}/{$this->pos}", 'GET');
+            return $this->client->get("/cluster/firewall/groups/{$this->group}/{$this->pos}");
         }
 
         /**
@@ -687,7 +719,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'source' => $source,
                 'sport' => $sport,
                 'type' => $type];
-            $this->executeAction("/cluster/firewall/groups/{$this->group}/{$this->pos}", 'PUT', $parms);
+            $this->client->put("/cluster/firewall/groups/{$this->group}/{$this->pos}", $parms);
         }
     }
 
@@ -709,7 +741,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRules()
         {
-            return $this->executeAction("/cluster/firewall/rules", 'GET');
+            return $this->client->get("/cluster/firewall/rules");
         }
 
         /**
@@ -744,7 +776,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'proto' => $proto,
                 'source' => $source,
                 'sport' => $sport];
-            $this->executeAction("/cluster/firewall/rules", 'POST', $parms);
+            $this->client->post("/cluster/firewall/rules", $parms);
         }
     }
 
@@ -765,7 +797,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function deleteRule($digest = null)
         {
             $parms = ['digest' => $digest];
-            $this->executeAction("/cluster/firewall/rules/{$this->pos}", 'DELETE', $parms);
+            $this->client->delete("/cluster/firewall/rules/{$this->pos}", $parms);
         }
 
         /**
@@ -774,7 +806,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRule()
         {
-            return $this->executeAction("/cluster/firewall/rules/{$this->pos}", 'GET');
+            return $this->client->get("/cluster/firewall/rules/{$this->pos}");
         }
 
         /**
@@ -811,7 +843,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'source' => $source,
                 'sport' => $sport,
                 'type' => $type];
-            $this->executeAction("/cluster/firewall/rules/{$this->pos}", 'PUT', $parms);
+            $this->client->put("/cluster/firewall/rules/{$this->pos}", $parms);
         }
     }
 
@@ -833,7 +865,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function ipsetIndex()
         {
-            return $this->executeAction("/cluster/firewall/ipset", 'GET');
+            return $this->client->get("/cluster/firewall/ipset");
         }
 
         /**
@@ -849,7 +881,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'comment' => $comment,
                 'digest' => $digest,
                 'rename' => $rename];
-            $this->executeAction("/cluster/firewall/ipset", 'POST', $parms);
+            $this->client->post("/cluster/firewall/ipset", $parms);
         }
     }
 
@@ -873,7 +905,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function deleteIpset()
         {
-            $this->executeAction("/cluster/firewall/ipset/{$this->name}", 'DELETE');
+            $this->client->delete("/cluster/firewall/ipset/{$this->name}");
         }
 
         /**
@@ -882,7 +914,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getIpset()
         {
-            return $this->executeAction("/cluster/firewall/ipset/{$this->name}", 'GET');
+            return $this->client->get("/cluster/firewall/ipset/{$this->name}");
         }
 
         /**
@@ -896,7 +928,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $parms = ['cidr' => $cidr,
                 'comment' => $comment,
                 'nomatch' => $nomatch];
-            $this->executeAction("/cluster/firewall/ipset/{$this->name}", 'POST', $parms);
+            $this->client->post("/cluster/firewall/ipset/{$this->name}", $parms);
         }
     }
 
@@ -919,7 +951,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function removeIp($digest = null)
         {
             $parms = ['digest' => $digest];
-            $this->executeAction("/cluster/firewall/ipset/{$this->name}/{$this->cidr}", 'DELETE', $parms);
+            $this->client->delete("/cluster/firewall/ipset/{$this->name}/{$this->cidr}", $parms);
         }
 
         /**
@@ -928,7 +960,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function readIp()
         {
-            return $this->executeAction("/cluster/firewall/ipset/{$this->name}/{$this->cidr}", 'GET');
+            return $this->client->get("/cluster/firewall/ipset/{$this->name}/{$this->cidr}");
         }
 
         /**
@@ -942,7 +974,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $parms = ['comment' => $comment,
                 'digest' => $digest,
                 'nomatch' => $nomatch];
-            $this->executeAction("/cluster/firewall/ipset/{$this->name}/{$this->cidr}", 'PUT', $parms);
+            $this->client->put("/cluster/firewall/ipset/{$this->name}/{$this->cidr}", $parms);
         }
     }
 
@@ -964,7 +996,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getAliases()
         {
-            return $this->executeAction("/cluster/firewall/aliases", 'GET');
+            return $this->client->get("/cluster/firewall/aliases");
         }
 
         /**
@@ -978,7 +1010,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $parms = ['cidr' => $cidr,
                 'name' => $name,
                 'comment' => $comment];
-            $this->executeAction("/cluster/firewall/aliases", 'POST', $parms);
+            $this->client->post("/cluster/firewall/aliases", $parms);
         }
     }
 
@@ -999,7 +1031,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function removeAlias($digest = null)
         {
             $parms = ['digest' => $digest];
-            $this->executeAction("/cluster/firewall/aliases/{$this->name}", 'DELETE', $parms);
+            $this->client->delete("/cluster/firewall/aliases/{$this->name}", $parms);
         }
 
         /**
@@ -1008,7 +1040,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function readAlias()
         {
-            return $this->executeAction("/cluster/firewall/aliases/{$this->name}", 'GET');
+            return $this->client->get("/cluster/firewall/aliases/{$this->name}");
         }
 
         /**
@@ -1024,7 +1056,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'comment' => $comment,
                 'digest' => $digest,
                 'rename' => $rename];
-            $this->executeAction("/cluster/firewall/aliases/{$this->name}", 'PUT', $parms);
+            $this->client->put("/cluster/firewall/aliases/{$this->name}", $parms);
         }
     }
 
@@ -1041,7 +1073,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getOptions()
         {
-            return $this->executeAction("/cluster/firewall/options", 'GET');
+            return $this->client->get("/cluster/firewall/options");
         }
 
         /**
@@ -1061,7 +1093,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'enable' => $enable,
                 'policy_in' => $policy_in,
                 'policy_out' => $policy_out];
-            $this->executeAction("/cluster/firewall/options", 'PUT', $parms);
+            $this->client->put("/cluster/firewall/options", $parms);
         }
     }
 
@@ -1078,7 +1110,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getMacros()
         {
-            return $this->executeAction("/cluster/firewall/macros", 'GET');
+            return $this->client->get("/cluster/firewall/macros");
         }
     }
 
@@ -1098,7 +1130,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function refs($type = null)
         {
             $parms = ['type' => $type];
-            return $this->executeAction("/cluster/firewall/refs", 'GET', $parms);
+            return $this->client->get("/cluster/firewall/refs", $parms);
         }
     }
 
@@ -1120,7 +1152,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/cluster/backup", 'GET');
+            return $this->client->get("/cluster/backup");
         }
 
         /**
@@ -1185,7 +1217,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'storage' => $storage,
                 'tmpdir' => $tmpdir,
                 'vmid' => $vmid];
-            $this->executeAction("/cluster/backup", 'POST', $parms);
+            $this->client->post("/cluster/backup", $parms);
         }
     }
 
@@ -1204,7 +1236,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function deleteJob()
         {
-            $this->executeAction("/cluster/backup/{$this->id}", 'DELETE');
+            $this->client->delete("/cluster/backup/{$this->id}");
         }
 
         /**
@@ -1213,7 +1245,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function readJob()
         {
-            return $this->executeAction("/cluster/backup/{$this->id}", 'GET');
+            return $this->client->get("/cluster/backup/{$this->id}");
         }
 
         /**
@@ -1280,7 +1312,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'storage' => $storage,
                 'tmpdir' => $tmpdir,
                 'vmid' => $vmid];
-            $this->executeAction("/cluster/backup/{$this->id}", 'PUT', $parms);
+            $this->client->put("/cluster/backup/{$this->id}", $parms);
         }
     }
 
@@ -1318,7 +1350,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/cluster/ha", 'GET');
+            return $this->client->get("/cluster/ha");
         }
     }
 
@@ -1343,7 +1375,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function index($type = null)
         {
             $parms = ['type' => $type];
-            return $this->executeAction("/cluster/ha/resources", 'GET', $parms);
+            return $this->client->get("/cluster/ha/resources", $parms);
         }
 
         /**
@@ -1367,7 +1399,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'max_restart' => $max_restart,
                 'state' => $state,
                 'type' => $type];
-            $this->executeAction("/cluster/ha/resources", 'POST', $parms);
+            $this->client->post("/cluster/ha/resources", $parms);
         }
     }
 
@@ -1400,7 +1432,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function delete()
         {
-            $this->executeAction("/cluster/ha/resources/{$this->sid}", 'DELETE');
+            $this->client->delete("/cluster/ha/resources/{$this->sid}");
         }
 
         /**
@@ -1409,7 +1441,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function read()
         {
-            return $this->executeAction("/cluster/ha/resources/{$this->sid}", 'GET');
+            return $this->client->get("/cluster/ha/resources/{$this->sid}");
         }
 
         /**
@@ -1432,7 +1464,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'max_relocate' => $max_relocate,
                 'max_restart' => $max_restart,
                 'state' => $state];
-            $this->executeAction("/cluster/ha/resources/{$this->sid}", 'PUT', $parms);
+            $this->client->put("/cluster/ha/resources/{$this->sid}", $parms);
         }
     }
 
@@ -1453,7 +1485,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function migrate($node)
         {
             $parms = ['node' => $node];
-            $this->executeAction("/cluster/ha/resources/{$this->sid}/migrate", 'POST', $parms);
+            $this->client->post("/cluster/ha/resources/{$this->sid}/migrate", $parms);
         }
     }
 
@@ -1474,7 +1506,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function relocate($node)
         {
             $parms = ['node' => $node];
-            $this->executeAction("/cluster/ha/resources/{$this->sid}/relocate", 'POST', $parms);
+            $this->client->post("/cluster/ha/resources/{$this->sid}/relocate", $parms);
         }
     }
 
@@ -1496,7 +1528,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/cluster/ha/groups", 'GET');
+            return $this->client->get("/cluster/ha/groups");
         }
 
         /**
@@ -1517,7 +1549,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'nofailback' => $nofailback,
                 'restricted' => $restricted,
                 'type' => $type];
-            $this->executeAction("/cluster/ha/groups", 'POST', $parms);
+            $this->client->post("/cluster/ha/groups", $parms);
         }
     }
 
@@ -1536,7 +1568,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function delete()
         {
-            $this->executeAction("/cluster/ha/groups/{$this->group}", 'DELETE');
+            $this->client->delete("/cluster/ha/groups/{$this->group}");
         }
 
         /**
@@ -1545,7 +1577,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function read()
         {
-            return $this->executeAction("/cluster/ha/groups/{$this->group}", 'GET');
+            return $this->client->get("/cluster/ha/groups/{$this->group}");
         }
 
         /**
@@ -1565,7 +1597,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'nodes' => $nodes,
                 'nofailback' => $nofailback,
                 'restricted' => $restricted];
-            $this->executeAction("/cluster/ha/groups/{$this->group}", 'PUT', $parms);
+            $this->client->put("/cluster/ha/groups/{$this->group}", $parms);
         }
     }
 
@@ -1596,7 +1628,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/cluster/ha/status", 'GET');
+            return $this->client->get("/cluster/ha/status");
         }
     }
 
@@ -1613,7 +1645,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function status()
         {
-            return $this->executeAction("/cluster/ha/status/current", 'GET');
+            return $this->client->get("/cluster/ha/status/current");
         }
     }
 
@@ -1630,7 +1662,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function managerStatus()
         {
-            return $this->executeAction("/cluster/ha/status/manager_status", 'GET');
+            return $this->client->get("/cluster/ha/status/manager_status");
         }
     }
 
@@ -1649,7 +1681,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function log($max = null)
         {
             $parms = ['max' => $max];
-            return $this->executeAction("/cluster/log", 'GET', $parms);
+            return $this->client->get("/cluster/log", $parms);
         }
     }
 
@@ -1669,7 +1701,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function resources($type = null)
         {
             $parms = ['type' => $type];
-            return $this->executeAction("/cluster/resources", 'GET', $parms);
+            return $this->client->get("/cluster/resources", $parms);
         }
     }
 
@@ -1686,7 +1718,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function tasks()
         {
-            return $this->executeAction("/cluster/tasks", 'GET');
+            return $this->client->get("/cluster/tasks");
         }
     }
 
@@ -1703,7 +1735,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getOptions()
         {
-            return $this->executeAction("/cluster/options", 'GET');
+            return $this->client->get("/cluster/options");
         }
 
         /**
@@ -1737,7 +1769,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'max_workers' => $max_workers,
                 'migration' => $migration,
                 'migration_unsecure' => $migration_unsecure];
-            $this->executeAction("/cluster/options", 'PUT', $parms);
+            $this->client->put("/cluster/options", $parms);
         }
     }
 
@@ -1754,7 +1786,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getStatus()
         {
-            return $this->executeAction("/cluster/status", 'GET');
+            return $this->client->get("/cluster/status");
         }
     }
 
@@ -1773,7 +1805,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function nextid($vmid = null)
         {
             $parms = ['vmid' => $vmid];
-            return $this->executeAction("/cluster/nextid", 'GET', $parms);
+            return $this->client->get("/cluster/nextid", $parms);
         }
     }
 
@@ -1795,7 +1827,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/nodes", 'GET');
+            return $this->client->get("/nodes");
         }
     }
 
@@ -2032,7 +2064,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/nodes/{$this->node}", 'GET');
+            return $this->client->get("/nodes/{$this->node}");
         }
     }
 
@@ -2059,7 +2091,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function vmlist($full = null)
         {
             $parms = ['full' => $full];
-            return $this->executeAction("/nodes/{$this->node}/qemu", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/qemu", $parms);
         }
 
         /**
@@ -2197,7 +2229,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->addIndexedParmeter($parms, 'unused', $unusedN);
             $this->addIndexedParmeter($parms, 'usb', $usbN);
             $this->addIndexedParmeter($parms, 'virtio', $virtioN);
-            return $this->executeAction("/nodes/{$this->node}/qemu", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/qemu", $parms);
         }
     }
 
@@ -2361,7 +2393,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function destroyVm($skiplock = null)
         {
             $parms = ['skiplock' => $skiplock];
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}", 'DELETE', $parms);
+            return $this->client->delete("/nodes/{$this->node}/qemu/{$this->vmid}", $parms);
         }
 
         /**
@@ -2370,7 +2402,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function vmdiridx()
         {
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}", 'GET');
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}");
         }
     }
 
@@ -2434,7 +2466,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/firewall", 'GET');
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/firewall");
         }
     }
 
@@ -2461,7 +2493,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRules()
         {
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/rules", 'GET');
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/rules");
         }
 
         /**
@@ -2496,7 +2528,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'proto' => $proto,
                 'source' => $source,
                 'sport' => $sport];
-            $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/rules", 'POST', $parms);
+            $this->client->post("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/rules", $parms);
         }
     }
 
@@ -2521,7 +2553,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function deleteRule($digest = null)
         {
             $parms = ['digest' => $digest];
-            $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/rules/{$this->pos}", 'DELETE', $parms);
+            $this->client->delete("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/rules/{$this->pos}", $parms);
         }
 
         /**
@@ -2530,7 +2562,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRule()
         {
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/rules/{$this->pos}", 'GET');
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/rules/{$this->pos}");
         }
 
         /**
@@ -2567,7 +2599,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'source' => $source,
                 'sport' => $sport,
                 'type' => $type];
-            $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/rules/{$this->pos}", 'PUT', $parms);
+            $this->client->put("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/rules/{$this->pos}", $parms);
         }
     }
 
@@ -2594,7 +2626,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getAliases()
         {
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/aliases", 'GET');
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/aliases");
         }
 
         /**
@@ -2608,7 +2640,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $parms = ['cidr' => $cidr,
                 'name' => $name,
                 'comment' => $comment];
-            $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/aliases", 'POST', $parms);
+            $this->client->post("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/aliases", $parms);
         }
     }
 
@@ -2633,7 +2665,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function removeAlias($digest = null)
         {
             $parms = ['digest' => $digest];
-            $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/aliases/{$this->name}", 'DELETE', $parms);
+            $this->client->delete("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/aliases/{$this->name}", $parms);
         }
 
         /**
@@ -2642,7 +2674,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function readAlias()
         {
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/aliases/{$this->name}", 'GET');
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/aliases/{$this->name}");
         }
 
         /**
@@ -2658,7 +2690,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'comment' => $comment,
                 'digest' => $digest,
                 'rename' => $rename];
-            $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/aliases/{$this->name}", 'PUT', $parms);
+            $this->client->put("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/aliases/{$this->name}", $parms);
         }
     }
 
@@ -2685,7 +2717,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function ipsetIndex()
         {
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset", 'GET');
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset");
         }
 
         /**
@@ -2701,7 +2733,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'comment' => $comment,
                 'digest' => $digest,
                 'rename' => $rename];
-            $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset", 'POST', $parms);
+            $this->client->post("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset", $parms);
         }
     }
 
@@ -2729,7 +2761,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function deleteIpset()
         {
-            $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset/{$this->name}", 'DELETE');
+            $this->client->delete("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset/{$this->name}");
         }
 
         /**
@@ -2738,7 +2770,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getIpset()
         {
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset/{$this->name}", 'GET');
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset/{$this->name}");
         }
 
         /**
@@ -2752,7 +2784,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $parms = ['cidr' => $cidr,
                 'comment' => $comment,
                 'nomatch' => $nomatch];
-            $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset/{$this->name}", 'POST', $parms);
+            $this->client->post("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset/{$this->name}", $parms);
         }
     }
 
@@ -2779,7 +2811,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function removeIp($digest = null)
         {
             $parms = ['digest' => $digest];
-            $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset/{$this->name}/{$this->cidr}", 'DELETE', $parms);
+            $this->client->delete("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset/{$this->name}/{$this->cidr}", $parms);
         }
 
         /**
@@ -2788,7 +2820,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function readIp()
         {
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset/{$this->name}/{$this->cidr}", 'GET');
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset/{$this->name}/{$this->cidr}");
         }
 
         /**
@@ -2802,7 +2834,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $parms = ['comment' => $comment,
                 'digest' => $digest,
                 'nomatch' => $nomatch];
-            $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset/{$this->name}/{$this->cidr}", 'PUT', $parms);
+            $this->client->put("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset/{$this->name}/{$this->cidr}", $parms);
         }
     }
 
@@ -2824,7 +2856,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getOptions()
         {
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/options", 'GET');
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/options");
         }
 
         /**
@@ -2860,7 +2892,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'policy_in' => $policy_in,
                 'policy_out' => $policy_out,
                 'radv' => $radv];
-            $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/options", 'PUT', $parms);
+            $this->client->put("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/options", $parms);
         }
     }
 
@@ -2886,7 +2918,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['limit' => $limit,
                 'start' => $start];
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/log", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/log", $parms);
         }
     }
 
@@ -2911,7 +2943,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function refs($type = null)
         {
             $parms = ['type' => $type];
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/refs", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/refs", $parms);
         }
     }
 
@@ -2941,7 +2973,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $parms = ['ds' => $ds,
                 'timeframe' => $timeframe,
                 'cf' => $cf];
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/rrd", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/rrd", $parms);
         }
     }
 
@@ -2969,7 +3001,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['timeframe' => $timeframe,
                 'cf' => $cf];
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/rrddata", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/rrddata", $parms);
         }
     }
 
@@ -2993,7 +3025,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function vmConfig($current = null)
         {
             $parms = ['current' => $current];
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/config", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/config", $parms);
         }
 
         /**
@@ -3131,7 +3163,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->addIndexedParmeter($parms, 'unused', $unusedN);
             $this->addIndexedParmeter($parms, 'usb', $usbN);
             $this->addIndexedParmeter($parms, 'virtio', $virtioN);
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/config", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/qemu/{$this->vmid}/config", $parms);
         }
 
         /**
@@ -3266,7 +3298,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->addIndexedParmeter($parms, 'unused', $unusedN);
             $this->addIndexedParmeter($parms, 'usb', $usbN);
             $this->addIndexedParmeter($parms, 'virtio', $virtioN);
-            $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/config", 'PUT', $parms);
+            $this->client->put("/nodes/{$this->node}/qemu/{$this->vmid}/config", $parms);
         }
     }
 
@@ -3288,7 +3320,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function vmPending()
         {
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/pending", 'GET');
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/pending");
         }
     }
 
@@ -3313,7 +3345,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['idlist' => $idlist,
                 'force' => $force];
-            $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/unlink", 'PUT', $parms);
+            $this->client->put("/nodes/{$this->node}/qemu/{$this->vmid}/unlink", $parms);
         }
     }
 
@@ -3337,7 +3369,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function vncproxy($websocket = null)
         {
             $parms = ['websocket' => $websocket];
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/vncproxy", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/qemu/{$this->vmid}/vncproxy", $parms);
         }
     }
 
@@ -3363,7 +3395,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['port' => $port,
                 'vncticket' => $vncticket];
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/vncwebsocket", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/vncwebsocket", $parms);
         }
     }
 
@@ -3387,7 +3419,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function spiceproxy($proxy = null)
         {
             $parms = ['proxy' => $proxy];
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/spiceproxy", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/qemu/{$this->vmid}/spiceproxy", $parms);
         }
     }
 
@@ -3458,7 +3490,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function vmcmdidx()
         {
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/status", 'GET');
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/status");
         }
     }
 
@@ -3480,7 +3512,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function vmStatus()
         {
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/status/current", 'GET');
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/status/current");
         }
     }
 
@@ -3517,7 +3549,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'skiplock' => $skiplock,
                 'stateuri' => $stateuri,
                 'targetstorage' => $targetstorage];
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/status/start", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/qemu/{$this->vmid}/status/start", $parms);
         }
     }
 
@@ -3547,7 +3579,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'migratedfrom' => $migratedfrom,
                 'skiplock' => $skiplock,
                 'timeout' => $timeout];
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/status/stop", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/qemu/{$this->vmid}/status/stop", $parms);
         }
     }
 
@@ -3571,7 +3603,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function vmReset($skiplock = null)
         {
             $parms = ['skiplock' => $skiplock];
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/status/reset", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/qemu/{$this->vmid}/status/reset", $parms);
         }
     }
 
@@ -3601,7 +3633,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'keepActive' => $keepActive,
                 'skiplock' => $skiplock,
                 'timeout' => $timeout];
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/status/shutdown", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/qemu/{$this->vmid}/status/shutdown", $parms);
         }
     }
 
@@ -3625,7 +3657,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function vmSuspend($skiplock = null)
         {
             $parms = ['skiplock' => $skiplock];
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/status/suspend", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/qemu/{$this->vmid}/status/suspend", $parms);
         }
     }
 
@@ -3651,7 +3683,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['nocheck' => $nocheck,
                 'skiplock' => $skiplock];
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/status/resume", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/qemu/{$this->vmid}/status/resume", $parms);
         }
     }
 
@@ -3676,7 +3708,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['key' => $key,
                 'skiplock' => $skiplock];
-            $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/sendkey", 'PUT', $parms);
+            $this->client->put("/nodes/{$this->node}/qemu/{$this->vmid}/sendkey", $parms);
         }
     }
 
@@ -3703,7 +3735,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['feature' => $feature,
                 'snapname' => $snapname];
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/feature", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/feature", $parms);
         }
     }
 
@@ -3744,7 +3776,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'snapname' => $snapname,
                 'storage' => $storage,
                 'target' => $target];
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/clone", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/qemu/{$this->vmid}/clone", $parms);
         }
     }
 
@@ -3778,7 +3810,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'delete' => $delete,
                 'digest' => $digest,
                 'format' => $format];
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/move_disk", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/qemu/{$this->vmid}/move_disk", $parms);
         }
     }
 
@@ -3815,7 +3847,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'online' => $online,
                 'targetstorage' => $targetstorage,
                 'with-local-disks' => $with_local_disks];
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/migrate", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/qemu/{$this->vmid}/migrate", $parms);
         }
     }
 
@@ -3839,7 +3871,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function monitor($command)
         {
             $parms = ['command' => $command];
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/monitor", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/qemu/{$this->vmid}/monitor", $parms);
         }
     }
 
@@ -3864,7 +3896,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function agent($command)
         {
             $parms = ['command' => $command];
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/agent", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/qemu/{$this->vmid}/agent", $parms);
         }
     }
 
@@ -3894,7 +3926,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'size' => $size,
                 'digest' => $digest,
                 'skiplock' => $skiplock];
-            $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/resize", 'PUT', $parms);
+            $this->client->put("/nodes/{$this->node}/qemu/{$this->vmid}/resize", $parms);
         }
     }
 
@@ -3921,7 +3953,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function snapshotList()
         {
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot", 'GET');
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot");
         }
 
         /**
@@ -3936,7 +3968,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $parms = ['snapname' => $snapname,
                 'description' => $description,
                 'vmstate' => $vmstate];
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot", $parms);
         }
     }
 
@@ -3976,7 +4008,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function delsnapshot($force = null)
         {
             $parms = ['force' => $force];
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot/{$this->snapname}", 'DELETE', $parms);
+            return $this->client->delete("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot/{$this->snapname}", $parms);
         }
 
         /**
@@ -3985,7 +4017,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function snapshotCmdIdx()
         {
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot/{$this->snapname}", 'GET');
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot/{$this->snapname}");
         }
     }
 
@@ -4009,7 +4041,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getSnapshotConfig()
         {
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot/{$this->snapname}/config", 'GET');
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot/{$this->snapname}/config");
         }
 
         /**
@@ -4019,7 +4051,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function updateSnapshotConfig($description = null)
         {
             $parms = ['description' => $description];
-            $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot/{$this->snapname}/config", 'PUT', $parms);
+            $this->client->put("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot/{$this->snapname}/config", $parms);
         }
     }
 
@@ -4043,7 +4075,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function rollback()
         {
-            return $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot/{$this->snapname}/rollback", 'POST');
+            return $this->client->post("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot/{$this->snapname}/rollback");
         }
     }
 
@@ -4067,7 +4099,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function template($disk = null)
         {
             $parms = ['disk' => $disk];
-            $this->executeAction("/nodes/{$this->node}/qemu/{$this->vmid}/template", 'POST', $parms);
+            $this->client->post("/nodes/{$this->node}/qemu/{$this->vmid}/template", $parms);
         }
     }
 
@@ -4092,7 +4124,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function vmlist()
         {
-            return $this->executeAction("/nodes/{$this->node}/lxc", 'GET');
+            return $this->client->get("/nodes/{$this->node}/lxc");
         }
 
         /**
@@ -4171,7 +4203,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->addIndexedParmeter($parms, 'mp', $mpN);
             $this->addIndexedParmeter($parms, 'net', $netN);
             $this->addIndexedParmeter($parms, 'unused', $unusedN);
-            return $this->executeAction("/nodes/{$this->node}/lxc", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/lxc", $parms);
         }
     }
 
@@ -4291,7 +4323,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function destroyVm()
         {
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}", 'DELETE');
+            return $this->client->delete("/nodes/{$this->node}/lxc/{$this->vmid}");
         }
 
         /**
@@ -4300,7 +4332,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function vmdiridx()
         {
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}", 'GET');
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}");
         }
     }
 
@@ -4322,7 +4354,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function vmConfig()
         {
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/config", 'GET');
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/config");
         }
 
         /**
@@ -4386,7 +4418,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->addIndexedParmeter($parms, 'mp', $mpN);
             $this->addIndexedParmeter($parms, 'net', $netN);
             $this->addIndexedParmeter($parms, 'unused', $unusedN);
-            $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/config", 'PUT', $parms);
+            $this->client->put("/nodes/{$this->node}/lxc/{$this->vmid}/config", $parms);
         }
     }
 
@@ -4450,7 +4482,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function vmcmdidx()
         {
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/status", 'GET');
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/status");
         }
     }
 
@@ -4472,7 +4504,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function vmStatus()
         {
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/status/current", 'GET');
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/status/current");
         }
     }
 
@@ -4496,7 +4528,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function vmStart($skiplock = null)
         {
             $parms = ['skiplock' => $skiplock];
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/status/start", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/lxc/{$this->vmid}/status/start", $parms);
         }
     }
 
@@ -4520,7 +4552,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function vmStop($skiplock = null)
         {
             $parms = ['skiplock' => $skiplock];
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/status/stop", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/lxc/{$this->vmid}/status/stop", $parms);
         }
     }
 
@@ -4546,7 +4578,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['forceStop' => $forceStop,
                 'timeout' => $timeout];
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/status/shutdown", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/lxc/{$this->vmid}/status/shutdown", $parms);
         }
     }
 
@@ -4568,7 +4600,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function vmSuspend()
         {
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/status/suspend", 'POST');
+            return $this->client->post("/nodes/{$this->node}/lxc/{$this->vmid}/status/suspend");
         }
     }
 
@@ -4590,7 +4622,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function vmResume()
         {
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/status/resume", 'POST');
+            return $this->client->post("/nodes/{$this->node}/lxc/{$this->vmid}/status/resume");
         }
     }
 
@@ -4615,9 +4647,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * List all snapshots.
          * @return mixed
          */
-        public function list()
+        public function list_()
         {
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot", 'GET');
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot");
         }
 
         /**
@@ -4630,7 +4662,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['snapname' => $snapname,
                 'description' => $description];
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot", $parms);
         }
     }
 
@@ -4670,7 +4702,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function delsnapshot($force = null)
         {
             $parms = ['force' => $force];
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot/{$this->snapname}", 'DELETE', $parms);
+            return $this->client->delete("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot/{$this->snapname}", $parms);
         }
 
         /**
@@ -4679,7 +4711,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function snapshotCmdIdx()
         {
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot/{$this->snapname}", 'GET');
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot/{$this->snapname}");
         }
     }
 
@@ -4703,7 +4735,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function rollback()
         {
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot/{$this->snapname}/rollback", 'POST');
+            return $this->client->post("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot/{$this->snapname}/rollback");
         }
     }
 
@@ -4727,7 +4759,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getSnapshotConfig()
         {
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot/{$this->snapname}/config", 'GET');
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot/{$this->snapname}/config");
         }
 
         /**
@@ -4737,7 +4769,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function updateSnapshotConfig($description = null)
         {
             $parms = ['description' => $description];
-            $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot/{$this->snapname}/config", 'PUT', $parms);
+            $this->client->put("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot/{$this->snapname}/config", $parms);
         }
     }
 
@@ -4801,7 +4833,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/firewall", 'GET');
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/firewall");
         }
     }
 
@@ -4828,7 +4860,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRules()
         {
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/rules", 'GET');
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/rules");
         }
 
         /**
@@ -4863,7 +4895,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'proto' => $proto,
                 'source' => $source,
                 'sport' => $sport];
-            $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/rules", 'POST', $parms);
+            $this->client->post("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/rules", $parms);
         }
     }
 
@@ -4888,7 +4920,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function deleteRule($digest = null)
         {
             $parms = ['digest' => $digest];
-            $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/rules/{$this->pos}", 'DELETE', $parms);
+            $this->client->delete("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/rules/{$this->pos}", $parms);
         }
 
         /**
@@ -4897,7 +4929,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRule()
         {
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/rules/{$this->pos}", 'GET');
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/rules/{$this->pos}");
         }
 
         /**
@@ -4934,7 +4966,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'source' => $source,
                 'sport' => $sport,
                 'type' => $type];
-            $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/rules/{$this->pos}", 'PUT', $parms);
+            $this->client->put("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/rules/{$this->pos}", $parms);
         }
     }
 
@@ -4961,7 +4993,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getAliases()
         {
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/aliases", 'GET');
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/aliases");
         }
 
         /**
@@ -4975,7 +5007,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $parms = ['cidr' => $cidr,
                 'name' => $name,
                 'comment' => $comment];
-            $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/aliases", 'POST', $parms);
+            $this->client->post("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/aliases", $parms);
         }
     }
 
@@ -5000,7 +5032,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function removeAlias($digest = null)
         {
             $parms = ['digest' => $digest];
-            $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/aliases/{$this->name}", 'DELETE', $parms);
+            $this->client->delete("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/aliases/{$this->name}", $parms);
         }
 
         /**
@@ -5009,7 +5041,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function readAlias()
         {
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/aliases/{$this->name}", 'GET');
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/aliases/{$this->name}");
         }
 
         /**
@@ -5025,7 +5057,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'comment' => $comment,
                 'digest' => $digest,
                 'rename' => $rename];
-            $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/aliases/{$this->name}", 'PUT', $parms);
+            $this->client->put("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/aliases/{$this->name}", $parms);
         }
     }
 
@@ -5052,7 +5084,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function ipsetIndex()
         {
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset", 'GET');
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset");
         }
 
         /**
@@ -5068,7 +5100,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'comment' => $comment,
                 'digest' => $digest,
                 'rename' => $rename];
-            $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset", 'POST', $parms);
+            $this->client->post("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset", $parms);
         }
     }
 
@@ -5096,7 +5128,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function deleteIpset()
         {
-            $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset/{$this->name}", 'DELETE');
+            $this->client->delete("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset/{$this->name}");
         }
 
         /**
@@ -5105,7 +5137,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getIpset()
         {
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset/{$this->name}", 'GET');
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset/{$this->name}");
         }
 
         /**
@@ -5119,7 +5151,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $parms = ['cidr' => $cidr,
                 'comment' => $comment,
                 'nomatch' => $nomatch];
-            $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset/{$this->name}", 'POST', $parms);
+            $this->client->post("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset/{$this->name}", $parms);
         }
     }
 
@@ -5146,7 +5178,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function removeIp($digest = null)
         {
             $parms = ['digest' => $digest];
-            $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset/{$this->name}/{$this->cidr}", 'DELETE', $parms);
+            $this->client->delete("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset/{$this->name}/{$this->cidr}", $parms);
         }
 
         /**
@@ -5155,7 +5187,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function readIp()
         {
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset/{$this->name}/{$this->cidr}", 'GET');
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset/{$this->name}/{$this->cidr}");
         }
 
         /**
@@ -5169,7 +5201,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $parms = ['comment' => $comment,
                 'digest' => $digest,
                 'nomatch' => $nomatch];
-            $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset/{$this->name}/{$this->cidr}", 'PUT', $parms);
+            $this->client->put("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset/{$this->name}/{$this->cidr}", $parms);
         }
     }
 
@@ -5191,7 +5223,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getOptions()
         {
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/options", 'GET');
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/options");
         }
 
         /**
@@ -5227,7 +5259,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'policy_in' => $policy_in,
                 'policy_out' => $policy_out,
                 'radv' => $radv];
-            $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/options", 'PUT', $parms);
+            $this->client->put("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/options", $parms);
         }
     }
 
@@ -5253,7 +5285,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['limit' => $limit,
                 'start' => $start];
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/log", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/log", $parms);
         }
     }
 
@@ -5278,7 +5310,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function refs($type = null)
         {
             $parms = ['type' => $type];
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/refs", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/refs", $parms);
         }
     }
 
@@ -5308,7 +5340,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $parms = ['ds' => $ds,
                 'timeframe' => $timeframe,
                 'cf' => $cf];
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/rrd", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/rrd", $parms);
         }
     }
 
@@ -5336,7 +5368,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['timeframe' => $timeframe,
                 'cf' => $cf];
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/rrddata", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/rrddata", $parms);
         }
     }
 
@@ -5364,7 +5396,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $parms = ['height' => $height,
                 'websocket' => $websocket,
                 'width' => $width];
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/vncproxy", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/lxc/{$this->vmid}/vncproxy", $parms);
         }
     }
 
@@ -5390,7 +5422,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['port' => $port,
                 'vncticket' => $vncticket];
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/vncwebsocket", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/vncwebsocket", $parms);
         }
     }
 
@@ -5414,7 +5446,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function spiceproxy($proxy = null)
         {
             $parms = ['proxy' => $proxy];
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/spiceproxy", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/lxc/{$this->vmid}/spiceproxy", $parms);
         }
     }
 
@@ -5446,7 +5478,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'online' => $online,
                 'restart' => $restart,
                 'timeout' => $timeout];
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/migrate", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/lxc/{$this->vmid}/migrate", $parms);
         }
     }
 
@@ -5473,7 +5505,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['feature' => $feature,
                 'snapname' => $snapname];
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/feature", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/feature", $parms);
         }
     }
 
@@ -5496,7 +5528,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function template($experimental)
         {
             $parms = ['experimental' => $experimental];
-            $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/template", 'POST', $parms);
+            $this->client->post("/nodes/{$this->node}/lxc/{$this->vmid}/template", $parms);
         }
     }
 
@@ -5534,7 +5566,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'pool' => $pool,
                 'snapname' => $snapname,
                 'storage' => $storage];
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/clone", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/lxc/{$this->vmid}/clone", $parms);
         }
     }
 
@@ -5563,7 +5595,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $parms = ['disk' => $disk,
                 'size' => $size,
                 'digest' => $digest];
-            return $this->executeAction("/nodes/{$this->node}/lxc/{$this->vmid}/resize", 'PUT', $parms);
+            return $this->client->put("/nodes/{$this->node}/lxc/{$this->vmid}/resize", $parms);
         }
     }
 
@@ -5667,7 +5699,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/nodes/{$this->node}/ceph", 'GET');
+            return $this->client->get("/nodes/{$this->node}/ceph");
         }
     }
 
@@ -5692,7 +5724,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/nodes/{$this->node}/ceph/osd", 'GET');
+            return $this->client->get("/nodes/{$this->node}/ceph/osd");
         }
 
         /**
@@ -5710,7 +5742,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'bluestore' => $bluestore,
                 'fstype' => $fstype,
                 'journal_dev' => $journal_dev];
-            return $this->executeAction("/nodes/{$this->node}/ceph/osd", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/ceph/osd", $parms);
         }
     }
 
@@ -5748,7 +5780,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function destroyosd($cleanup = null)
         {
             $parms = ['cleanup' => $cleanup];
-            return $this->executeAction("/nodes/{$this->node}/ceph/osd/{$this->osdid}", 'DELETE', $parms);
+            return $this->client->delete("/nodes/{$this->node}/ceph/osd/{$this->osdid}", $parms);
         }
     }
 
@@ -5769,7 +5801,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function in()
         {
-            $this->executeAction("/nodes/{$this->node}/ceph/osd/{$this->osdid}/in", 'POST');
+            $this->client->post("/nodes/{$this->node}/ceph/osd/{$this->osdid}/in");
         }
     }
 
@@ -5790,7 +5822,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function out()
         {
-            $this->executeAction("/nodes/{$this->node}/ceph/osd/{$this->osdid}/out", 'POST');
+            $this->client->post("/nodes/{$this->node}/ceph/osd/{$this->osdid}/out");
         }
     }
 
@@ -5813,7 +5845,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function disks($type = null)
         {
             $parms = ['type' => $type];
-            return $this->executeAction("/nodes/{$this->node}/ceph/disks", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/ceph/disks", $parms);
         }
     }
 
@@ -5833,7 +5865,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function config()
         {
-            return $this->executeAction("/nodes/{$this->node}/ceph/config", 'GET');
+            return $this->client->get("/nodes/{$this->node}/ceph/config");
         }
     }
 
@@ -5858,7 +5890,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function listmon()
         {
-            return $this->executeAction("/nodes/{$this->node}/ceph/mon", 'GET');
+            return $this->client->get("/nodes/{$this->node}/ceph/mon");
         }
 
         /**
@@ -5867,7 +5899,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createmon()
         {
-            return $this->executeAction("/nodes/{$this->node}/ceph/mon", 'POST');
+            return $this->client->post("/nodes/{$this->node}/ceph/mon");
         }
     }
 
@@ -5889,7 +5921,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function destroymon()
         {
-            return $this->executeAction("/nodes/{$this->node}/ceph/mon/{$this->monid}", 'DELETE');
+            return $this->client->delete("/nodes/{$this->node}/ceph/mon/{$this->monid}");
         }
     }
 
@@ -5918,7 +5950,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'network' => $network,
                 'pg_bits' => $pg_bits,
                 'size' => $size];
-            $this->executeAction("/nodes/{$this->node}/ceph/init", 'POST', $parms);
+            $this->client->post("/nodes/{$this->node}/ceph/init", $parms);
         }
     }
 
@@ -5940,7 +5972,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function stop($service = null)
         {
             $parms = ['service' => $service];
-            return $this->executeAction("/nodes/{$this->node}/ceph/stop", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/ceph/stop", $parms);
         }
     }
 
@@ -5962,7 +5994,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function start($service = null)
         {
             $parms = ['service' => $service];
-            return $this->executeAction("/nodes/{$this->node}/ceph/start", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/ceph/start", $parms);
         }
     }
 
@@ -5982,7 +6014,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function status()
         {
-            return $this->executeAction("/nodes/{$this->node}/ceph/status", 'GET');
+            return $this->client->get("/nodes/{$this->node}/ceph/status");
         }
     }
 
@@ -6007,7 +6039,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function lspools()
         {
-            return $this->executeAction("/nodes/{$this->node}/ceph/pools", 'GET');
+            return $this->client->get("/nodes/{$this->node}/ceph/pools");
         }
 
         /**
@@ -6025,7 +6057,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'min_size' => $min_size,
                 'pg_num' => $pg_num,
                 'size' => $size];
-            $this->executeAction("/nodes/{$this->node}/ceph/pools", 'POST', $parms);
+            $this->client->post("/nodes/{$this->node}/ceph/pools", $parms);
         }
     }
 
@@ -6048,7 +6080,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function destroypool($force = null)
         {
             $parms = ['force' => $force];
-            $this->executeAction("/nodes/{$this->node}/ceph/pools/{$this->name}", 'DELETE', $parms);
+            $this->client->delete("/nodes/{$this->node}/ceph/pools/{$this->name}", $parms);
         }
     }
 
@@ -6073,7 +6105,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getFlags()
         {
-            return $this->executeAction("/nodes/{$this->node}/ceph/flags", 'GET');
+            return $this->client->get("/nodes/{$this->node}/ceph/flags");
         }
     }
 
@@ -6094,7 +6126,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function unsetFlag()
         {
-            $this->executeAction("/nodes/{$this->node}/ceph/flags/{$this->flag}", 'DELETE');
+            $this->client->delete("/nodes/{$this->node}/ceph/flags/{$this->flag}");
         }
 
         /**
@@ -6102,7 +6134,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function setFlag()
         {
-            $this->executeAction("/nodes/{$this->node}/ceph/flags/{$this->flag}", 'POST');
+            $this->client->post("/nodes/{$this->node}/ceph/flags/{$this->flag}");
         }
     }
 
@@ -6122,7 +6154,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function crush()
         {
-            return $this->executeAction("/nodes/{$this->node}/ceph/crush", 'GET');
+            return $this->client->get("/nodes/{$this->node}/ceph/crush");
         }
     }
 
@@ -6146,7 +6178,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['limit' => $limit,
                 'start' => $start];
-            return $this->executeAction("/nodes/{$this->node}/ceph/log", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/ceph/log", $parms);
         }
     }
 
@@ -6224,7 +6256,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'storage' => $storage,
                 'tmpdir' => $tmpdir,
                 'vmid' => $vmid];
-            return $this->executeAction("/nodes/{$this->node}/vzdump", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/vzdump", $parms);
         }
     }
 
@@ -6246,7 +6278,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function extractconfig($volume)
         {
             $parms = ['volume' => $volume];
-            return $this->executeAction("/nodes/{$this->node}/vzdump/extractconfig", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/vzdump/extractconfig", $parms);
         }
     }
 
@@ -6271,7 +6303,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/nodes/{$this->node}/services", 'GET');
+            return $this->client->get("/nodes/{$this->node}/services");
         }
     }
 
@@ -6328,7 +6360,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function srvcmdidx()
         {
-            return $this->executeAction("/nodes/{$this->node}/services/{$this->service}", 'GET');
+            return $this->client->get("/nodes/{$this->node}/services/{$this->service}");
         }
     }
 
@@ -6350,7 +6382,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function serviceState()
         {
-            return $this->executeAction("/nodes/{$this->node}/services/{$this->service}/state", 'GET');
+            return $this->client->get("/nodes/{$this->node}/services/{$this->service}/state");
         }
     }
 
@@ -6372,7 +6404,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function serviceStart()
         {
-            return $this->executeAction("/nodes/{$this->node}/services/{$this->service}/start", 'POST');
+            return $this->client->post("/nodes/{$this->node}/services/{$this->service}/start");
         }
     }
 
@@ -6394,7 +6426,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function serviceStop()
         {
-            return $this->executeAction("/nodes/{$this->node}/services/{$this->service}/stop", 'POST');
+            return $this->client->post("/nodes/{$this->node}/services/{$this->service}/stop");
         }
     }
 
@@ -6416,7 +6448,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function serviceRestart()
         {
-            return $this->executeAction("/nodes/{$this->node}/services/{$this->service}/restart", 'POST');
+            return $this->client->post("/nodes/{$this->node}/services/{$this->service}/restart");
         }
     }
 
@@ -6438,7 +6470,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function serviceReload()
         {
-            return $this->executeAction("/nodes/{$this->node}/services/{$this->service}/reload", 'POST');
+            return $this->client->post("/nodes/{$this->node}/services/{$this->service}/reload");
         }
     }
 
@@ -6458,7 +6490,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function get()
         {
-            return $this->executeAction("/nodes/{$this->node}/subscription", 'GET');
+            return $this->client->get("/nodes/{$this->node}/subscription");
         }
 
         /**
@@ -6468,7 +6500,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function update($force = null)
         {
             $parms = ['force' => $force];
-            $this->executeAction("/nodes/{$this->node}/subscription", 'POST', $parms);
+            $this->client->post("/nodes/{$this->node}/subscription", $parms);
         }
 
         /**
@@ -6478,7 +6510,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function set($key)
         {
             $parms = ['key' => $key];
-            $this->executeAction("/nodes/{$this->node}/subscription", 'PUT', $parms);
+            $this->client->put("/nodes/{$this->node}/subscription", $parms);
         }
     }
 
@@ -6502,7 +6534,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function revertNetworkChanges()
         {
-            $this->executeAction("/nodes/{$this->node}/network", 'DELETE');
+            $this->client->delete("/nodes/{$this->node}/network");
         }
 
         /**
@@ -6514,7 +6546,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function index($type = null)
         {
             $parms = ['type' => $type];
-            return $this->executeAction("/nodes/{$this->node}/network", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/network", $parms);
         }
 
         /**
@@ -6567,7 +6599,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'ovs_ports' => $ovs_ports,
                 'ovs_tag' => $ovs_tag,
                 'slaves' => $slaves];
-            $this->executeAction("/nodes/{$this->node}/network", 'POST', $parms);
+            $this->client->post("/nodes/{$this->node}/network", $parms);
         }
     }
 
@@ -6588,7 +6620,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function deleteNetwork()
         {
-            $this->executeAction("/nodes/{$this->node}/network/{$this->iface}", 'DELETE');
+            $this->client->delete("/nodes/{$this->node}/network/{$this->iface}");
         }
 
         /**
@@ -6597,7 +6629,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function networkConfig()
         {
-            return $this->executeAction("/nodes/{$this->node}/network/{$this->iface}", 'GET');
+            return $this->client->get("/nodes/{$this->node}/network/{$this->iface}");
         }
 
         /**
@@ -6650,7 +6682,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'ovs_ports' => $ovs_ports,
                 'ovs_tag' => $ovs_tag,
                 'slaves' => $slaves];
-            $this->executeAction("/nodes/{$this->node}/network/{$this->iface}", 'PUT', $parms);
+            $this->client->put("/nodes/{$this->node}/network/{$this->iface}", $parms);
         }
     }
 
@@ -6685,7 +6717,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'start' => $start,
                 'userfilter' => $userfilter,
                 'vmid' => $vmid];
-            return $this->executeAction("/nodes/{$this->node}/tasks", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/tasks", $parms);
         }
     }
 
@@ -6720,7 +6752,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function stopTask()
         {
-            $this->executeAction("/nodes/{$this->node}/tasks/{$this->upid}", 'DELETE');
+            $this->client->delete("/nodes/{$this->node}/tasks/{$this->upid}");
         }
 
         /**
@@ -6729,7 +6761,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function upidIndex()
         {
-            return $this->executeAction("/nodes/{$this->node}/tasks/{$this->upid}", 'GET');
+            return $this->client->get("/nodes/{$this->node}/tasks/{$this->upid}");
         }
     }
 
@@ -6755,7 +6787,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['limit' => $limit,
                 'start' => $start];
-            return $this->executeAction("/nodes/{$this->node}/tasks/{$this->upid}/log", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/tasks/{$this->upid}/log", $parms);
         }
     }
 
@@ -6777,7 +6809,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function readTaskStatus()
         {
-            return $this->executeAction("/nodes/{$this->node}/tasks/{$this->upid}/status", 'GET');
+            return $this->client->get("/nodes/{$this->node}/tasks/{$this->upid}/status");
         }
     }
 
@@ -6846,7 +6878,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/nodes/{$this->node}/scan", 'GET');
+            return $this->client->get("/nodes/{$this->node}/scan");
         }
     }
 
@@ -6866,7 +6898,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function zfsscan()
         {
-            return $this->executeAction("/nodes/{$this->node}/scan/zfs", 'GET');
+            return $this->client->get("/nodes/{$this->node}/scan/zfs");
         }
     }
 
@@ -6888,7 +6920,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function nfsscan($server)
         {
             $parms = ['server' => $server];
-            return $this->executeAction("/nodes/{$this->node}/scan/nfs", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/scan/nfs", $parms);
         }
     }
 
@@ -6910,7 +6942,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function glusterfsscan($server)
         {
             $parms = ['server' => $server];
-            return $this->executeAction("/nodes/{$this->node}/scan/glusterfs", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/scan/glusterfs", $parms);
         }
     }
 
@@ -6932,7 +6964,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function iscsiscan($portal)
         {
             $parms = ['portal' => $portal];
-            return $this->executeAction("/nodes/{$this->node}/scan/iscsi", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/scan/iscsi", $parms);
         }
     }
 
@@ -6952,7 +6984,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function lvmscan()
         {
-            return $this->executeAction("/nodes/{$this->node}/scan/lvm", 'GET');
+            return $this->client->get("/nodes/{$this->node}/scan/lvm");
         }
     }
 
@@ -6974,7 +7006,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function lvmthinscan($vg)
         {
             $parms = ['vg' => $vg];
-            return $this->executeAction("/nodes/{$this->node}/scan/lvmthin", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/scan/lvmthin", $parms);
         }
     }
 
@@ -6994,7 +7026,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function usbscan()
         {
-            return $this->executeAction("/nodes/{$this->node}/scan/usb", 'GET');
+            return $this->client->get("/nodes/{$this->node}/scan/usb");
         }
     }
 
@@ -7027,7 +7059,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'enabled' => $enabled,
                 'storage' => $storage,
                 'target' => $target];
-            return $this->executeAction("/nodes/{$this->node}/storage", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/storage", $parms);
         }
     }
 
@@ -7084,7 +7116,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function diridx()
         {
-            return $this->executeAction("/nodes/{$this->node}/storage/{$this->storage}", 'GET');
+            return $this->client->get("/nodes/{$this->node}/storage/{$this->storage}");
         }
     }
 
@@ -7115,7 +7147,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['content' => $content,
                 'vmid' => $vmid];
-            return $this->executeAction("/nodes/{$this->node}/storage/{$this->storage}/content", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/storage/{$this->storage}/content", $parms);
         }
 
         /**
@@ -7133,7 +7165,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'size' => $size,
                 'vmid' => $vmid,
                 'format' => $format];
-            return $this->executeAction("/nodes/{$this->node}/storage/{$this->storage}/content", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/storage/{$this->storage}/content", $parms);
         }
     }
 
@@ -7156,7 +7188,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function delete()
         {
-            $this->executeAction("/nodes/{$this->node}/storage/{$this->storage}/content/{$this->volume}", 'DELETE');
+            $this->client->delete("/nodes/{$this->node}/storage/{$this->storage}/content/{$this->volume}");
         }
 
         /**
@@ -7165,7 +7197,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function info()
         {
-            return $this->executeAction("/nodes/{$this->node}/storage/{$this->storage}/content/{$this->volume}", 'GET');
+            return $this->client->get("/nodes/{$this->node}/storage/{$this->storage}/content/{$this->volume}");
         }
 
         /**
@@ -7178,7 +7210,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['target' => $target,
                 'target_node' => $target_node];
-            return $this->executeAction("/nodes/{$this->node}/storage/{$this->storage}/content/{$this->volume}", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/storage/{$this->storage}/content/{$this->volume}", $parms);
         }
     }
 
@@ -7200,7 +7232,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function readStatus()
         {
-            return $this->executeAction("/nodes/{$this->node}/storage/{$this->storage}/status", 'GET');
+            return $this->client->get("/nodes/{$this->node}/storage/{$this->storage}/status");
         }
     }
 
@@ -7230,7 +7262,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $parms = ['ds' => $ds,
                 'timeframe' => $timeframe,
                 'cf' => $cf];
-            return $this->executeAction("/nodes/{$this->node}/storage/{$this->storage}/rrd", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/storage/{$this->storage}/rrd", $parms);
         }
     }
 
@@ -7258,7 +7290,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['timeframe' => $timeframe,
                 'cf' => $cf];
-            return $this->executeAction("/nodes/{$this->node}/storage/{$this->storage}/rrddata", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/storage/{$this->storage}/rrddata", $parms);
         }
     }
 
@@ -7286,7 +7318,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $parms = ['content' => $content,
                 'filename' => $filename,
                 'tmpfilename' => $tmpfilename];
-            return $this->executeAction("/nodes/{$this->node}/storage/{$this->storage}/upload", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/storage/{$this->storage}/upload", $parms);
         }
     }
 
@@ -7327,7 +7359,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/nodes/{$this->node}/disks", 'GET');
+            return $this->client->get("/nodes/{$this->node}/disks");
         }
     }
 
@@ -7345,9 +7377,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * List local disks.
          * @return mixed
          */
-        public function list()
+        public function list_()
         {
-            return $this->executeAction("/nodes/{$this->node}/disks/list", 'GET');
+            return $this->client->get("/nodes/{$this->node}/disks/list");
         }
     }
 
@@ -7371,7 +7403,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['disk' => $disk,
                 'healthonly' => $healthonly];
-            return $this->executeAction("/nodes/{$this->node}/disks/smart", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/disks/smart", $parms);
         }
     }
 
@@ -7395,7 +7427,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['disk' => $disk,
                 'uuid' => $uuid];
-            return $this->executeAction("/nodes/{$this->node}/disks/initgpt", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/disks/initgpt", $parms);
         }
     }
 
@@ -7436,7 +7468,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/nodes/{$this->node}/apt", 'GET');
+            return $this->client->get("/nodes/{$this->node}/apt");
         }
     }
 
@@ -7456,7 +7488,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function listUpdates()
         {
-            return $this->executeAction("/nodes/{$this->node}/apt/update", 'GET');
+            return $this->client->get("/nodes/{$this->node}/apt/update");
         }
 
         /**
@@ -7469,7 +7501,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['notify' => $notify,
                 'quiet' => $quiet];
-            return $this->executeAction("/nodes/{$this->node}/apt/update", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/apt/update", $parms);
         }
     }
 
@@ -7493,7 +7525,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['name' => $name,
                 'version' => $version];
-            return $this->executeAction("/nodes/{$this->node}/apt/changelog", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/apt/changelog", $parms);
         }
     }
 
@@ -7513,7 +7545,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function versions()
         {
-            return $this->executeAction("/nodes/{$this->node}/apt/versions", 'GET');
+            return $this->client->get("/nodes/{$this->node}/apt/versions");
         }
     }
 
@@ -7554,7 +7586,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/nodes/{$this->node}/firewall", 'GET');
+            return $this->client->get("/nodes/{$this->node}/firewall");
         }
     }
 
@@ -7579,7 +7611,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRules()
         {
-            return $this->executeAction("/nodes/{$this->node}/firewall/rules", 'GET');
+            return $this->client->get("/nodes/{$this->node}/firewall/rules");
         }
 
         /**
@@ -7614,7 +7646,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'proto' => $proto,
                 'source' => $source,
                 'sport' => $sport];
-            $this->executeAction("/nodes/{$this->node}/firewall/rules", 'POST', $parms);
+            $this->client->post("/nodes/{$this->node}/firewall/rules", $parms);
         }
     }
 
@@ -7637,7 +7669,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function deleteRule($digest = null)
         {
             $parms = ['digest' => $digest];
-            $this->executeAction("/nodes/{$this->node}/firewall/rules/{$this->pos}", 'DELETE', $parms);
+            $this->client->delete("/nodes/{$this->node}/firewall/rules/{$this->pos}", $parms);
         }
 
         /**
@@ -7646,7 +7678,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRule()
         {
-            return $this->executeAction("/nodes/{$this->node}/firewall/rules/{$this->pos}", 'GET');
+            return $this->client->get("/nodes/{$this->node}/firewall/rules/{$this->pos}");
         }
 
         /**
@@ -7683,7 +7715,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'source' => $source,
                 'sport' => $sport,
                 'type' => $type];
-            $this->executeAction("/nodes/{$this->node}/firewall/rules/{$this->pos}", 'PUT', $parms);
+            $this->client->put("/nodes/{$this->node}/firewall/rules/{$this->pos}", $parms);
         }
     }
 
@@ -7703,7 +7735,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getOptions()
         {
-            return $this->executeAction("/nodes/{$this->node}/firewall/options", 'GET');
+            return $this->client->get("/nodes/{$this->node}/firewall/options");
         }
 
         /**
@@ -7739,7 +7771,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'smurf_log_level' => $smurf_log_level,
                 'tcp_flags_log_level' => $tcp_flags_log_level,
                 'tcpflags' => $tcpflags];
-            $this->executeAction("/nodes/{$this->node}/firewall/options", 'PUT', $parms);
+            $this->client->put("/nodes/{$this->node}/firewall/options", $parms);
         }
     }
 
@@ -7763,7 +7795,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['limit' => $limit,
                 'start' => $start];
-            return $this->executeAction("/nodes/{$this->node}/firewall/log", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/firewall/log", $parms);
         }
     }
 
@@ -7790,7 +7822,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function status($guest = null)
         {
             $parms = ['guest' => $guest];
-            return $this->executeAction("/nodes/{$this->node}/replication", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/replication", $parms);
         }
     }
 
@@ -7833,7 +7865,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/nodes/{$this->node}/replication/{$this->id}", 'GET');
+            return $this->client->get("/nodes/{$this->node}/replication/{$this->id}");
         }
     }
 
@@ -7855,7 +7887,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function jobStatus()
         {
-            return $this->executeAction("/nodes/{$this->node}/replication/{$this->id}/status", 'GET');
+            return $this->client->get("/nodes/{$this->node}/replication/{$this->id}/status");
         }
     }
 
@@ -7881,7 +7913,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['limit' => $limit,
                 'start' => $start];
-            return $this->executeAction("/nodes/{$this->node}/replication/{$this->id}/log", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/replication/{$this->id}/log", $parms);
         }
     }
 
@@ -7903,7 +7935,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function scheduleNow()
         {
-            return $this->executeAction("/nodes/{$this->node}/replication/{$this->id}/schedule_now", 'POST');
+            return $this->client->post("/nodes/{$this->node}/replication/{$this->id}/schedule_now");
         }
     }
 
@@ -7923,7 +7955,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function version()
         {
-            return $this->executeAction("/nodes/{$this->node}/version", 'GET');
+            return $this->client->get("/nodes/{$this->node}/version");
         }
     }
 
@@ -7943,7 +7975,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function status()
         {
-            return $this->executeAction("/nodes/{$this->node}/status", 'GET');
+            return $this->client->get("/nodes/{$this->node}/status");
         }
 
         /**
@@ -7954,7 +7986,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function nodeCmd($command)
         {
             $parms = ['command' => $command];
-            $this->executeAction("/nodes/{$this->node}/status", 'POST', $parms);
+            $this->client->post("/nodes/{$this->node}/status", $parms);
         }
     }
 
@@ -7974,7 +8006,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function netstat()
         {
-            return $this->executeAction("/nodes/{$this->node}/netstat", 'GET');
+            return $this->client->get("/nodes/{$this->node}/netstat");
         }
     }
 
@@ -7996,7 +8028,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function execute($commands)
         {
             $parms = ['commands' => $commands];
-            return $this->executeAction("/nodes/{$this->node}/execute", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/execute", $parms);
         }
     }
 
@@ -8024,7 +8056,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $parms = ['ds' => $ds,
                 'timeframe' => $timeframe,
                 'cf' => $cf];
-            return $this->executeAction("/nodes/{$this->node}/rrd", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/rrd", $parms);
         }
     }
 
@@ -8050,7 +8082,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['timeframe' => $timeframe,
                 'cf' => $cf];
-            return $this->executeAction("/nodes/{$this->node}/rrddata", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/rrddata", $parms);
         }
     }
 
@@ -8078,7 +8110,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'since' => $since,
                 'start' => $start,
                 'until' => $until];
-            return $this->executeAction("/nodes/{$this->node}/syslog", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/syslog", $parms);
         }
     }
 
@@ -8106,7 +8138,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'upgrade' => $upgrade,
                 'websocket' => $websocket,
                 'width' => $width];
-            return $this->executeAction("/nodes/{$this->node}/vncshell", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/vncshell", $parms);
         }
     }
 
@@ -8130,7 +8162,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['port' => $port,
                 'vncticket' => $vncticket];
-            return $this->executeAction("/nodes/{$this->node}/vncwebsocket", 'GET', $parms);
+            return $this->client->get("/nodes/{$this->node}/vncwebsocket", $parms);
         }
     }
 
@@ -8154,7 +8186,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['proxy' => $proxy,
                 'upgrade' => $upgrade];
-            return $this->executeAction("/nodes/{$this->node}/spiceshell", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/spiceshell", $parms);
         }
     }
 
@@ -8174,7 +8206,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function dns()
         {
-            return $this->executeAction("/nodes/{$this->node}/dns", 'GET');
+            return $this->client->get("/nodes/{$this->node}/dns");
         }
 
         /**
@@ -8190,7 +8222,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'dns1' => $dns1,
                 'dns2' => $dns2,
                 'dns3' => $dns3];
-            $this->executeAction("/nodes/{$this->node}/dns", 'PUT', $parms);
+            $this->client->put("/nodes/{$this->node}/dns", $parms);
         }
     }
 
@@ -8210,7 +8242,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function time()
         {
-            return $this->executeAction("/nodes/{$this->node}/time", 'GET');
+            return $this->client->get("/nodes/{$this->node}/time");
         }
 
         /**
@@ -8220,7 +8252,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function setTimezone($timezone)
         {
             $parms = ['timezone' => $timezone];
-            $this->executeAction("/nodes/{$this->node}/time", 'PUT', $parms);
+            $this->client->put("/nodes/{$this->node}/time", $parms);
         }
     }
 
@@ -8240,7 +8272,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function aplinfo()
         {
-            return $this->executeAction("/nodes/{$this->node}/aplinfo", 'GET');
+            return $this->client->get("/nodes/{$this->node}/aplinfo");
         }
 
         /**
@@ -8253,7 +8285,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['storage' => $storage,
                 'template' => $template];
-            return $this->executeAction("/nodes/{$this->node}/aplinfo", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/aplinfo", $parms);
         }
     }
 
@@ -8273,7 +8305,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function report()
         {
-            return $this->executeAction("/nodes/{$this->node}/report", 'GET');
+            return $this->client->get("/nodes/{$this->node}/report");
         }
     }
 
@@ -8297,7 +8329,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['force' => $force,
                 'vms' => $vms];
-            return $this->executeAction("/nodes/{$this->node}/startall", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/startall", $parms);
         }
     }
 
@@ -8319,7 +8351,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function stopall($vms = null)
         {
             $parms = ['vms' => $vms];
-            return $this->executeAction("/nodes/{$this->node}/stopall", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/stopall", $parms);
         }
     }
 
@@ -8345,7 +8377,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $parms = ['target' => $target,
                 'maxworkers' => $maxworkers,
                 'vms' => $vms];
-            return $this->executeAction("/nodes/{$this->node}/migrateall", 'POST', $parms);
+            return $this->client->post("/nodes/{$this->node}/migrateall", $parms);
         }
     }
 
@@ -8370,7 +8402,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function index($type = null)
         {
             $parms = ['type' => $type];
-            return $this->executeAction("/storage", 'GET', $parms);
+            return $this->client->get("/storage", $parms);
         }
 
         /**
@@ -8454,7 +8486,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'username' => $username,
                 'vgname' => $vgname,
                 'volume' => $volume];
-            $this->executeAction("/storage", 'POST', $parms);
+            $this->client->post("/storage", $parms);
         }
     }
 
@@ -8473,7 +8505,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function delete()
         {
-            $this->executeAction("/storage/{$this->storage}", 'DELETE');
+            $this->client->delete("/storage/{$this->storage}");
         }
 
         /**
@@ -8482,7 +8514,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function read()
         {
-            return $this->executeAction("/storage/{$this->storage}", 'GET');
+            return $this->client->get("/storage/{$this->storage}");
         }
 
         /**
@@ -8543,7 +8575,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'tagged_only' => $tagged_only,
                 'transport' => $transport,
                 'username' => $username];
-            $this->executeAction("/storage/{$this->storage}", 'PUT', $parms);
+            $this->client->put("/storage/{$this->storage}", $parms);
         }
     }
 
@@ -8609,7 +8641,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/access", 'GET');
+            return $this->client->get("/access");
         }
     }
 
@@ -8633,7 +8665,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function index($enabled = null)
         {
             $parms = ['enabled' => $enabled];
-            return $this->executeAction("/access/users", 'GET', $parms);
+            return $this->client->get("/access/users", $parms);
         }
 
         /**
@@ -8661,7 +8693,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'keys' => $keys,
                 'lastname' => $lastname,
                 'password' => $password];
-            $this->executeAction("/access/users", 'POST', $parms);
+            $this->client->post("/access/users", $parms);
         }
     }
 
@@ -8680,7 +8712,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function deleteUser()
         {
-            $this->executeAction("/access/users/{$this->userid}", 'DELETE');
+            $this->client->delete("/access/users/{$this->userid}");
         }
 
         /**
@@ -8689,7 +8721,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function readUser()
         {
-            return $this->executeAction("/access/users/{$this->userid}", 'GET');
+            return $this->client->get("/access/users/{$this->userid}");
         }
 
         /**
@@ -8715,7 +8747,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'groups' => $groups,
                 'keys' => $keys,
                 'lastname' => $lastname];
-            $this->executeAction("/access/users/{$this->userid}", 'PUT', $parms);
+            $this->client->put("/access/users/{$this->userid}", $parms);
         }
     }
 
@@ -8737,7 +8769,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/access/groups", 'GET');
+            return $this->client->get("/access/groups");
         }
 
         /**
@@ -8749,7 +8781,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['groupid' => $groupid,
                 'comment' => $comment];
-            $this->executeAction("/access/groups", 'POST', $parms);
+            $this->client->post("/access/groups", $parms);
         }
     }
 
@@ -8768,7 +8800,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function deleteGroup()
         {
-            $this->executeAction("/access/groups/{$this->groupid}", 'DELETE');
+            $this->client->delete("/access/groups/{$this->groupid}");
         }
 
         /**
@@ -8777,7 +8809,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function readGroup()
         {
-            return $this->executeAction("/access/groups/{$this->groupid}", 'GET');
+            return $this->client->get("/access/groups/{$this->groupid}");
         }
 
         /**
@@ -8787,7 +8819,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function updateGroup($comment = null)
         {
             $parms = ['comment' => $comment];
-            $this->executeAction("/access/groups/{$this->groupid}", 'PUT', $parms);
+            $this->client->put("/access/groups/{$this->groupid}", $parms);
         }
     }
 
@@ -8809,7 +8841,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/access/roles", 'GET');
+            return $this->client->get("/access/roles");
         }
 
         /**
@@ -8821,7 +8853,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['roleid' => $roleid,
                 'privs' => $privs];
-            $this->executeAction("/access/roles", 'POST', $parms);
+            $this->client->post("/access/roles", $parms);
         }
     }
 
@@ -8840,7 +8872,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function deleteRole()
         {
-            $this->executeAction("/access/roles/{$this->roleid}", 'DELETE');
+            $this->client->delete("/access/roles/{$this->roleid}");
         }
 
         /**
@@ -8849,7 +8881,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function readRole()
         {
-            return $this->executeAction("/access/roles/{$this->roleid}", 'GET');
+            return $this->client->get("/access/roles/{$this->roleid}");
         }
 
         /**
@@ -8861,7 +8893,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['privs' => $privs,
                 'append' => $append];
-            $this->executeAction("/access/roles/{$this->roleid}", 'PUT', $parms);
+            $this->client->put("/access/roles/{$this->roleid}", $parms);
         }
     }
 
@@ -8878,7 +8910,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function readAcl()
         {
-            return $this->executeAction("/access/acl", 'GET');
+            return $this->client->get("/access/acl");
         }
 
         /**
@@ -8898,7 +8930,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'groups' => $groups,
                 'propagate' => $propagate,
                 'users' => $users];
-            $this->executeAction("/access/acl", 'PUT', $parms);
+            $this->client->put("/access/acl", $parms);
         }
     }
 
@@ -8920,7 +8952,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/access/domains", 'GET');
+            return $this->client->get("/access/domains");
         }
 
         /**
@@ -8955,7 +8987,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'server2' => $server2,
                 'tfa' => $tfa,
                 'user_attr' => $user_attr];
-            $this->executeAction("/access/domains", 'POST', $parms);
+            $this->client->post("/access/domains", $parms);
         }
     }
 
@@ -8974,7 +9006,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function delete()
         {
-            $this->executeAction("/access/domains/{$this->realm}", 'DELETE');
+            $this->client->delete("/access/domains/{$this->realm}");
         }
 
         /**
@@ -8983,7 +9015,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function read()
         {
-            return $this->executeAction("/access/domains/{$this->realm}", 'GET');
+            return $this->client->get("/access/domains/{$this->realm}");
         }
 
         /**
@@ -9017,7 +9049,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'server2' => $server2,
                 'tfa' => $tfa,
                 'user_attr' => $user_attr];
-            $this->executeAction("/access/domains/{$this->realm}", 'PUT', $parms);
+            $this->client->put("/access/domains/{$this->realm}", $parms);
         }
     }
 
@@ -9033,7 +9065,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getTicket()
         {
-            $this->executeAction("/access/ticket", 'GET');
+            $this->client->get("/access/ticket");
         }
 
         /**
@@ -9054,7 +9086,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'path' => $path,
                 'privs' => $privs,
                 'realm' => $realm];
-            return $this->executeAction("/access/ticket", 'POST', $parms);
+            return $this->client->post("/access/ticket", $parms);
         }
     }
 
@@ -9074,7 +9106,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['password' => $password,
                 'userid' => $userid];
-            $this->executeAction("/access/password", 'PUT', $parms);
+            $this->client->put("/access/password", $parms);
         }
     }
 
@@ -9096,7 +9128,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function index()
         {
-            return $this->executeAction("/pools", 'GET');
+            return $this->client->get("/pools");
         }
 
         /**
@@ -9108,7 +9140,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $parms = ['poolid' => $poolid,
                 'comment' => $comment];
-            $this->executeAction("/pools", 'POST', $parms);
+            $this->client->post("/pools", $parms);
         }
     }
 
@@ -9127,7 +9159,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function deletePool()
         {
-            $this->executeAction("/pools/{$this->poolid}", 'DELETE');
+            $this->client->delete("/pools/{$this->poolid}");
         }
 
         /**
@@ -9136,7 +9168,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function readPool()
         {
-            return $this->executeAction("/pools/{$this->poolid}", 'GET');
+            return $this->client->get("/pools/{$this->poolid}");
         }
 
         /**
@@ -9152,7 +9184,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'delete' => $delete,
                 'storage' => $storage,
                 'vms' => $vms];
-            $this->executeAction("/pools/{$this->poolid}", 'PUT', $parms);
+            $this->client->put("/pools/{$this->poolid}", $parms);
         }
     }
 
@@ -9169,7 +9201,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function version()
         {
-            return $this->executeAction("/version", 'GET');
+            return $this->client->get("/version");
         }
     }
 }

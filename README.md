@@ -10,6 +10,27 @@ The result is a complete response from server.
 
 [ProxmoxVE Api](https://pve.proxmox.com/pve-docs/api-viewer/)
 
+Main features
+------------
+* Easy to learn
+* Method named
+* Full method generated from documentation
+* Comment any method and parameters
+* Parameters indexed eg [n] is structured in array index and value
+* Tree structure
+  * $client->getNodes()->get("pve1")->getQemu()->get(100)->getSnapshot()->snapshotList()->data
+* Return data proxmox
+* Method result status
+  * getReasonPhrase
+  * getStatusCode
+* Method directry access
+  * get
+  * post
+  * put
+  * delete
+* login return bool if access
+* return object/array data 
+  * default object disable from client.setResultIsObject(false)
 
 Installation
 ------------
@@ -42,36 +63,56 @@ Usage
 require_once 'vendor/autoload.php';
 
 $client = new EnterpriseVE\ProxmoxVE\Api\Client("192.168.0.24");
-$client->login('root','password','pam');
 
-//get version from get method
-var_dump($client->get('/version'));
+//login check bool
+if($client->login('root','password','pam')){
+  //get version from get method
+  var_dump($client->get('/version'));
 
-// $client->put
-// $client->post
-// $client->delete
+  // $client->put
+  // $client->post
+  // $client->delete
 
-//loop nodes
-foreach ($client->getNodes()->Index()->data as $node) {
-  echo "\n" . $node->id;
+  $retPippo=$client->get("/pippo");
+  echo "\n" . $client->getStatusCode();
+  echo "\n" . $client->getReasonPhrase();
+
+  //loop nodes
+  foreach ($client->getNodes()->Index()->data as $node) {
+    echo "\n" . $node->id;
+  }
+
+  //loop vm
+  foreach ($client->getNodes()->get("pve1")->getQemu()->Vmlist()->data as $vm) {
+      echo "\n" . $vm->vmid ." - " .$vm->name;
+  }
+
+  //loop snapshots
+  foreach ($client->getNodes()->get("pve1")->getQemu()->get(100)->getSnapshot()->snapshotList()->data as $snap) {
+    echo "\n" . $snap->name;
+  }
+
+  //return object
+  var_dump($client->getVersion()->version());
+
+  //disable return object
+  $client->setResultIsObject(false);
+  //return array
+  $retArr = $client->getVersion()->version();
+  var_dump($retArr);
+  echo "\n" . $retArr['data']['release'];
+
+  //eneble return objet
+  $client->setResultIsObject(true);
 }
 
-//loop vm
-foreach ($client->getNodes()->get("pve1")->getQemu()->Vmlist()->data as $vm) {
-    echo "\n" . $vm->vmid ." - " .$vm->name;
-}
-
-//loop snapshots
-foreach ($client->getNodes()->get("pve1")->getQemu()->get(100)->getSnapshot()->snapshotList()->data as $snap) {
-   echo "\n" . $snap->name;
-}
 ```
 
 Sample output version request:
 
 ```php
-$result = $client->getVersion()->Version();
-var_dump($result);
+//object result
+var_dump($client->getVersion()->Version());
 
 object(stdClass)#9 (1) {
   ["data"]=>
@@ -84,6 +125,26 @@ object(stdClass)#9 (1) {
     string(2) "it"
     ["repoid"]=>
     string(8) "27769b1f"
+  }
+}
+
+//disable return object
+$client->setResultIsObject(false);
+
+//array result
+var_dump($client->getVersion()->Version());
+
+array(1) {
+  ["data"]=>
+  array(4) {
+    ["repoid"]=>
+    string(8) "2560e073"
+    ["release"]=>
+    string(2) "32"
+    ["version"]=>
+    string(3) "5.0"
+    ["keyboard"]=>
+    string(2) "it"
   }
 }
 ```
