@@ -39,6 +39,11 @@ The result is class **Result** and contain methods:
 
 * Easy to learn
 * Method named
+* Method no named rest (same parameters)
+  * getRest
+  * setRest
+  * createRest
+  * deleteRest
 * Full method generated from documentation
 * Comment any method and parameters
 * Parameters indexed eg [n] is structured in array index and value
@@ -53,8 +58,8 @@ The result is class **Result** and contain methods:
   * waitForTaskToFinish
 * Method directry access
   * get
-  * post
-  * put
+  * set
+  * create
   * delete
 * Login return bool if access
 * Return Result class more information
@@ -68,7 +73,7 @@ Recommended installation is using [Composer], if you do not have [Composer] what
 In the root of your project execute the following:
 
 ```sh
-$ composer require enterpriseve/eve2pve-api-php ~1.0
+composer require enterpriseve/eve2pve-api-php ~1.0
 ```
 
 Or add this to your `composer.json` file:
