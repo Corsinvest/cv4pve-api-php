@@ -44,6 +44,7 @@ The result is class **Result** and contain methods:
   * setRest
   * createRest
   * deleteRest
+* Set ResponseType json, png
 * Full method generated from documentation
 * Comment any method and parameters
 * Parameters indexed eg [n] is structured in array index and value
@@ -136,6 +137,14 @@ if($client->login('root','password','pam')){
 
   //eneble return objet
   $client->setResultIsObject(true);
+
+  //image rrd
+  $client->setResponseType('png');
+  echo "<img src='{$client->getNodes()->get("pve1")->getRrd()->rrd('cpu','day')->getResponse()}' \>";
+
+  //resewt json result
+  $client->setResponseType('json');
+  var_dump($client->get('/version')->getResponse());
 }
 
 ```

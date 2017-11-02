@@ -130,13 +130,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
     {
         private $ticketCSRFPreventionToken;
         private $ticketPVEAuthCookie;
-        private $hostName;
+        private $hostname;
         private $port;
         private $resultIsObject = true;
+        private $responseType = 'json';
 
-        function __construct($hostName, $port = 8006)
+        function __construct($hostname, $port = 8006)
         {
-            $this->hostName = $hostName;
+            $this->hostname = $hostname;
             $this->port = $port;
             $this->client = $this;
         }
@@ -151,14 +152,54 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->resultIsObject = $resultIsObject;
         }
 
-        public function getHostName()
+        /**
+         * Gets the hostname configured.
+         *
+         * @return string The hostname.
+         */
+        public function getHostname()
         {
-            return $this->hostName;
+            return $this->hostname;
         }
 
+        /**
+         * Gets the port configured.
+         *
+         * @return int The port.
+         */
         public function getPort()
         {
             return $this->port;
+        }
+
+        /**
+         * Sets the response type that is going to be returned when doing requests.
+         *
+         * @param string One of json, png.
+         */
+        public function setResponseType($type = 'json')
+        {
+            $this->responseType = $type;
+        }
+
+        /**
+         * Returns the response type that is being used by the Proxmox API client.
+         *
+         * @return string Response type being used.
+         */
+        public function getResponseType()
+        {
+            return $this->responseType;
+        }
+
+        /**
+         * Returns the base URL used to interact with the ProxmoxVE API.
+         *
+         * @return string The proxmox API URL.
+         */
+        public function getApiUrl()
+        {
+            return "https://{$this->getHostname()}:{$this->getPort()}/api2/{$this->responseType}";
         }
 
         /**
@@ -212,7 +253,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         private function executeAction($resource, $method, $params = [])
         {
             $response = $this->requestResource($resource, $method, $params);
-            return new Result($response->json(['object' => $this->resultIsObject]),
+            $obj = null;
+            switch ($this->responseType) {
+                case 'json':
+                    $obj = $response->json(['object' => $this->resultIsObject]);
+                    break;
+                case 'png':
+                    $obj = 'data:image/png;base64,' . base64_encode($response->getBody());
+                    break;
+            }
+            return new Result($obj,
                 $response->getStatusCode(),
                 $response->getReasonPhrase(),
                 $this->resultIsObject);
@@ -220,7 +270,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
 
         private function requestResource($resource, $method, $params = [])
         {
-            $url = "https://{$this->getHostName()}:{$this->getPort()}/api2/json{$resource}";
+            //url resource
+            $url = "{$this->getApiUrl()}{$resource}";
             $cookies = [];
             $headers = [];
             if ($this->ticketPVEAuthCookie != null) {
