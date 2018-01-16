@@ -1,11 +1,22 @@
 <?php
+/**
+ * Proxmox VE Client Api
+ */
 
 namespace EnterpriseVE\ProxmoxVE\Api {
+    /**
+     * Class Base
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     abstract class Base
     {
+        /**
+         * @ignore
+         */
         protected $client;
 
         /**
+         * Client
          * @return Client
          */
         protected function getClient()
@@ -13,6 +24,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->client;
         }
 
+        /**
+         * Add index parameter to parameters
+         * @param array $params Parameters
+         * @param string $name name
+         * @param array $values values
+         */
         protected function addIndexedParameter(&$params, $name, $values)
         {
             if ($values == null) {
@@ -30,11 +47,26 @@ namespace EnterpriseVE\ProxmoxVE\Api {
      */
     class Result
     {
+        /**
+         * @ignore
+         */
         private $reasonPhrase;
+        /**
+         * @ignore
+         */
         private $statusCode;
+        /**
+         * @ignore
+         */
         private $response;
+        /**
+         * @ignore
+         */
         private $resultIsObject;
 
+        /**
+         * @ignore
+         */
         function __construct($response, $statusCode, $reasonPhrase, $resultIsObject)
         {
             $this->statusCode = $statusCode;
@@ -44,7 +76,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
 
         /**
-         * ProxmoxVE response.
+         * Proxmox VE response.
          * @return mixed
          */
         function getResponse()
@@ -80,7 +112,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
 
         /**
-         * Get if response ProxmoxVE contain errors
+         * Get if response Proxmox VE contain errors
          * @return bool
          */
         public function responseInError()
@@ -93,7 +125,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
 
         /**
-         * Get error
+         * Get Error
          * @return string
          */
         public function getError()
@@ -124,17 +156,38 @@ namespace EnterpriseVE\ProxmoxVE\Api {
      * Class Client
      * @package EnterpriseVE\ProxmoxVE\Api
      *
-     * ProxmoxVE Client
+     * Proxmox VE Client
      */
     class Client extends Base
     {
+        /**
+         * @ignore
+         */
         private $ticketCSRFPreventionToken;
+        /**
+         * @ignore
+         */
         private $ticketPVEAuthCookie;
+        /**
+         * @ignore
+         */
         private $hostname;
+        /**
+         * @ignore
+         */
         private $port;
+        /**
+         * @ignore
+         */
         private $resultIsObject = true;
+        /**
+         * @ignore
+         */
         private $responseType = 'json';
 
+        /**
+         * @ignore
+         */
         function __construct($hostname, $port = 8006)
         {
             $this->hostname = $hostname;
@@ -142,11 +195,19 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $this;
         }
 
+        /**
+         * Return if result is object
+         * @return bool
+         */
         function getResultIsObject()
         {
             return $this->resultIsObject;
         }
 
+        /**
+         * Set result is object
+         * @param bool $resultIsObject
+         */
         function setResultIsObject($resultIsObject)
         {
             $this->resultIsObject = $resultIsObject;
@@ -193,7 +254,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
 
         /**
-         * Returns the base URL used to interact with the ProxmoxVE API.
+         * Returns the base URL used to interact with the Proxmox VE API.
          *
          * @return string The proxmox API URL.
          */
@@ -204,7 +265,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
 
         /**
          * Creation ticket from login.
-         * @param string $userName user name or <username>@<relam>
+         * @param string $userName user name or &lt;username&gt;@&lt;realm&gt;
          * @param string $password
          * @param string $realm pam/pve or custom
          * @return bool logged
@@ -230,26 +291,53 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return false;
         }
 
+        /**
+         * Execute method GET
+         * @param string $resource Url request
+         * @param array $params Additional parameters
+         * @return Result
+         */
         public function get($resource, $params = [])
         {
             return $this->executeAction($resource, 'GET', $params);
         }
 
+        /**
+         * Execute method PUT
+         * @param string $resource Url request
+         * @param array $params Additional parameters
+         * @return Result
+         */
         public function set($resource, $params = [])
         {
             return $this->executeAction($resource, 'PUT', $params);
         }
 
+        /**
+         * Execute method POST
+         * @param string $resource Url request
+         * @param array $params Additional parameters
+         * @return Result
+         */
         public function create($resource, $params = [])
         {
             return $this->executeAction($resource, 'POST', $params);
         }
 
+        /**
+         * Execute method DELETE
+         * @param string $resource Url request
+         * @param array $params Additional parameters
+         * @return Result
+         */
         public function delete($resource, $params = [])
         {
             return $this->executeAction($resource, 'DELETE', $params);
         }
 
+        /**
+         * @ignore
+         */
         private function executeAction($resource, $method, $params = [])
         {
             $response = $this->requestResource($resource, $method, $params);
@@ -268,6 +356,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 $this->resultIsObject);
         }
 
+        /**
+         * @ignore
+         */
         private function requestResource($resource, $method, $params = [])
         {
             //url resource
@@ -345,128 +436,254 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             }
         }
 
+        /**
+         * @ignore
+         */
         private $cluster;
 
+        /**
+         * Get Cluster
+         * @return PVECluster
+         */
         public function getCluster()
         {
             return $this->cluster ?: ($this->cluster = new PVECluster($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $nodes;
 
+        /**
+         * Get Nodes
+         * @return PVENodes
+         */
         public function getNodes()
         {
             return $this->nodes ?: ($this->nodes = new PVENodes($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $storage;
 
+        /**
+         * Get Storage
+         * @return PVEStorage
+         */
         public function getStorage()
         {
             return $this->storage ?: ($this->storage = new PVEStorage($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $access;
 
+        /**
+         * Get Access
+         * @return PVEAccess
+         */
         public function getAccess()
         {
             return $this->access ?: ($this->access = new PVEAccess($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $pools;
 
+        /**
+         * Get Pools
+         * @return PVEPools
+         */
         public function getPools()
         {
             return $this->pools ?: ($this->pools = new PVEPools($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $version;
 
+        /**
+         * Get Version
+         * @return PVEVersion
+         */
         public function getVersion()
         {
             return $this->version ?: ($this->version = new PVEVersion($this->client));
         }
     }
 
+    /**
+     * Class PVECluster
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVECluster extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
         }
 
+        /**
+         * @ignore
+         */
         private $replication;
 
+        /**
+         * Get ClusterReplication
+         * @return PVEClusterReplication
+         */
         public function getReplication()
         {
             return $this->replication ?: ($this->replication = new PVEClusterReplication($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $config;
 
+        /**
+         * Get ClusterConfig
+         * @return PVEClusterConfig
+         */
         public function getConfig()
         {
             return $this->config ?: ($this->config = new PVEClusterConfig($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $firewall;
 
+        /**
+         * Get ClusterFirewall
+         * @return PVEClusterFirewall
+         */
         public function getFirewall()
         {
             return $this->firewall ?: ($this->firewall = new PVEClusterFirewall($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $backup;
 
+        /**
+         * Get ClusterBackup
+         * @return PVEClusterBackup
+         */
         public function getBackup()
         {
             return $this->backup ?: ($this->backup = new PVEClusterBackup($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $ha;
 
+        /**
+         * Get ClusterHa
+         * @return PVEClusterHa
+         */
         public function getHa()
         {
             return $this->ha ?: ($this->ha = new PVEClusterHa($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $log;
 
+        /**
+         * Get ClusterLog
+         * @return PVEClusterLog
+         */
         public function getLog()
         {
             return $this->log ?: ($this->log = new PVEClusterLog($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $resources;
 
+        /**
+         * Get ClusterResources
+         * @return PVEClusterResources
+         */
         public function getResources()
         {
             return $this->resources ?: ($this->resources = new PVEClusterResources($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $tasks;
 
+        /**
+         * Get ClusterTasks
+         * @return PVEClusterTasks
+         */
         public function getTasks()
         {
             return $this->tasks ?: ($this->tasks = new PVEClusterTasks($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $options;
 
+        /**
+         * Get ClusterOptions
+         * @return PVEClusterOptions
+         */
         public function getOptions()
         {
             return $this->options ?: ($this->options = new PVEClusterOptions($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $status;
 
+        /**
+         * Get ClusterStatus
+         * @return PVEClusterStatus
+         */
         public function getStatus()
         {
             return $this->status ?: ($this->status = new PVEClusterStatus($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $nextid;
 
+        /**
+         * Get ClusterNextid
+         * @return PVEClusterNextid
+         */
         public function getNextid()
         {
             return $this->nextid ?: ($this->nextid = new PVEClusterNextid($this->client));
@@ -491,13 +708,25 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEClusterReplication
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEClusterReplication extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
         }
 
+        /**
+         * Get ItemReplicationClusterId
+         * @param id
+         * @return PVEItemReplicationClusterId
+         */
         public function get($id)
         {
             return new PVEItemReplicationClusterId($this->client, $id);
@@ -568,10 +797,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemReplicationClusterId
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemReplicationClusterId extends Base
     {
+        /**
+         * @ignore
+         */
         private $id;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $id)
         {
             $this->client = $client;
@@ -662,22 +901,43 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEClusterConfig
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEClusterConfig extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
         }
 
+        /**
+         * @ignore
+         */
         private $nodes;
 
+        /**
+         * Get ConfigClusterNodes
+         * @return PVEConfigClusterNodes
+         */
         public function getNodes()
         {
             return $this->nodes ?: ($this->nodes = new PVEConfigClusterNodes($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $totem;
 
+        /**
+         * Get ConfigClusterTotem
+         * @return PVEConfigClusterTotem
+         */
         public function getTotem()
         {
             return $this->totem ?: ($this->totem = new PVEConfigClusterTotem($this->client));
@@ -702,8 +962,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEConfigClusterNodes
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEConfigClusterNodes extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
@@ -728,8 +995,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEConfigClusterTotem
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEConfigClusterTotem extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
@@ -754,57 +1028,113 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEClusterFirewall
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEClusterFirewall extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
         }
 
+        /**
+         * @ignore
+         */
         private $groups;
 
+        /**
+         * Get FirewallClusterGroups
+         * @return PVEFirewallClusterGroups
+         */
         public function getGroups()
         {
             return $this->groups ?: ($this->groups = new PVEFirewallClusterGroups($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $rules;
 
+        /**
+         * Get FirewallClusterRules
+         * @return PVEFirewallClusterRules
+         */
         public function getRules()
         {
             return $this->rules ?: ($this->rules = new PVEFirewallClusterRules($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $ipset;
 
+        /**
+         * Get FirewallClusterIpset
+         * @return PVEFirewallClusterIpset
+         */
         public function getIpset()
         {
             return $this->ipset ?: ($this->ipset = new PVEFirewallClusterIpset($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $aliases;
 
+        /**
+         * Get FirewallClusterAliases
+         * @return PVEFirewallClusterAliases
+         */
         public function getAliases()
         {
             return $this->aliases ?: ($this->aliases = new PVEFirewallClusterAliases($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $options;
 
+        /**
+         * Get FirewallClusterOptions
+         * @return PVEFirewallClusterOptions
+         */
         public function getOptions()
         {
             return $this->options ?: ($this->options = new PVEFirewallClusterOptions($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $macros;
 
+        /**
+         * Get FirewallClusterMacros
+         * @return PVEFirewallClusterMacros
+         */
         public function getMacros()
         {
             return $this->macros ?: ($this->macros = new PVEFirewallClusterMacros($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $refs;
 
+        /**
+         * Get FirewallClusterRefs
+         * @return PVEFirewallClusterRefs
+         */
         public function getRefs()
         {
             return $this->refs ?: ($this->refs = new PVEFirewallClusterRefs($this->client));
@@ -829,13 +1159,25 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEFirewallClusterGroups
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEFirewallClusterGroups extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
         }
 
+        /**
+         * Get ItemGroupsFirewallClusterGroup
+         * @param group
+         * @return PVEItemGroupsFirewallClusterGroup
+         */
         public function get($group)
         {
             return new PVEItemGroupsFirewallClusterGroup($this->client, $group);
@@ -890,16 +1232,31 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemGroupsFirewallClusterGroup
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemGroupsFirewallClusterGroup extends Base
     {
+        /**
+         * @ignore
+         */
         private $group;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $group)
         {
             $this->client = $client;
             $this->group = $group;
         }
 
+        /**
+         * Get ItemGroupGroupsFirewallClusterPos
+         * @param pos
+         * @return PVEItemGroupGroupsFirewallClusterPos
+         */
         public function get($pos)
         {
             return new PVEItemGroupGroupsFirewallClusterPos($this->client, $this->group, $pos);
@@ -1001,11 +1358,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemGroupGroupsFirewallClusterPos
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemGroupGroupsFirewallClusterPos extends Base
     {
+        /**
+         * @ignore
+         */
         private $group;
+        /**
+         * @ignore
+         */
         private $pos;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $group, $pos)
         {
             $this->client = $client;
@@ -1115,13 +1485,25 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEFirewallClusterRules
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEFirewallClusterRules extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
         }
 
+        /**
+         * Get ItemRulesFirewallClusterPos
+         * @param pos
+         * @return PVEItemRulesFirewallClusterPos
+         */
         public function get($pos)
         {
             return new PVEItemRulesFirewallClusterPos($this->client, $pos);
@@ -1205,10 +1587,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemRulesFirewallClusterPos
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemRulesFirewallClusterPos extends Base
     {
+        /**
+         * @ignore
+         */
         private $pos;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $pos)
         {
             $this->client = $client;
@@ -1317,13 +1709,25 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEFirewallClusterIpset
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEFirewallClusterIpset extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
         }
 
+        /**
+         * Get ItemIpsetFirewallClusterName
+         * @param name
+         * @return PVEItemIpsetFirewallClusterName
+         */
         public function get($name)
         {
             return new PVEItemIpsetFirewallClusterName($this->client, $name);
@@ -1378,16 +1782,31 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemIpsetFirewallClusterName
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemIpsetFirewallClusterName extends Base
     {
+        /**
+         * @ignore
+         */
         private $name;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $name)
         {
             $this->client = $client;
             $this->name = $name;
         }
 
+        /**
+         * Get ItemNameIpsetFirewallClusterCidr
+         * @param cidr
+         * @return PVEItemNameIpsetFirewallClusterCidr
+         */
         public function get($cidr)
         {
             return new PVEItemNameIpsetFirewallClusterCidr($this->client, $this->name, $cidr);
@@ -1457,11 +1876,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemNameIpsetFirewallClusterCidr
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemNameIpsetFirewallClusterCidr extends Base
     {
+        /**
+         * @ignore
+         */
         private $name;
+        /**
+         * @ignore
+         */
         private $cidr;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $name, $cidr)
         {
             $this->client = $client;
@@ -1536,13 +1968,25 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEFirewallClusterAliases
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEFirewallClusterAliases extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
         }
 
+        /**
+         * Get ItemAliasesFirewallClusterName
+         * @param name
+         * @return PVEItemAliasesFirewallClusterName
+         */
         public function get($name)
         {
             return new PVEItemAliasesFirewallClusterName($this->client, $name);
@@ -1594,10 +2038,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemAliasesFirewallClusterName
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemAliasesFirewallClusterName extends Base
     {
+        /**
+         * @ignore
+         */
         private $name;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $name)
         {
             $this->client = $client;
@@ -1674,8 +2128,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEFirewallClusterOptions
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEFirewallClusterOptions extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
@@ -1737,8 +2198,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEFirewallClusterMacros
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEFirewallClusterMacros extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
@@ -1763,8 +2231,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEFirewallClusterRefs
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEFirewallClusterRefs extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
@@ -1794,13 +2269,25 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEClusterBackup
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEClusterBackup extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
         }
 
+        /**
+         * Get ItemBackupClusterId
+         * @param id
+         * @return PVEItemBackupClusterId
+         */
         public function get($id)
         {
             return new PVEItemBackupClusterId($this->client, $id);
@@ -1930,10 +2417,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemBackupClusterId
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemBackupClusterId extends Base
     {
+        /**
+         * @ignore
+         */
         private $id;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $id)
         {
             $this->client = $client;
@@ -2085,29 +2582,57 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEClusterHa
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEClusterHa extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
         }
 
+        /**
+         * @ignore
+         */
         private $resources;
 
+        /**
+         * Get HaClusterResources
+         * @return PVEHaClusterResources
+         */
         public function getResources()
         {
             return $this->resources ?: ($this->resources = new PVEHaClusterResources($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $groups;
 
+        /**
+         * Get HaClusterGroups
+         * @return PVEHaClusterGroups
+         */
         public function getGroups()
         {
             return $this->groups ?: ($this->groups = new PVEHaClusterGroups($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $status;
 
+        /**
+         * Get HaClusterStatus
+         * @return PVEHaClusterStatus
+         */
         public function getStatus()
         {
             return $this->status ?: ($this->status = new PVEHaClusterStatus($this->client));
@@ -2132,13 +2657,25 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEHaClusterResources
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEHaClusterResources extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
         }
 
+        /**
+         * Get ItemResourcesHaClusterSid
+         * @param sid
+         * @return PVEItemResourcesHaClusterSid
+         */
         public function get($sid)
         {
             return new PVEItemResourcesHaClusterSid($this->client, $sid);
@@ -2211,25 +2748,49 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemResourcesHaClusterSid
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemResourcesHaClusterSid extends Base
     {
+        /**
+         * @ignore
+         */
         private $sid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $sid)
         {
             $this->client = $client;
             $this->sid = $sid;
         }
 
+        /**
+         * @ignore
+         */
         private $migrate;
 
+        /**
+         * Get SidResourcesHaClusterMigrate
+         * @return PVESidResourcesHaClusterMigrate
+         */
         public function getMigrate()
         {
             return $this->migrate ?: ($this->migrate = new PVESidResourcesHaClusterMigrate($this->client, $this->sid));
         }
 
+        /**
+         * @ignore
+         */
         private $relocate;
 
+        /**
+         * Get SidResourcesHaClusterRelocate
+         * @return PVESidResourcesHaClusterRelocate
+         */
         public function getRelocate()
         {
             return $this->relocate ?: ($this->relocate = new PVESidResourcesHaClusterRelocate($this->client, $this->sid));
@@ -2313,10 +2874,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVESidResourcesHaClusterMigrate
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVESidResourcesHaClusterMigrate extends Base
     {
+        /**
+         * @ignore
+         */
         private $sid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $sid)
         {
             $this->client = $client;
@@ -2345,10 +2916,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVESidResourcesHaClusterRelocate
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVESidResourcesHaClusterRelocate extends Base
     {
+        /**
+         * @ignore
+         */
         private $sid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $sid)
         {
             $this->client = $client;
@@ -2377,13 +2958,25 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEHaClusterGroups
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEHaClusterGroups extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
         }
 
+        /**
+         * Get ItemGroupsHaClusterGroup
+         * @param group
+         * @return PVEItemGroupsHaClusterGroup
+         */
         public function get($group)
         {
             return new PVEItemGroupsHaClusterGroup($this->client, $group);
@@ -2446,10 +3039,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemGroupsHaClusterGroup
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemGroupsHaClusterGroup extends Base
     {
+        /**
+         * @ignore
+         */
         private $group;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $group)
         {
             $this->client = $client;
@@ -2529,22 +3132,43 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEHaClusterStatus
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEHaClusterStatus extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
         }
 
+        /**
+         * @ignore
+         */
         private $current;
 
+        /**
+         * Get StatusHaClusterCurrent
+         * @return PVEStatusHaClusterCurrent
+         */
         public function getCurrent()
         {
             return $this->current ?: ($this->current = new PVEStatusHaClusterCurrent($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $managerStatus;
 
+        /**
+         * Get StatusHaClusterManagerStatus
+         * @return PVEStatusHaClusterManagerStatus
+         */
         public function getManagerStatus()
         {
             return $this->managerStatus ?: ($this->managerStatus = new PVEStatusHaClusterManagerStatus($this->client));
@@ -2569,8 +3193,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEStatusHaClusterCurrent
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEStatusHaClusterCurrent extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
@@ -2595,8 +3226,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEStatusHaClusterManagerStatus
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEStatusHaClusterManagerStatus extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
@@ -2621,8 +3259,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEClusterLog
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEClusterLog extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
@@ -2650,8 +3295,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEClusterResources
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEClusterResources extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
@@ -2681,8 +3333,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEClusterTasks
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEClusterTasks extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
@@ -2707,8 +3366,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEClusterOptions
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEClusterOptions extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
@@ -2792,8 +3458,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEClusterStatus
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEClusterStatus extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
@@ -2818,8 +3491,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEClusterNextid
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEClusterNextid extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
@@ -2847,13 +3527,25 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodes
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodes extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
         }
 
+        /**
+         * Get ItemNodesNode
+         * @param node
+         * @return PVEItemNodesNode
+         */
         public function get($node)
         {
             return new PVEItemNodesNode($this->client, $node);
@@ -2878,228 +3570,455 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemNodesNode
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemNodesNode extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
             $this->node = $node;
         }
 
+        /**
+         * @ignore
+         */
         private $qemu;
 
+        /**
+         * Get NodeNodesQemu
+         * @return PVENodeNodesQemu
+         */
         public function getQemu()
         {
             return $this->qemu ?: ($this->qemu = new PVENodeNodesQemu($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $lxc;
 
+        /**
+         * Get NodeNodesLxc
+         * @return PVENodeNodesLxc
+         */
         public function getLxc()
         {
             return $this->lxc ?: ($this->lxc = new PVENodeNodesLxc($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $ceph;
 
+        /**
+         * Get NodeNodesCeph
+         * @return PVENodeNodesCeph
+         */
         public function getCeph()
         {
             return $this->ceph ?: ($this->ceph = new PVENodeNodesCeph($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $vzdump;
 
+        /**
+         * Get NodeNodesVzdump
+         * @return PVENodeNodesVzdump
+         */
         public function getVzdump()
         {
             return $this->vzdump ?: ($this->vzdump = new PVENodeNodesVzdump($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $services;
 
+        /**
+         * Get NodeNodesServices
+         * @return PVENodeNodesServices
+         */
         public function getServices()
         {
             return $this->services ?: ($this->services = new PVENodeNodesServices($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $subscription;
 
+        /**
+         * Get NodeNodesSubscription
+         * @return PVENodeNodesSubscription
+         */
         public function getSubscription()
         {
             return $this->subscription ?: ($this->subscription = new PVENodeNodesSubscription($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $network;
 
+        /**
+         * Get NodeNodesNetwork
+         * @return PVENodeNodesNetwork
+         */
         public function getNetwork()
         {
             return $this->network ?: ($this->network = new PVENodeNodesNetwork($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $tasks;
 
+        /**
+         * Get NodeNodesTasks
+         * @return PVENodeNodesTasks
+         */
         public function getTasks()
         {
             return $this->tasks ?: ($this->tasks = new PVENodeNodesTasks($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $scan;
 
+        /**
+         * Get NodeNodesScan
+         * @return PVENodeNodesScan
+         */
         public function getScan()
         {
             return $this->scan ?: ($this->scan = new PVENodeNodesScan($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $storage;
 
+        /**
+         * Get NodeNodesStorage
+         * @return PVENodeNodesStorage
+         */
         public function getStorage()
         {
             return $this->storage ?: ($this->storage = new PVENodeNodesStorage($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $disks;
 
+        /**
+         * Get NodeNodesDisks
+         * @return PVENodeNodesDisks
+         */
         public function getDisks()
         {
             return $this->disks ?: ($this->disks = new PVENodeNodesDisks($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $apt;
 
+        /**
+         * Get NodeNodesApt
+         * @return PVENodeNodesApt
+         */
         public function getApt()
         {
             return $this->apt ?: ($this->apt = new PVENodeNodesApt($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $firewall;
 
+        /**
+         * Get NodeNodesFirewall
+         * @return PVENodeNodesFirewall
+         */
         public function getFirewall()
         {
             return $this->firewall ?: ($this->firewall = new PVENodeNodesFirewall($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $replication;
 
+        /**
+         * Get NodeNodesReplication
+         * @return PVENodeNodesReplication
+         */
         public function getReplication()
         {
             return $this->replication ?: ($this->replication = new PVENodeNodesReplication($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $version;
 
+        /**
+         * Get NodeNodesVersion
+         * @return PVENodeNodesVersion
+         */
         public function getVersion()
         {
             return $this->version ?: ($this->version = new PVENodeNodesVersion($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $status;
 
+        /**
+         * Get NodeNodesStatus
+         * @return PVENodeNodesStatus
+         */
         public function getStatus()
         {
             return $this->status ?: ($this->status = new PVENodeNodesStatus($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $netstat;
 
+        /**
+         * Get NodeNodesNetstat
+         * @return PVENodeNodesNetstat
+         */
         public function getNetstat()
         {
             return $this->netstat ?: ($this->netstat = new PVENodeNodesNetstat($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $execute;
 
+        /**
+         * Get NodeNodesExecute
+         * @return PVENodeNodesExecute
+         */
         public function getExecute()
         {
             return $this->execute ?: ($this->execute = new PVENodeNodesExecute($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $rrd;
 
+        /**
+         * Get NodeNodesRrd
+         * @return PVENodeNodesRrd
+         */
         public function getRrd()
         {
             return $this->rrd ?: ($this->rrd = new PVENodeNodesRrd($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $rrddata;
 
+        /**
+         * Get NodeNodesRrddata
+         * @return PVENodeNodesRrddata
+         */
         public function getRrddata()
         {
             return $this->rrddata ?: ($this->rrddata = new PVENodeNodesRrddata($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $syslog;
 
+        /**
+         * Get NodeNodesSyslog
+         * @return PVENodeNodesSyslog
+         */
         public function getSyslog()
         {
             return $this->syslog ?: ($this->syslog = new PVENodeNodesSyslog($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $vncshell;
 
+        /**
+         * Get NodeNodesVncshell
+         * @return PVENodeNodesVncshell
+         */
         public function getVncshell()
         {
             return $this->vncshell ?: ($this->vncshell = new PVENodeNodesVncshell($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $vncwebsocket;
 
+        /**
+         * Get NodeNodesVncwebsocket
+         * @return PVENodeNodesVncwebsocket
+         */
         public function getVncwebsocket()
         {
             return $this->vncwebsocket ?: ($this->vncwebsocket = new PVENodeNodesVncwebsocket($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $spiceshell;
 
+        /**
+         * Get NodeNodesSpiceshell
+         * @return PVENodeNodesSpiceshell
+         */
         public function getSpiceshell()
         {
             return $this->spiceshell ?: ($this->spiceshell = new PVENodeNodesSpiceshell($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $dns;
 
+        /**
+         * Get NodeNodesDns
+         * @return PVENodeNodesDns
+         */
         public function getDns()
         {
             return $this->dns ?: ($this->dns = new PVENodeNodesDns($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $time;
 
+        /**
+         * Get NodeNodesTime
+         * @return PVENodeNodesTime
+         */
         public function getTime()
         {
             return $this->time ?: ($this->time = new PVENodeNodesTime($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $aplinfo;
 
+        /**
+         * Get NodeNodesAplinfo
+         * @return PVENodeNodesAplinfo
+         */
         public function getAplinfo()
         {
             return $this->aplinfo ?: ($this->aplinfo = new PVENodeNodesAplinfo($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $report;
 
+        /**
+         * Get NodeNodesReport
+         * @return PVENodeNodesReport
+         */
         public function getReport()
         {
             return $this->report ?: ($this->report = new PVENodeNodesReport($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $startall;
 
+        /**
+         * Get NodeNodesStartall
+         * @return PVENodeNodesStartall
+         */
         public function getStartall()
         {
             return $this->startall ?: ($this->startall = new PVENodeNodesStartall($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $stopall;
 
+        /**
+         * Get NodeNodesStopall
+         * @return PVENodeNodesStopall
+         */
         public function getStopall()
         {
             return $this->stopall ?: ($this->stopall = new PVENodeNodesStopall($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $migrateall;
 
+        /**
+         * Get NodeNodesMigrateall
+         * @return PVENodeNodesMigrateall
+         */
         public function getMigrateall()
         {
             return $this->migrateall ?: ($this->migrateall = new PVENodeNodesMigrateall($this->client, $this->node));
@@ -3124,16 +4043,31 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesQemu
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesQemu extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
             $this->node = $node;
         }
 
+        /**
+         * Get ItemQemuNodeNodesVmid
+         * @param vmid
+         * @return PVEItemQemuNodeNodesVmid
+         */
         public function get($vmid)
         {
             return new PVEItemQemuNodeNodesVmid($this->client, $this->node, $vmid);
@@ -3379,11 +4313,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemQemuNodeNodesVmid
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemQemuNodeNodesVmid extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -3391,141 +4338,281 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
         }
 
+        /**
+         * @ignore
+         */
         private $firewall;
 
+        /**
+         * Get VmidQemuNodeNodesFirewall
+         * @return PVEVmidQemuNodeNodesFirewall
+         */
         public function getFirewall()
         {
             return $this->firewall ?: ($this->firewall = new PVEVmidQemuNodeNodesFirewall($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $rrd;
 
+        /**
+         * Get VmidQemuNodeNodesRrd
+         * @return PVEVmidQemuNodeNodesRrd
+         */
         public function getRrd()
         {
             return $this->rrd ?: ($this->rrd = new PVEVmidQemuNodeNodesRrd($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $rrddata;
 
+        /**
+         * Get VmidQemuNodeNodesRrddata
+         * @return PVEVmidQemuNodeNodesRrddata
+         */
         public function getRrddata()
         {
             return $this->rrddata ?: ($this->rrddata = new PVEVmidQemuNodeNodesRrddata($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $config;
 
+        /**
+         * Get VmidQemuNodeNodesConfig
+         * @return PVEVmidQemuNodeNodesConfig
+         */
         public function getConfig()
         {
             return $this->config ?: ($this->config = new PVEVmidQemuNodeNodesConfig($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $pending;
 
+        /**
+         * Get VmidQemuNodeNodesPending
+         * @return PVEVmidQemuNodeNodesPending
+         */
         public function getPending()
         {
             return $this->pending ?: ($this->pending = new PVEVmidQemuNodeNodesPending($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $unlink;
 
+        /**
+         * Get VmidQemuNodeNodesUnlink
+         * @return PVEVmidQemuNodeNodesUnlink
+         */
         public function getUnlink()
         {
             return $this->unlink ?: ($this->unlink = new PVEVmidQemuNodeNodesUnlink($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $vncproxy;
 
+        /**
+         * Get VmidQemuNodeNodesVncproxy
+         * @return PVEVmidQemuNodeNodesVncproxy
+         */
         public function getVncproxy()
         {
             return $this->vncproxy ?: ($this->vncproxy = new PVEVmidQemuNodeNodesVncproxy($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $vncwebsocket;
 
+        /**
+         * Get VmidQemuNodeNodesVncwebsocket
+         * @return PVEVmidQemuNodeNodesVncwebsocket
+         */
         public function getVncwebsocket()
         {
             return $this->vncwebsocket ?: ($this->vncwebsocket = new PVEVmidQemuNodeNodesVncwebsocket($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $spiceproxy;
 
+        /**
+         * Get VmidQemuNodeNodesSpiceproxy
+         * @return PVEVmidQemuNodeNodesSpiceproxy
+         */
         public function getSpiceproxy()
         {
             return $this->spiceproxy ?: ($this->spiceproxy = new PVEVmidQemuNodeNodesSpiceproxy($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $status;
 
+        /**
+         * Get VmidQemuNodeNodesStatus
+         * @return PVEVmidQemuNodeNodesStatus
+         */
         public function getStatus()
         {
             return $this->status ?: ($this->status = new PVEVmidQemuNodeNodesStatus($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $sendkey;
 
+        /**
+         * Get VmidQemuNodeNodesSendkey
+         * @return PVEVmidQemuNodeNodesSendkey
+         */
         public function getSendkey()
         {
             return $this->sendkey ?: ($this->sendkey = new PVEVmidQemuNodeNodesSendkey($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $feature;
 
+        /**
+         * Get VmidQemuNodeNodesFeature
+         * @return PVEVmidQemuNodeNodesFeature
+         */
         public function getFeature()
         {
             return $this->feature ?: ($this->feature = new PVEVmidQemuNodeNodesFeature($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $clone;
 
+        /**
+         * Get VmidQemuNodeNodesClone
+         * @return PVEVmidQemuNodeNodesClone
+         */
         public function getClone()
         {
             return $this->clone ?: ($this->clone = new PVEVmidQemuNodeNodesClone($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $moveDisk;
 
+        /**
+         * Get VmidQemuNodeNodesMoveDisk
+         * @return PVEVmidQemuNodeNodesMoveDisk
+         */
         public function getMoveDisk()
         {
             return $this->moveDisk ?: ($this->moveDisk = new PVEVmidQemuNodeNodesMoveDisk($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $migrate;
 
+        /**
+         * Get VmidQemuNodeNodesMigrate
+         * @return PVEVmidQemuNodeNodesMigrate
+         */
         public function getMigrate()
         {
             return $this->migrate ?: ($this->migrate = new PVEVmidQemuNodeNodesMigrate($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $monitor;
 
+        /**
+         * Get VmidQemuNodeNodesMonitor
+         * @return PVEVmidQemuNodeNodesMonitor
+         */
         public function getMonitor()
         {
             return $this->monitor ?: ($this->monitor = new PVEVmidQemuNodeNodesMonitor($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $agent;
 
+        /**
+         * Get VmidQemuNodeNodesAgent
+         * @return PVEVmidQemuNodeNodesAgent
+         */
         public function getAgent()
         {
             return $this->agent ?: ($this->agent = new PVEVmidQemuNodeNodesAgent($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $resize;
 
+        /**
+         * Get VmidQemuNodeNodesResize
+         * @return PVEVmidQemuNodeNodesResize
+         */
         public function getResize()
         {
             return $this->resize ?: ($this->resize = new PVEVmidQemuNodeNodesResize($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $snapshot;
 
+        /**
+         * Get VmidQemuNodeNodesSnapshot
+         * @return PVEVmidQemuNodeNodesSnapshot
+         */
         public function getSnapshot()
         {
             return $this->snapshot ?: ($this->snapshot = new PVEVmidQemuNodeNodesSnapshot($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $template;
 
+        /**
+         * Get VmidQemuNodeNodesTemplate
+         * @return PVEVmidQemuNodeNodesTemplate
+         */
         public function getTemplate()
         {
             return $this->template ?: ($this->template = new PVEVmidQemuNodeNodesTemplate($this->client, $this->node, $this->vmid));
@@ -3571,11 +4658,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidQemuNodeNodesFirewall
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidQemuNodeNodesFirewall extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -3583,43 +4683,85 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
         }
 
+        /**
+         * @ignore
+         */
         private $rules;
 
+        /**
+         * Get FirewallVmidQemuNodeNodesRules
+         * @return PVEFirewallVmidQemuNodeNodesRules
+         */
         public function getRules()
         {
             return $this->rules ?: ($this->rules = new PVEFirewallVmidQemuNodeNodesRules($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $aliases;
 
+        /**
+         * Get FirewallVmidQemuNodeNodesAliases
+         * @return PVEFirewallVmidQemuNodeNodesAliases
+         */
         public function getAliases()
         {
             return $this->aliases ?: ($this->aliases = new PVEFirewallVmidQemuNodeNodesAliases($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $ipset;
 
+        /**
+         * Get FirewallVmidQemuNodeNodesIpset
+         * @return PVEFirewallVmidQemuNodeNodesIpset
+         */
         public function getIpset()
         {
             return $this->ipset ?: ($this->ipset = new PVEFirewallVmidQemuNodeNodesIpset($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $options;
 
+        /**
+         * Get FirewallVmidQemuNodeNodesOptions
+         * @return PVEFirewallVmidQemuNodeNodesOptions
+         */
         public function getOptions()
         {
             return $this->options ?: ($this->options = new PVEFirewallVmidQemuNodeNodesOptions($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $log;
 
+        /**
+         * Get FirewallVmidQemuNodeNodesLog
+         * @return PVEFirewallVmidQemuNodeNodesLog
+         */
         public function getLog()
         {
             return $this->log ?: ($this->log = new PVEFirewallVmidQemuNodeNodesLog($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $refs;
 
+        /**
+         * Get FirewallVmidQemuNodeNodesRefs
+         * @return PVEFirewallVmidQemuNodeNodesRefs
+         */
         public function getRefs()
         {
             return $this->refs ?: ($this->refs = new PVEFirewallVmidQemuNodeNodesRefs($this->client, $this->node, $this->vmid));
@@ -3644,11 +4786,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEFirewallVmidQemuNodeNodesRules
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEFirewallVmidQemuNodeNodesRules extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -3656,6 +4811,11 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
         }
 
+        /**
+         * Get ItemRulesFirewallVmidQemuNodeNodesPos
+         * @param pos
+         * @return PVEItemRulesFirewallVmidQemuNodeNodesPos
+         */
         public function get($pos)
         {
             return new PVEItemRulesFirewallVmidQemuNodeNodesPos($this->client, $this->node, $this->vmid, $pos);
@@ -3739,12 +4899,28 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemRulesFirewallVmidQemuNodeNodesPos
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemRulesFirewallVmidQemuNodeNodesPos extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
+        /**
+         * @ignore
+         */
         private $pos;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid, $pos)
         {
             $this->client = $client;
@@ -3855,11 +5031,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEFirewallVmidQemuNodeNodesAliases
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEFirewallVmidQemuNodeNodesAliases extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -3867,6 +5056,11 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
         }
 
+        /**
+         * Get ItemAliasesFirewallVmidQemuNodeNodesName
+         * @param name
+         * @return PVEItemAliasesFirewallVmidQemuNodeNodesName
+         */
         public function get($name)
         {
             return new PVEItemAliasesFirewallVmidQemuNodeNodesName($this->client, $this->node, $this->vmid, $name);
@@ -3918,12 +5112,28 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemAliasesFirewallVmidQemuNodeNodesName
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemAliasesFirewallVmidQemuNodeNodesName extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
+        /**
+         * @ignore
+         */
         private $name;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid, $name)
         {
             $this->client = $client;
@@ -4002,11 +5212,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEFirewallVmidQemuNodeNodesIpset
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEFirewallVmidQemuNodeNodesIpset extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -4014,6 +5237,11 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
         }
 
+        /**
+         * Get ItemIpsetFirewallVmidQemuNodeNodesName
+         * @param name
+         * @return PVEItemIpsetFirewallVmidQemuNodeNodesName
+         */
         public function get($name)
         {
             return new PVEItemIpsetFirewallVmidQemuNodeNodesName($this->client, $this->node, $this->vmid, $name);
@@ -4068,12 +5296,28 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemIpsetFirewallVmidQemuNodeNodesName
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemIpsetFirewallVmidQemuNodeNodesName extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
+        /**
+         * @ignore
+         */
         private $name;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid, $name)
         {
             $this->client = $client;
@@ -4082,6 +5326,11 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->name = $name;
         }
 
+        /**
+         * Get ItemNameIpsetFirewallVmidQemuNodeNodesCidr
+         * @param cidr
+         * @return PVEItemNameIpsetFirewallVmidQemuNodeNodesCidr
+         */
         public function get($cidr)
         {
             return new PVEItemNameIpsetFirewallVmidQemuNodeNodesCidr($this->client, $this->node, $this->vmid, $this->name, $cidr);
@@ -4151,13 +5400,32 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemNameIpsetFirewallVmidQemuNodeNodesCidr
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemNameIpsetFirewallVmidQemuNodeNodesCidr extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
+        /**
+         * @ignore
+         */
         private $name;
+        /**
+         * @ignore
+         */
         private $cidr;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid, $name, $cidr)
         {
             $this->client = $client;
@@ -4234,11 +5502,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEFirewallVmidQemuNodeNodesOptions
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEFirewallVmidQemuNodeNodesOptions extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -4327,11 +5608,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEFirewallVmidQemuNodeNodesLog
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEFirewallVmidQemuNodeNodesLog extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -4364,11 +5658,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEFirewallVmidQemuNodeNodesRefs
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEFirewallVmidQemuNodeNodesRefs extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -4400,11 +5707,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidQemuNodeNodesRrd
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidQemuNodeNodesRrd extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -4444,11 +5764,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidQemuNodeNodesRrddata
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidQemuNodeNodesRrddata extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -4485,11 +5818,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidQemuNodeNodesConfig
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidQemuNodeNodesConfig extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -4952,11 +6298,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidQemuNodeNodesPending
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidQemuNodeNodesPending extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -4983,11 +6342,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidQemuNodeNodesUnlink
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidQemuNodeNodesUnlink extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -5020,11 +6392,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidQemuNodeNodesVncproxy
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidQemuNodeNodesVncproxy extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -5054,11 +6439,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidQemuNodeNodesVncwebsocket
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidQemuNodeNodesVncwebsocket extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -5091,11 +6489,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidQemuNodeNodesSpiceproxy
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidQemuNodeNodesSpiceproxy extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -5125,11 +6536,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidQemuNodeNodesStatus
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidQemuNodeNodesStatus extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -5137,50 +6561,99 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
         }
 
+        /**
+         * @ignore
+         */
         private $current;
 
+        /**
+         * Get StatusVmidQemuNodeNodesCurrent
+         * @return PVEStatusVmidQemuNodeNodesCurrent
+         */
         public function getCurrent()
         {
             return $this->current ?: ($this->current = new PVEStatusVmidQemuNodeNodesCurrent($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $start;
 
+        /**
+         * Get StatusVmidQemuNodeNodesStart
+         * @return PVEStatusVmidQemuNodeNodesStart
+         */
         public function getStart()
         {
             return $this->start ?: ($this->start = new PVEStatusVmidQemuNodeNodesStart($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $stop;
 
+        /**
+         * Get StatusVmidQemuNodeNodesStop
+         * @return PVEStatusVmidQemuNodeNodesStop
+         */
         public function getStop()
         {
             return $this->stop ?: ($this->stop = new PVEStatusVmidQemuNodeNodesStop($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $reset;
 
+        /**
+         * Get StatusVmidQemuNodeNodesReset
+         * @return PVEStatusVmidQemuNodeNodesReset
+         */
         public function getReset()
         {
             return $this->reset ?: ($this->reset = new PVEStatusVmidQemuNodeNodesReset($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $shutdown;
 
+        /**
+         * Get StatusVmidQemuNodeNodesShutdown
+         * @return PVEStatusVmidQemuNodeNodesShutdown
+         */
         public function getShutdown()
         {
             return $this->shutdown ?: ($this->shutdown = new PVEStatusVmidQemuNodeNodesShutdown($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $suspend;
 
+        /**
+         * Get StatusVmidQemuNodeNodesSuspend
+         * @return PVEStatusVmidQemuNodeNodesSuspend
+         */
         public function getSuspend()
         {
             return $this->suspend ?: ($this->suspend = new PVEStatusVmidQemuNodeNodesSuspend($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $resume;
 
+        /**
+         * Get StatusVmidQemuNodeNodesResume
+         * @return PVEStatusVmidQemuNodeNodesResume
+         */
         public function getResume()
         {
             return $this->resume ?: ($this->resume = new PVEStatusVmidQemuNodeNodesResume($this->client, $this->node, $this->vmid));
@@ -5205,11 +6678,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEStatusVmidQemuNodeNodesCurrent
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEStatusVmidQemuNodeNodesCurrent extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -5236,11 +6722,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEStatusVmidQemuNodeNodesStart
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEStatusVmidQemuNodeNodesStart extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -5290,11 +6789,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEStatusVmidQemuNodeNodesStop
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEStatusVmidQemuNodeNodesStop extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -5333,11 +6845,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEStatusVmidQemuNodeNodesReset
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEStatusVmidQemuNodeNodesReset extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -5367,11 +6892,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEStatusVmidQemuNodeNodesShutdown
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEStatusVmidQemuNodeNodesShutdown extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -5410,11 +6948,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEStatusVmidQemuNodeNodesSuspend
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEStatusVmidQemuNodeNodesSuspend extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -5444,11 +6995,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEStatusVmidQemuNodeNodesResume
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEStatusVmidQemuNodeNodesResume extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -5481,11 +7045,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidQemuNodeNodesSendkey
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidQemuNodeNodesSendkey extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -5518,11 +7095,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidQemuNodeNodesFeature
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidQemuNodeNodesFeature extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -5557,11 +7147,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidQemuNodeNodesClone
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidQemuNodeNodesClone extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -5617,11 +7220,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidQemuNodeNodesMoveDisk
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidQemuNodeNodesMoveDisk extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -5667,11 +7283,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidQemuNodeNodesMigrate
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidQemuNodeNodesMigrate extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -5721,11 +7350,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidQemuNodeNodesMonitor
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidQemuNodeNodesMonitor extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -5755,11 +7397,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidQemuNodeNodesAgent
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidQemuNodeNodesAgent extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -5791,11 +7446,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidQemuNodeNodesResize
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidQemuNodeNodesResize extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -5836,11 +7504,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidQemuNodeNodesSnapshot
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidQemuNodeNodesSnapshot extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -5848,6 +7529,11 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
         }
 
+        /**
+         * Get ItemSnapshotVmidQemuNodeNodesSnapname
+         * @param snapname
+         * @return PVEItemSnapshotVmidQemuNodeNodesSnapname
+         */
         public function get($snapname)
         {
             return new PVEItemSnapshotVmidQemuNodeNodesSnapname($this->client, $this->node, $this->vmid, $snapname);
@@ -5899,12 +7585,28 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemSnapshotVmidQemuNodeNodesSnapname
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemSnapshotVmidQemuNodeNodesSnapname extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
+        /**
+         * @ignore
+         */
         private $snapname;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid, $snapname)
         {
             $this->client = $client;
@@ -5913,15 +7615,29 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->snapname = $snapname;
         }
 
+        /**
+         * @ignore
+         */
         private $config;
 
+        /**
+         * Get SnapnameSnapshotVmidQemuNodeNodesConfig
+         * @return PVESnapnameSnapshotVmidQemuNodeNodesConfig
+         */
         public function getConfig()
         {
             return $this->config ?: ($this->config = new PVESnapnameSnapshotVmidQemuNodeNodesConfig($this->client, $this->node, $this->vmid, $this->snapname));
         }
 
+        /**
+         * @ignore
+         */
         private $rollback;
 
+        /**
+         * Get SnapnameSnapshotVmidQemuNodeNodesRollback
+         * @return PVESnapnameSnapshotVmidQemuNodeNodesRollback
+         */
         public function getRollback()
         {
             return $this->rollback ?: ($this->rollback = new PVESnapnameSnapshotVmidQemuNodeNodesRollback($this->client, $this->node, $this->vmid, $this->snapname));
@@ -5967,12 +7683,28 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVESnapnameSnapshotVmidQemuNodeNodesConfig
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVESnapnameSnapshotVmidQemuNodeNodesConfig extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
+        /**
+         * @ignore
+         */
         private $snapname;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid, $snapname)
         {
             $this->client = $client;
@@ -6021,12 +7753,28 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVESnapnameSnapshotVmidQemuNodeNodesRollback
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVESnapnameSnapshotVmidQemuNodeNodesRollback extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
+        /**
+         * @ignore
+         */
         private $snapname;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid, $snapname)
         {
             $this->client = $client;
@@ -6054,11 +7802,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidQemuNodeNodesTemplate
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidQemuNodeNodesTemplate extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -6090,16 +7851,31 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesLxc
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesLxc extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
             $this->node = $node;
         }
 
+        /**
+         * Get ItemLxcNodeNodesVmid
+         * @param vmid
+         * @return PVEItemLxcNodeNodesVmid
+         */
         public function get($vmid)
         {
             return new PVEItemLxcNodeNodesVmid($this->client, $this->node, $vmid);
@@ -6249,11 +8025,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemLxcNodeNodesVmid
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemLxcNodeNodesVmid extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -6261,99 +8050,197 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
         }
 
+        /**
+         * @ignore
+         */
         private $config;
 
+        /**
+         * Get VmidLxcNodeNodesConfig
+         * @return PVEVmidLxcNodeNodesConfig
+         */
         public function getConfig()
         {
             return $this->config ?: ($this->config = new PVEVmidLxcNodeNodesConfig($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $status;
 
+        /**
+         * Get VmidLxcNodeNodesStatus
+         * @return PVEVmidLxcNodeNodesStatus
+         */
         public function getStatus()
         {
             return $this->status ?: ($this->status = new PVEVmidLxcNodeNodesStatus($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $snapshot;
 
+        /**
+         * Get VmidLxcNodeNodesSnapshot
+         * @return PVEVmidLxcNodeNodesSnapshot
+         */
         public function getSnapshot()
         {
             return $this->snapshot ?: ($this->snapshot = new PVEVmidLxcNodeNodesSnapshot($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $firewall;
 
+        /**
+         * Get VmidLxcNodeNodesFirewall
+         * @return PVEVmidLxcNodeNodesFirewall
+         */
         public function getFirewall()
         {
             return $this->firewall ?: ($this->firewall = new PVEVmidLxcNodeNodesFirewall($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $rrd;
 
+        /**
+         * Get VmidLxcNodeNodesRrd
+         * @return PVEVmidLxcNodeNodesRrd
+         */
         public function getRrd()
         {
             return $this->rrd ?: ($this->rrd = new PVEVmidLxcNodeNodesRrd($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $rrddata;
 
+        /**
+         * Get VmidLxcNodeNodesRrddata
+         * @return PVEVmidLxcNodeNodesRrddata
+         */
         public function getRrddata()
         {
             return $this->rrddata ?: ($this->rrddata = new PVEVmidLxcNodeNodesRrddata($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $vncproxy;
 
+        /**
+         * Get VmidLxcNodeNodesVncproxy
+         * @return PVEVmidLxcNodeNodesVncproxy
+         */
         public function getVncproxy()
         {
             return $this->vncproxy ?: ($this->vncproxy = new PVEVmidLxcNodeNodesVncproxy($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $vncwebsocket;
 
+        /**
+         * Get VmidLxcNodeNodesVncwebsocket
+         * @return PVEVmidLxcNodeNodesVncwebsocket
+         */
         public function getVncwebsocket()
         {
             return $this->vncwebsocket ?: ($this->vncwebsocket = new PVEVmidLxcNodeNodesVncwebsocket($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $spiceproxy;
 
+        /**
+         * Get VmidLxcNodeNodesSpiceproxy
+         * @return PVEVmidLxcNodeNodesSpiceproxy
+         */
         public function getSpiceproxy()
         {
             return $this->spiceproxy ?: ($this->spiceproxy = new PVEVmidLxcNodeNodesSpiceproxy($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $migrate;
 
+        /**
+         * Get VmidLxcNodeNodesMigrate
+         * @return PVEVmidLxcNodeNodesMigrate
+         */
         public function getMigrate()
         {
             return $this->migrate ?: ($this->migrate = new PVEVmidLxcNodeNodesMigrate($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $feature;
 
+        /**
+         * Get VmidLxcNodeNodesFeature
+         * @return PVEVmidLxcNodeNodesFeature
+         */
         public function getFeature()
         {
             return $this->feature ?: ($this->feature = new PVEVmidLxcNodeNodesFeature($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $template;
 
+        /**
+         * Get VmidLxcNodeNodesTemplate
+         * @return PVEVmidLxcNodeNodesTemplate
+         */
         public function getTemplate()
         {
             return $this->template ?: ($this->template = new PVEVmidLxcNodeNodesTemplate($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $clone;
 
+        /**
+         * Get VmidLxcNodeNodesClone
+         * @return PVEVmidLxcNodeNodesClone
+         */
         public function getClone()
         {
             return $this->clone ?: ($this->clone = new PVEVmidLxcNodeNodesClone($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $resize;
 
+        /**
+         * Get VmidLxcNodeNodesResize
+         * @return PVEVmidLxcNodeNodesResize
+         */
         public function getResize()
         {
             return $this->resize ?: ($this->resize = new PVEVmidLxcNodeNodesResize($this->client, $this->node, $this->vmid));
@@ -6396,11 +8283,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidLxcNodeNodesConfig
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidLxcNodeNodesConfig extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -6531,11 +8431,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidLxcNodeNodesStatus
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidLxcNodeNodesStatus extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -6543,43 +8456,85 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
         }
 
+        /**
+         * @ignore
+         */
         private $current;
 
+        /**
+         * Get StatusVmidLxcNodeNodesCurrent
+         * @return PVEStatusVmidLxcNodeNodesCurrent
+         */
         public function getCurrent()
         {
             return $this->current ?: ($this->current = new PVEStatusVmidLxcNodeNodesCurrent($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $start;
 
+        /**
+         * Get StatusVmidLxcNodeNodesStart
+         * @return PVEStatusVmidLxcNodeNodesStart
+         */
         public function getStart()
         {
             return $this->start ?: ($this->start = new PVEStatusVmidLxcNodeNodesStart($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $stop;
 
+        /**
+         * Get StatusVmidLxcNodeNodesStop
+         * @return PVEStatusVmidLxcNodeNodesStop
+         */
         public function getStop()
         {
             return $this->stop ?: ($this->stop = new PVEStatusVmidLxcNodeNodesStop($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $shutdown;
 
+        /**
+         * Get StatusVmidLxcNodeNodesShutdown
+         * @return PVEStatusVmidLxcNodeNodesShutdown
+         */
         public function getShutdown()
         {
             return $this->shutdown ?: ($this->shutdown = new PVEStatusVmidLxcNodeNodesShutdown($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $suspend;
 
+        /**
+         * Get StatusVmidLxcNodeNodesSuspend
+         * @return PVEStatusVmidLxcNodeNodesSuspend
+         */
         public function getSuspend()
         {
             return $this->suspend ?: ($this->suspend = new PVEStatusVmidLxcNodeNodesSuspend($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $resume;
 
+        /**
+         * Get StatusVmidLxcNodeNodesResume
+         * @return PVEStatusVmidLxcNodeNodesResume
+         */
         public function getResume()
         {
             return $this->resume ?: ($this->resume = new PVEStatusVmidLxcNodeNodesResume($this->client, $this->node, $this->vmid));
@@ -6604,11 +8559,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEStatusVmidLxcNodeNodesCurrent
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEStatusVmidLxcNodeNodesCurrent extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -6635,11 +8603,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEStatusVmidLxcNodeNodesStart
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEStatusVmidLxcNodeNodesStart extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -6669,11 +8650,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEStatusVmidLxcNodeNodesStop
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEStatusVmidLxcNodeNodesStop extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -6703,11 +8697,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEStatusVmidLxcNodeNodesShutdown
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEStatusVmidLxcNodeNodesShutdown extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -6740,11 +8747,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEStatusVmidLxcNodeNodesSuspend
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEStatusVmidLxcNodeNodesSuspend extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -6771,11 +8791,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEStatusVmidLxcNodeNodesResume
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEStatusVmidLxcNodeNodesResume extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -6802,11 +8835,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidLxcNodeNodesSnapshot
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidLxcNodeNodesSnapshot extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -6814,6 +8860,11 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
         }
 
+        /**
+         * Get ItemSnapshotVmidLxcNodeNodesSnapname
+         * @param snapname
+         * @return PVEItemSnapshotVmidLxcNodeNodesSnapname
+         */
         public function get($snapname)
         {
             return new PVEItemSnapshotVmidLxcNodeNodesSnapname($this->client, $this->node, $this->vmid, $snapname);
@@ -6862,12 +8913,28 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemSnapshotVmidLxcNodeNodesSnapname
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemSnapshotVmidLxcNodeNodesSnapname extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
+        /**
+         * @ignore
+         */
         private $snapname;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid, $snapname)
         {
             $this->client = $client;
@@ -6876,15 +8943,29 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->snapname = $snapname;
         }
 
+        /**
+         * @ignore
+         */
         private $rollback;
 
+        /**
+         * Get SnapnameSnapshotVmidLxcNodeNodesRollback
+         * @return PVESnapnameSnapshotVmidLxcNodeNodesRollback
+         */
         public function getRollback()
         {
             return $this->rollback ?: ($this->rollback = new PVESnapnameSnapshotVmidLxcNodeNodesRollback($this->client, $this->node, $this->vmid, $this->snapname));
         }
 
+        /**
+         * @ignore
+         */
         private $config;
 
+        /**
+         * Get SnapnameSnapshotVmidLxcNodeNodesConfig
+         * @return PVESnapnameSnapshotVmidLxcNodeNodesConfig
+         */
         public function getConfig()
         {
             return $this->config ?: ($this->config = new PVESnapnameSnapshotVmidLxcNodeNodesConfig($this->client, $this->node, $this->vmid, $this->snapname));
@@ -6930,12 +9011,28 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVESnapnameSnapshotVmidLxcNodeNodesRollback
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVESnapnameSnapshotVmidLxcNodeNodesRollback extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
+        /**
+         * @ignore
+         */
         private $snapname;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid, $snapname)
         {
             $this->client = $client;
@@ -6963,12 +9060,28 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVESnapnameSnapshotVmidLxcNodeNodesConfig
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVESnapnameSnapshotVmidLxcNodeNodesConfig extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
+        /**
+         * @ignore
+         */
         private $snapname;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid, $snapname)
         {
             $this->client = $client;
@@ -7017,11 +9130,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidLxcNodeNodesFirewall
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidLxcNodeNodesFirewall extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -7029,43 +9155,85 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
         }
 
+        /**
+         * @ignore
+         */
         private $rules;
 
+        /**
+         * Get FirewallVmidLxcNodeNodesRules
+         * @return PVEFirewallVmidLxcNodeNodesRules
+         */
         public function getRules()
         {
             return $this->rules ?: ($this->rules = new PVEFirewallVmidLxcNodeNodesRules($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $aliases;
 
+        /**
+         * Get FirewallVmidLxcNodeNodesAliases
+         * @return PVEFirewallVmidLxcNodeNodesAliases
+         */
         public function getAliases()
         {
             return $this->aliases ?: ($this->aliases = new PVEFirewallVmidLxcNodeNodesAliases($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $ipset;
 
+        /**
+         * Get FirewallVmidLxcNodeNodesIpset
+         * @return PVEFirewallVmidLxcNodeNodesIpset
+         */
         public function getIpset()
         {
             return $this->ipset ?: ($this->ipset = new PVEFirewallVmidLxcNodeNodesIpset($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $options;
 
+        /**
+         * Get FirewallVmidLxcNodeNodesOptions
+         * @return PVEFirewallVmidLxcNodeNodesOptions
+         */
         public function getOptions()
         {
             return $this->options ?: ($this->options = new PVEFirewallVmidLxcNodeNodesOptions($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $log;
 
+        /**
+         * Get FirewallVmidLxcNodeNodesLog
+         * @return PVEFirewallVmidLxcNodeNodesLog
+         */
         public function getLog()
         {
             return $this->log ?: ($this->log = new PVEFirewallVmidLxcNodeNodesLog($this->client, $this->node, $this->vmid));
         }
 
+        /**
+         * @ignore
+         */
         private $refs;
 
+        /**
+         * Get FirewallVmidLxcNodeNodesRefs
+         * @return PVEFirewallVmidLxcNodeNodesRefs
+         */
         public function getRefs()
         {
             return $this->refs ?: ($this->refs = new PVEFirewallVmidLxcNodeNodesRefs($this->client, $this->node, $this->vmid));
@@ -7090,11 +9258,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEFirewallVmidLxcNodeNodesRules
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEFirewallVmidLxcNodeNodesRules extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -7102,6 +9283,11 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
         }
 
+        /**
+         * Get ItemRulesFirewallVmidLxcNodeNodesPos
+         * @param pos
+         * @return PVEItemRulesFirewallVmidLxcNodeNodesPos
+         */
         public function get($pos)
         {
             return new PVEItemRulesFirewallVmidLxcNodeNodesPos($this->client, $this->node, $this->vmid, $pos);
@@ -7185,12 +9371,28 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemRulesFirewallVmidLxcNodeNodesPos
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemRulesFirewallVmidLxcNodeNodesPos extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
+        /**
+         * @ignore
+         */
         private $pos;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid, $pos)
         {
             $this->client = $client;
@@ -7301,11 +9503,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEFirewallVmidLxcNodeNodesAliases
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEFirewallVmidLxcNodeNodesAliases extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -7313,6 +9528,11 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
         }
 
+        /**
+         * Get ItemAliasesFirewallVmidLxcNodeNodesName
+         * @param name
+         * @return PVEItemAliasesFirewallVmidLxcNodeNodesName
+         */
         public function get($name)
         {
             return new PVEItemAliasesFirewallVmidLxcNodeNodesName($this->client, $this->node, $this->vmid, $name);
@@ -7364,12 +9584,28 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemAliasesFirewallVmidLxcNodeNodesName
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemAliasesFirewallVmidLxcNodeNodesName extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
+        /**
+         * @ignore
+         */
         private $name;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid, $name)
         {
             $this->client = $client;
@@ -7448,11 +9684,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEFirewallVmidLxcNodeNodesIpset
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEFirewallVmidLxcNodeNodesIpset extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -7460,6 +9709,11 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
         }
 
+        /**
+         * Get ItemIpsetFirewallVmidLxcNodeNodesName
+         * @param name
+         * @return PVEItemIpsetFirewallVmidLxcNodeNodesName
+         */
         public function get($name)
         {
             return new PVEItemIpsetFirewallVmidLxcNodeNodesName($this->client, $this->node, $this->vmid, $name);
@@ -7514,12 +9768,28 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemIpsetFirewallVmidLxcNodeNodesName
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemIpsetFirewallVmidLxcNodeNodesName extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
+        /**
+         * @ignore
+         */
         private $name;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid, $name)
         {
             $this->client = $client;
@@ -7528,6 +9798,11 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->name = $name;
         }
 
+        /**
+         * Get ItemNameIpsetFirewallVmidLxcNodeNodesCidr
+         * @param cidr
+         * @return PVEItemNameIpsetFirewallVmidLxcNodeNodesCidr
+         */
         public function get($cidr)
         {
             return new PVEItemNameIpsetFirewallVmidLxcNodeNodesCidr($this->client, $this->node, $this->vmid, $this->name, $cidr);
@@ -7597,13 +9872,32 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemNameIpsetFirewallVmidLxcNodeNodesCidr
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemNameIpsetFirewallVmidLxcNodeNodesCidr extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
+        /**
+         * @ignore
+         */
         private $name;
+        /**
+         * @ignore
+         */
         private $cidr;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid, $name, $cidr)
         {
             $this->client = $client;
@@ -7680,11 +9974,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEFirewallVmidLxcNodeNodesOptions
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEFirewallVmidLxcNodeNodesOptions extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -7773,11 +10080,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEFirewallVmidLxcNodeNodesLog
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEFirewallVmidLxcNodeNodesLog extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -7810,11 +10130,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEFirewallVmidLxcNodeNodesRefs
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEFirewallVmidLxcNodeNodesRefs extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -7846,11 +10179,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidLxcNodeNodesRrd
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidLxcNodeNodesRrd extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -7890,11 +10236,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidLxcNodeNodesRrddata
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidLxcNodeNodesRrddata extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -7931,11 +10290,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidLxcNodeNodesVncproxy
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidLxcNodeNodesVncproxy extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -7971,11 +10343,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidLxcNodeNodesVncwebsocket
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidLxcNodeNodesVncwebsocket extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -8008,11 +10393,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidLxcNodeNodesSpiceproxy
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidLxcNodeNodesSpiceproxy extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -8042,11 +10440,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidLxcNodeNodesMigrate
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidLxcNodeNodesMigrate extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -8088,11 +10499,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidLxcNodeNodesFeature
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidLxcNodeNodesFeature extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -8127,11 +10551,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidLxcNodeNodesTemplate
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidLxcNodeNodesTemplate extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -8161,11 +10598,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidLxcNodeNodesClone
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidLxcNodeNodesClone extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -8216,11 +10666,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVmidLxcNodeNodesResize
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVmidLxcNodeNodesResize extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $vmid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $vmid)
         {
             $this->client = $client;
@@ -8258,109 +10721,217 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesCeph
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesCeph extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
             $this->node = $node;
         }
 
+        /**
+         * @ignore
+         */
         private $osd;
 
+        /**
+         * Get CephNodeNodesOsd
+         * @return PVECephNodeNodesOsd
+         */
         public function getOsd()
         {
             return $this->osd ?: ($this->osd = new PVECephNodeNodesOsd($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $disks;
 
+        /**
+         * Get CephNodeNodesDisks
+         * @return PVECephNodeNodesDisks
+         */
         public function getDisks()
         {
             return $this->disks ?: ($this->disks = new PVECephNodeNodesDisks($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $config;
 
+        /**
+         * Get CephNodeNodesConfig
+         * @return PVECephNodeNodesConfig
+         */
         public function getConfig()
         {
             return $this->config ?: ($this->config = new PVECephNodeNodesConfig($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $mon;
 
+        /**
+         * Get CephNodeNodesMon
+         * @return PVECephNodeNodesMon
+         */
         public function getMon()
         {
             return $this->mon ?: ($this->mon = new PVECephNodeNodesMon($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $init;
 
+        /**
+         * Get CephNodeNodesInit
+         * @return PVECephNodeNodesInit
+         */
         public function getInit()
         {
             return $this->init ?: ($this->init = new PVECephNodeNodesInit($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $mgr;
 
+        /**
+         * Get CephNodeNodesMgr
+         * @return PVECephNodeNodesMgr
+         */
         public function getMgr()
         {
             return $this->mgr ?: ($this->mgr = new PVECephNodeNodesMgr($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $stop;
 
+        /**
+         * Get CephNodeNodesStop
+         * @return PVECephNodeNodesStop
+         */
         public function getStop()
         {
             return $this->stop ?: ($this->stop = new PVECephNodeNodesStop($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $start;
 
+        /**
+         * Get CephNodeNodesStart
+         * @return PVECephNodeNodesStart
+         */
         public function getStart()
         {
             return $this->start ?: ($this->start = new PVECephNodeNodesStart($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $status;
 
+        /**
+         * Get CephNodeNodesStatus
+         * @return PVECephNodeNodesStatus
+         */
         public function getStatus()
         {
             return $this->status ?: ($this->status = new PVECephNodeNodesStatus($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $pools;
 
+        /**
+         * Get CephNodeNodesPools
+         * @return PVECephNodeNodesPools
+         */
         public function getPools()
         {
             return $this->pools ?: ($this->pools = new PVECephNodeNodesPools($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $flags;
 
+        /**
+         * Get CephNodeNodesFlags
+         * @return PVECephNodeNodesFlags
+         */
         public function getFlags()
         {
             return $this->flags ?: ($this->flags = new PVECephNodeNodesFlags($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $crush;
 
+        /**
+         * Get CephNodeNodesCrush
+         * @return PVECephNodeNodesCrush
+         */
         public function getCrush()
         {
             return $this->crush ?: ($this->crush = new PVECephNodeNodesCrush($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $log;
 
+        /**
+         * Get CephNodeNodesLog
+         * @return PVECephNodeNodesLog
+         */
         public function getLog()
         {
             return $this->log ?: ($this->log = new PVECephNodeNodesLog($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $rules;
 
+        /**
+         * Get CephNodeNodesRules
+         * @return PVECephNodeNodesRules
+         */
         public function getRules()
         {
             return $this->rules ?: ($this->rules = new PVECephNodeNodesRules($this->client, $this->node));
@@ -8385,16 +10956,31 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVECephNodeNodesOsd
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVECephNodeNodesOsd extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
             $this->node = $node;
         }
 
+        /**
+         * Get ItemOsdCephNodeNodesOsdid
+         * @param osdid
+         * @return PVEItemOsdCephNodeNodesOsdid
+         */
         public function get($osdid)
         {
             return new PVEItemOsdCephNodeNodesOsdid($this->client, $this->node, $osdid);
@@ -8454,11 +11040,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemOsdCephNodeNodesOsdid
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemOsdCephNodeNodesOsdid extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $osdid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $osdid)
         {
             $this->client = $client;
@@ -8466,15 +11065,29 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->osdid = $osdid;
         }
 
+        /**
+         * @ignore
+         */
         private $in;
 
+        /**
+         * Get OsdidOsdCephNodeNodesIn
+         * @return PVEOsdidOsdCephNodeNodesIn
+         */
         public function getIn()
         {
             return $this->in ?: ($this->in = new PVEOsdidOsdCephNodeNodesIn($this->client, $this->node, $this->osdid));
         }
 
+        /**
+         * @ignore
+         */
         private $out;
 
+        /**
+         * Get OsdidOsdCephNodeNodesOut
+         * @return PVEOsdidOsdCephNodeNodesOut
+         */
         public function getOut()
         {
             return $this->out ?: ($this->out = new PVEOsdidOsdCephNodeNodesOut($this->client, $this->node, $this->osdid));
@@ -8502,11 +11115,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEOsdidOsdCephNodeNodesIn
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEOsdidOsdCephNodeNodesIn extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $osdid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $osdid)
         {
             $this->client = $client;
@@ -8533,11 +11159,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEOsdidOsdCephNodeNodesOut
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEOsdidOsdCephNodeNodesOut extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $osdid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $osdid)
         {
             $this->client = $client;
@@ -8564,10 +11203,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVECephNodeNodesDisks
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVECephNodeNodesDisks extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -8598,10 +11247,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVECephNodeNodesConfig
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVECephNodeNodesConfig extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -8627,16 +11286,31 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVECephNodeNodesMon
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVECephNodeNodesMon extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
             $this->node = $node;
         }
 
+        /**
+         * Get ItemMonCephNodeNodesMonid
+         * @param monid
+         * @return PVEItemMonCephNodeNodesMonid
+         */
         public function get($monid)
         {
             return new PVEItemMonCephNodeNodesMonid($this->client, $this->node, $monid);
@@ -8685,11 +11359,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemMonCephNodeNodesMonid
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemMonCephNodeNodesMonid extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $monid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $monid)
         {
             $this->client = $client;
@@ -8719,10 +11406,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVECephNodeNodesInit
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVECephNodeNodesInit extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -8763,16 +11460,31 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVECephNodeNodesMgr
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVECephNodeNodesMgr extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
             $this->node = $node;
         }
 
+        /**
+         * Get ItemMgrCephNodeNodesId
+         * @param id
+         * @return PVEItemMgrCephNodeNodesId
+         */
         public function get($id)
         {
             return new PVEItemMgrCephNodeNodesId($this->client, $this->node, $id);
@@ -8800,11 +11512,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemMgrCephNodeNodesId
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemMgrCephNodeNodesId extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $id;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $id)
         {
             $this->client = $client;
@@ -8831,10 +11556,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVECephNodeNodesStop
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVECephNodeNodesStop extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -8863,10 +11598,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVECephNodeNodesStart
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVECephNodeNodesStart extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -8895,10 +11640,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVECephNodeNodesStatus
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVECephNodeNodesStatus extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -8924,16 +11679,31 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVECephNodeNodesPools
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVECephNodeNodesPools extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
             $this->node = $node;
         }
 
+        /**
+         * Get ItemPoolsCephNodeNodesName
+         * @param name
+         * @return PVEItemPoolsCephNodeNodesName
+         */
         public function get($name)
         {
             return new PVEItemPoolsCephNodeNodesName($this->client, $this->node, $name);
@@ -8999,11 +11769,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemPoolsCephNodeNodesName
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemPoolsCephNodeNodesName extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $name;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $name)
         {
             $this->client = $client;
@@ -9036,16 +11819,31 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVECephNodeNodesFlags
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVECephNodeNodesFlags extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
             $this->node = $node;
         }
 
+        /**
+         * Get ItemFlagsCephNodeNodesFlag
+         * @param flag
+         * @return PVEItemFlagsCephNodeNodesFlag
+         */
         public function get($flag)
         {
             return new PVEItemFlagsCephNodeNodesFlag($this->client, $this->node, $flag);
@@ -9070,11 +11868,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemFlagsCephNodeNodesFlag
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemFlagsCephNodeNodesFlag extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $flag;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $flag)
         {
             $this->client = $client;
@@ -9119,10 +11930,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVECephNodeNodesCrush
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVECephNodeNodesCrush extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -9148,10 +11969,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVECephNodeNodesLog
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVECephNodeNodesLog extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -9183,10 +12014,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVECephNodeNodesRules
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVECephNodeNodesRules extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -9212,18 +12053,35 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesVzdump
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesVzdump extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
             $this->node = $node;
         }
 
+        /**
+         * @ignore
+         */
         private $extractconfig;
 
+        /**
+         * Get VzdumpNodeNodesExtractconfig
+         * @return PVEVzdumpNodeNodesExtractconfig
+         */
         public function getExtractconfig()
         {
             return $this->extractconfig ?: ($this->extractconfig = new PVEVzdumpNodeNodesExtractconfig($this->client, $this->node));
@@ -9326,10 +12184,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVzdumpNodeNodesExtractconfig
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVzdumpNodeNodesExtractconfig extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -9358,16 +12226,31 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesServices
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesServices extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
             $this->node = $node;
         }
 
+        /**
+         * Get ItemServicesNodeNodesService
+         * @param service
+         * @return PVEItemServicesNodeNodesService
+         */
         public function get($service)
         {
             return new PVEItemServicesNodeNodesService($this->client, $this->node, $service);
@@ -9392,11 +12275,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemServicesNodeNodesService
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemServicesNodeNodesService extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $service;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $service)
         {
             $this->client = $client;
@@ -9404,36 +12300,71 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->service = $service;
         }
 
+        /**
+         * @ignore
+         */
         private $state;
 
+        /**
+         * Get ServiceServicesNodeNodesState
+         * @return PVEServiceServicesNodeNodesState
+         */
         public function getState()
         {
             return $this->state ?: ($this->state = new PVEServiceServicesNodeNodesState($this->client, $this->node, $this->service));
         }
 
+        /**
+         * @ignore
+         */
         private $start;
 
+        /**
+         * Get ServiceServicesNodeNodesStart
+         * @return PVEServiceServicesNodeNodesStart
+         */
         public function getStart()
         {
             return $this->start ?: ($this->start = new PVEServiceServicesNodeNodesStart($this->client, $this->node, $this->service));
         }
 
+        /**
+         * @ignore
+         */
         private $stop;
 
+        /**
+         * Get ServiceServicesNodeNodesStop
+         * @return PVEServiceServicesNodeNodesStop
+         */
         public function getStop()
         {
             return $this->stop ?: ($this->stop = new PVEServiceServicesNodeNodesStop($this->client, $this->node, $this->service));
         }
 
+        /**
+         * @ignore
+         */
         private $restart;
 
+        /**
+         * Get ServiceServicesNodeNodesRestart
+         * @return PVEServiceServicesNodeNodesRestart
+         */
         public function getRestart()
         {
             return $this->restart ?: ($this->restart = new PVEServiceServicesNodeNodesRestart($this->client, $this->node, $this->service));
         }
 
+        /**
+         * @ignore
+         */
         private $reload;
 
+        /**
+         * Get ServiceServicesNodeNodesReload
+         * @return PVEServiceServicesNodeNodesReload
+         */
         public function getReload()
         {
             return $this->reload ?: ($this->reload = new PVEServiceServicesNodeNodesReload($this->client, $this->node, $this->service));
@@ -9458,11 +12389,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEServiceServicesNodeNodesState
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEServiceServicesNodeNodesState extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $service;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $service)
         {
             $this->client = $client;
@@ -9489,11 +12433,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEServiceServicesNodeNodesStart
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEServiceServicesNodeNodesStart extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $service;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $service)
         {
             $this->client = $client;
@@ -9520,11 +12477,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEServiceServicesNodeNodesStop
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEServiceServicesNodeNodesStop extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $service;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $service)
         {
             $this->client = $client;
@@ -9551,11 +12521,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEServiceServicesNodeNodesRestart
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEServiceServicesNodeNodesRestart extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $service;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $service)
         {
             $this->client = $client;
@@ -9582,11 +12565,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEServiceServicesNodeNodesReload
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEServiceServicesNodeNodesReload extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $service;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $service)
         {
             $this->client = $client;
@@ -9613,10 +12609,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesSubscription
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesSubscription extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -9684,16 +12690,31 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesNetwork
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesNetwork extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
             $this->node = $node;
         }
 
+        /**
+         * Get ItemNetworkNodeNodesIface
+         * @param iface
+         * @return PVEItemNetworkNodeNodesIface
+         */
         public function get($iface)
         {
             return new PVEItemNetworkNodeNodesIface($this->client, $this->node, $iface);
@@ -9828,11 +12849,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemNetworkNodeNodesIface
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemNetworkNodeNodesIface extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $iface;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $iface)
         {
             $this->client = $client;
@@ -9964,16 +12998,31 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesTasks
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesTasks extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
             $this->node = $node;
         }
 
+        /**
+         * Get ItemTasksNodeNodesUpid
+         * @param upid
+         * @return PVEItemTasksNodeNodesUpid
+         */
         public function get($upid)
         {
             return new PVEItemTasksNodeNodesUpid($this->client, $this->node, $upid);
@@ -10013,11 +13062,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemTasksNodeNodesUpid
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemTasksNodeNodesUpid extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $upid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $upid)
         {
             $this->client = $client;
@@ -10025,15 +13087,29 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->upid = $upid;
         }
 
+        /**
+         * @ignore
+         */
         private $log;
 
+        /**
+         * Get UpidTasksNodeNodesLog
+         * @return PVEUpidTasksNodeNodesLog
+         */
         public function getLog()
         {
             return $this->log ?: ($this->log = new PVEUpidTasksNodeNodesLog($this->client, $this->node, $this->upid));
         }
 
+        /**
+         * @ignore
+         */
         private $status;
 
+        /**
+         * Get UpidTasksNodeNodesStatus
+         * @return PVEUpidTasksNodeNodesStatus
+         */
         public function getStatus()
         {
             return $this->status ?: ($this->status = new PVEUpidTasksNodeNodesStatus($this->client, $this->node, $this->upid));
@@ -10076,11 +13152,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEUpidTasksNodeNodesLog
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEUpidTasksNodeNodesLog extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $upid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $upid)
         {
             $this->client = $client;
@@ -10113,11 +13202,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEUpidTasksNodeNodesStatus
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEUpidTasksNodeNodesStatus extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $upid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $upid)
         {
             $this->client = $client;
@@ -10144,60 +13246,119 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesScan
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesScan extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
             $this->node = $node;
         }
 
+        /**
+         * @ignore
+         */
         private $zfs;
 
+        /**
+         * Get ScanNodeNodesZfs
+         * @return PVEScanNodeNodesZfs
+         */
         public function getZfs()
         {
             return $this->zfs ?: ($this->zfs = new PVEScanNodeNodesZfs($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $nfs;
 
+        /**
+         * Get ScanNodeNodesNfs
+         * @return PVEScanNodeNodesNfs
+         */
         public function getNfs()
         {
             return $this->nfs ?: ($this->nfs = new PVEScanNodeNodesNfs($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $glusterfs;
 
+        /**
+         * Get ScanNodeNodesGlusterfs
+         * @return PVEScanNodeNodesGlusterfs
+         */
         public function getGlusterfs()
         {
             return $this->glusterfs ?: ($this->glusterfs = new PVEScanNodeNodesGlusterfs($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $iscsi;
 
+        /**
+         * Get ScanNodeNodesIscsi
+         * @return PVEScanNodeNodesIscsi
+         */
         public function getIscsi()
         {
             return $this->iscsi ?: ($this->iscsi = new PVEScanNodeNodesIscsi($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $lvm;
 
+        /**
+         * Get ScanNodeNodesLvm
+         * @return PVEScanNodeNodesLvm
+         */
         public function getLvm()
         {
             return $this->lvm ?: ($this->lvm = new PVEScanNodeNodesLvm($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $lvmthin;
 
+        /**
+         * Get ScanNodeNodesLvmthin
+         * @return PVEScanNodeNodesLvmthin
+         */
         public function getLvmthin()
         {
             return $this->lvmthin ?: ($this->lvmthin = new PVEScanNodeNodesLvmthin($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $usb;
 
+        /**
+         * Get ScanNodeNodesUsb
+         * @return PVEScanNodeNodesUsb
+         */
         public function getUsb()
         {
             return $this->usb ?: ($this->usb = new PVEScanNodeNodesUsb($this->client, $this->node));
@@ -10222,10 +13383,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEScanNodeNodesZfs
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEScanNodeNodesZfs extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -10251,10 +13422,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEScanNodeNodesNfs
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEScanNodeNodesNfs extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -10283,10 +13464,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEScanNodeNodesGlusterfs
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEScanNodeNodesGlusterfs extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -10315,10 +13506,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEScanNodeNodesIscsi
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEScanNodeNodesIscsi extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -10347,10 +13548,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEScanNodeNodesLvm
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEScanNodeNodesLvm extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -10376,10 +13587,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEScanNodeNodesLvmthin
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEScanNodeNodesLvmthin extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -10408,10 +13629,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEScanNodeNodesUsb
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEScanNodeNodesUsb extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -10437,16 +13668,31 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesStorage
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesStorage extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
             $this->node = $node;
         }
 
+        /**
+         * Get ItemStorageNodeNodesStorage
+         * @param storage
+         * @return PVEItemStorageNodeNodesStorage
+         */
         public function get($storage)
         {
             return new PVEItemStorageNodeNodesStorage($this->client, $this->node, $storage);
@@ -10483,11 +13729,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemStorageNodeNodesStorage
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemStorageNodeNodesStorage extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $storage;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $storage)
         {
             $this->client = $client;
@@ -10495,36 +13754,71 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->storage = $storage;
         }
 
+        /**
+         * @ignore
+         */
         private $content;
 
+        /**
+         * Get StorageStorageNodeNodesContent
+         * @return PVEStorageStorageNodeNodesContent
+         */
         public function getContent()
         {
             return $this->content ?: ($this->content = new PVEStorageStorageNodeNodesContent($this->client, $this->node, $this->storage));
         }
 
+        /**
+         * @ignore
+         */
         private $status;
 
+        /**
+         * Get StorageStorageNodeNodesStatus
+         * @return PVEStorageStorageNodeNodesStatus
+         */
         public function getStatus()
         {
             return $this->status ?: ($this->status = new PVEStorageStorageNodeNodesStatus($this->client, $this->node, $this->storage));
         }
 
+        /**
+         * @ignore
+         */
         private $rrd;
 
+        /**
+         * Get StorageStorageNodeNodesRrd
+         * @return PVEStorageStorageNodeNodesRrd
+         */
         public function getRrd()
         {
             return $this->rrd ?: ($this->rrd = new PVEStorageStorageNodeNodesRrd($this->client, $this->node, $this->storage));
         }
 
+        /**
+         * @ignore
+         */
         private $rrddata;
 
+        /**
+         * Get StorageStorageNodeNodesRrddata
+         * @return PVEStorageStorageNodeNodesRrddata
+         */
         public function getRrddata()
         {
             return $this->rrddata ?: ($this->rrddata = new PVEStorageStorageNodeNodesRrddata($this->client, $this->node, $this->storage));
         }
 
+        /**
+         * @ignore
+         */
         private $upload;
 
+        /**
+         * Get StorageStorageNodeNodesUpload
+         * @return PVEStorageStorageNodeNodesUpload
+         */
         public function getUpload()
         {
             return $this->upload ?: ($this->upload = new PVEStorageStorageNodeNodesUpload($this->client, $this->node, $this->storage));
@@ -10549,11 +13843,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEStorageStorageNodeNodesContent
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEStorageStorageNodeNodesContent extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $storage;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $storage)
         {
             $this->client = $client;
@@ -10561,6 +13868,11 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->storage = $storage;
         }
 
+        /**
+         * Get ItemContentStorageStorageNodeNodesVolume
+         * @param volume
+         * @return PVEItemContentStorageStorageNodeNodesVolume
+         */
         public function get($volume)
         {
             return new PVEItemContentStorageStorageNodeNodesVolume($this->client, $this->node, $this->storage, $volume);
@@ -10623,12 +13935,28 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemContentStorageStorageNodeNodesVolume
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemContentStorageStorageNodeNodesVolume extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $storage;
+        /**
+         * @ignore
+         */
         private $volume;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $storage, $volume)
         {
             $this->client = $client;
@@ -10698,11 +14026,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEStorageStorageNodeNodesStatus
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEStorageStorageNodeNodesStatus extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $storage;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $storage)
         {
             $this->client = $client;
@@ -10729,11 +14070,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEStorageStorageNodeNodesRrd
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEStorageStorageNodeNodesRrd extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $storage;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $storage)
         {
             $this->client = $client;
@@ -10773,11 +14127,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEStorageStorageNodeNodesRrddata
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEStorageStorageNodeNodesRrddata extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $storage;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $storage)
         {
             $this->client = $client;
@@ -10814,11 +14181,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEStorageStorageNodeNodesUpload
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEStorageStorageNodeNodesUpload extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $storage;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $storage)
         {
             $this->client = $client;
@@ -10854,32 +14234,63 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesDisks
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesDisks extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
             $this->node = $node;
         }
 
+        /**
+         * @ignore
+         */
         private $list;
 
+        /**
+         * Get DisksNodeNodesList
+         * @return PVEDisksNodeNodesList
+         */
         public function getList()
         {
             return $this->list ?: ($this->list = new PVEDisksNodeNodesList($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $smart;
 
+        /**
+         * Get DisksNodeNodesSmart
+         * @return PVEDisksNodeNodesSmart
+         */
         public function getSmart()
         {
             return $this->smart ?: ($this->smart = new PVEDisksNodeNodesSmart($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $initgpt;
 
+        /**
+         * Get DisksNodeNodesInitgpt
+         * @return PVEDisksNodeNodesInitgpt
+         */
         public function getInitgpt()
         {
             return $this->initgpt ?: ($this->initgpt = new PVEDisksNodeNodesInitgpt($this->client, $this->node));
@@ -10904,10 +14315,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEDisksNodeNodesList
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEDisksNodeNodesList extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -10933,10 +14354,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEDisksNodeNodesSmart
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEDisksNodeNodesSmart extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -10968,10 +14399,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEDisksNodeNodesInitgpt
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEDisksNodeNodesInitgpt extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -11003,32 +14444,63 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesApt
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesApt extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
             $this->node = $node;
         }
 
+        /**
+         * @ignore
+         */
         private $update;
 
+        /**
+         * Get AptNodeNodesUpdate
+         * @return PVEAptNodeNodesUpdate
+         */
         public function getUpdate()
         {
             return $this->update ?: ($this->update = new PVEAptNodeNodesUpdate($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $changelog;
 
+        /**
+         * Get AptNodeNodesChangelog
+         * @return PVEAptNodeNodesChangelog
+         */
         public function getChangelog()
         {
             return $this->changelog ?: ($this->changelog = new PVEAptNodeNodesChangelog($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $versions;
 
+        /**
+         * Get AptNodeNodesVersions
+         * @return PVEAptNodeNodesVersions
+         */
         public function getVersions()
         {
             return $this->versions ?: ($this->versions = new PVEAptNodeNodesVersions($this->client, $this->node));
@@ -11053,10 +14525,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEAptNodeNodesUpdate
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEAptNodeNodesUpdate extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -11106,10 +14588,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEAptNodeNodesChangelog
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEAptNodeNodesChangelog extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -11141,10 +14633,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEAptNodeNodesVersions
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEAptNodeNodesVersions extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -11170,32 +14672,63 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesFirewall
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesFirewall extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
             $this->node = $node;
         }
 
+        /**
+         * @ignore
+         */
         private $rules;
 
+        /**
+         * Get FirewallNodeNodesRules
+         * @return PVEFirewallNodeNodesRules
+         */
         public function getRules()
         {
             return $this->rules ?: ($this->rules = new PVEFirewallNodeNodesRules($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $options;
 
+        /**
+         * Get FirewallNodeNodesOptions
+         * @return PVEFirewallNodeNodesOptions
+         */
         public function getOptions()
         {
             return $this->options ?: ($this->options = new PVEFirewallNodeNodesOptions($this->client, $this->node));
         }
 
+        /**
+         * @ignore
+         */
         private $log;
 
+        /**
+         * Get FirewallNodeNodesLog
+         * @return PVEFirewallNodeNodesLog
+         */
         public function getLog()
         {
             return $this->log ?: ($this->log = new PVEFirewallNodeNodesLog($this->client, $this->node));
@@ -11220,16 +14753,31 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEFirewallNodeNodesRules
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEFirewallNodeNodesRules extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
             $this->node = $node;
         }
 
+        /**
+         * Get ItemRulesFirewallNodeNodesPos
+         * @param pos
+         * @return PVEItemRulesFirewallNodeNodesPos
+         */
         public function get($pos)
         {
             return new PVEItemRulesFirewallNodeNodesPos($this->client, $this->node, $pos);
@@ -11313,11 +14861,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemRulesFirewallNodeNodesPos
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemRulesFirewallNodeNodesPos extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $pos;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $pos)
         {
             $this->client = $client;
@@ -11427,10 +14988,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEFirewallNodeNodesOptions
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEFirewallNodeNodesOptions extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -11518,10 +15089,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEFirewallNodeNodesLog
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEFirewallNodeNodesLog extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -11553,16 +15134,31 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesReplication
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesReplication extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
             $this->node = $node;
         }
 
+        /**
+         * Get ItemReplicationNodeNodesId
+         * @param id
+         * @return PVEItemReplicationNodeNodesId
+         */
         public function get($id)
         {
             return new PVEItemReplicationNodeNodesId($this->client, $this->node, $id);
@@ -11590,11 +15186,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemReplicationNodeNodesId
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemReplicationNodeNodesId extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $id;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $id)
         {
             $this->client = $client;
@@ -11602,22 +15211,43 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->id = $id;
         }
 
+        /**
+         * @ignore
+         */
         private $status;
 
+        /**
+         * Get IdReplicationNodeNodesStatus
+         * @return PVEIdReplicationNodeNodesStatus
+         */
         public function getStatus()
         {
             return $this->status ?: ($this->status = new PVEIdReplicationNodeNodesStatus($this->client, $this->node, $this->id));
         }
 
+        /**
+         * @ignore
+         */
         private $log;
 
+        /**
+         * Get IdReplicationNodeNodesLog
+         * @return PVEIdReplicationNodeNodesLog
+         */
         public function getLog()
         {
             return $this->log ?: ($this->log = new PVEIdReplicationNodeNodesLog($this->client, $this->node, $this->id));
         }
 
+        /**
+         * @ignore
+         */
         private $scheduleNow;
 
+        /**
+         * Get IdReplicationNodeNodesScheduleNow
+         * @return PVEIdReplicationNodeNodesScheduleNow
+         */
         public function getScheduleNow()
         {
             return $this->scheduleNow ?: ($this->scheduleNow = new PVEIdReplicationNodeNodesScheduleNow($this->client, $this->node, $this->id));
@@ -11642,11 +15272,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEIdReplicationNodeNodesStatus
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEIdReplicationNodeNodesStatus extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $id;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $id)
         {
             $this->client = $client;
@@ -11673,11 +15316,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEIdReplicationNodeNodesLog
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEIdReplicationNodeNodesLog extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $id;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $id)
         {
             $this->client = $client;
@@ -11710,11 +15366,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEIdReplicationNodeNodesScheduleNow
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEIdReplicationNodeNodesScheduleNow extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
+        /**
+         * @ignore
+         */
         private $id;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node, $id)
         {
             $this->client = $client;
@@ -11741,10 +15410,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesVersion
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesVersion extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -11770,10 +15449,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesStatus
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesStatus extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -11822,10 +15511,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesNetstat
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesNetstat extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -11851,10 +15550,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesExecute
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesExecute extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -11883,10 +15592,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesRrd
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesRrd extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -11925,10 +15644,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesRrddata
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesRrddata extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -11964,10 +15693,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesSyslog
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesSyslog extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -12005,10 +15744,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesVncshell
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesVncshell extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -12046,10 +15795,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesVncwebsocket
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesVncwebsocket extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -12081,10 +15840,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesSpiceshell
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesSpiceshell extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -12116,10 +15885,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesDns
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesDns extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -12175,10 +15954,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesTime
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesTime extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -12225,10 +16014,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesAplinfo
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesAplinfo extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -12278,10 +16077,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesReport
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesReport extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -12307,10 +16116,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesStartall
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesStartall extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -12342,10 +16161,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesStopall
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesStopall extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -12374,10 +16203,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVENodeNodesMigrateall
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVENodeNodesMigrateall extends Base
     {
+        /**
+         * @ignore
+         */
         private $node;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $node)
         {
             $this->client = $client;
@@ -12412,13 +16251,25 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEStorage
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEStorage extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
         }
 
+        /**
+         * Get ItemStorageStorage
+         * @param storage
+         * @return PVEItemStorageStorage
+         */
         public function get($storage)
         {
             return new PVEItemStorageStorage($this->client, $storage);
@@ -12581,10 +16432,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemStorageStorage
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemStorageStorage extends Base
     {
+        /**
+         * @ignore
+         */
         private $storage;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $storage)
         {
             $this->client = $client;
@@ -12729,57 +16590,113 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEAccess
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEAccess extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
         }
 
+        /**
+         * @ignore
+         */
         private $users;
 
+        /**
+         * Get AccessUsers
+         * @return PVEAccessUsers
+         */
         public function getUsers()
         {
             return $this->users ?: ($this->users = new PVEAccessUsers($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $groups;
 
+        /**
+         * Get AccessGroups
+         * @return PVEAccessGroups
+         */
         public function getGroups()
         {
             return $this->groups ?: ($this->groups = new PVEAccessGroups($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $roles;
 
+        /**
+         * Get AccessRoles
+         * @return PVEAccessRoles
+         */
         public function getRoles()
         {
             return $this->roles ?: ($this->roles = new PVEAccessRoles($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $acl;
 
+        /**
+         * Get AccessAcl
+         * @return PVEAccessAcl
+         */
         public function getAcl()
         {
             return $this->acl ?: ($this->acl = new PVEAccessAcl($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $domains;
 
+        /**
+         * Get AccessDomains
+         * @return PVEAccessDomains
+         */
         public function getDomains()
         {
             return $this->domains ?: ($this->domains = new PVEAccessDomains($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $ticket;
 
+        /**
+         * Get AccessTicket
+         * @return PVEAccessTicket
+         */
         public function getTicket()
         {
             return $this->ticket ?: ($this->ticket = new PVEAccessTicket($this->client));
         }
 
+        /**
+         * @ignore
+         */
         private $password;
 
+        /**
+         * Get AccessPassword
+         * @return PVEAccessPassword
+         */
         public function getPassword()
         {
             return $this->password ?: ($this->password = new PVEAccessPassword($this->client));
@@ -12804,13 +16721,25 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEAccessUsers
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEAccessUsers extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
         }
 
+        /**
+         * Get ItemUsersAccessUserid
+         * @param userid
+         * @return PVEItemUsersAccessUserid
+         */
         public function get($userid)
         {
             return new PVEItemUsersAccessUserid($this->client, $userid);
@@ -12886,10 +16815,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemUsersAccessUserid
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemUsersAccessUserid extends Base
     {
+        /**
+         * @ignore
+         */
         private $userid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $userid)
         {
             $this->client = $client;
@@ -12978,13 +16917,25 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEAccessGroups
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEAccessGroups extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
         }
 
+        /**
+         * Get ItemGroupsAccessGroupid
+         * @param groupid
+         * @return PVEItemGroupsAccessGroupid
+         */
         public function get($groupid)
         {
             return new PVEItemGroupsAccessGroupid($this->client, $groupid);
@@ -13033,10 +16984,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemGroupsAccessGroupid
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemGroupsAccessGroupid extends Base
     {
+        /**
+         * @ignore
+         */
         private $groupid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $groupid)
         {
             $this->client = $client;
@@ -13101,13 +17062,25 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEAccessRoles
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEAccessRoles extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
         }
 
+        /**
+         * Get ItemRolesAccessRoleid
+         * @param roleid
+         * @return PVEItemRolesAccessRoleid
+         */
         public function get($roleid)
         {
             return new PVEItemRolesAccessRoleid($this->client, $roleid);
@@ -13156,10 +17129,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemRolesAccessRoleid
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemRolesAccessRoleid extends Base
     {
+        /**
+         * @ignore
+         */
         private $roleid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $roleid)
         {
             $this->client = $client;
@@ -13227,8 +17210,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEAccessAcl
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEAccessAcl extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
@@ -13289,13 +17279,25 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEAccessDomains
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEAccessDomains extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
         }
 
+        /**
+         * Get ItemDomainsAccessRealm
+         * @param realm
+         * @return PVEItemDomainsAccessRealm
+         */
         public function get($realm)
         {
             return new PVEItemDomainsAccessRealm($this->client, $realm);
@@ -13391,10 +17393,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemDomainsAccessRealm
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemDomainsAccessRealm extends Base
     {
+        /**
+         * @ignore
+         */
         private $realm;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $realm)
         {
             $this->client = $client;
@@ -13507,8 +17519,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEAccessTicket
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEAccessTicket extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
@@ -13569,8 +17588,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEAccessPassword
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEAccessPassword extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
@@ -13601,13 +17627,25 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEPools
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEPools extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
         }
 
+        /**
+         * Get ItemPoolsPoolid
+         * @param poolid
+         * @return PVEItemPoolsPoolid
+         */
         public function get($poolid)
         {
             return new PVEItemPoolsPoolid($this->client, $poolid);
@@ -13656,10 +17694,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEItemPoolsPoolid
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEItemPoolsPoolid extends Base
     {
+        /**
+         * @ignore
+         */
         private $poolid;
 
+        /**
+         * @ignore
+         */
         function __construct($client, $poolid)
         {
             $this->client = $client;
@@ -13733,8 +17781,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         }
     }
 
+    /**
+     * Class PVEVersion
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
     class PVEVersion extends Base
     {
+        /**
+         * @ignore
+         */
         function __construct($client)
         {
             $this->client = $client;
