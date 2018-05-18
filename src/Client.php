@@ -608,6 +608,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         /**
          * @ignore
          */
+        private $acme;
+
+        /**
+         * Get ClusterAcme
+         * @return PVEClusterAcme
+         */
+        public function getAcme()
+        {
+            return $this->acme ?: ($this->acme = new PVEClusterAcme($this->client));
+        }
+
+        /**
+         * @ignore
+         */
         private $log;
 
         /**
@@ -762,9 +776,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $remove_job Mark the replication job for removal. The job will remove all local replication snapshots. When set to 'full', it also tries to remove replicated volumes on the target. The job then removes itself from the configuration file.
          *   Enum: local,full
          * @param string $schedule Storage replication schedule. The format is a subset of `systemd` calender events.
+         * @param string $source Source of the replication.
          * @return Result
          */
-        public function createRest($id, $target, $type, $comment = null, $disable = null, $rate = null, $remove_job = null, $schedule = null)
+        public function createRest($id, $target, $type, $comment = null, $disable = null, $rate = null, $remove_job = null, $schedule = null, $source = null)
         {
             $params = ['id' => $id,
                 'target' => $target,
@@ -773,7 +788,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'disable' => $disable,
                 'rate' => $rate,
                 'remove_job' => $remove_job,
-                'schedule' => $schedule];
+                'schedule' => $schedule,
+                'source' => $source];
             return $this->getClient()->create("/cluster/replication", $params);
         }
 
@@ -789,11 +805,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $remove_job Mark the replication job for removal. The job will remove all local replication snapshots. When set to 'full', it also tries to remove replicated volumes on the target. The job then removes itself from the configuration file.
          *   Enum: local,full
          * @param string $schedule Storage replication schedule. The format is a subset of `systemd` calender events.
+         * @param string $source Source of the replication.
          * @return Result
          */
-        public function create($id, $target, $type, $comment = null, $disable = null, $rate = null, $remove_job = null, $schedule = null)
+        public function create($id, $target, $type, $comment = null, $disable = null, $rate = null, $remove_job = null, $schedule = null, $source = null)
         {
-            return $this->createRest($id, $target, $type, $comment, $disable, $rate, $remove_job, $schedule);
+            return $this->createRest($id, $target, $type, $comment, $disable, $rate, $remove_job, $schedule, $source);
         }
     }
 
@@ -869,9 +886,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $remove_job Mark the replication job for removal. The job will remove all local replication snapshots. When set to 'full', it also tries to remove replicated volumes on the target. The job then removes itself from the configuration file.
          *   Enum: local,full
          * @param string $schedule Storage replication schedule. The format is a subset of `systemd` calender events.
+         * @param string $source Source of the replication.
          * @return Result
          */
-        public function setRest($comment = null, $delete = null, $digest = null, $disable = null, $rate = null, $remove_job = null, $schedule = null)
+        public function setRest($comment = null, $delete = null, $digest = null, $disable = null, $rate = null, $remove_job = null, $schedule = null, $source = null)
         {
             $params = ['comment' => $comment,
                 'delete' => $delete,
@@ -879,7 +897,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'disable' => $disable,
                 'rate' => $rate,
                 'remove_job' => $remove_job,
-                'schedule' => $schedule];
+                'schedule' => $schedule,
+                'source' => $source];
             return $this->getClient()->set("/cluster/replication/{$this->id}", $params);
         }
 
@@ -893,11 +912,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $remove_job Mark the replication job for removal. The job will remove all local replication snapshots. When set to 'full', it also tries to remove replicated volumes on the target. The job then removes itself from the configuration file.
          *   Enum: local,full
          * @param string $schedule Storage replication schedule. The format is a subset of `systemd` calender events.
+         * @param string $source Source of the replication.
          * @return Result
          */
-        public function update($comment = null, $delete = null, $digest = null, $disable = null, $rate = null, $remove_job = null, $schedule = null)
+        public function update($comment = null, $delete = null, $digest = null, $disable = null, $rate = null, $remove_job = null, $schedule = null, $source = null)
         {
-            return $this->setRest($comment, $delete, $digest, $disable, $rate, $remove_job, $schedule);
+            return $this->setRest($comment, $delete, $digest, $disable, $rate, $remove_job, $schedule, $source);
         }
     }
 
@@ -932,6 +952,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         /**
          * @ignore
          */
+        private $join;
+
+        /**
+         * Get ConfigClusterJoin
+         * @return PVEConfigClusterJoin
+         */
+        public function getJoin()
+        {
+            return $this->join ?: ($this->join = new PVEConfigClusterJoin($this->client));
+        }
+
+        /**
+         * @ignore
+         */
         private $totem;
 
         /**
@@ -960,6 +994,45 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
+
+        /**
+         * Generate new cluster configuration.
+         * @param string $clustername The name of the cluster.
+         * @param string $bindnet0_addr This specifies the network address the corosync ring 0 executive should bind to and defaults to the local IP address of the node.
+         * @param string $bindnet1_addr This specifies the network address the corosync ring 1 executive should bind to and is optional.
+         * @param int $nodeid Node id for this node.
+         * @param string $ring0_addr Hostname (or IP) of the corosync ring0 address of this node.
+         * @param string $ring1_addr Hostname (or IP) of the corosync ring1 address of this node. Requires a valid configured ring 1 (bindnet1_addr) in the cluster.
+         * @param int $votes Number of votes for this node.
+         * @return Result
+         */
+        public function createRest($clustername, $bindnet0_addr = null, $bindnet1_addr = null, $nodeid = null, $ring0_addr = null, $ring1_addr = null, $votes = null)
+        {
+            $params = ['clustername' => $clustername,
+                'bindnet0_addr' => $bindnet0_addr,
+                'bindnet1_addr' => $bindnet1_addr,
+                'nodeid' => $nodeid,
+                'ring0_addr' => $ring0_addr,
+                'ring1_addr' => $ring1_addr,
+                'votes' => $votes];
+            return $this->getClient()->create("/cluster/config", $params);
+        }
+
+        /**
+         * Generate new cluster configuration.
+         * @param string $clustername The name of the cluster.
+         * @param string $bindnet0_addr This specifies the network address the corosync ring 0 executive should bind to and defaults to the local IP address of the node.
+         * @param string $bindnet1_addr This specifies the network address the corosync ring 1 executive should bind to and is optional.
+         * @param int $nodeid Node id for this node.
+         * @param string $ring0_addr Hostname (or IP) of the corosync ring0 address of this node.
+         * @param string $ring1_addr Hostname (or IP) of the corosync ring1 address of this node. Requires a valid configured ring 1 (bindnet1_addr) in the cluster.
+         * @param int $votes Number of votes for this node.
+         * @return Result
+         */
+        public function create($clustername, $bindnet0_addr = null, $bindnet1_addr = null, $nodeid = null, $ring0_addr = null, $ring1_addr = null, $votes = null)
+        {
+            return $this->createRest($clustername, $bindnet0_addr, $bindnet1_addr, $nodeid, $ring0_addr, $ring1_addr, $votes);
+        }
     }
 
     /**
@@ -974,6 +1047,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         function __construct($client)
         {
             $this->client = $client;
+        }
+
+        /**
+         * Get ItemNodesConfigClusterNode
+         * @param node
+         * @return PVEItemNodesConfigClusterNode
+         */
+        public function get($node)
+        {
+            return new PVEItemNodesConfigClusterNode($this->client, $node);
         }
 
         /**
@@ -992,6 +1075,156 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function nodes()
         {
             return $this->getRest();
+        }
+    }
+
+    /**
+     * Class PVEItemNodesConfigClusterNode
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEItemNodesConfigClusterNode extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node)
+        {
+            $this->client = $client;
+            $this->node = $node;
+        }
+
+        /**
+         * Removes a node from the cluster configuration.
+         * @return Result
+         */
+        public function deleteRest()
+        {
+            return $this->getClient()->delete("/cluster/config/nodes/{$this->node}");
+        }
+
+        /**
+         * Removes a node from the cluster configuration.
+         * @return Result
+         */
+        public function delnode()
+        {
+            return $this->deleteRest();
+        }
+
+        /**
+         * Adds a node to the cluster configuration.
+         * @param bool $force Do not throw error if node already exists.
+         * @param int $nodeid Node id for this node.
+         * @param string $ring0_addr Hostname (or IP) of the corosync ring0 address of this node.
+         * @param string $ring1_addr Hostname (or IP) of the corosync ring1 address of this node. Requires a valid configured ring 1 (bindnet1_addr) in the cluster.
+         * @param int $votes Number of votes for this node
+         * @return Result
+         */
+        public function createRest($force = null, $nodeid = null, $ring0_addr = null, $ring1_addr = null, $votes = null)
+        {
+            $params = ['force' => $force,
+                'nodeid' => $nodeid,
+                'ring0_addr' => $ring0_addr,
+                'ring1_addr' => $ring1_addr,
+                'votes' => $votes];
+            return $this->getClient()->create("/cluster/config/nodes/{$this->node}", $params);
+        }
+
+        /**
+         * Adds a node to the cluster configuration.
+         * @param bool $force Do not throw error if node already exists.
+         * @param int $nodeid Node id for this node.
+         * @param string $ring0_addr Hostname (or IP) of the corosync ring0 address of this node.
+         * @param string $ring1_addr Hostname (or IP) of the corosync ring1 address of this node. Requires a valid configured ring 1 (bindnet1_addr) in the cluster.
+         * @param int $votes Number of votes for this node
+         * @return Result
+         */
+        public function addnode($force = null, $nodeid = null, $ring0_addr = null, $ring1_addr = null, $votes = null)
+        {
+            return $this->createRest($force, $nodeid, $ring0_addr, $ring1_addr, $votes);
+        }
+    }
+
+    /**
+     * Class PVEConfigClusterJoin
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEConfigClusterJoin extends Base
+    {
+        /**
+         * @ignore
+         */
+        function __construct($client)
+        {
+            $this->client = $client;
+        }
+
+        /**
+         * Get information needed to join this cluster over the connected node.
+         * @param string $node The node for which the joinee gets the nodeinfo.
+         * @return Result
+         */
+        public function getRest($node = null)
+        {
+            $params = ['node' => $node];
+            return $this->getClient()->get("/cluster/config/join", $params);
+        }
+
+        /**
+         * Get information needed to join this cluster over the connected node.
+         * @param string $node The node for which the joinee gets the nodeinfo.
+         * @return Result
+         */
+        public function joinInfo($node = null)
+        {
+            return $this->getRest($node);
+        }
+
+        /**
+         * Joins this node into an existing cluster.
+         * @param string $fingerprint Certificate SHA 256 fingerprint.
+         * @param string $hostname Hostname (or IP) of an existing cluster member.
+         * @param string $password Superuser (root) password of peer node.
+         * @param bool $force Do not throw error if node already exists.
+         * @param int $nodeid Node id for this node.
+         * @param string $ring0_addr Hostname (or IP) of the corosync ring0 address of this node.
+         * @param string $ring1_addr Hostname (or IP) of the corosync ring1 address of this node. Requires a valid configured ring 1 (bindnet1_addr) in the cluster.
+         * @param int $votes Number of votes for this node
+         * @return Result
+         */
+        public function createRest($fingerprint, $hostname, $password, $force = null, $nodeid = null, $ring0_addr = null, $ring1_addr = null, $votes = null)
+        {
+            $params = ['fingerprint' => $fingerprint,
+                'hostname' => $hostname,
+                'password' => $password,
+                'force' => $force,
+                'nodeid' => $nodeid,
+                'ring0_addr' => $ring0_addr,
+                'ring1_addr' => $ring1_addr,
+                'votes' => $votes];
+            return $this->getClient()->create("/cluster/config/join", $params);
+        }
+
+        /**
+         * Joins this node into an existing cluster.
+         * @param string $fingerprint Certificate SHA 256 fingerprint.
+         * @param string $hostname Hostname (or IP) of an existing cluster member.
+         * @param string $password Superuser (root) password of peer node.
+         * @param bool $force Do not throw error if node already exists.
+         * @param int $nodeid Node id for this node.
+         * @param string $ring0_addr Hostname (or IP) of the corosync ring0 address of this node.
+         * @param string $ring1_addr Hostname (or IP) of the corosync ring1 address of this node. Requires a valid configured ring 1 (bindnet1_addr) in the cluster.
+         * @param int $votes Number of votes for this node
+         * @return Result
+         */
+        public function join($fingerprint, $hostname, $password, $force = null, $nodeid = null, $ring0_addr = null, $ring1_addr = null, $votes = null)
+        {
+            return $this->createRest($fingerprint, $hostname, $password, $force, $nodeid, $ring0_addr, $ring1_addr, $votes);
         }
     }
 
@@ -3260,6 +3493,301 @@ namespace EnterpriseVE\ProxmoxVE\Api {
     }
 
     /**
+     * Class PVEClusterAcme
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEClusterAcme extends Base
+    {
+        /**
+         * @ignore
+         */
+        function __construct($client)
+        {
+            $this->client = $client;
+        }
+
+        /**
+         * @ignore
+         */
+        private $account;
+
+        /**
+         * Get AcmeClusterAccount
+         * @return PVEAcmeClusterAccount
+         */
+        public function getAccount()
+        {
+            return $this->account ?: ($this->account = new PVEAcmeClusterAccount($this->client));
+        }
+
+        /**
+         * @ignore
+         */
+        private $tos;
+
+        /**
+         * Get AcmeClusterTos
+         * @return PVEAcmeClusterTos
+         */
+        public function getTos()
+        {
+            return $this->tos ?: ($this->tos = new PVEAcmeClusterTos($this->client));
+        }
+
+        /**
+         * @ignore
+         */
+        private $directories;
+
+        /**
+         * Get AcmeClusterDirectories
+         * @return PVEAcmeClusterDirectories
+         */
+        public function getDirectories()
+        {
+            return $this->directories ?: ($this->directories = new PVEAcmeClusterDirectories($this->client));
+        }
+
+        /**
+         * ACMEAccount index.
+         * @return Result
+         */
+        public function getRest()
+        {
+            return $this->getClient()->get("/cluster/acme");
+        }
+
+        /**
+         * ACMEAccount index.
+         * @return Result
+         */
+        public function index()
+        {
+            return $this->getRest();
+        }
+    }
+
+    /**
+     * Class PVEAcmeClusterAccount
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAcmeClusterAccount extends Base
+    {
+        /**
+         * @ignore
+         */
+        function __construct($client)
+        {
+            $this->client = $client;
+        }
+
+        /**
+         * Get ItemAccountAcmeClusterName
+         * @param name
+         * @return PVEItemAccountAcmeClusterName
+         */
+        public function get($name)
+        {
+            return new PVEItemAccountAcmeClusterName($this->client, $name);
+        }
+
+        /**
+         * ACMEAccount index.
+         * @return Result
+         */
+        public function getRest()
+        {
+            return $this->getClient()->get("/cluster/acme/account");
+        }
+
+        /**
+         * ACMEAccount index.
+         * @return Result
+         */
+        public function accountIndex()
+        {
+            return $this->getRest();
+        }
+
+        /**
+         * Register a new ACME account with CA.
+         * @param string $contact Contact email addresses.
+         * @param string $directory URL of ACME CA directory endpoint.
+         * @param string $name ACME account config file name.
+         * @param string $tos_url URL of CA TermsOfService - setting this indicates agreement.
+         * @return Result
+         */
+        public function createRest($contact, $directory = null, $name = null, $tos_url = null)
+        {
+            $params = ['contact' => $contact,
+                'directory' => $directory,
+                'name' => $name,
+                'tos_url' => $tos_url];
+            return $this->getClient()->create("/cluster/acme/account", $params);
+        }
+
+        /**
+         * Register a new ACME account with CA.
+         * @param string $contact Contact email addresses.
+         * @param string $directory URL of ACME CA directory endpoint.
+         * @param string $name ACME account config file name.
+         * @param string $tos_url URL of CA TermsOfService - setting this indicates agreement.
+         * @return Result
+         */
+        public function registerAccount($contact, $directory = null, $name = null, $tos_url = null)
+        {
+            return $this->createRest($contact, $directory, $name, $tos_url);
+        }
+    }
+
+    /**
+     * Class PVEItemAccountAcmeClusterName
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEItemAccountAcmeClusterName extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $name;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $name)
+        {
+            $this->client = $client;
+            $this->name = $name;
+        }
+
+        /**
+         * Deactivate existing ACME account at CA.
+         * @return Result
+         */
+        public function deleteRest()
+        {
+            return $this->getClient()->delete("/cluster/acme/account/{$this->name}");
+        }
+
+        /**
+         * Deactivate existing ACME account at CA.
+         * @return Result
+         */
+        public function deactivateAccount()
+        {
+            return $this->deleteRest();
+        }
+
+        /**
+         * Return existing ACME account information.
+         * @return Result
+         */
+        public function getRest()
+        {
+            return $this->getClient()->get("/cluster/acme/account/{$this->name}");
+        }
+
+        /**
+         * Return existing ACME account information.
+         * @return Result
+         */
+        public function getAccount()
+        {
+            return $this->getRest();
+        }
+
+        /**
+         * Update existing ACME account information with CA. Note: not specifying any new account information triggers a refresh.
+         * @param string $contact Contact email addresses.
+         * @return Result
+         */
+        public function setRest($contact = null)
+        {
+            $params = ['contact' => $contact];
+            return $this->getClient()->set("/cluster/acme/account/{$this->name}", $params);
+        }
+
+        /**
+         * Update existing ACME account information with CA. Note: not specifying any new account information triggers a refresh.
+         * @param string $contact Contact email addresses.
+         * @return Result
+         */
+        public function updateAccount($contact = null)
+        {
+            return $this->setRest($contact);
+        }
+    }
+
+    /**
+     * Class PVEAcmeClusterTos
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAcmeClusterTos extends Base
+    {
+        /**
+         * @ignore
+         */
+        function __construct($client)
+        {
+            $this->client = $client;
+        }
+
+        /**
+         * Retrieve ACME TermsOfService URL from CA.
+         * @param string $directory URL of ACME CA directory endpoint.
+         * @return Result
+         */
+        public function getRest($directory = null)
+        {
+            $params = ['directory' => $directory];
+            return $this->getClient()->get("/cluster/acme/tos", $params);
+        }
+
+        /**
+         * Retrieve ACME TermsOfService URL from CA.
+         * @param string $directory URL of ACME CA directory endpoint.
+         * @return Result
+         */
+        public function getTos($directory = null)
+        {
+            return $this->getRest($directory);
+        }
+    }
+
+    /**
+     * Class PVEAcmeClusterDirectories
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAcmeClusterDirectories extends Base
+    {
+        /**
+         * @ignore
+         */
+        function __construct($client)
+        {
+            $this->client = $client;
+        }
+
+        /**
+         * Get named known ACME directory endpoints.
+         * @return Result
+         */
+        public function getRest()
+        {
+            return $this->getClient()->get("/cluster/acme/directories");
+        }
+
+        /**
+         * Get named known ACME directory endpoints.
+         * @return Result
+         */
+        public function getDirectories()
+        {
+            return $this->getRest();
+        }
+    }
+
+    /**
      * Class PVEClusterLog
      * @package EnterpriseVE\ProxmoxVE\Api
      */
@@ -3400,8 +3928,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
 
         /**
          * Set datacenter options.
-         * @param string $console Select the default Console viewer. You can either use the builtin java applet (VNC), an external virt-viewer comtatible application (SPICE), or an HTML5 based viewer (noVNC).
-         *   Enum: applet,vv,html5
+         * @param string $bwlimit Set bandwidth/io limits various operations.
+         * @param string $console Select the default Console viewer. You can either use the builtin java applet (VNC; deprecated and maps to html5), an external virt-viewer comtatible application (SPICE), an HTML5 based vnc viewer (noVNC), or an HTML5 based console client (xtermjs). If the selected viewer is not available (e.g. SPICE not activated for the VM), the fallback is noVNC.
+         *   Enum: applet,vv,html5,xtermjs
          * @param string $delete A list of settings you want to delete.
          * @param string $email_from Specify email address to send notification from (default is root@$hostname)
          * @param string $fencing Set the fencing mode of the HA cluster. Hardware mode needs a valid configuration of fence devices in /etc/pve/ha/fence.cfg. With both all two modes are used.  WARNING: 'hardware' and 'both' are EXPERIMENTAL &amp; WIP
@@ -3417,9 +3946,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param bool $migration_unsecure Migration is secure using SSH tunnel by default. For secure private networks you can disable it to speed up migration. Deprecated, use the 'migration' property instead!
          * @return Result
          */
-        public function setRest($console = null, $delete = null, $email_from = null, $fencing = null, $http_proxy = null, $keyboard = null, $language = null, $mac_prefix = null, $max_workers = null, $migration = null, $migration_unsecure = null)
+        public function setRest($bwlimit = null, $console = null, $delete = null, $email_from = null, $fencing = null, $http_proxy = null, $keyboard = null, $language = null, $mac_prefix = null, $max_workers = null, $migration = null, $migration_unsecure = null)
         {
-            $params = ['console' => $console,
+            $params = ['bwlimit' => $bwlimit,
+                'console' => $console,
                 'delete' => $delete,
                 'email_from' => $email_from,
                 'fencing' => $fencing,
@@ -3435,8 +3965,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
 
         /**
          * Set datacenter options.
-         * @param string $console Select the default Console viewer. You can either use the builtin java applet (VNC), an external virt-viewer comtatible application (SPICE), or an HTML5 based viewer (noVNC).
-         *   Enum: applet,vv,html5
+         * @param string $bwlimit Set bandwidth/io limits various operations.
+         * @param string $console Select the default Console viewer. You can either use the builtin java applet (VNC; deprecated and maps to html5), an external virt-viewer comtatible application (SPICE), an HTML5 based vnc viewer (noVNC), or an HTML5 based console client (xtermjs). If the selected viewer is not available (e.g. SPICE not activated for the VM), the fallback is noVNC.
+         *   Enum: applet,vv,html5,xtermjs
          * @param string $delete A list of settings you want to delete.
          * @param string $email_from Specify email address to send notification from (default is root@$hostname)
          * @param string $fencing Set the fencing mode of the HA cluster. Hardware mode needs a valid configuration of fence devices in /etc/pve/ha/fence.cfg. With both all two modes are used.  WARNING: 'hardware' and 'both' are EXPERIMENTAL &amp; WIP
@@ -3452,9 +3983,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param bool $migration_unsecure Migration is secure using SSH tunnel by default. For secure private networks you can disable it to speed up migration. Deprecated, use the 'migration' property instead!
          * @return Result
          */
-        public function setOptions($console = null, $delete = null, $email_from = null, $fencing = null, $http_proxy = null, $keyboard = null, $language = null, $mac_prefix = null, $max_workers = null, $migration = null, $migration_unsecure = null)
+        public function setOptions($bwlimit = null, $console = null, $delete = null, $email_from = null, $fencing = null, $http_proxy = null, $keyboard = null, $language = null, $mac_prefix = null, $max_workers = null, $migration = null, $migration_unsecure = null)
         {
-            return $this->setRest($console, $delete, $email_from, $fencing, $http_proxy, $keyboard, $language, $mac_prefix, $max_workers, $migration, $migration_unsecure);
+            return $this->setRest($bwlimit, $console, $delete, $email_from, $fencing, $http_proxy, $keyboard, $language, $mac_prefix, $max_workers, $migration, $migration_unsecure);
         }
     }
 
@@ -3789,6 +4320,34 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         /**
          * @ignore
          */
+        private $certificates;
+
+        /**
+         * Get NodeNodesCertificates
+         * @return PVENodeNodesCertificates
+         */
+        public function getCertificates()
+        {
+            return $this->certificates ?: ($this->certificates = new PVENodeNodesCertificates($this->client, $this->node));
+        }
+
+        /**
+         * @ignore
+         */
+        private $config;
+
+        /**
+         * Get NodeNodesConfig
+         * @return PVENodeNodesConfig
+         */
+        public function getConfig()
+        {
+            return $this->config ?: ($this->config = new PVENodeNodesConfig($this->client, $this->node));
+        }
+
+        /**
+         * @ignore
+         */
         private $version;
 
         /**
@@ -3896,6 +4455,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function getVncshell()
         {
             return $this->vncshell ?: ($this->vncshell = new PVENodeNodesVncshell($this->client, $this->node));
+        }
+
+        /**
+         * @ignore
+         */
+        private $termproxy;
+
+        /**
+         * Get NodeNodesTermproxy
+         * @return PVENodeNodesTermproxy
+         */
+        public function getTermproxy()
+        {
+            return $this->termproxy ?: ($this->termproxy = new PVENodeNodesTermproxy($this->client, $this->node));
         }
 
         /**
@@ -4107,7 +4680,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: seabios,ovmf
          * @param string $boot Boot on floppy (a), hard disk (c), CD-ROM (d), or network (n).
          * @param string $bootdisk Enable booting from specified disk.
+         * @param int $bwlimit Override i/o bandwidth limit (in KiB/s).
          * @param string $cdrom This is an alias for option -ide2
+         * @param string $cipassword cloud-init: Password to assign the user. Using this is generally not recommended. Use ssh keys instead. Also note that older cloud-init versions do not support hashed passwords.
+         * @param string $citype Specifies the cloud-init configuration format. The default depends on the configured operating system type (`ostype`. We use the `nocloud` format for Linux, and `configdrive2` for windows.
+         *   Enum: configdrive2,nocloud
+         * @param string $ciuser cloud-init: User name to change ssh keys and password for instead of the image's configured default user.
          * @param int $cores The number of cores per socket.
          * @param string $cpu Emulated CPU type.
          * @param int $cpulimit Limit of CPU usage.
@@ -4120,7 +4698,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $hugepages Enable/disable hugepages memory.
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3).
-         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.conf' configuration file.
+         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
+         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.conf' configuration file.It should not be necessary to set it.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param bool $kvm Enable/disable KVM hardware virtualization.
          * @param bool $localtime Set the real time clock to local time. This is enabled by default if ostype indicates a Microsoft OS.
@@ -4131,6 +4710,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param int $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
          * @param int $migrate_speed Set maximum speed (in MB/s) for migrations. Value 0 is no limit.
          * @param string $name Set a name for the VM. Only used on the configuration web interface.
+         * @param string $nameserver cloud-init: Sets DNS server IP address for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $netN Specify network devices.
          * @param bool $numa Enable/disable NUMA.
          * @param array $numaN NUMA topology.
@@ -4145,11 +4725,13 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 13).
          * @param string $scsihw SCSI controller model
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
+         * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $serialN Create a serial device inside the VM (n is 0 to 3)
          * @param int $shares Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning
          * @param string $smbios1 Specify SMBIOS type 1 fields.
          * @param int $smp The number of CPUs. Please use option -sockets instead.
          * @param int $sockets The number of CPU sockets.
+         * @param string $sshkeys cloud-init: Setup public SSH keys (one key per line, OpenSSH format).
          * @param string $startdate Set the initial date of the real time clock. Valid format for date are: 'now' or '2006-06-17T16:01:21' or '2006-06-17'.
          * @param string $startup Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
          * @param string $storage Default storage.
@@ -4167,7 +4749,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $watchdog Create a virtual hardware watchdog device.
          * @return Result
          */
-        public function createRest($vmid, $acpi = null, $agent = null, $archive = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $description = null, $force = null, $freeze = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $pool = null, $protection = null, $reboot = null, $sataN = null, $scsiN = null, $scsihw = null, $serialN = null, $shares = null, $smbios1 = null, $smp = null, $sockets = null, $startdate = null, $startup = null, $storage = null, $tablet = null, $tdf = null, $template = null, $unique = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmstatestorage = null, $watchdog = null)
+        public function createRest($vmid, $acpi = null, $agent = null, $archive = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $bwlimit = null, $cdrom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $description = null, $force = null, $freeze = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $pool = null, $protection = null, $reboot = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $startdate = null, $startup = null, $storage = null, $tablet = null, $tdf = null, $template = null, $unique = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmstatestorage = null, $watchdog = null)
         {
             $params = ['vmid' => $vmid,
                 'acpi' => $acpi,
@@ -4179,7 +4761,11 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'bios' => $bios,
                 'boot' => $boot,
                 'bootdisk' => $bootdisk,
+                'bwlimit' => $bwlimit,
                 'cdrom' => $cdrom,
+                'cipassword' => $cipassword,
+                'citype' => $citype,
+                'ciuser' => $ciuser,
                 'cores' => $cores,
                 'cpu' => $cpu,
                 'cpulimit' => $cpulimit,
@@ -4198,6 +4784,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'migrate_downtime' => $migrate_downtime,
                 'migrate_speed' => $migrate_speed,
                 'name' => $name,
+                'nameserver' => $nameserver,
                 'numa' => $numa,
                 'onboot' => $onboot,
                 'ostype' => $ostype,
@@ -4205,10 +4792,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'protection' => $protection,
                 'reboot' => $reboot,
                 'scsihw' => $scsihw,
+                'searchdomain' => $searchdomain,
                 'shares' => $shares,
                 'smbios1' => $smbios1,
                 'smp' => $smp,
                 'sockets' => $sockets,
+                'sshkeys' => $sshkeys,
                 'startdate' => $startdate,
                 'startup' => $startup,
                 'storage' => $storage,
@@ -4222,6 +4811,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'watchdog' => $watchdog];
             $this->addIndexedParameter($params, 'hostpci', $hostpciN);
             $this->addIndexedParameter($params, 'ide', $ideN);
+            $this->addIndexedParameter($params, 'ipconfig', $ipconfigN);
             $this->addIndexedParameter($params, 'net', $netN);
             $this->addIndexedParameter($params, 'numa', $numaN);
             $this->addIndexedParameter($params, 'parallel', $parallelN);
@@ -4247,7 +4837,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: seabios,ovmf
          * @param string $boot Boot on floppy (a), hard disk (c), CD-ROM (d), or network (n).
          * @param string $bootdisk Enable booting from specified disk.
+         * @param int $bwlimit Override i/o bandwidth limit (in KiB/s).
          * @param string $cdrom This is an alias for option -ide2
+         * @param string $cipassword cloud-init: Password to assign the user. Using this is generally not recommended. Use ssh keys instead. Also note that older cloud-init versions do not support hashed passwords.
+         * @param string $citype Specifies the cloud-init configuration format. The default depends on the configured operating system type (`ostype`. We use the `nocloud` format for Linux, and `configdrive2` for windows.
+         *   Enum: configdrive2,nocloud
+         * @param string $ciuser cloud-init: User name to change ssh keys and password for instead of the image's configured default user.
          * @param int $cores The number of cores per socket.
          * @param string $cpu Emulated CPU type.
          * @param int $cpulimit Limit of CPU usage.
@@ -4260,7 +4855,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $hugepages Enable/disable hugepages memory.
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3).
-         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.conf' configuration file.
+         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
+         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.conf' configuration file.It should not be necessary to set it.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param bool $kvm Enable/disable KVM hardware virtualization.
          * @param bool $localtime Set the real time clock to local time. This is enabled by default if ostype indicates a Microsoft OS.
@@ -4271,6 +4867,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param int $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
          * @param int $migrate_speed Set maximum speed (in MB/s) for migrations. Value 0 is no limit.
          * @param string $name Set a name for the VM. Only used on the configuration web interface.
+         * @param string $nameserver cloud-init: Sets DNS server IP address for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $netN Specify network devices.
          * @param bool $numa Enable/disable NUMA.
          * @param array $numaN NUMA topology.
@@ -4285,11 +4882,13 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 13).
          * @param string $scsihw SCSI controller model
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
+         * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $serialN Create a serial device inside the VM (n is 0 to 3)
          * @param int $shares Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning
          * @param string $smbios1 Specify SMBIOS type 1 fields.
          * @param int $smp The number of CPUs. Please use option -sockets instead.
          * @param int $sockets The number of CPU sockets.
+         * @param string $sshkeys cloud-init: Setup public SSH keys (one key per line, OpenSSH format).
          * @param string $startdate Set the initial date of the real time clock. Valid format for date are: 'now' or '2006-06-17T16:01:21' or '2006-06-17'.
          * @param string $startup Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
          * @param string $storage Default storage.
@@ -4307,9 +4906,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $watchdog Create a virtual hardware watchdog device.
          * @return Result
          */
-        public function createVm($vmid, $acpi = null, $agent = null, $archive = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $description = null, $force = null, $freeze = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $pool = null, $protection = null, $reboot = null, $sataN = null, $scsiN = null, $scsihw = null, $serialN = null, $shares = null, $smbios1 = null, $smp = null, $sockets = null, $startdate = null, $startup = null, $storage = null, $tablet = null, $tdf = null, $template = null, $unique = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmstatestorage = null, $watchdog = null)
+        public function createVm($vmid, $acpi = null, $agent = null, $archive = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $bwlimit = null, $cdrom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $description = null, $force = null, $freeze = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $pool = null, $protection = null, $reboot = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $startdate = null, $startup = null, $storage = null, $tablet = null, $tdf = null, $template = null, $unique = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmstatestorage = null, $watchdog = null)
         {
-            return $this->createRest($vmid, $acpi, $agent, $archive, $args, $autostart, $balloon, $bios, $boot, $bootdisk, $cdrom, $cores, $cpu, $cpulimit, $cpuunits, $description, $force, $freeze, $hostpciN, $hotplug, $hugepages, $ideN, $keyboard, $kvm, $localtime, $lock, $machine, $memory, $migrate_downtime, $migrate_speed, $name, $netN, $numa, $numaN, $onboot, $ostype, $parallelN, $pool, $protection, $reboot, $sataN, $scsiN, $scsihw, $serialN, $shares, $smbios1, $smp, $sockets, $startdate, $startup, $storage, $tablet, $tdf, $template, $unique, $unusedN, $usbN, $vcpus, $vga, $virtioN, $vmstatestorage, $watchdog);
+            return $this->createRest($vmid, $acpi, $agent, $archive, $args, $autostart, $balloon, $bios, $boot, $bootdisk, $bwlimit, $cdrom, $cipassword, $citype, $ciuser, $cores, $cpu, $cpulimit, $cpuunits, $description, $force, $freeze, $hostpciN, $hotplug, $hugepages, $ideN, $ipconfigN, $keyboard, $kvm, $localtime, $lock, $machine, $memory, $migrate_downtime, $migrate_speed, $name, $nameserver, $netN, $numa, $numaN, $onboot, $ostype, $parallelN, $pool, $protection, $reboot, $sataN, $scsiN, $scsihw, $searchdomain, $serialN, $shares, $smbios1, $smp, $sockets, $sshkeys, $startdate, $startup, $storage, $tablet, $tdf, $template, $unique, $unusedN, $usbN, $vcpus, $vga, $virtioN, $vmstatestorage, $watchdog);
         }
     }
 
@@ -4350,6 +4949,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function getFirewall()
         {
             return $this->firewall ?: ($this->firewall = new PVEVmidQemuNodeNodesFirewall($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $agent;
+
+        /**
+         * Get VmidQemuNodeNodesAgent
+         * @return PVEVmidQemuNodeNodesAgent
+         */
+        public function getAgent()
+        {
+            return $this->agent ?: ($this->agent = new PVEVmidQemuNodeNodesAgent($this->client, $this->node, $this->vmid));
         }
 
         /**
@@ -4434,6 +5047,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function getVncproxy()
         {
             return $this->vncproxy ?: ($this->vncproxy = new PVEVmidQemuNodeNodesVncproxy($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $termproxy;
+
+        /**
+         * Get VmidQemuNodeNodesTermproxy
+         * @return PVEVmidQemuNodeNodesTermproxy
+         */
+        public function getTermproxy()
+        {
+            return $this->termproxy ?: ($this->termproxy = new PVEVmidQemuNodeNodesTermproxy($this->client, $this->node, $this->vmid));
         }
 
         /**
@@ -4560,20 +5187,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function getMonitor()
         {
             return $this->monitor ?: ($this->monitor = new PVEVmidQemuNodeNodesMonitor($this->client, $this->node, $this->vmid));
-        }
-
-        /**
-         * @ignore
-         */
-        private $agent;
-
-        /**
-         * Get VmidQemuNodeNodesAgent
-         * @return PVEVmidQemuNodeNodesAgent
-         */
-        public function getAgent()
-        {
-            return $this->agent ?: ($this->agent = new PVEVmidQemuNodeNodesAgent($this->client, $this->node, $this->vmid));
         }
 
         /**
@@ -5708,6 +6321,1233 @@ namespace EnterpriseVE\ProxmoxVE\Api {
     }
 
     /**
+     * Class PVEVmidQemuNodeNodesAgent
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEVmidQemuNodeNodesAgent extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * @ignore
+         */
+        private $fsfreeze_Freeze;
+
+        /**
+         * Get AgentVmidQemuNodeNodesFsfreeze_Freeze
+         * @return PVEAgentVmidQemuNodeNodesFsfreeze_Freeze
+         */
+        public function getFsfreeze_Freeze()
+        {
+            return $this->fsfreeze_Freeze ?: ($this->fsfreeze_Freeze = new PVEAgentVmidQemuNodeNodesFsfreeze_Freeze($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $fsfreeze_Status;
+
+        /**
+         * Get AgentVmidQemuNodeNodesFsfreeze_Status
+         * @return PVEAgentVmidQemuNodeNodesFsfreeze_Status
+         */
+        public function getFsfreeze_Status()
+        {
+            return $this->fsfreeze_Status ?: ($this->fsfreeze_Status = new PVEAgentVmidQemuNodeNodesFsfreeze_Status($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $fsfreeze_Thaw;
+
+        /**
+         * Get AgentVmidQemuNodeNodesFsfreeze_Thaw
+         * @return PVEAgentVmidQemuNodeNodesFsfreeze_Thaw
+         */
+        public function getFsfreeze_Thaw()
+        {
+            return $this->fsfreeze_Thaw ?: ($this->fsfreeze_Thaw = new PVEAgentVmidQemuNodeNodesFsfreeze_Thaw($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $fstrim;
+
+        /**
+         * Get AgentVmidQemuNodeNodesFstrim
+         * @return PVEAgentVmidQemuNodeNodesFstrim
+         */
+        public function getFstrim()
+        {
+            return $this->fstrim ?: ($this->fstrim = new PVEAgentVmidQemuNodeNodesFstrim($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $get_Fsinfo;
+
+        /**
+         * Get AgentVmidQemuNodeNodesGet_Fsinfo
+         * @return PVEAgentVmidQemuNodeNodesGet_Fsinfo
+         */
+        public function getGet_Fsinfo()
+        {
+            return $this->get_Fsinfo ?: ($this->get_Fsinfo = new PVEAgentVmidQemuNodeNodesGet_Fsinfo($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $get_Host_Name;
+
+        /**
+         * Get AgentVmidQemuNodeNodesGet_Host_Name
+         * @return PVEAgentVmidQemuNodeNodesGet_Host_Name
+         */
+        public function getGet_Host_Name()
+        {
+            return $this->get_Host_Name ?: ($this->get_Host_Name = new PVEAgentVmidQemuNodeNodesGet_Host_Name($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $get_Memory_Block_Info;
+
+        /**
+         * Get AgentVmidQemuNodeNodesGet_Memory_Block_Info
+         * @return PVEAgentVmidQemuNodeNodesGet_Memory_Block_Info
+         */
+        public function getGet_Memory_Block_Info()
+        {
+            return $this->get_Memory_Block_Info ?: ($this->get_Memory_Block_Info = new PVEAgentVmidQemuNodeNodesGet_Memory_Block_Info($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $get_Memory_Blocks;
+
+        /**
+         * Get AgentVmidQemuNodeNodesGet_Memory_Blocks
+         * @return PVEAgentVmidQemuNodeNodesGet_Memory_Blocks
+         */
+        public function getGet_Memory_Blocks()
+        {
+            return $this->get_Memory_Blocks ?: ($this->get_Memory_Blocks = new PVEAgentVmidQemuNodeNodesGet_Memory_Blocks($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $get_Osinfo;
+
+        /**
+         * Get AgentVmidQemuNodeNodesGet_Osinfo
+         * @return PVEAgentVmidQemuNodeNodesGet_Osinfo
+         */
+        public function getGet_Osinfo()
+        {
+            return $this->get_Osinfo ?: ($this->get_Osinfo = new PVEAgentVmidQemuNodeNodesGet_Osinfo($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $get_Time;
+
+        /**
+         * Get AgentVmidQemuNodeNodesGet_Time
+         * @return PVEAgentVmidQemuNodeNodesGet_Time
+         */
+        public function getGet_Time()
+        {
+            return $this->get_Time ?: ($this->get_Time = new PVEAgentVmidQemuNodeNodesGet_Time($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $get_Timezone;
+
+        /**
+         * Get AgentVmidQemuNodeNodesGet_Timezone
+         * @return PVEAgentVmidQemuNodeNodesGet_Timezone
+         */
+        public function getGet_Timezone()
+        {
+            return $this->get_Timezone ?: ($this->get_Timezone = new PVEAgentVmidQemuNodeNodesGet_Timezone($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $get_Users;
+
+        /**
+         * Get AgentVmidQemuNodeNodesGet_Users
+         * @return PVEAgentVmidQemuNodeNodesGet_Users
+         */
+        public function getGet_Users()
+        {
+            return $this->get_Users ?: ($this->get_Users = new PVEAgentVmidQemuNodeNodesGet_Users($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $get_Vcpus;
+
+        /**
+         * Get AgentVmidQemuNodeNodesGet_Vcpus
+         * @return PVEAgentVmidQemuNodeNodesGet_Vcpus
+         */
+        public function getGet_Vcpus()
+        {
+            return $this->get_Vcpus ?: ($this->get_Vcpus = new PVEAgentVmidQemuNodeNodesGet_Vcpus($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $info;
+
+        /**
+         * Get AgentVmidQemuNodeNodesInfo
+         * @return PVEAgentVmidQemuNodeNodesInfo
+         */
+        public function getInfo()
+        {
+            return $this->info ?: ($this->info = new PVEAgentVmidQemuNodeNodesInfo($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $network_Get_Interfaces;
+
+        /**
+         * Get AgentVmidQemuNodeNodesNetwork_Get_Interfaces
+         * @return PVEAgentVmidQemuNodeNodesNetwork_Get_Interfaces
+         */
+        public function getNetwork_Get_Interfaces()
+        {
+            return $this->network_Get_Interfaces ?: ($this->network_Get_Interfaces = new PVEAgentVmidQemuNodeNodesNetwork_Get_Interfaces($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $ping;
+
+        /**
+         * Get AgentVmidQemuNodeNodesPing
+         * @return PVEAgentVmidQemuNodeNodesPing
+         */
+        public function getPing()
+        {
+            return $this->ping ?: ($this->ping = new PVEAgentVmidQemuNodeNodesPing($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $shutdown;
+
+        /**
+         * Get AgentVmidQemuNodeNodesShutdown
+         * @return PVEAgentVmidQemuNodeNodesShutdown
+         */
+        public function getShutdown()
+        {
+            return $this->shutdown ?: ($this->shutdown = new PVEAgentVmidQemuNodeNodesShutdown($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $suspend_Disk;
+
+        /**
+         * Get AgentVmidQemuNodeNodesSuspend_Disk
+         * @return PVEAgentVmidQemuNodeNodesSuspend_Disk
+         */
+        public function getSuspend_Disk()
+        {
+            return $this->suspend_Disk ?: ($this->suspend_Disk = new PVEAgentVmidQemuNodeNodesSuspend_Disk($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $suspend_Hybrid;
+
+        /**
+         * Get AgentVmidQemuNodeNodesSuspend_Hybrid
+         * @return PVEAgentVmidQemuNodeNodesSuspend_Hybrid
+         */
+        public function getSuspend_Hybrid()
+        {
+            return $this->suspend_Hybrid ?: ($this->suspend_Hybrid = new PVEAgentVmidQemuNodeNodesSuspend_Hybrid($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $suspend_Ram;
+
+        /**
+         * Get AgentVmidQemuNodeNodesSuspend_Ram
+         * @return PVEAgentVmidQemuNodeNodesSuspend_Ram
+         */
+        public function getSuspend_Ram()
+        {
+            return $this->suspend_Ram ?: ($this->suspend_Ram = new PVEAgentVmidQemuNodeNodesSuspend_Ram($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * Qemu Agent command index.
+         * @return Result
+         */
+        public function getRest()
+        {
+            return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent");
+        }
+
+        /**
+         * Qemu Agent command index.
+         * @return Result
+         */
+        public function index()
+        {
+            return $this->getRest();
+        }
+
+        /**
+         * Execute Qemu Guest Agent commands.
+         * @param string $command The QGA command.
+         *   Enum: fsfreeze-freeze,fsfreeze-status,fsfreeze-thaw,fstrim,get-fsinfo,get-host-name,get-memory-block-info,get-memory-blocks,get-osinfo,get-time,get-timezone,get-users,get-vcpus,info,network-get-interfaces,ping,shutdown,suspend-disk,suspend-hybrid,suspend-ram
+         * @return Result
+         */
+        public function createRest($command)
+        {
+            $params = ['command' => $command];
+            return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent", $params);
+        }
+
+        /**
+         * Execute Qemu Guest Agent commands.
+         * @param string $command The QGA command.
+         *   Enum: fsfreeze-freeze,fsfreeze-status,fsfreeze-thaw,fstrim,get-fsinfo,get-host-name,get-memory-block-info,get-memory-blocks,get-osinfo,get-time,get-timezone,get-users,get-vcpus,info,network-get-interfaces,ping,shutdown,suspend-disk,suspend-hybrid,suspend-ram
+         * @return Result
+         */
+        public function agent($command)
+        {
+            return $this->createRest($command);
+        }
+    }
+
+    /**
+     * Class PVEAgentVmidQemuNodeNodesFsfreeze_Freeze
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAgentVmidQemuNodeNodesFsfreeze_Freeze extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Execute fsfreeze-freeze.
+         * @return Result
+         */
+        public function createRest()
+        {
+            return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/fsfreeze-freeze");
+        }
+
+        /**
+         * Execute fsfreeze-freeze.
+         * @return Result
+         */
+        public function fsfreeze_Freeze()
+        {
+            return $this->createRest();
+        }
+    }
+
+    /**
+     * Class PVEAgentVmidQemuNodeNodesFsfreeze_Status
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAgentVmidQemuNodeNodesFsfreeze_Status extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Execute fsfreeze-status.
+         * @return Result
+         */
+        public function createRest()
+        {
+            return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/fsfreeze-status");
+        }
+
+        /**
+         * Execute fsfreeze-status.
+         * @return Result
+         */
+        public function fsfreeze_Status()
+        {
+            return $this->createRest();
+        }
+    }
+
+    /**
+     * Class PVEAgentVmidQemuNodeNodesFsfreeze_Thaw
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAgentVmidQemuNodeNodesFsfreeze_Thaw extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Execute fsfreeze-thaw.
+         * @return Result
+         */
+        public function createRest()
+        {
+            return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/fsfreeze-thaw");
+        }
+
+        /**
+         * Execute fsfreeze-thaw.
+         * @return Result
+         */
+        public function fsfreeze_Thaw()
+        {
+            return $this->createRest();
+        }
+    }
+
+    /**
+     * Class PVEAgentVmidQemuNodeNodesFstrim
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAgentVmidQemuNodeNodesFstrim extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Execute fstrim.
+         * @return Result
+         */
+        public function createRest()
+        {
+            return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/fstrim");
+        }
+
+        /**
+         * Execute fstrim.
+         * @return Result
+         */
+        public function fstrim()
+        {
+            return $this->createRest();
+        }
+    }
+
+    /**
+     * Class PVEAgentVmidQemuNodeNodesGet_Fsinfo
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAgentVmidQemuNodeNodesGet_Fsinfo extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Execute get-fsinfo.
+         * @return Result
+         */
+        public function getRest()
+        {
+            return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/get-fsinfo");
+        }
+
+        /**
+         * Execute get-fsinfo.
+         * @return Result
+         */
+        public function get_Fsinfo()
+        {
+            return $this->getRest();
+        }
+    }
+
+    /**
+     * Class PVEAgentVmidQemuNodeNodesGet_Host_Name
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAgentVmidQemuNodeNodesGet_Host_Name extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Execute get-host-name.
+         * @return Result
+         */
+        public function getRest()
+        {
+            return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/get-host-name");
+        }
+
+        /**
+         * Execute get-host-name.
+         * @return Result
+         */
+        public function get_Host_Name()
+        {
+            return $this->getRest();
+        }
+    }
+
+    /**
+     * Class PVEAgentVmidQemuNodeNodesGet_Memory_Block_Info
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAgentVmidQemuNodeNodesGet_Memory_Block_Info extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Execute get-memory-block-info.
+         * @return Result
+         */
+        public function getRest()
+        {
+            return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/get-memory-block-info");
+        }
+
+        /**
+         * Execute get-memory-block-info.
+         * @return Result
+         */
+        public function get_Memory_Block_Info()
+        {
+            return $this->getRest();
+        }
+    }
+
+    /**
+     * Class PVEAgentVmidQemuNodeNodesGet_Memory_Blocks
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAgentVmidQemuNodeNodesGet_Memory_Blocks extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Execute get-memory-blocks.
+         * @return Result
+         */
+        public function getRest()
+        {
+            return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/get-memory-blocks");
+        }
+
+        /**
+         * Execute get-memory-blocks.
+         * @return Result
+         */
+        public function get_Memory_Blocks()
+        {
+            return $this->getRest();
+        }
+    }
+
+    /**
+     * Class PVEAgentVmidQemuNodeNodesGet_Osinfo
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAgentVmidQemuNodeNodesGet_Osinfo extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Execute get-osinfo.
+         * @return Result
+         */
+        public function getRest()
+        {
+            return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/get-osinfo");
+        }
+
+        /**
+         * Execute get-osinfo.
+         * @return Result
+         */
+        public function get_Osinfo()
+        {
+            return $this->getRest();
+        }
+    }
+
+    /**
+     * Class PVEAgentVmidQemuNodeNodesGet_Time
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAgentVmidQemuNodeNodesGet_Time extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Execute get-time.
+         * @return Result
+         */
+        public function getRest()
+        {
+            return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/get-time");
+        }
+
+        /**
+         * Execute get-time.
+         * @return Result
+         */
+        public function get_Time()
+        {
+            return $this->getRest();
+        }
+    }
+
+    /**
+     * Class PVEAgentVmidQemuNodeNodesGet_Timezone
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAgentVmidQemuNodeNodesGet_Timezone extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Execute get-timezone.
+         * @return Result
+         */
+        public function getRest()
+        {
+            return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/get-timezone");
+        }
+
+        /**
+         * Execute get-timezone.
+         * @return Result
+         */
+        public function get_Timezone()
+        {
+            return $this->getRest();
+        }
+    }
+
+    /**
+     * Class PVEAgentVmidQemuNodeNodesGet_Users
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAgentVmidQemuNodeNodesGet_Users extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Execute get-users.
+         * @return Result
+         */
+        public function getRest()
+        {
+            return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/get-users");
+        }
+
+        /**
+         * Execute get-users.
+         * @return Result
+         */
+        public function get_Users()
+        {
+            return $this->getRest();
+        }
+    }
+
+    /**
+     * Class PVEAgentVmidQemuNodeNodesGet_Vcpus
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAgentVmidQemuNodeNodesGet_Vcpus extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Execute get-vcpus.
+         * @return Result
+         */
+        public function getRest()
+        {
+            return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/get-vcpus");
+        }
+
+        /**
+         * Execute get-vcpus.
+         * @return Result
+         */
+        public function get_Vcpus()
+        {
+            return $this->getRest();
+        }
+    }
+
+    /**
+     * Class PVEAgentVmidQemuNodeNodesInfo
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAgentVmidQemuNodeNodesInfo extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Execute info.
+         * @return Result
+         */
+        public function getRest()
+        {
+            return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/info");
+        }
+
+        /**
+         * Execute info.
+         * @return Result
+         */
+        public function info()
+        {
+            return $this->getRest();
+        }
+    }
+
+    /**
+     * Class PVEAgentVmidQemuNodeNodesNetwork_Get_Interfaces
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAgentVmidQemuNodeNodesNetwork_Get_Interfaces extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Execute network-get-interfaces.
+         * @return Result
+         */
+        public function getRest()
+        {
+            return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/network-get-interfaces");
+        }
+
+        /**
+         * Execute network-get-interfaces.
+         * @return Result
+         */
+        public function network_Get_Interfaces()
+        {
+            return $this->getRest();
+        }
+    }
+
+    /**
+     * Class PVEAgentVmidQemuNodeNodesPing
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAgentVmidQemuNodeNodesPing extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Execute ping.
+         * @return Result
+         */
+        public function createRest()
+        {
+            return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/ping");
+        }
+
+        /**
+         * Execute ping.
+         * @return Result
+         */
+        public function ping()
+        {
+            return $this->createRest();
+        }
+    }
+
+    /**
+     * Class PVEAgentVmidQemuNodeNodesShutdown
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAgentVmidQemuNodeNodesShutdown extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Execute shutdown.
+         * @return Result
+         */
+        public function createRest()
+        {
+            return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/shutdown");
+        }
+
+        /**
+         * Execute shutdown.
+         * @return Result
+         */
+        public function shutdown()
+        {
+            return $this->createRest();
+        }
+    }
+
+    /**
+     * Class PVEAgentVmidQemuNodeNodesSuspend_Disk
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAgentVmidQemuNodeNodesSuspend_Disk extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Execute suspend-disk.
+         * @return Result
+         */
+        public function createRest()
+        {
+            return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/suspend-disk");
+        }
+
+        /**
+         * Execute suspend-disk.
+         * @return Result
+         */
+        public function suspend_Disk()
+        {
+            return $this->createRest();
+        }
+    }
+
+    /**
+     * Class PVEAgentVmidQemuNodeNodesSuspend_Hybrid
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAgentVmidQemuNodeNodesSuspend_Hybrid extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Execute suspend-hybrid.
+         * @return Result
+         */
+        public function createRest()
+        {
+            return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/suspend-hybrid");
+        }
+
+        /**
+         * Execute suspend-hybrid.
+         * @return Result
+         */
+        public function suspend_Hybrid()
+        {
+            return $this->createRest();
+        }
+    }
+
+    /**
+     * Class PVEAgentVmidQemuNodeNodesSuspend_Ram
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAgentVmidQemuNodeNodesSuspend_Ram extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Execute suspend-ram.
+         * @return Result
+         */
+        public function createRest()
+        {
+            return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/suspend-ram");
+        }
+
+        /**
+         * Execute suspend-ram.
+         * @return Result
+         */
+        public function suspend_Ram()
+        {
+            return $this->createRest();
+        }
+    }
+
+    /**
      * Class PVEVmidQemuNodeNodesRrd
      * @package EnterpriseVE\ProxmoxVE\Api
      */
@@ -5877,6 +7717,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $boot Boot on floppy (a), hard disk (c), CD-ROM (d), or network (n).
          * @param string $bootdisk Enable booting from specified disk.
          * @param string $cdrom This is an alias for option -ide2
+         * @param string $cipassword cloud-init: Password to assign the user. Using this is generally not recommended. Use ssh keys instead. Also note that older cloud-init versions do not support hashed passwords.
+         * @param string $citype Specifies the cloud-init configuration format. The default depends on the configured operating system type (`ostype`. We use the `nocloud` format for Linux, and `configdrive2` for windows.
+         *   Enum: configdrive2,nocloud
+         * @param string $ciuser cloud-init: User name to change ssh keys and password for instead of the image's configured default user.
          * @param int $cores The number of cores per socket.
          * @param string $cpu Emulated CPU type.
          * @param int $cpulimit Limit of CPU usage.
@@ -5891,7 +7735,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $hugepages Enable/disable hugepages memory.
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3).
-         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.conf' configuration file.
+         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
+         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.conf' configuration file.It should not be necessary to set it.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param bool $kvm Enable/disable KVM hardware virtualization.
          * @param bool $localtime Set the real time clock to local time. This is enabled by default if ostype indicates a Microsoft OS.
@@ -5902,6 +7747,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param int $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
          * @param int $migrate_speed Set maximum speed (in MB/s) for migrations. Value 0 is no limit.
          * @param string $name Set a name for the VM. Only used on the configuration web interface.
+         * @param string $nameserver cloud-init: Sets DNS server IP address for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $netN Specify network devices.
          * @param bool $numa Enable/disable NUMA.
          * @param array $numaN NUMA topology.
@@ -5916,12 +7762,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 13).
          * @param string $scsihw SCSI controller model
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
+         * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $serialN Create a serial device inside the VM (n is 0 to 3)
          * @param int $shares Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
          * @param string $smbios1 Specify SMBIOS type 1 fields.
          * @param int $smp The number of CPUs. Please use option -sockets instead.
          * @param int $sockets The number of CPU sockets.
+         * @param string $sshkeys cloud-init: Setup public SSH keys (one key per line, OpenSSH format).
          * @param string $startdate Set the initial date of the real time clock. Valid format for date are: 'now' or '2006-06-17T16:01:21' or '2006-06-17'.
          * @param string $startup Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
          * @param bool $tablet Enable/disable the USB tablet device.
@@ -5937,7 +7785,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $watchdog Create a virtual hardware watchdog device.
          * @return Result
          */
-        public function createRest($acpi = null, $agent = null, $args = null, $autostart = null, $background_delay = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $force = null, $freeze = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $startdate = null, $startup = null, $tablet = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmstatestorage = null, $watchdog = null)
+        public function createRest($acpi = null, $agent = null, $args = null, $autostart = null, $background_delay = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $force = null, $freeze = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmstatestorage = null, $watchdog = null)
         {
             $params = ['acpi' => $acpi,
                 'agent' => $agent,
@@ -5949,6 +7797,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'boot' => $boot,
                 'bootdisk' => $bootdisk,
                 'cdrom' => $cdrom,
+                'cipassword' => $cipassword,
+                'citype' => $citype,
+                'ciuser' => $ciuser,
                 'cores' => $cores,
                 'cpu' => $cpu,
                 'cpulimit' => $cpulimit,
@@ -5969,6 +7820,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'migrate_downtime' => $migrate_downtime,
                 'migrate_speed' => $migrate_speed,
                 'name' => $name,
+                'nameserver' => $nameserver,
                 'numa' => $numa,
                 'onboot' => $onboot,
                 'ostype' => $ostype,
@@ -5976,11 +7828,13 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'reboot' => $reboot,
                 'revert' => $revert,
                 'scsihw' => $scsihw,
+                'searchdomain' => $searchdomain,
                 'shares' => $shares,
                 'skiplock' => $skiplock,
                 'smbios1' => $smbios1,
                 'smp' => $smp,
                 'sockets' => $sockets,
+                'sshkeys' => $sshkeys,
                 'startdate' => $startdate,
                 'startup' => $startup,
                 'tablet' => $tablet,
@@ -5992,6 +7846,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'watchdog' => $watchdog];
             $this->addIndexedParameter($params, 'hostpci', $hostpciN);
             $this->addIndexedParameter($params, 'ide', $ideN);
+            $this->addIndexedParameter($params, 'ipconfig', $ipconfigN);
             $this->addIndexedParameter($params, 'net', $netN);
             $this->addIndexedParameter($params, 'numa', $numaN);
             $this->addIndexedParameter($params, 'parallel', $parallelN);
@@ -6017,6 +7872,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $boot Boot on floppy (a), hard disk (c), CD-ROM (d), or network (n).
          * @param string $bootdisk Enable booting from specified disk.
          * @param string $cdrom This is an alias for option -ide2
+         * @param string $cipassword cloud-init: Password to assign the user. Using this is generally not recommended. Use ssh keys instead. Also note that older cloud-init versions do not support hashed passwords.
+         * @param string $citype Specifies the cloud-init configuration format. The default depends on the configured operating system type (`ostype`. We use the `nocloud` format for Linux, and `configdrive2` for windows.
+         *   Enum: configdrive2,nocloud
+         * @param string $ciuser cloud-init: User name to change ssh keys and password for instead of the image's configured default user.
          * @param int $cores The number of cores per socket.
          * @param string $cpu Emulated CPU type.
          * @param int $cpulimit Limit of CPU usage.
@@ -6031,7 +7890,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $hugepages Enable/disable hugepages memory.
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3).
-         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.conf' configuration file.
+         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
+         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.conf' configuration file.It should not be necessary to set it.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param bool $kvm Enable/disable KVM hardware virtualization.
          * @param bool $localtime Set the real time clock to local time. This is enabled by default if ostype indicates a Microsoft OS.
@@ -6042,6 +7902,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param int $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
          * @param int $migrate_speed Set maximum speed (in MB/s) for migrations. Value 0 is no limit.
          * @param string $name Set a name for the VM. Only used on the configuration web interface.
+         * @param string $nameserver cloud-init: Sets DNS server IP address for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $netN Specify network devices.
          * @param bool $numa Enable/disable NUMA.
          * @param array $numaN NUMA topology.
@@ -6056,12 +7917,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 13).
          * @param string $scsihw SCSI controller model
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
+         * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $serialN Create a serial device inside the VM (n is 0 to 3)
          * @param int $shares Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
          * @param string $smbios1 Specify SMBIOS type 1 fields.
          * @param int $smp The number of CPUs. Please use option -sockets instead.
          * @param int $sockets The number of CPU sockets.
+         * @param string $sshkeys cloud-init: Setup public SSH keys (one key per line, OpenSSH format).
          * @param string $startdate Set the initial date of the real time clock. Valid format for date are: 'now' or '2006-06-17T16:01:21' or '2006-06-17'.
          * @param string $startup Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
          * @param bool $tablet Enable/disable the USB tablet device.
@@ -6077,9 +7940,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $watchdog Create a virtual hardware watchdog device.
          * @return Result
          */
-        public function updateVmAsync($acpi = null, $agent = null, $args = null, $autostart = null, $background_delay = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $force = null, $freeze = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $startdate = null, $startup = null, $tablet = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmstatestorage = null, $watchdog = null)
+        public function updateVmAsync($acpi = null, $agent = null, $args = null, $autostart = null, $background_delay = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $force = null, $freeze = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmstatestorage = null, $watchdog = null)
         {
-            return $this->createRest($acpi, $agent, $args, $autostart, $background_delay, $balloon, $bios, $boot, $bootdisk, $cdrom, $cores, $cpu, $cpulimit, $cpuunits, $delete, $description, $digest, $force, $freeze, $hostpciN, $hotplug, $hugepages, $ideN, $keyboard, $kvm, $localtime, $lock, $machine, $memory, $migrate_downtime, $migrate_speed, $name, $netN, $numa, $numaN, $onboot, $ostype, $parallelN, $protection, $reboot, $revert, $sataN, $scsiN, $scsihw, $serialN, $shares, $skiplock, $smbios1, $smp, $sockets, $startdate, $startup, $tablet, $tdf, $template, $unusedN, $usbN, $vcpus, $vga, $virtioN, $vmstatestorage, $watchdog);
+            return $this->createRest($acpi, $agent, $args, $autostart, $background_delay, $balloon, $bios, $boot, $bootdisk, $cdrom, $cipassword, $citype, $ciuser, $cores, $cpu, $cpulimit, $cpuunits, $delete, $description, $digest, $force, $freeze, $hostpciN, $hotplug, $hugepages, $ideN, $ipconfigN, $keyboard, $kvm, $localtime, $lock, $machine, $memory, $migrate_downtime, $migrate_speed, $name, $nameserver, $netN, $numa, $numaN, $onboot, $ostype, $parallelN, $protection, $reboot, $revert, $sataN, $scsiN, $scsihw, $searchdomain, $serialN, $shares, $skiplock, $smbios1, $smp, $sockets, $sshkeys, $startdate, $startup, $tablet, $tdf, $template, $unusedN, $usbN, $vcpus, $vga, $virtioN, $vmstatestorage, $watchdog);
         }
 
         /**
@@ -6094,6 +7957,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $boot Boot on floppy (a), hard disk (c), CD-ROM (d), or network (n).
          * @param string $bootdisk Enable booting from specified disk.
          * @param string $cdrom This is an alias for option -ide2
+         * @param string $cipassword cloud-init: Password to assign the user. Using this is generally not recommended. Use ssh keys instead. Also note that older cloud-init versions do not support hashed passwords.
+         * @param string $citype Specifies the cloud-init configuration format. The default depends on the configured operating system type (`ostype`. We use the `nocloud` format for Linux, and `configdrive2` for windows.
+         *   Enum: configdrive2,nocloud
+         * @param string $ciuser cloud-init: User name to change ssh keys and password for instead of the image's configured default user.
          * @param int $cores The number of cores per socket.
          * @param string $cpu Emulated CPU type.
          * @param int $cpulimit Limit of CPU usage.
@@ -6108,7 +7975,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $hugepages Enable/disable hugepages memory.
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3).
-         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.conf' configuration file.
+         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
+         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.conf' configuration file.It should not be necessary to set it.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param bool $kvm Enable/disable KVM hardware virtualization.
          * @param bool $localtime Set the real time clock to local time. This is enabled by default if ostype indicates a Microsoft OS.
@@ -6119,6 +7987,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param int $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
          * @param int $migrate_speed Set maximum speed (in MB/s) for migrations. Value 0 is no limit.
          * @param string $name Set a name for the VM. Only used on the configuration web interface.
+         * @param string $nameserver cloud-init: Sets DNS server IP address for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $netN Specify network devices.
          * @param bool $numa Enable/disable NUMA.
          * @param array $numaN NUMA topology.
@@ -6133,12 +8002,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 13).
          * @param string $scsihw SCSI controller model
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
+         * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $serialN Create a serial device inside the VM (n is 0 to 3)
          * @param int $shares Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
          * @param string $smbios1 Specify SMBIOS type 1 fields.
          * @param int $smp The number of CPUs. Please use option -sockets instead.
          * @param int $sockets The number of CPU sockets.
+         * @param string $sshkeys cloud-init: Setup public SSH keys (one key per line, OpenSSH format).
          * @param string $startdate Set the initial date of the real time clock. Valid format for date are: 'now' or '2006-06-17T16:01:21' or '2006-06-17'.
          * @param string $startup Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
          * @param bool $tablet Enable/disable the USB tablet device.
@@ -6154,7 +8025,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $watchdog Create a virtual hardware watchdog device.
          * @return Result
          */
-        public function setRest($acpi = null, $agent = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $force = null, $freeze = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $startdate = null, $startup = null, $tablet = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmstatestorage = null, $watchdog = null)
+        public function setRest($acpi = null, $agent = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $force = null, $freeze = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmstatestorage = null, $watchdog = null)
         {
             $params = ['acpi' => $acpi,
                 'agent' => $agent,
@@ -6165,6 +8036,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'boot' => $boot,
                 'bootdisk' => $bootdisk,
                 'cdrom' => $cdrom,
+                'cipassword' => $cipassword,
+                'citype' => $citype,
+                'ciuser' => $ciuser,
                 'cores' => $cores,
                 'cpu' => $cpu,
                 'cpulimit' => $cpulimit,
@@ -6185,6 +8059,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'migrate_downtime' => $migrate_downtime,
                 'migrate_speed' => $migrate_speed,
                 'name' => $name,
+                'nameserver' => $nameserver,
                 'numa' => $numa,
                 'onboot' => $onboot,
                 'ostype' => $ostype,
@@ -6192,11 +8067,13 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'reboot' => $reboot,
                 'revert' => $revert,
                 'scsihw' => $scsihw,
+                'searchdomain' => $searchdomain,
                 'shares' => $shares,
                 'skiplock' => $skiplock,
                 'smbios1' => $smbios1,
                 'smp' => $smp,
                 'sockets' => $sockets,
+                'sshkeys' => $sshkeys,
                 'startdate' => $startdate,
                 'startup' => $startup,
                 'tablet' => $tablet,
@@ -6208,6 +8085,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'watchdog' => $watchdog];
             $this->addIndexedParameter($params, 'hostpci', $hostpciN);
             $this->addIndexedParameter($params, 'ide', $ideN);
+            $this->addIndexedParameter($params, 'ipconfig', $ipconfigN);
             $this->addIndexedParameter($params, 'net', $netN);
             $this->addIndexedParameter($params, 'numa', $numaN);
             $this->addIndexedParameter($params, 'parallel', $parallelN);
@@ -6232,6 +8110,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $boot Boot on floppy (a), hard disk (c), CD-ROM (d), or network (n).
          * @param string $bootdisk Enable booting from specified disk.
          * @param string $cdrom This is an alias for option -ide2
+         * @param string $cipassword cloud-init: Password to assign the user. Using this is generally not recommended. Use ssh keys instead. Also note that older cloud-init versions do not support hashed passwords.
+         * @param string $citype Specifies the cloud-init configuration format. The default depends on the configured operating system type (`ostype`. We use the `nocloud` format for Linux, and `configdrive2` for windows.
+         *   Enum: configdrive2,nocloud
+         * @param string $ciuser cloud-init: User name to change ssh keys and password for instead of the image's configured default user.
          * @param int $cores The number of cores per socket.
          * @param string $cpu Emulated CPU type.
          * @param int $cpulimit Limit of CPU usage.
@@ -6246,7 +8128,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $hugepages Enable/disable hugepages memory.
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3).
-         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.conf' configuration file.
+         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
+         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.conf' configuration file.It should not be necessary to set it.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param bool $kvm Enable/disable KVM hardware virtualization.
          * @param bool $localtime Set the real time clock to local time. This is enabled by default if ostype indicates a Microsoft OS.
@@ -6257,6 +8140,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param int $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
          * @param int $migrate_speed Set maximum speed (in MB/s) for migrations. Value 0 is no limit.
          * @param string $name Set a name for the VM. Only used on the configuration web interface.
+         * @param string $nameserver cloud-init: Sets DNS server IP address for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $netN Specify network devices.
          * @param bool $numa Enable/disable NUMA.
          * @param array $numaN NUMA topology.
@@ -6271,12 +8155,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 13).
          * @param string $scsihw SCSI controller model
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
+         * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $serialN Create a serial device inside the VM (n is 0 to 3)
          * @param int $shares Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
          * @param string $smbios1 Specify SMBIOS type 1 fields.
          * @param int $smp The number of CPUs. Please use option -sockets instead.
          * @param int $sockets The number of CPU sockets.
+         * @param string $sshkeys cloud-init: Setup public SSH keys (one key per line, OpenSSH format).
          * @param string $startdate Set the initial date of the real time clock. Valid format for date are: 'now' or '2006-06-17T16:01:21' or '2006-06-17'.
          * @param string $startup Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
          * @param bool $tablet Enable/disable the USB tablet device.
@@ -6292,9 +8178,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $watchdog Create a virtual hardware watchdog device.
          * @return Result
          */
-        public function updateVm($acpi = null, $agent = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $force = null, $freeze = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $startdate = null, $startup = null, $tablet = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmstatestorage = null, $watchdog = null)
+        public function updateVm($acpi = null, $agent = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $force = null, $freeze = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmstatestorage = null, $watchdog = null)
         {
-            return $this->setRest($acpi, $agent, $args, $autostart, $balloon, $bios, $boot, $bootdisk, $cdrom, $cores, $cpu, $cpulimit, $cpuunits, $delete, $description, $digest, $force, $freeze, $hostpciN, $hotplug, $hugepages, $ideN, $keyboard, $kvm, $localtime, $lock, $machine, $memory, $migrate_downtime, $migrate_speed, $name, $netN, $numa, $numaN, $onboot, $ostype, $parallelN, $protection, $reboot, $revert, $sataN, $scsiN, $scsihw, $serialN, $shares, $skiplock, $smbios1, $smp, $sockets, $startdate, $startup, $tablet, $tdf, $template, $unusedN, $usbN, $vcpus, $vga, $virtioN, $vmstatestorage, $watchdog);
+            return $this->setRest($acpi, $agent, $args, $autostart, $balloon, $bios, $boot, $bootdisk, $cdrom, $cipassword, $citype, $ciuser, $cores, $cpu, $cpulimit, $cpuunits, $delete, $description, $digest, $force, $freeze, $hostpciN, $hotplug, $hugepages, $ideN, $ipconfigN, $keyboard, $kvm, $localtime, $lock, $machine, $memory, $migrate_downtime, $migrate_speed, $name, $nameserver, $netN, $numa, $numaN, $onboot, $ostype, $parallelN, $protection, $reboot, $revert, $sataN, $scsiN, $scsihw, $searchdomain, $serialN, $shares, $skiplock, $smbios1, $smp, $sockets, $sshkeys, $startdate, $startup, $tablet, $tdf, $template, $unusedN, $usbN, $vcpus, $vga, $virtioN, $vmstatestorage, $watchdog);
         }
     }
 
@@ -6436,6 +8322,55 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function vncproxy($websocket = null)
         {
             return $this->createRest($websocket);
+        }
+    }
+
+    /**
+     * Class PVEVmidQemuNodeNodesTermproxy
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEVmidQemuNodeNodesTermproxy extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Creates a TCP proxy connections.
+         * @param string $serial opens a serial terminal (defaults to display)
+         *   Enum: serial0,serial1,serial2,serial3
+         * @return Result
+         */
+        public function createRest($serial = null)
+        {
+            $params = ['serial' => $serial];
+            return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/termproxy", $params);
+        }
+
+        /**
+         * Creates a TCP proxy connections.
+         * @param string $serial opens a serial terminal (defaults to display)
+         *   Enum: serial0,serial1,serial2,serial3
+         * @return Result
+         */
+        public function termproxy($serial = null)
+        {
+            return $this->createRest($serial);
         }
     }
 
@@ -7176,9 +9111,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * Create a copy of virtual machine/template.
          * @param int $newid VMID for the clone.
          * @param string $description Description for the new VM.
-         * @param string $format Target format for file storage.
+         * @param string $format Target format for file storage. Only valid for full clone.
          *   Enum: raw,qcow2,vmdk
-         * @param bool $full Create a full copy of all disk. This is always done when you clone a normal VM. For VM templates, we try to create a linked clone by default.
+         * @param bool $full Create a full copy of all disks. This is always done when you clone a normal VM. For VM templates, we try to create a linked clone by default.
          * @param string $name Set a name for the new VM.
          * @param string $pool Add the new VM to the specified pool.
          * @param string $snapname The name of the snapshot.
@@ -7204,9 +9139,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * Create a copy of virtual machine/template.
          * @param int $newid VMID for the clone.
          * @param string $description Description for the new VM.
-         * @param string $format Target format for file storage.
+         * @param string $format Target format for file storage. Only valid for full clone.
          *   Enum: raw,qcow2,vmdk
-         * @param bool $full Create a full copy of all disk. This is always done when you clone a normal VM. For VM templates, we try to create a linked clone by default.
+         * @param bool $full Create a full copy of all disks. This is always done when you clone a normal VM. For VM templates, we try to create a linked clone by default.
          * @param string $name Set a name for the new VM.
          * @param string $pool Add the new VM to the specified pool.
          * @param string $snapname The name of the snapshot.
@@ -7392,55 +9327,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @return Result
          */
         public function monitor($command)
-        {
-            return $this->createRest($command);
-        }
-    }
-
-    /**
-     * Class PVEVmidQemuNodeNodesAgent
-     * @package EnterpriseVE\ProxmoxVE\Api
-     */
-    class PVEVmidQemuNodeNodesAgent extends Base
-    {
-        /**
-         * @ignore
-         */
-        private $node;
-        /**
-         * @ignore
-         */
-        private $vmid;
-
-        /**
-         * @ignore
-         */
-        function __construct($client, $node, $vmid)
-        {
-            $this->client = $client;
-            $this->node = $node;
-            $this->vmid = $vmid;
-        }
-
-        /**
-         * Execute Qemu Guest Agent commands.
-         * @param string $command The QGA command.
-         *   Enum: ping,get-time,info,fsfreeze-status,fsfreeze-freeze,fsfreeze-thaw,fstrim,network-get-interfaces,get-vcpus,get-fsinfo,get-memory-blocks,get-memory-block-info,suspend-hybrid,suspend-ram,suspend-disk,shutdown
-         * @return Result
-         */
-        public function createRest($command)
-        {
-            $params = ['command' => $command];
-            return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent", $params);
-        }
-
-        /**
-         * Execute Qemu Guest Agent commands.
-         * @param string $command The QGA command.
-         *   Enum: ping,get-time,info,fsfreeze-status,fsfreeze-freeze,fsfreeze-thaw,fstrim,network-get-interfaces,get-vcpus,get-fsinfo,get-memory-blocks,get-memory-block-info,suspend-hybrid,suspend-ram,suspend-disk,shutdown
-         * @return Result
-         */
-        public function agent($command)
         {
             return $this->createRest($command);
         }
@@ -7905,6 +9791,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param int $vmid The (unique) ID of the VM.
          * @param string $arch OS architecture type.
          *   Enum: amd64,i386
+         * @param int $bwlimit Override i/o bandwidth limit (in KiB/s).
          * @param string $cmode Console mode. By default, the console command tries to open a connection to one of the available tty devices. By setting cmode to 'console' it tries to attach to /dev/console instead. If you set cmode to 'shell', it simply invokes a shell inside the container (no login).
          *   Enum: shell,console,tty
          * @param bool $console Attach a console device (/dev/console) to the container.
@@ -7940,11 +9827,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
          * @return Result
          */
-        public function createRest($ostemplate, $vmid, $arch = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $description = null, $force = null, $hostname = null, $ignore_unpack_errors = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $password = null, $pool = null, $protection = null, $restore = null, $rootfs = null, $searchdomain = null, $ssh_public_keys = null, $startup = null, $storage = null, $swap = null, $template = null, $tty = null, $unprivileged = null, $unusedN = null)
+        public function createRest($ostemplate, $vmid, $arch = null, $bwlimit = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $description = null, $force = null, $hostname = null, $ignore_unpack_errors = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $password = null, $pool = null, $protection = null, $restore = null, $rootfs = null, $searchdomain = null, $ssh_public_keys = null, $startup = null, $storage = null, $swap = null, $template = null, $tty = null, $unprivileged = null, $unusedN = null)
         {
             $params = ['ostemplate' => $ostemplate,
                 'vmid' => $vmid,
                 'arch' => $arch,
+                'bwlimit' => $bwlimit,
                 'cmode' => $cmode,
                 'console' => $console,
                 'cores' => $cores,
@@ -7984,6 +9872,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param int $vmid The (unique) ID of the VM.
          * @param string $arch OS architecture type.
          *   Enum: amd64,i386
+         * @param int $bwlimit Override i/o bandwidth limit (in KiB/s).
          * @param string $cmode Console mode. By default, the console command tries to open a connection to one of the available tty devices. By setting cmode to 'console' it tries to attach to /dev/console instead. If you set cmode to 'shell', it simply invokes a shell inside the container (no login).
          *   Enum: shell,console,tty
          * @param bool $console Attach a console device (/dev/console) to the container.
@@ -8019,9 +9908,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
          * @return Result
          */
-        public function createVm($ostemplate, $vmid, $arch = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $description = null, $force = null, $hostname = null, $ignore_unpack_errors = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $password = null, $pool = null, $protection = null, $restore = null, $rootfs = null, $searchdomain = null, $ssh_public_keys = null, $startup = null, $storage = null, $swap = null, $template = null, $tty = null, $unprivileged = null, $unusedN = null)
+        public function createVm($ostemplate, $vmid, $arch = null, $bwlimit = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $description = null, $force = null, $hostname = null, $ignore_unpack_errors = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $password = null, $pool = null, $protection = null, $restore = null, $rootfs = null, $searchdomain = null, $ssh_public_keys = null, $startup = null, $storage = null, $swap = null, $template = null, $tty = null, $unprivileged = null, $unusedN = null)
         {
-            return $this->createRest($ostemplate, $vmid, $arch, $cmode, $console, $cores, $cpulimit, $cpuunits, $description, $force, $hostname, $ignore_unpack_errors, $lock, $memory, $mpN, $nameserver, $netN, $onboot, $ostype, $password, $pool, $protection, $restore, $rootfs, $searchdomain, $ssh_public_keys, $startup, $storage, $swap, $template, $tty, $unprivileged, $unusedN);
+            return $this->createRest($ostemplate, $vmid, $arch, $bwlimit, $cmode, $console, $cores, $cpulimit, $cpuunits, $description, $force, $hostname, $ignore_unpack_errors, $lock, $memory, $mpN, $nameserver, $netN, $onboot, $ostype, $password, $pool, $protection, $restore, $rootfs, $searchdomain, $ssh_public_keys, $startup, $storage, $swap, $template, $tty, $unprivileged, $unusedN);
         }
     }
 
@@ -8151,6 +10040,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         /**
          * @ignore
          */
+        private $termproxy;
+
+        /**
+         * Get VmidLxcNodeNodesTermproxy
+         * @return PVEVmidLxcNodeNodesTermproxy
+         */
+        public function getTermproxy()
+        {
+            return $this->termproxy ?: ($this->termproxy = new PVEVmidLxcNodeNodesTermproxy($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
         private $vncwebsocket;
 
         /**
@@ -8244,6 +10147,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function getResize()
         {
             return $this->resize ?: ($this->resize = new PVEVmidLxcNodeNodesResize($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $moveVolume;
+
+        /**
+         * Get VmidLxcNodeNodesMoveVolume
+         * @return PVEVmidLxcNodeNodesMoveVolume
+         */
+        public function getMoveVolume()
+        {
+            return $this->moveVolume ?: ($this->moveVolume = new PVEVmidLxcNodeNodesMoveVolume($this->client, $this->node, $this->vmid));
         }
 
         /**
@@ -10344,6 +12261,50 @@ namespace EnterpriseVE\ProxmoxVE\Api {
     }
 
     /**
+     * Class PVEVmidLxcNodeNodesTermproxy
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEVmidLxcNodeNodesTermproxy extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Creates a TCP proxy connection.
+         * @return Result
+         */
+        public function createRest()
+        {
+            return $this->getClient()->create("/nodes/{$this->node}/lxc/{$this->vmid}/termproxy");
+        }
+
+        /**
+         * Creates a TCP proxy connection.
+         * @return Result
+         */
+        public function termproxy()
+        {
+            return $this->createRest();
+        }
+    }
+
+    /**
      * Class PVEVmidLxcNodeNodesVncwebsocket
      * @package EnterpriseVE\ProxmoxVE\Api
      */
@@ -10527,7 +12488,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         /**
          * Check if feature for virtual machine is available.
          * @param string $feature Feature to check.
-         *   Enum: snapshot
+         *   Enum: snapshot,clone,copy
          * @param string $snapname The name of the snapshot.
          * @return Result
          */
@@ -10541,7 +12502,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         /**
          * Check if feature for virtual machine is available.
          * @param string $feature Feature to check.
-         *   Enum: snapshot
+         *   Enum: snapshot,clone,copy
          * @param string $snapname The name of the snapshot.
          * @return Result
          */
@@ -10578,23 +12539,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
 
         /**
          * Create a Template.
-         * @param bool $experimental The template feature is experimental, set this flag if you know what you are doing.
          * @return Result
          */
-        public function createRest($experimental)
+        public function createRest()
         {
-            $params = ['experimental' => $experimental];
-            return $this->getClient()->create("/nodes/{$this->node}/lxc/{$this->vmid}/template", $params);
+            return $this->getClient()->create("/nodes/{$this->node}/lxc/{$this->vmid}/template");
         }
 
         /**
          * Create a Template.
-         * @param bool $experimental The template feature is experimental, set this flag if you know what you are doing.
          * @return Result
          */
-        public function template($experimental)
+        public function template()
         {
-            return $this->createRest($experimental);
+            return $this->createRest();
         }
     }
 
@@ -10625,44 +12583,44 @@ namespace EnterpriseVE\ProxmoxVE\Api {
 
         /**
          * Create a container clone/copy
-         * @param bool $experimental The clone feature is experimental, set this flag if you know what you are doing.
          * @param int $newid VMID for the clone.
          * @param string $description Description for the new CT.
-         * @param bool $full Create a full copy of all disk. This is always done when you clone a normal CT. For CT templates, we try to create a linked clone by default.
+         * @param bool $full Create a full copy of all disks. This is always done when you clone a normal CT. For CT templates, we try to create a linked clone by default.
          * @param string $hostname Set a hostname for the new CT.
          * @param string $pool Add the new CT to the specified pool.
          * @param string $snapname The name of the snapshot.
          * @param string $storage Target storage for full clone.
+         * @param string $target Target node. Only allowed if the original VM is on shared storage.
          * @return Result
          */
-        public function createRest($experimental, $newid, $description = null, $full = null, $hostname = null, $pool = null, $snapname = null, $storage = null)
+        public function createRest($newid, $description = null, $full = null, $hostname = null, $pool = null, $snapname = null, $storage = null, $target = null)
         {
-            $params = ['experimental' => $experimental,
-                'newid' => $newid,
+            $params = ['newid' => $newid,
                 'description' => $description,
                 'full' => $full,
                 'hostname' => $hostname,
                 'pool' => $pool,
                 'snapname' => $snapname,
-                'storage' => $storage];
+                'storage' => $storage,
+                'target' => $target];
             return $this->getClient()->create("/nodes/{$this->node}/lxc/{$this->vmid}/clone", $params);
         }
 
         /**
          * Create a container clone/copy
-         * @param bool $experimental The clone feature is experimental, set this flag if you know what you are doing.
          * @param int $newid VMID for the clone.
          * @param string $description Description for the new CT.
-         * @param bool $full Create a full copy of all disk. This is always done when you clone a normal CT. For CT templates, we try to create a linked clone by default.
+         * @param bool $full Create a full copy of all disks. This is always done when you clone a normal CT. For CT templates, we try to create a linked clone by default.
          * @param string $hostname Set a hostname for the new CT.
          * @param string $pool Add the new CT to the specified pool.
          * @param string $snapname The name of the snapshot.
          * @param string $storage Target storage for full clone.
+         * @param string $target Target node. Only allowed if the original VM is on shared storage.
          * @return Result
          */
-        public function cloneVm($experimental, $newid, $description = null, $full = null, $hostname = null, $pool = null, $snapname = null, $storage = null)
+        public function cloneVm($newid, $description = null, $full = null, $hostname = null, $pool = null, $snapname = null, $storage = null, $target = null)
         {
-            return $this->createRest($experimental, $newid, $description, $full, $hostname, $pool, $snapname, $storage);
+            return $this->createRest($newid, $description, $full, $hostname, $pool, $snapname, $storage, $target);
         }
     }
 
@@ -10718,6 +12676,64 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function resizeVm($disk, $size, $digest = null)
         {
             return $this->setRest($disk, $size, $digest);
+        }
+    }
+
+    /**
+     * Class PVEVmidLxcNodeNodesMoveVolume
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEVmidLxcNodeNodesMoveVolume extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Move a rootfs-/mp-volume to a different storage
+         * @param string $storage Target Storage.
+         * @param string $volume Volume which will be moved.
+         *   Enum: rootfs,mp0,mp1,mp2,mp3,mp4,mp5,mp6,mp7,mp8,mp9
+         * @param bool $delete Delete the original volume after successful copy. By default the original is kept as an unused volume entry.
+         * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
+         * @return Result
+         */
+        public function createRest($storage, $volume, $delete = null, $digest = null)
+        {
+            $params = ['storage' => $storage,
+                'volume' => $volume,
+                'delete' => $delete,
+                'digest' => $digest];
+            return $this->getClient()->create("/nodes/{$this->node}/lxc/{$this->vmid}/move_volume", $params);
+        }
+
+        /**
+         * Move a rootfs-/mp-volume to a different storage
+         * @param string $storage Target Storage.
+         * @param string $volume Volume which will be moved.
+         *   Enum: rootfs,mp0,mp1,mp2,mp3,mp4,mp5,mp6,mp7,mp8,mp9
+         * @param bool $delete Delete the original volume after successful copy. By default the original is kept as an unused volume entry.
+         * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
+         * @return Result
+         */
+        public function moveVolume($storage, $volume, $delete = null, $digest = null)
+        {
+            return $this->createRest($storage, $volume, $delete, $digest);
         }
     }
 
@@ -11007,7 +13023,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         /**
          * Create OSD
          * @param string $dev Block device name.
-         * @param bool $bluestore Use bluestore instead of filestore.
+         * @param bool $bluestore Use bluestore instead of filestore. This is the default.
          * @param string $fstype File system type (filestore only).
          *   Enum: xfs,ext4,btrfs
          * @param string $journal_dev Block device name for journal (filestore) or block.db (bluestore).
@@ -11027,7 +13043,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         /**
          * Create OSD
          * @param string $dev Block device name.
-         * @param bool $bluestore Use bluestore instead of filestore.
+         * @param bool $bluestore Use bluestore instead of filestore. This is the default.
          * @param string $fstype File system type (filestore only).
          *   Enum: xfs,ext4,btrfs
          * @param string $journal_dev Block device name for journal (filestore) or block.db (bluestore).
@@ -11338,12 +13354,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * Create Ceph Monitor and Manager
          * @param bool $exclude_manager When set, only a monitor will be created.
          * @param string $id The ID for the monitor, when omitted the same as the nodename
+         * @param string $mon_address Overwrites autodetected monitor IP address. Must be in the public network of ceph.
          * @return Result
          */
-        public function createRest($exclude_manager = null, $id = null)
+        public function createRest($exclude_manager = null, $id = null, $mon_address = null)
         {
             $params = ['exclude-manager' => $exclude_manager,
-                'id' => $id];
+                'id' => $id,
+                'mon-address' => $mon_address];
             return $this->getClient()->create("/nodes/{$this->node}/ceph/mon", $params);
         }
 
@@ -11351,11 +13369,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * Create Ceph Monitor and Manager
          * @param bool $exclude_manager When set, only a monitor will be created.
          * @param string $id The ID for the monitor, when omitted the same as the nodename
+         * @param string $mon_address Overwrites autodetected monitor IP address. Must be in the public network of ceph.
          * @return Result
          */
-        public function createmon($exclude_manager = null, $id = null)
+        public function createmon($exclude_manager = null, $id = null, $mon_address = null)
         {
-            return $this->createRest($exclude_manager, $id);
+            return $this->createRest($exclude_manager, $id, $mon_address);
         }
     }
 
@@ -13297,6 +15316,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         /**
          * @ignore
          */
+        private $cifs;
+
+        /**
+         * Get ScanNodeNodesCifs
+         * @return PVEScanNodeNodesCifs
+         */
+        public function getCifs()
+        {
+            return $this->cifs ?: ($this->cifs = new PVEScanNodeNodesCifs($this->client, $this->node));
+        }
+
+        /**
+         * @ignore
+         */
         private $glusterfs;
 
         /**
@@ -13461,6 +15494,57 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function nfsscan($server)
         {
             return $this->getRest($server);
+        }
+    }
+
+    /**
+     * Class PVEScanNodeNodesCifs
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEScanNodeNodesCifs extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node)
+        {
+            $this->client = $client;
+            $this->node = $node;
+        }
+
+        /**
+         * Scan remote CIFS server.
+         * @param string $server
+         * @param string $domain
+         * @param string $password
+         * @param string $username
+         * @return Result
+         */
+        public function getRest($server, $domain = null, $password = null, $username = null)
+        {
+            $params = ['server' => $server,
+                'domain' => $domain,
+                'password' => $password,
+                'username' => $username];
+            return $this->getClient()->get("/nodes/{$this->node}/scan/cifs", $params);
+        }
+
+        /**
+         * Scan remote CIFS server.
+         * @param string $server
+         * @param string $domain
+         * @param string $password
+         * @param string $username
+         * @return Result
+         */
+        public function cifsscan($server, $domain = null, $password = null, $username = null)
+        {
+            return $this->getRest($server, $domain, $password, $username);
         }
     }
 
@@ -13702,14 +15786,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * Get status for all datastores.
          * @param string $content Only list stores which support this content type.
          * @param bool $enabled Only list stores which are enabled (not disabled in config).
+         * @param bool $format Include information about formats
          * @param string $storage Only list status for  specified storage
          * @param string $target If target is different to 'node', we only lists shared storages which content is accessible on this 'node' and the specified 'target' node.
          * @return Result
          */
-        public function getRest($content = null, $enabled = null, $storage = null, $target = null)
+        public function getRest($content = null, $enabled = null, $format = null, $storage = null, $target = null)
         {
             $params = ['content' => $content,
                 'enabled' => $enabled,
+                'format' => $format,
                 'storage' => $storage,
                 'target' => $target];
             return $this->getClient()->get("/nodes/{$this->node}/storage", $params);
@@ -13719,13 +15805,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * Get status for all datastores.
          * @param string $content Only list stores which support this content type.
          * @param bool $enabled Only list stores which are enabled (not disabled in config).
+         * @param bool $format Include information about formats
          * @param string $storage Only list status for  specified storage
          * @param string $target If target is different to 'node', we only lists shared storages which content is accessible on this 'node' and the specified 'target' node.
          * @return Result
          */
-        public function index($content = null, $enabled = null, $storage = null, $target = null)
+        public function index($content = null, $enabled = null, $format = null, $storage = null, $target = null)
         {
-            return $this->getRest($content, $enabled, $storage, $target);
+            return $this->getRest($content, $enabled, $format, $storage, $target);
         }
     }
 
@@ -15411,6 +17498,401 @@ namespace EnterpriseVE\ProxmoxVE\Api {
     }
 
     /**
+     * Class PVENodeNodesCertificates
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVENodeNodesCertificates extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node)
+        {
+            $this->client = $client;
+            $this->node = $node;
+        }
+
+        /**
+         * @ignore
+         */
+        private $acme;
+
+        /**
+         * Get CertificatesNodeNodesAcme
+         * @return PVECertificatesNodeNodesAcme
+         */
+        public function getAcme()
+        {
+            return $this->acme ?: ($this->acme = new PVECertificatesNodeNodesAcme($this->client, $this->node));
+        }
+
+        /**
+         * @ignore
+         */
+        private $info;
+
+        /**
+         * Get CertificatesNodeNodesInfo
+         * @return PVECertificatesNodeNodesInfo
+         */
+        public function getInfo()
+        {
+            return $this->info ?: ($this->info = new PVECertificatesNodeNodesInfo($this->client, $this->node));
+        }
+
+        /**
+         * @ignore
+         */
+        private $custom;
+
+        /**
+         * Get CertificatesNodeNodesCustom
+         * @return PVECertificatesNodeNodesCustom
+         */
+        public function getCustom()
+        {
+            return $this->custom ?: ($this->custom = new PVECertificatesNodeNodesCustom($this->client, $this->node));
+        }
+
+        /**
+         * Node index.
+         * @return Result
+         */
+        public function getRest()
+        {
+            return $this->getClient()->get("/nodes/{$this->node}/certificates");
+        }
+
+        /**
+         * Node index.
+         * @return Result
+         */
+        public function index()
+        {
+            return $this->getRest();
+        }
+    }
+
+    /**
+     * Class PVECertificatesNodeNodesAcme
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVECertificatesNodeNodesAcme extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node)
+        {
+            $this->client = $client;
+            $this->node = $node;
+        }
+
+        /**
+         * @ignore
+         */
+        private $certificate;
+
+        /**
+         * Get AcmeCertificatesNodeNodesCertificate
+         * @return PVEAcmeCertificatesNodeNodesCertificate
+         */
+        public function getCertificate()
+        {
+            return $this->certificate ?: ($this->certificate = new PVEAcmeCertificatesNodeNodesCertificate($this->client, $this->node));
+        }
+
+        /**
+         * ACME index.
+         * @return Result
+         */
+        public function getRest()
+        {
+            return $this->getClient()->get("/nodes/{$this->node}/certificates/acme");
+        }
+
+        /**
+         * ACME index.
+         * @return Result
+         */
+        public function index()
+        {
+            return $this->getRest();
+        }
+    }
+
+    /**
+     * Class PVEAcmeCertificatesNodeNodesCertificate
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVEAcmeCertificatesNodeNodesCertificate extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node)
+        {
+            $this->client = $client;
+            $this->node = $node;
+        }
+
+        /**
+         * Revoke existing certificate from CA.
+         * @return Result
+         */
+        public function deleteRest()
+        {
+            return $this->getClient()->delete("/nodes/{$this->node}/certificates/acme/certificate");
+        }
+
+        /**
+         * Revoke existing certificate from CA.
+         * @return Result
+         */
+        public function revokeCertificate()
+        {
+            return $this->deleteRest();
+        }
+
+        /**
+         * Order a new certificate from ACME-compatible CA.
+         * @param bool $force Overwrite existing custom certificate.
+         * @return Result
+         */
+        public function createRest($force = null)
+        {
+            $params = ['force' => $force];
+            return $this->getClient()->create("/nodes/{$this->node}/certificates/acme/certificate", $params);
+        }
+
+        /**
+         * Order a new certificate from ACME-compatible CA.
+         * @param bool $force Overwrite existing custom certificate.
+         * @return Result
+         */
+        public function newCertificate($force = null)
+        {
+            return $this->createRest($force);
+        }
+
+        /**
+         * Renew existing certificate from CA.
+         * @param bool $force Force renewal even if expiry is more than 30 days away.
+         * @return Result
+         */
+        public function setRest($force = null)
+        {
+            $params = ['force' => $force];
+            return $this->getClient()->set("/nodes/{$this->node}/certificates/acme/certificate", $params);
+        }
+
+        /**
+         * Renew existing certificate from CA.
+         * @param bool $force Force renewal even if expiry is more than 30 days away.
+         * @return Result
+         */
+        public function renewCertificate($force = null)
+        {
+            return $this->setRest($force);
+        }
+    }
+
+    /**
+     * Class PVECertificatesNodeNodesInfo
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVECertificatesNodeNodesInfo extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node)
+        {
+            $this->client = $client;
+            $this->node = $node;
+        }
+
+        /**
+         * Get information about node's certificates.
+         * @return Result
+         */
+        public function getRest()
+        {
+            return $this->getClient()->get("/nodes/{$this->node}/certificates/info");
+        }
+
+        /**
+         * Get information about node's certificates.
+         * @return Result
+         */
+        public function info()
+        {
+            return $this->getRest();
+        }
+    }
+
+    /**
+     * Class PVECertificatesNodeNodesCustom
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVECertificatesNodeNodesCustom extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node)
+        {
+            $this->client = $client;
+            $this->node = $node;
+        }
+
+        /**
+         * DELETE custom certificate chain and key.
+         * @param bool $restart Restart pveproxy.
+         * @return Result
+         */
+        public function deleteRest($restart = null)
+        {
+            $params = ['restart' => $restart];
+            return $this->getClient()->delete("/nodes/{$this->node}/certificates/custom", $params);
+        }
+
+        /**
+         * DELETE custom certificate chain and key.
+         * @param bool $restart Restart pveproxy.
+         * @return Result
+         */
+        public function removeCustomCert($restart = null)
+        {
+            return $this->deleteRest($restart);
+        }
+
+        /**
+         * Upload or update custom certificate chain and key.
+         * @param string $certificates PEM encoded certificate (chain).
+         * @param bool $force Overwrite existing custom or ACME certificate files.
+         * @param string $key PEM encoded private key.
+         * @param bool $restart Restart pveproxy.
+         * @return Result
+         */
+        public function createRest($certificates, $force = null, $key = null, $restart = null)
+        {
+            $params = ['certificates' => $certificates,
+                'force' => $force,
+                'key' => $key,
+                'restart' => $restart];
+            return $this->getClient()->create("/nodes/{$this->node}/certificates/custom", $params);
+        }
+
+        /**
+         * Upload or update custom certificate chain and key.
+         * @param string $certificates PEM encoded certificate (chain).
+         * @param bool $force Overwrite existing custom or ACME certificate files.
+         * @param string $key PEM encoded private key.
+         * @param bool $restart Restart pveproxy.
+         * @return Result
+         */
+        public function uploadCustomCert($certificates, $force = null, $key = null, $restart = null)
+        {
+            return $this->createRest($certificates, $force, $key, $restart);
+        }
+    }
+
+    /**
+     * Class PVENodeNodesConfig
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVENodeNodesConfig extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node)
+        {
+            $this->client = $client;
+            $this->node = $node;
+        }
+
+        /**
+         * Get node configuration options.
+         * @return Result
+         */
+        public function getRest()
+        {
+            return $this->getClient()->get("/nodes/{$this->node}/config");
+        }
+
+        /**
+         * Get node configuration options.
+         * @return Result
+         */
+        public function getConfig()
+        {
+            return $this->getRest();
+        }
+
+        /**
+         * Set node configuration options.
+         * @param string $acme Node specific ACME settings.
+         * @param string $delete A list of settings you want to delete.
+         * @param string $description Node description/comment.
+         * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
+         * @return Result
+         */
+        public function setRest($acme = null, $delete = null, $description = null, $digest = null)
+        {
+            $params = ['acme' => $acme,
+                'delete' => $delete,
+                'description' => $description,
+                'digest' => $digest];
+            return $this->getClient()->set("/nodes/{$this->node}/config", $params);
+        }
+
+        /**
+         * Set node configuration options.
+         * @param string $acme Node specific ACME settings.
+         * @param string $delete A list of settings you want to delete.
+         * @param string $description Node description/comment.
+         * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
+         * @return Result
+         */
+        public function setOptions($acme = null, $delete = null, $description = null, $digest = null)
+        {
+            return $this->setRest($acme, $delete, $description, $digest);
+        }
+    }
+
+    /**
      * Class PVENodeNodesVersion
      * @package EnterpriseVE\ProxmoxVE\Api
      */
@@ -15716,14 +18198,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         /**
          * Read system log
          * @param int $limit
+         * @param string $service Service ID
          * @param string $since Display all log since this date-time string.
          * @param int $start
          * @param string $until Display all log until this date-time string.
          * @return Result
          */
-        public function getRest($limit = null, $since = null, $start = null, $until = null)
+        public function getRest($limit = null, $service = null, $since = null, $start = null, $until = null)
         {
             $params = ['limit' => $limit,
+                'service' => $service,
                 'since' => $since,
                 'start' => $start,
                 'until' => $until];
@@ -15733,14 +18217,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         /**
          * Read system log
          * @param int $limit
+         * @param string $service Service ID
          * @param string $since Display all log since this date-time string.
          * @param int $start
          * @param string $until Display all log until this date-time string.
          * @return Result
          */
-        public function syslog($limit = null, $since = null, $start = null, $until = null)
+        public function syslog($limit = null, $service = null, $since = null, $start = null, $until = null)
         {
-            return $this->getRest($limit, $since, $start, $until);
+            return $this->getRest($limit, $service, $since, $start, $until);
         }
     }
 
@@ -15792,6 +18277,48 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         public function vncshell($height = null, $upgrade = null, $websocket = null, $width = null)
         {
             return $this->createRest($height, $upgrade, $websocket, $width);
+        }
+    }
+
+    /**
+     * Class PVENodeNodesTermproxy
+     * @package EnterpriseVE\ProxmoxVE\Api
+     */
+    class PVENodeNodesTermproxy extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node)
+        {
+            $this->client = $client;
+            $this->node = $node;
+        }
+
+        /**
+         * Creates a VNC Shell proxy.
+         * @param bool $upgrade Run 'apt-get dist-upgrade' instead of normal shell.
+         * @return Result
+         */
+        public function createRest($upgrade = null)
+        {
+            $params = ['upgrade' => $upgrade];
+            return $this->getClient()->create("/nodes/{$this->node}/termproxy", $params);
+        }
+
+        /**
+         * Creates a VNC Shell proxy.
+         * @param bool $upgrade Run 'apt-get dist-upgrade' instead of normal shell.
+         * @return Result
+         */
+        public function termproxy($upgrade = null)
+        {
+            return $this->createRest($upgrade);
         }
     }
 
@@ -16278,7 +18805,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         /**
          * Storage index.
          * @param string $type Only list storage of specific type
-         *   Enum: dir,drbd,glusterfs,iscsi,iscsidirect,lvm,lvmthin,nfs,rbd,sheepdog,zfs,zfspool
+         *   Enum: cifs,dir,drbd,glusterfs,iscsi,iscsidirect,lvm,lvmthin,nfs,rbd,sheepdog,zfs,zfspool
          * @return Result
          */
         public function getRest($type = null)
@@ -16290,7 +18817,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         /**
          * Storage index.
          * @param string $type Only list storage of specific type
-         *   Enum: dir,drbd,glusterfs,iscsi,iscsidirect,lvm,lvmthin,nfs,rbd,sheepdog,zfs,zfspool
+         *   Enum: cifs,dir,drbd,glusterfs,iscsi,iscsidirect,lvm,lvmthin,nfs,rbd,sheepdog,zfs,zfspool
          * @return Result
          */
         public function index($type = null)
@@ -16302,14 +18829,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * Create a new storage.
          * @param string $storage The storage identifier.
          * @param string $type Storage type.
-         *   Enum: dir,drbd,glusterfs,iscsi,iscsidirect,lvm,lvmthin,nfs,rbd,sheepdog,zfs,zfspool
+         *   Enum: cifs,dir,drbd,glusterfs,iscsi,iscsidirect,lvm,lvmthin,nfs,rbd,sheepdog,zfs,zfspool
          * @param string $authsupported Authsupported.
          * @param string $base Base volume. This volume is automatically activated.
          * @param string $blocksize block size
+         * @param string $bwlimit Set bandwidth/io limits various operations.
          * @param string $comstar_hg host group for comstar views
          * @param string $comstar_tg target group for comstar views
          * @param string $content Allowed content types.  NOTE: the value 'rootdir' is used for Containers, and value 'images' for VMs.
          * @param bool $disable Flag to disable the storage.
+         * @param string $domain CIFS domain.
          * @param string $export NFS export path.
          * @param string $format Default image format.
          * @param string $is_mountpoint Assume the given path is an externally managed mountpoint and consider the storage offline if it is not mounted. Using a boolean (yes/no) value serves as a shortcut to using the target path in this field.
@@ -16321,6 +18850,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $nodes List of cluster node names.
          * @param bool $nowritecache disable write caching on the target
          * @param string $options NFS mount options (see 'man nfs')
+         * @param string $password Password for CIFS share.
          * @param string $path File system path.
          * @param string $pool Pool.
          * @param string $portal iSCSI portal (IP or DNS name with optional port).
@@ -16329,7 +18859,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $saferemove_throughput Wipe throughput (cstream -t parameter value).
          * @param string $server Server IP or DNS name.
          * @param string $server2 Backup volfile server IP or DNS name.
+         * @param string $share CIFS share.
          * @param bool $shared Mark storage as shared.
+         * @param string $smbversion
          * @param bool $sparse use sparse volumes
          * @param bool $tagged_only Only use logical volumes tagged with 'pve-vm-ID'.
          * @param string $target iSCSI target.
@@ -16341,17 +18873,19 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $volume Glusterfs Volume.
          * @return Result
          */
-        public function createRest($storage, $type, $authsupported = null, $base = null, $blocksize = null, $comstar_hg = null, $comstar_tg = null, $content = null, $disable = null, $export = null, $format = null, $is_mountpoint = null, $iscsiprovider = null, $krbd = null, $maxfiles = null, $mkdir = null, $monhost = null, $nodes = null, $nowritecache = null, $options = null, $path = null, $pool = null, $portal = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $shared = null, $sparse = null, $tagged_only = null, $target = null, $thinpool = null, $transport = null, $username = null, $vgname = null, $volume = null)
+        public function createRest($storage, $type, $authsupported = null, $base = null, $blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $disable = null, $domain = null, $export = null, $format = null, $is_mountpoint = null, $iscsiprovider = null, $krbd = null, $maxfiles = null, $mkdir = null, $monhost = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $path = null, $pool = null, $portal = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $share = null, $shared = null, $smbversion = null, $sparse = null, $tagged_only = null, $target = null, $thinpool = null, $transport = null, $username = null, $vgname = null, $volume = null)
         {
             $params = ['storage' => $storage,
                 'type' => $type,
                 'authsupported' => $authsupported,
                 'base' => $base,
                 'blocksize' => $blocksize,
+                'bwlimit' => $bwlimit,
                 'comstar_hg' => $comstar_hg,
                 'comstar_tg' => $comstar_tg,
                 'content' => $content,
                 'disable' => $disable,
+                'domain' => $domain,
                 'export' => $export,
                 'format' => $format,
                 'is_mountpoint' => $is_mountpoint,
@@ -16363,6 +18897,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'nodes' => $nodes,
                 'nowritecache' => $nowritecache,
                 'options' => $options,
+                'password' => $password,
                 'path' => $path,
                 'pool' => $pool,
                 'portal' => $portal,
@@ -16371,7 +18906,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'saferemove_throughput' => $saferemove_throughput,
                 'server' => $server,
                 'server2' => $server2,
+                'share' => $share,
                 'shared' => $shared,
+                'smbversion' => $smbversion,
                 'sparse' => $sparse,
                 'tagged_only' => $tagged_only,
                 'target' => $target,
@@ -16387,14 +18924,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * Create a new storage.
          * @param string $storage The storage identifier.
          * @param string $type Storage type.
-         *   Enum: dir,drbd,glusterfs,iscsi,iscsidirect,lvm,lvmthin,nfs,rbd,sheepdog,zfs,zfspool
+         *   Enum: cifs,dir,drbd,glusterfs,iscsi,iscsidirect,lvm,lvmthin,nfs,rbd,sheepdog,zfs,zfspool
          * @param string $authsupported Authsupported.
          * @param string $base Base volume. This volume is automatically activated.
          * @param string $blocksize block size
+         * @param string $bwlimit Set bandwidth/io limits various operations.
          * @param string $comstar_hg host group for comstar views
          * @param string $comstar_tg target group for comstar views
          * @param string $content Allowed content types.  NOTE: the value 'rootdir' is used for Containers, and value 'images' for VMs.
          * @param bool $disable Flag to disable the storage.
+         * @param string $domain CIFS domain.
          * @param string $export NFS export path.
          * @param string $format Default image format.
          * @param string $is_mountpoint Assume the given path is an externally managed mountpoint and consider the storage offline if it is not mounted. Using a boolean (yes/no) value serves as a shortcut to using the target path in this field.
@@ -16406,6 +18945,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $nodes List of cluster node names.
          * @param bool $nowritecache disable write caching on the target
          * @param string $options NFS mount options (see 'man nfs')
+         * @param string $password Password for CIFS share.
          * @param string $path File system path.
          * @param string $pool Pool.
          * @param string $portal iSCSI portal (IP or DNS name with optional port).
@@ -16414,7 +18954,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $saferemove_throughput Wipe throughput (cstream -t parameter value).
          * @param string $server Server IP or DNS name.
          * @param string $server2 Backup volfile server IP or DNS name.
+         * @param string $share CIFS share.
          * @param bool $shared Mark storage as shared.
+         * @param string $smbversion
          * @param bool $sparse use sparse volumes
          * @param bool $tagged_only Only use logical volumes tagged with 'pve-vm-ID'.
          * @param string $target iSCSI target.
@@ -16426,9 +18968,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $volume Glusterfs Volume.
          * @return Result
          */
-        public function create($storage, $type, $authsupported = null, $base = null, $blocksize = null, $comstar_hg = null, $comstar_tg = null, $content = null, $disable = null, $export = null, $format = null, $is_mountpoint = null, $iscsiprovider = null, $krbd = null, $maxfiles = null, $mkdir = null, $monhost = null, $nodes = null, $nowritecache = null, $options = null, $path = null, $pool = null, $portal = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $shared = null, $sparse = null, $tagged_only = null, $target = null, $thinpool = null, $transport = null, $username = null, $vgname = null, $volume = null)
+        public function create($storage, $type, $authsupported = null, $base = null, $blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $disable = null, $domain = null, $export = null, $format = null, $is_mountpoint = null, $iscsiprovider = null, $krbd = null, $maxfiles = null, $mkdir = null, $monhost = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $path = null, $pool = null, $portal = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $share = null, $shared = null, $smbversion = null, $sparse = null, $tagged_only = null, $target = null, $thinpool = null, $transport = null, $username = null, $vgname = null, $volume = null)
         {
-            return $this->createRest($storage, $type, $authsupported, $base, $blocksize, $comstar_hg, $comstar_tg, $content, $disable, $export, $format, $is_mountpoint, $iscsiprovider, $krbd, $maxfiles, $mkdir, $monhost, $nodes, $nowritecache, $options, $path, $pool, $portal, $redundancy, $saferemove, $saferemove_throughput, $server, $server2, $shared, $sparse, $tagged_only, $target, $thinpool, $transport, $username, $vgname, $volume);
+            return $this->createRest($storage, $type, $authsupported, $base, $blocksize, $bwlimit, $comstar_hg, $comstar_tg, $content, $disable, $domain, $export, $format, $is_mountpoint, $iscsiprovider, $krbd, $maxfiles, $mkdir, $monhost, $nodes, $nowritecache, $options, $password, $path, $pool, $portal, $redundancy, $saferemove, $saferemove_throughput, $server, $server2, $share, $shared, $smbversion, $sparse, $tagged_only, $target, $thinpool, $transport, $username, $vgname, $volume);
         }
     }
 
@@ -16491,12 +19033,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         /**
          * Update storage configuration.
          * @param string $blocksize block size
+         * @param string $bwlimit Set bandwidth/io limits various operations.
          * @param string $comstar_hg host group for comstar views
          * @param string $comstar_tg target group for comstar views
          * @param string $content Allowed content types.  NOTE: the value 'rootdir' is used for Containers, and value 'images' for VMs.
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param bool $disable Flag to disable the storage.
+         * @param string $domain CIFS domain.
          * @param string $format Default image format.
          * @param string $is_mountpoint Assume the given path is an externally managed mountpoint and consider the storage offline if it is not mounted. Using a boolean (yes/no) value serves as a shortcut to using the target path in this field.
          * @param bool $krbd Access rbd through krbd kernel module.
@@ -16506,6 +19050,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $nodes List of cluster node names.
          * @param bool $nowritecache disable write caching on the target
          * @param string $options NFS mount options (see 'man nfs')
+         * @param string $password Password for CIFS share.
          * @param string $pool Pool.
          * @param int $redundancy The redundancy count specifies the number of nodes to which the resource should be deployed. It must be at least 1 and at most the number of nodes in the cluster.
          * @param bool $saferemove Zero-out data when removing LVs.
@@ -16513,6 +19058,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $server Server IP or DNS name.
          * @param string $server2 Backup volfile server IP or DNS name.
          * @param bool $shared Mark storage as shared.
+         * @param string $smbversion
          * @param bool $sparse use sparse volumes
          * @param bool $tagged_only Only use logical volumes tagged with 'pve-vm-ID'.
          * @param string $transport Gluster transport: tcp or rdma
@@ -16520,15 +19066,17 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $username RBD Id.
          * @return Result
          */
-        public function setRest($blocksize = null, $comstar_hg = null, $comstar_tg = null, $content = null, $delete = null, $digest = null, $disable = null, $format = null, $is_mountpoint = null, $krbd = null, $maxfiles = null, $mkdir = null, $monhost = null, $nodes = null, $nowritecache = null, $options = null, $pool = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $shared = null, $sparse = null, $tagged_only = null, $transport = null, $username = null)
+        public function setRest($blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $delete = null, $digest = null, $disable = null, $domain = null, $format = null, $is_mountpoint = null, $krbd = null, $maxfiles = null, $mkdir = null, $monhost = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $pool = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $shared = null, $smbversion = null, $sparse = null, $tagged_only = null, $transport = null, $username = null)
         {
             $params = ['blocksize' => $blocksize,
+                'bwlimit' => $bwlimit,
                 'comstar_hg' => $comstar_hg,
                 'comstar_tg' => $comstar_tg,
                 'content' => $content,
                 'delete' => $delete,
                 'digest' => $digest,
                 'disable' => $disable,
+                'domain' => $domain,
                 'format' => $format,
                 'is_mountpoint' => $is_mountpoint,
                 'krbd' => $krbd,
@@ -16538,6 +19086,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'nodes' => $nodes,
                 'nowritecache' => $nowritecache,
                 'options' => $options,
+                'password' => $password,
                 'pool' => $pool,
                 'redundancy' => $redundancy,
                 'saferemove' => $saferemove,
@@ -16545,6 +19094,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'server' => $server,
                 'server2' => $server2,
                 'shared' => $shared,
+                'smbversion' => $smbversion,
                 'sparse' => $sparse,
                 'tagged_only' => $tagged_only,
                 'transport' => $transport,
@@ -16555,12 +19105,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         /**
          * Update storage configuration.
          * @param string $blocksize block size
+         * @param string $bwlimit Set bandwidth/io limits various operations.
          * @param string $comstar_hg host group for comstar views
          * @param string $comstar_tg target group for comstar views
          * @param string $content Allowed content types.  NOTE: the value 'rootdir' is used for Containers, and value 'images' for VMs.
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param bool $disable Flag to disable the storage.
+         * @param string $domain CIFS domain.
          * @param string $format Default image format.
          * @param string $is_mountpoint Assume the given path is an externally managed mountpoint and consider the storage offline if it is not mounted. Using a boolean (yes/no) value serves as a shortcut to using the target path in this field.
          * @param bool $krbd Access rbd through krbd kernel module.
@@ -16570,6 +19122,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $nodes List of cluster node names.
          * @param bool $nowritecache disable write caching on the target
          * @param string $options NFS mount options (see 'man nfs')
+         * @param string $password Password for CIFS share.
          * @param string $pool Pool.
          * @param int $redundancy The redundancy count specifies the number of nodes to which the resource should be deployed. It must be at least 1 and at most the number of nodes in the cluster.
          * @param bool $saferemove Zero-out data when removing LVs.
@@ -16577,6 +19130,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $server Server IP or DNS name.
          * @param string $server2 Backup volfile server IP or DNS name.
          * @param bool $shared Mark storage as shared.
+         * @param string $smbversion
          * @param bool $sparse use sparse volumes
          * @param bool $tagged_only Only use logical volumes tagged with 'pve-vm-ID'.
          * @param string $transport Gluster transport: tcp or rdma
@@ -16584,9 +19138,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $username RBD Id.
          * @return Result
          */
-        public function update($blocksize = null, $comstar_hg = null, $comstar_tg = null, $content = null, $delete = null, $digest = null, $disable = null, $format = null, $is_mountpoint = null, $krbd = null, $maxfiles = null, $mkdir = null, $monhost = null, $nodes = null, $nowritecache = null, $options = null, $pool = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $shared = null, $sparse = null, $tagged_only = null, $transport = null, $username = null)
+        public function update($blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $delete = null, $digest = null, $disable = null, $domain = null, $format = null, $is_mountpoint = null, $krbd = null, $maxfiles = null, $mkdir = null, $monhost = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $pool = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $shared = null, $smbversion = null, $sparse = null, $tagged_only = null, $transport = null, $username = null)
         {
-            return $this->setRest($blocksize, $comstar_hg, $comstar_tg, $content, $delete, $digest, $disable, $format, $is_mountpoint, $krbd, $maxfiles, $mkdir, $monhost, $nodes, $nowritecache, $options, $pool, $redundancy, $saferemove, $saferemove_throughput, $server, $server2, $shared, $sparse, $tagged_only, $transport, $username);
+            return $this->setRest($blocksize, $bwlimit, $comstar_hg, $comstar_tg, $content, $delete, $digest, $disable, $domain, $format, $is_mountpoint, $krbd, $maxfiles, $mkdir, $monhost, $nodes, $nowritecache, $options, $password, $pool, $redundancy, $saferemove, $saferemove_throughput, $server, $server2, $shared, $smbversion, $sparse, $tagged_only, $transport, $username);
         }
     }
 
