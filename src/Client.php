@@ -2397,6 +2397,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * Set Firewall options.
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
+         * @param bool $ebtables Enable ebtables rules cluster wide.
          * @param int $enable Enable or disable the firewall cluster wide.
          * @param string $policy_in Input policy.
          *   Enum: ACCEPT,REJECT,DROP
@@ -2404,10 +2405,11 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: ACCEPT,REJECT,DROP
          * @return Result
          */
-        public function setRest($delete = null, $digest = null, $enable = null, $policy_in = null, $policy_out = null)
+        public function setRest($delete = null, $digest = null, $ebtables = null, $enable = null, $policy_in = null, $policy_out = null)
         {
             $params = ['delete' => $delete,
                 'digest' => $digest,
+                'ebtables' => $ebtables,
                 'enable' => $enable,
                 'policy_in' => $policy_in,
                 'policy_out' => $policy_out];
@@ -2418,6 +2420,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * Set Firewall options.
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
+         * @param bool $ebtables Enable ebtables rules cluster wide.
          * @param int $enable Enable or disable the firewall cluster wide.
          * @param string $policy_in Input policy.
          *   Enum: ACCEPT,REJECT,DROP
@@ -2425,9 +2428,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: ACCEPT,REJECT,DROP
          * @return Result
          */
-        public function setOptions($delete = null, $digest = null, $enable = null, $policy_in = null, $policy_out = null)
+        public function setOptions($delete = null, $digest = null, $ebtables = null, $enable = null, $policy_in = null, $policy_out = null)
         {
-            return $this->setRest($delete, $digest, $enable, $policy_in, $policy_out);
+            return $this->setRest($delete, $digest, $ebtables, $enable, $policy_in, $policy_out);
         }
     }
 
@@ -4699,7 +4702,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3).
          * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
-         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.conf' configuration file.It should not be necessary to set it.
+         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.cfg' configuration file.It should not be necessary to set it.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param bool $kvm Enable/disable KVM hardware virtualization.
          * @param bool $localtime Set the real time clock to local time. This is enabled by default if ostype indicates a Microsoft OS.
@@ -4727,11 +4730,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
          * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $serialN Create a serial device inside the VM (n is 0 to 3)
-         * @param int $shares Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning
+         * @param int $shares Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning. Auto-ballooning is done by pvestatd.
          * @param string $smbios1 Specify SMBIOS type 1 fields.
          * @param int $smp The number of CPUs. Please use option -sockets instead.
          * @param int $sockets The number of CPU sockets.
          * @param string $sshkeys cloud-init: Setup public SSH keys (one key per line, OpenSSH format).
+         * @param bool $start Start VM after it was created successfully.
          * @param string $startdate Set the initial date of the real time clock. Valid format for date are: 'now' or '2006-06-17T16:01:21' or '2006-06-17'.
          * @param string $startup Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
          * @param string $storage Default storage.
@@ -4749,7 +4753,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $watchdog Create a virtual hardware watchdog device.
          * @return Result
          */
-        public function createRest($vmid, $acpi = null, $agent = null, $archive = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $bwlimit = null, $cdrom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $description = null, $force = null, $freeze = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $pool = null, $protection = null, $reboot = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $startdate = null, $startup = null, $storage = null, $tablet = null, $tdf = null, $template = null, $unique = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmstatestorage = null, $watchdog = null)
+        public function createRest($vmid, $acpi = null, $agent = null, $archive = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $bwlimit = null, $cdrom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $description = null, $force = null, $freeze = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $pool = null, $protection = null, $reboot = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $start = null, $startdate = null, $startup = null, $storage = null, $tablet = null, $tdf = null, $template = null, $unique = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmstatestorage = null, $watchdog = null)
         {
             $params = ['vmid' => $vmid,
                 'acpi' => $acpi,
@@ -4798,6 +4802,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'smp' => $smp,
                 'sockets' => $sockets,
                 'sshkeys' => $sshkeys,
+                'start' => $start,
                 'startdate' => $startdate,
                 'startup' => $startup,
                 'storage' => $storage,
@@ -4856,7 +4861,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3).
          * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
-         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.conf' configuration file.It should not be necessary to set it.
+         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.cfg' configuration file.It should not be necessary to set it.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param bool $kvm Enable/disable KVM hardware virtualization.
          * @param bool $localtime Set the real time clock to local time. This is enabled by default if ostype indicates a Microsoft OS.
@@ -4884,11 +4889,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
          * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $serialN Create a serial device inside the VM (n is 0 to 3)
-         * @param int $shares Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning
+         * @param int $shares Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning. Auto-ballooning is done by pvestatd.
          * @param string $smbios1 Specify SMBIOS type 1 fields.
          * @param int $smp The number of CPUs. Please use option -sockets instead.
          * @param int $sockets The number of CPU sockets.
          * @param string $sshkeys cloud-init: Setup public SSH keys (one key per line, OpenSSH format).
+         * @param bool $start Start VM after it was created successfully.
          * @param string $startdate Set the initial date of the real time clock. Valid format for date are: 'now' or '2006-06-17T16:01:21' or '2006-06-17'.
          * @param string $startup Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
          * @param string $storage Default storage.
@@ -4906,9 +4912,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $watchdog Create a virtual hardware watchdog device.
          * @return Result
          */
-        public function createVm($vmid, $acpi = null, $agent = null, $archive = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $bwlimit = null, $cdrom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $description = null, $force = null, $freeze = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $pool = null, $protection = null, $reboot = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $startdate = null, $startup = null, $storage = null, $tablet = null, $tdf = null, $template = null, $unique = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmstatestorage = null, $watchdog = null)
+        public function createVm($vmid, $acpi = null, $agent = null, $archive = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $bwlimit = null, $cdrom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $description = null, $force = null, $freeze = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $pool = null, $protection = null, $reboot = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $start = null, $startdate = null, $startup = null, $storage = null, $tablet = null, $tdf = null, $template = null, $unique = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmstatestorage = null, $watchdog = null)
         {
-            return $this->createRest($vmid, $acpi, $agent, $archive, $args, $autostart, $balloon, $bios, $boot, $bootdisk, $bwlimit, $cdrom, $cipassword, $citype, $ciuser, $cores, $cpu, $cpulimit, $cpuunits, $description, $force, $freeze, $hostpciN, $hotplug, $hugepages, $ideN, $ipconfigN, $keyboard, $kvm, $localtime, $lock, $machine, $memory, $migrate_downtime, $migrate_speed, $name, $nameserver, $netN, $numa, $numaN, $onboot, $ostype, $parallelN, $pool, $protection, $reboot, $sataN, $scsiN, $scsihw, $searchdomain, $serialN, $shares, $smbios1, $smp, $sockets, $sshkeys, $startdate, $startup, $storage, $tablet, $tdf, $template, $unique, $unusedN, $usbN, $vcpus, $vga, $virtioN, $vmstatestorage, $watchdog);
+            return $this->createRest($vmid, $acpi, $agent, $archive, $args, $autostart, $balloon, $bios, $boot, $bootdisk, $bwlimit, $cdrom, $cipassword, $citype, $ciuser, $cores, $cpu, $cpulimit, $cpuunits, $description, $force, $freeze, $hostpciN, $hotplug, $hugepages, $ideN, $ipconfigN, $keyboard, $kvm, $localtime, $lock, $machine, $memory, $migrate_downtime, $migrate_speed, $name, $nameserver, $netN, $numa, $numaN, $onboot, $ostype, $parallelN, $pool, $protection, $reboot, $sataN, $scsiN, $scsihw, $searchdomain, $serialN, $shares, $smbios1, $smp, $sockets, $sshkeys, $start, $startdate, $startup, $storage, $tablet, $tdf, $template, $unique, $unusedN, $usbN, $vcpus, $vga, $virtioN, $vmstatestorage, $watchdog);
         }
     }
 
@@ -7736,7 +7742,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3).
          * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
-         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.conf' configuration file.It should not be necessary to set it.
+         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.cfg' configuration file.It should not be necessary to set it.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param bool $kvm Enable/disable KVM hardware virtualization.
          * @param bool $localtime Set the real time clock to local time. This is enabled by default if ostype indicates a Microsoft OS.
@@ -7764,7 +7770,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
          * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $serialN Create a serial device inside the VM (n is 0 to 3)
-         * @param int $shares Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning
+         * @param int $shares Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning. Auto-ballooning is done by pvestatd.
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
          * @param string $smbios1 Specify SMBIOS type 1 fields.
          * @param int $smp The number of CPUs. Please use option -sockets instead.
@@ -7891,7 +7897,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3).
          * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
-         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.conf' configuration file.It should not be necessary to set it.
+         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.cfg' configuration file.It should not be necessary to set it.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param bool $kvm Enable/disable KVM hardware virtualization.
          * @param bool $localtime Set the real time clock to local time. This is enabled by default if ostype indicates a Microsoft OS.
@@ -7919,7 +7925,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
          * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $serialN Create a serial device inside the VM (n is 0 to 3)
-         * @param int $shares Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning
+         * @param int $shares Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning. Auto-ballooning is done by pvestatd.
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
          * @param string $smbios1 Specify SMBIOS type 1 fields.
          * @param int $smp The number of CPUs. Please use option -sockets instead.
@@ -7976,7 +7982,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3).
          * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
-         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.conf' configuration file.It should not be necessary to set it.
+         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.cfg' configuration file.It should not be necessary to set it.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param bool $kvm Enable/disable KVM hardware virtualization.
          * @param bool $localtime Set the real time clock to local time. This is enabled by default if ostype indicates a Microsoft OS.
@@ -8004,7 +8010,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
          * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $serialN Create a serial device inside the VM (n is 0 to 3)
-         * @param int $shares Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning
+         * @param int $shares Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning. Auto-ballooning is done by pvestatd.
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
          * @param string $smbios1 Specify SMBIOS type 1 fields.
          * @param int $smp The number of CPUs. Please use option -sockets instead.
@@ -8129,7 +8135,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3).
          * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
-         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.conf' configuration file.It should not be necessary to set it.
+         * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.cfg' configuration file.It should not be necessary to set it.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param bool $kvm Enable/disable KVM hardware virtualization.
          * @param bool $localtime Set the real time clock to local time. This is enabled by default if ostype indicates a Microsoft OS.
@@ -8157,7 +8163,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
          * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $serialN Create a serial device inside the VM (n is 0 to 3)
-         * @param int $shares Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning
+         * @param int $shares Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning. Auto-ballooning is done by pvestatd.
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
          * @param string $smbios1 Specify SMBIOS type 1 fields.
          * @param int $smp The number of CPUs. Please use option -sockets instead.
@@ -9818,6 +9824,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $rootfs Use volume as container root.
          * @param string $searchdomain Sets DNS search domains for a container. Create will automatically use the setting from the host if you neither set searchdomain nor nameserver.
          * @param string $ssh_public_keys Setup public SSH keys (one key per line, OpenSSH format).
+         * @param bool $start Start the CT after its creation finished successfully.
          * @param string $startup Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
          * @param string $storage Default Storage.
          * @param int $swap Amount of SWAP for the VM in MB.
@@ -9827,7 +9834,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
          * @return Result
          */
-        public function createRest($ostemplate, $vmid, $arch = null, $bwlimit = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $description = null, $force = null, $hostname = null, $ignore_unpack_errors = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $password = null, $pool = null, $protection = null, $restore = null, $rootfs = null, $searchdomain = null, $ssh_public_keys = null, $startup = null, $storage = null, $swap = null, $template = null, $tty = null, $unprivileged = null, $unusedN = null)
+        public function createRest($ostemplate, $vmid, $arch = null, $bwlimit = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $description = null, $force = null, $hostname = null, $ignore_unpack_errors = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $password = null, $pool = null, $protection = null, $restore = null, $rootfs = null, $searchdomain = null, $ssh_public_keys = null, $start = null, $startup = null, $storage = null, $swap = null, $template = null, $tty = null, $unprivileged = null, $unusedN = null)
         {
             $params = ['ostemplate' => $ostemplate,
                 'vmid' => $vmid,
@@ -9854,6 +9861,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'rootfs' => $rootfs,
                 'searchdomain' => $searchdomain,
                 'ssh-public-keys' => $ssh_public_keys,
+                'start' => $start,
                 'startup' => $startup,
                 'storage' => $storage,
                 'swap' => $swap,
@@ -9899,6 +9907,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $rootfs Use volume as container root.
          * @param string $searchdomain Sets DNS search domains for a container. Create will automatically use the setting from the host if you neither set searchdomain nor nameserver.
          * @param string $ssh_public_keys Setup public SSH keys (one key per line, OpenSSH format).
+         * @param bool $start Start the CT after its creation finished successfully.
          * @param string $startup Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
          * @param string $storage Default Storage.
          * @param int $swap Amount of SWAP for the VM in MB.
@@ -9908,9 +9917,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
          * @return Result
          */
-        public function createVm($ostemplate, $vmid, $arch = null, $bwlimit = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $description = null, $force = null, $hostname = null, $ignore_unpack_errors = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $password = null, $pool = null, $protection = null, $restore = null, $rootfs = null, $searchdomain = null, $ssh_public_keys = null, $startup = null, $storage = null, $swap = null, $template = null, $tty = null, $unprivileged = null, $unusedN = null)
+        public function createVm($ostemplate, $vmid, $arch = null, $bwlimit = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $description = null, $force = null, $hostname = null, $ignore_unpack_errors = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $password = null, $pool = null, $protection = null, $restore = null, $rootfs = null, $searchdomain = null, $ssh_public_keys = null, $start = null, $startup = null, $storage = null, $swap = null, $template = null, $tty = null, $unprivileged = null, $unusedN = null)
         {
-            return $this->createRest($ostemplate, $vmid, $arch, $bwlimit, $cmode, $console, $cores, $cpulimit, $cpuunits, $description, $force, $hostname, $ignore_unpack_errors, $lock, $memory, $mpN, $nameserver, $netN, $onboot, $ostype, $password, $pool, $protection, $restore, $rootfs, $searchdomain, $ssh_public_keys, $startup, $storage, $swap, $template, $tty, $unprivileged, $unusedN);
+            return $this->createRest($ostemplate, $vmid, $arch, $bwlimit, $cmode, $console, $cores, $cpulimit, $cpuunits, $description, $force, $hostname, $ignore_unpack_errors, $lock, $memory, $mpN, $nameserver, $netN, $onboot, $ostype, $password, $pool, $protection, $restore, $rootfs, $searchdomain, $ssh_public_keys, $start, $startup, $storage, $swap, $template, $tty, $unprivileged, $unusedN);
         }
     }
 
@@ -18805,7 +18814,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         /**
          * Storage index.
          * @param string $type Only list storage of specific type
-         *   Enum: cifs,dir,drbd,glusterfs,iscsi,iscsidirect,lvm,lvmthin,nfs,rbd,sheepdog,zfs,zfspool
+         *   Enum: cephfs,cifs,dir,drbd,glusterfs,iscsi,iscsidirect,lvm,lvmthin,nfs,rbd,sheepdog,zfs,zfspool
          * @return Result
          */
         public function getRest($type = null)
@@ -18817,7 +18826,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         /**
          * Storage index.
          * @param string $type Only list storage of specific type
-         *   Enum: cifs,dir,drbd,glusterfs,iscsi,iscsidirect,lvm,lvmthin,nfs,rbd,sheepdog,zfs,zfspool
+         *   Enum: cephfs,cifs,dir,drbd,glusterfs,iscsi,iscsidirect,lvm,lvmthin,nfs,rbd,sheepdog,zfs,zfspool
          * @return Result
          */
         public function index($type = null)
@@ -18829,7 +18838,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * Create a new storage.
          * @param string $storage The storage identifier.
          * @param string $type Storage type.
-         *   Enum: cifs,dir,drbd,glusterfs,iscsi,iscsidirect,lvm,lvmthin,nfs,rbd,sheepdog,zfs,zfspool
+         *   Enum: cephfs,cifs,dir,drbd,glusterfs,iscsi,iscsidirect,lvm,lvmthin,nfs,rbd,sheepdog,zfs,zfspool
          * @param string $authsupported Authsupported.
          * @param string $base Base volume. This volume is automatically activated.
          * @param string $blocksize block size
@@ -18841,6 +18850,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $domain CIFS domain.
          * @param string $export NFS export path.
          * @param string $format Default image format.
+         * @param bool $fuse Mount CephFS through FUSE.
          * @param string $is_mountpoint Assume the given path is an externally managed mountpoint and consider the storage offline if it is not mounted. Using a boolean (yes/no) value serves as a shortcut to using the target path in this field.
          * @param string $iscsiprovider iscsi provider
          * @param bool $krbd Access rbd through krbd kernel module.
@@ -18861,8 +18871,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $server2 Backup volfile server IP or DNS name.
          * @param string $share CIFS share.
          * @param bool $shared Mark storage as shared.
-         * @param string $smbversion
+         * @param string $smbversion SMB protocol version
+         *   Enum: 2.0,2.1,3.0
          * @param bool $sparse use sparse volumes
+         * @param string $subdir Subdir to mount.
          * @param bool $tagged_only Only use logical volumes tagged with 'pve-vm-ID'.
          * @param string $target iSCSI target.
          * @param string $thinpool LVM thin pool LV name.
@@ -18873,7 +18885,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $volume Glusterfs Volume.
          * @return Result
          */
-        public function createRest($storage, $type, $authsupported = null, $base = null, $blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $disable = null, $domain = null, $export = null, $format = null, $is_mountpoint = null, $iscsiprovider = null, $krbd = null, $maxfiles = null, $mkdir = null, $monhost = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $path = null, $pool = null, $portal = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $share = null, $shared = null, $smbversion = null, $sparse = null, $tagged_only = null, $target = null, $thinpool = null, $transport = null, $username = null, $vgname = null, $volume = null)
+        public function createRest($storage, $type, $authsupported = null, $base = null, $blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $disable = null, $domain = null, $export = null, $format = null, $fuse = null, $is_mountpoint = null, $iscsiprovider = null, $krbd = null, $maxfiles = null, $mkdir = null, $monhost = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $path = null, $pool = null, $portal = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $share = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $target = null, $thinpool = null, $transport = null, $username = null, $vgname = null, $volume = null)
         {
             $params = ['storage' => $storage,
                 'type' => $type,
@@ -18888,6 +18900,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'domain' => $domain,
                 'export' => $export,
                 'format' => $format,
+                'fuse' => $fuse,
                 'is_mountpoint' => $is_mountpoint,
                 'iscsiprovider' => $iscsiprovider,
                 'krbd' => $krbd,
@@ -18910,6 +18923,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'shared' => $shared,
                 'smbversion' => $smbversion,
                 'sparse' => $sparse,
+                'subdir' => $subdir,
                 'tagged_only' => $tagged_only,
                 'target' => $target,
                 'thinpool' => $thinpool,
@@ -18924,7 +18938,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * Create a new storage.
          * @param string $storage The storage identifier.
          * @param string $type Storage type.
-         *   Enum: cifs,dir,drbd,glusterfs,iscsi,iscsidirect,lvm,lvmthin,nfs,rbd,sheepdog,zfs,zfspool
+         *   Enum: cephfs,cifs,dir,drbd,glusterfs,iscsi,iscsidirect,lvm,lvmthin,nfs,rbd,sheepdog,zfs,zfspool
          * @param string $authsupported Authsupported.
          * @param string $base Base volume. This volume is automatically activated.
          * @param string $blocksize block size
@@ -18936,6 +18950,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $domain CIFS domain.
          * @param string $export NFS export path.
          * @param string $format Default image format.
+         * @param bool $fuse Mount CephFS through FUSE.
          * @param string $is_mountpoint Assume the given path is an externally managed mountpoint and consider the storage offline if it is not mounted. Using a boolean (yes/no) value serves as a shortcut to using the target path in this field.
          * @param string $iscsiprovider iscsi provider
          * @param bool $krbd Access rbd through krbd kernel module.
@@ -18956,8 +18971,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $server2 Backup volfile server IP or DNS name.
          * @param string $share CIFS share.
          * @param bool $shared Mark storage as shared.
-         * @param string $smbversion
+         * @param string $smbversion SMB protocol version
+         *   Enum: 2.0,2.1,3.0
          * @param bool $sparse use sparse volumes
+         * @param string $subdir Subdir to mount.
          * @param bool $tagged_only Only use logical volumes tagged with 'pve-vm-ID'.
          * @param string $target iSCSI target.
          * @param string $thinpool LVM thin pool LV name.
@@ -18968,9 +18985,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $volume Glusterfs Volume.
          * @return Result
          */
-        public function create($storage, $type, $authsupported = null, $base = null, $blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $disable = null, $domain = null, $export = null, $format = null, $is_mountpoint = null, $iscsiprovider = null, $krbd = null, $maxfiles = null, $mkdir = null, $monhost = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $path = null, $pool = null, $portal = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $share = null, $shared = null, $smbversion = null, $sparse = null, $tagged_only = null, $target = null, $thinpool = null, $transport = null, $username = null, $vgname = null, $volume = null)
+        public function create($storage, $type, $authsupported = null, $base = null, $blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $disable = null, $domain = null, $export = null, $format = null, $fuse = null, $is_mountpoint = null, $iscsiprovider = null, $krbd = null, $maxfiles = null, $mkdir = null, $monhost = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $path = null, $pool = null, $portal = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $share = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $target = null, $thinpool = null, $transport = null, $username = null, $vgname = null, $volume = null)
         {
-            return $this->createRest($storage, $type, $authsupported, $base, $blocksize, $bwlimit, $comstar_hg, $comstar_tg, $content, $disable, $domain, $export, $format, $is_mountpoint, $iscsiprovider, $krbd, $maxfiles, $mkdir, $monhost, $nodes, $nowritecache, $options, $password, $path, $pool, $portal, $redundancy, $saferemove, $saferemove_throughput, $server, $server2, $share, $shared, $smbversion, $sparse, $tagged_only, $target, $thinpool, $transport, $username, $vgname, $volume);
+            return $this->createRest($storage, $type, $authsupported, $base, $blocksize, $bwlimit, $comstar_hg, $comstar_tg, $content, $disable, $domain, $export, $format, $fuse, $is_mountpoint, $iscsiprovider, $krbd, $maxfiles, $mkdir, $monhost, $nodes, $nowritecache, $options, $password, $path, $pool, $portal, $redundancy, $saferemove, $saferemove_throughput, $server, $server2, $share, $shared, $smbversion, $sparse, $subdir, $tagged_only, $target, $thinpool, $transport, $username, $vgname, $volume);
         }
     }
 
@@ -19042,6 +19059,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param bool $disable Flag to disable the storage.
          * @param string $domain CIFS domain.
          * @param string $format Default image format.
+         * @param bool $fuse Mount CephFS through FUSE.
          * @param string $is_mountpoint Assume the given path is an externally managed mountpoint and consider the storage offline if it is not mounted. Using a boolean (yes/no) value serves as a shortcut to using the target path in this field.
          * @param bool $krbd Access rbd through krbd kernel module.
          * @param int $maxfiles Maximal number of backup files per VM. Use '0' for unlimted.
@@ -19058,15 +19076,17 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $server Server IP or DNS name.
          * @param string $server2 Backup volfile server IP or DNS name.
          * @param bool $shared Mark storage as shared.
-         * @param string $smbversion
+         * @param string $smbversion SMB protocol version
+         *   Enum: 2.0,2.1,3.0
          * @param bool $sparse use sparse volumes
+         * @param string $subdir Subdir to mount.
          * @param bool $tagged_only Only use logical volumes tagged with 'pve-vm-ID'.
          * @param string $transport Gluster transport: tcp or rdma
          *   Enum: tcp,rdma,unix
          * @param string $username RBD Id.
          * @return Result
          */
-        public function setRest($blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $delete = null, $digest = null, $disable = null, $domain = null, $format = null, $is_mountpoint = null, $krbd = null, $maxfiles = null, $mkdir = null, $monhost = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $pool = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $shared = null, $smbversion = null, $sparse = null, $tagged_only = null, $transport = null, $username = null)
+        public function setRest($blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $delete = null, $digest = null, $disable = null, $domain = null, $format = null, $fuse = null, $is_mountpoint = null, $krbd = null, $maxfiles = null, $mkdir = null, $monhost = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $pool = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $transport = null, $username = null)
         {
             $params = ['blocksize' => $blocksize,
                 'bwlimit' => $bwlimit,
@@ -19078,6 +19098,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'disable' => $disable,
                 'domain' => $domain,
                 'format' => $format,
+                'fuse' => $fuse,
                 'is_mountpoint' => $is_mountpoint,
                 'krbd' => $krbd,
                 'maxfiles' => $maxfiles,
@@ -19096,6 +19117,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'shared' => $shared,
                 'smbversion' => $smbversion,
                 'sparse' => $sparse,
+                'subdir' => $subdir,
                 'tagged_only' => $tagged_only,
                 'transport' => $transport,
                 'username' => $username];
@@ -19114,6 +19136,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param bool $disable Flag to disable the storage.
          * @param string $domain CIFS domain.
          * @param string $format Default image format.
+         * @param bool $fuse Mount CephFS through FUSE.
          * @param string $is_mountpoint Assume the given path is an externally managed mountpoint and consider the storage offline if it is not mounted. Using a boolean (yes/no) value serves as a shortcut to using the target path in this field.
          * @param bool $krbd Access rbd through krbd kernel module.
          * @param int $maxfiles Maximal number of backup files per VM. Use '0' for unlimted.
@@ -19130,17 +19153,19 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $server Server IP or DNS name.
          * @param string $server2 Backup volfile server IP or DNS name.
          * @param bool $shared Mark storage as shared.
-         * @param string $smbversion
+         * @param string $smbversion SMB protocol version
+         *   Enum: 2.0,2.1,3.0
          * @param bool $sparse use sparse volumes
+         * @param string $subdir Subdir to mount.
          * @param bool $tagged_only Only use logical volumes tagged with 'pve-vm-ID'.
          * @param string $transport Gluster transport: tcp or rdma
          *   Enum: tcp,rdma,unix
          * @param string $username RBD Id.
          * @return Result
          */
-        public function update($blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $delete = null, $digest = null, $disable = null, $domain = null, $format = null, $is_mountpoint = null, $krbd = null, $maxfiles = null, $mkdir = null, $monhost = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $pool = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $shared = null, $smbversion = null, $sparse = null, $tagged_only = null, $transport = null, $username = null)
+        public function update($blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $delete = null, $digest = null, $disable = null, $domain = null, $format = null, $fuse = null, $is_mountpoint = null, $krbd = null, $maxfiles = null, $mkdir = null, $monhost = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $pool = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $transport = null, $username = null)
         {
-            return $this->setRest($blocksize, $bwlimit, $comstar_hg, $comstar_tg, $content, $delete, $digest, $disable, $domain, $format, $is_mountpoint, $krbd, $maxfiles, $mkdir, $monhost, $nodes, $nowritecache, $options, $password, $pool, $redundancy, $saferemove, $saferemove_throughput, $server, $server2, $shared, $smbversion, $sparse, $tagged_only, $transport, $username);
+            return $this->setRest($blocksize, $bwlimit, $comstar_hg, $comstar_tg, $content, $delete, $digest, $disable, $domain, $format, $fuse, $is_mountpoint, $krbd, $maxfiles, $mkdir, $monhost, $nodes, $nowritecache, $options, $password, $pool, $redundancy, $saferemove, $saferemove_throughput, $server, $server2, $shared, $smbversion, $sparse, $subdir, $tagged_only, $transport, $username);
         }
     }
 
