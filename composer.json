@@ -1,6 +1,6 @@
 {
-    "name": "enterpriseve/eve2pve-api-php",
-    "description": "ProxmoVE Client API PHP",
+    "name": "Corsinvest/cv4pve-api-php",
+    "description": "Corsinvest ProxmoVE Client API PHP",
     "keywords": [
         "Proxmox",
         "ProxmoxVE",
@@ -8,24 +8,23 @@
         "KVM",
         "LXC",
         "Virtualization",
-        "EnterpriseVE"
+        "Corsinvest"
     ],
     "type": "library",
     "license": "GPL-3.0-only",
     "authors": [
         {
             "name": "Daniele Corsini",
-            "email": "daniele.corsini@enterpriseve.com"
+            "email": "daniele.corsini@corsinvest.it"
         }
     ],
     "require": {
-        "php": ">=5.3.0",
-        "lib-curl": "*",
-        "guzzlehttp/guzzle": "~4.0"
+        "php": ">=5.5.0",
+        "lib-curl": "*"
     },
     "autoload": {
         "psr-4": {
-            "EnterpriseVE\\ProxmoxVE\\Api\\": "src/"
+            "Corsinvest\\ProxmoxVE\\Api\\": "src/"
         }
     }
 }

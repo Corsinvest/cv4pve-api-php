@@ -1,21 +1,26 @@
-# eve2pve-api-php
+# cv4pve-api-php
+
+[![License](https://img.shields.io/github/license/Corsinvest/cv4pve-api-php.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html) ![Packagist Version](https://img.shields.io/packagist/v/corsinvest/cv4pve-api-php.svg) [![Donate to this project using Paypal](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=PPM9JHLQLRV2S&item_name=Open+Source+Project&currency_code=EUR&source=url)
 
 ProxmoVE Client API PHP
 
 [ProxmoxVE Api](https://pve.proxmox.com/pve-docs/api-viewer/)
 
-[Packagist](https://packagist.org/packages/enterpriseve/eve2pve-api-php)
+[Packagist](https://packagist.org/packages/Corsinvest/cv4pve-api-php)
 
 ```text
-    ______      __                       _              _    ________
-   / ____/___  / /____  _________  _____(_)_______     | |  / / ____/
-  / __/ / __ \/ __/ _ \/ ___/ __ \/ ___/ / ___/ _ \    | | / / __/
- / /___/ / / / /_/  __/ /  / /_/ / /  / (__  )  __/    | |/ / /___
-/_____/_/ /_/\__/\___/_/  / .___/_/  /_/____/\___/     |___/_____/
-                         /_/
+   ______                _                      __
+  / ____/___  __________(_)___ _   _____  _____/ /_
+ / /   / __ \/ ___/ ___/ / __ \ | / / _ \/ ___/ __/
+/ /___/ /_/ / /  (__  ) / / / / |/ /  __(__  ) /_
+\____/\____/_/  /____/_/_/ /_/|___/\___/____/\__/
 
-                                                       (Made in Italy)
+Corsinvest for Proxmox VE Api Client  (Made in Italy)
 ```
+
+
+
+
 
 ## General
 
@@ -38,6 +43,7 @@ The result is class **Result** and contain methods:
 ## Main features
 
 * Easy to learn
+* No dependency external lybrary only native curl
 * Method named
 * Method no named rest (same parameters)
   * getRest
@@ -57,6 +63,8 @@ The result is class **Result** and contain methods:
   * isSuccessStatusCode
 * Wait task finish task
   * waitForTaskToFinish
+  * taskIsRunning
+  * getExitStatusTask
 * Method directry access
   * get
   * set
@@ -74,7 +82,7 @@ Recommended installation is using [Composer], if you do not have [Composer] what
 In the root of your project execute the following:
 
 ```sh
-composer require enterpriseve/eve2pve-api-php ~1.0
+composer require Corsinvest/cv4pve-api-php ~1.0
 ```
 
 Or add this to your `composer.json` file:
@@ -82,7 +90,7 @@ Or add this to your `composer.json` file:
 ```json
 {
     "require": {
-        "enterpriseve/eve2pve-api-php": "~1.0"
+        "Corsinvest/cv4pve-api-php": "~1.0"
     }
 }
 ```
@@ -95,7 +103,7 @@ Or add this to your `composer.json` file:
 // Require the autoloader
 require_once 'vendor/autoload.php';
 
-$client = new EnterpriseVE\ProxmoxVE\Api\Client("192.168.0.24");
+$client = new Corsinvest\ProxmoxVE\Api\Client("192.168.0.24");
 
 //login check bool
 if($client->login('root','password','pam')){
@@ -198,3 +206,5 @@ The parameter indexed end with '[n]' in documentation (method createVM in Qemu p
   3 => "....",
 ]
 ```
+
+[![paypal](https://www.paypalobjects.com/en_US/IT/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=PPM9JHLQLRV2S&item_name=Open+Source+Project&currency_code=EUR&source=url)

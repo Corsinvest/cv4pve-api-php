@@ -3,35 +3,47 @@
 require_once '../vendor/autoload.php';
 require_once '../src/Client.php';
 
-$client = new \EnterpriseVE\ProxmoxVE\Api\Client($argv[1]);
+$client = new \Corsinvest\ProxmoxVE\Api\Client($argv[1]);
 if ($client->login($argv[2], $argv[3])) {
     $result = $client->getVersion()->version();
 
     var_dump($result);
-    
-    $ret1=$client->get("/pippo");
-    echo "\n" . $client->getStatusCode();
-    echo "\n" . $client->getReasonPhrase();
 
-    echo $result->data->version;
+    $ret1 = $client->get("/version");
+    echo $ret1->getStatusCode() . "\n";
+    echo $ret1->getReasonPhrase() . "\n";
 
-    foreach ($client->getNodes()->index()->data as $node) {
+    foreach ($client->getNodes()->index()->getResponse()->data as $node) {
         echo "\n" . $node->id;
     }
 
-    foreach ($client->getNodes()->get("pve1")->getQemu()->vmlist()->data as $vm) {
-        echo "\n" . $vm->vmid ." - " .$vm->name;
+    foreach ($client->getNodes()->get("pve1")->getQemu()->vmlist()->getResponse()->data as $vm) {
+        echo "\n" . $vm->vmid . " - " . $vm->name;
     }
 
     //loop snapshots
-    foreach ($client->getNodes()->get("pve1")->getQemu()->get(100)->getSnapshot()->snapshotList()->data as $snap) {
+    foreach ($client->getNodes()->get("pve1")->getQemu()->get(100)->getSnapshot()->snapshotList()->getResponse()->data as $snap) {
         echo "\n" . $snap->name;
     }
 
-    var_dump($client->getVersion()->version());
+    //return object
+    var_dump($client->getVersion()->version()->getResponse());
+
+    //disable return object
     $client->setResultIsObject(false);
-    $retArr = $client->getVersion()->version();
+    //return array
+    $retArr = $client->getVersion()->version()->getResponse();
     var_dump($retArr);
     echo "\n" . $retArr['data']['release'];
+
+    //eneble return objet
     $client->setResultIsObject(true);
+
+    //image rrd
+    $client->setResponseType('png');
+    echo "<img src='{$client->getNodes()->get("pve1")->getRrd()->rrd('cpu', 'day')->getResponse()}' \>";
+
+    //resewt json result
+    $client->setResponseType('json');
+    var_dump($client->get('/version')->getResponse());
 }

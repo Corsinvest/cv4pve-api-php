@@ -1,12 +1,13 @@
 <?php
+
 /**
  * Proxmox VE Client Api
  */
 
-namespace EnterpriseVE\ProxmoxVE\Api {
+namespace Corsinvest\ProxmoxVE\Api {
     /**
      * Class Base
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\ProxmoxVE\Api
      */
     abstract class Base
     {
@@ -40,10 +41,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             }
         }
     }
-
     /**
      * Result request API
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\ProxmoxVE\Api
      */
     class Result
     {
@@ -63,7 +63,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $resultIsObject;
-
         /**
          * @ignore
          */
@@ -74,7 +73,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->response = $response;
             $this->resultIsObject = $resultIsObject;
         }
-
         /**
          * Proxmox VE response.
          * @return mixed
@@ -83,7 +81,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->response;
         }
-
         /**
          * Contains the values of status codes defined for HTTP.
          * @return int
@@ -92,7 +89,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->statusCode;
         }
-
         /**
          * Gets the reason phrase which typically is sent by servers together with the status code.
          * @return string
@@ -101,7 +97,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->reasonPhrase;
         }
-
         /**
          * Gets a value that indicates if the HTTP response was successful.
          * @return bool
@@ -110,7 +105,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->statusCode == 200;
         }
-
         /**
          * Get if response Proxmox VE contain errors
          * @return bool
@@ -123,7 +117,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 return array_key_exists('errors', $this->response);
             }
         }
-
         /**
          * Get Error
          * @return string
@@ -151,10 +144,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $ret;
         }
     }
-
     /**
      * Class Client
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\ProxmoxVE\Api
      *
      * Proxmox VE Client
      */
@@ -184,9 +176,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $responseType = 'json';
-
         /**
          * @ignore
+         */
+        private $debugLevel = 0;
+        /**
+         * Client constructor.
+         * @param string $hostname Host Proxmox VE
+         * @param int $port Port connection default 8006
          */
         function __construct($hostname, $port = 8006)
         {
@@ -194,7 +191,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->port = $port;
             $this->client = $this;
         }
-
         /**
          * Return if result is object
          * @return bool
@@ -203,7 +199,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->resultIsObject;
         }
-
         /**
          * Set result is object
          * @param bool $resultIsObject
@@ -212,7 +207,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->resultIsObject = $resultIsObject;
         }
-
         /**
          * Gets the hostname configured.
          *
@@ -222,7 +216,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->hostname;
         }
-
         /**
          * Gets the port configured.
          *
@@ -232,7 +225,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->port;
         }
-
         /**
          * Sets the response type that is going to be returned when doing requests.
          *
@@ -242,7 +234,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->responseType = $type;
         }
-
         /**
          * Returns the response type that is being used by the Proxmox API client.
          *
@@ -252,7 +243,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->responseType;
         }
-
+        /**
+         * Sets the debug level value 0 - nothing 1 - Url and method 2 - Url and method and result
+         *
+         * @param string One of json, png.
+         */
+        public function setDebugLevel($debugLevel)
+        {
+            $this->debugLevel = $debugLevel;
+        }
+        /**
+         * Returns debug level.
+         *
+         * @return string Response type being used.
+         */
+        public function getDebugLevel()
+        {
+            return $this->debugLevel;
+        }
         /**
          * Returns the base URL used to interact with the Proxmox VE API.
          *
@@ -262,7 +270,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return "https://{$this->getHostname()}:{$this->getPort()}/api2/{$this->responseType}";
         }
-
         /**
          * Creation ticket from login.
          * @param string $userName user name or &lt;username&gt;@&lt;realm&gt;
@@ -290,7 +297,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             }
             return false;
         }
-
         /**
          * Execute method GET
          * @param string $resource Url request
@@ -301,7 +307,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->executeAction($resource, 'GET', $params);
         }
-
         /**
          * Execute method PUT
          * @param string $resource Url request
@@ -312,7 +317,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->executeAction($resource, 'PUT', $params);
         }
-
         /**
          * Execute method POST
          * @param string $resource Url request
@@ -323,7 +327,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->executeAction($resource, 'POST', $params);
         }
-
         /**
          * Execute method DELETE
          * @param string $resource Url request
@@ -334,81 +337,94 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->executeAction($resource, 'DELETE', $params);
         }
-
         /**
          * @ignore
          */
         private function executeAction($resource, $method, $params = [])
         {
-            $response = $this->requestResource($resource, $method, $params);
-            $obj = null;
-            switch ($this->responseType) {
-                case 'json':
-                    $obj = $response->json(['object' => $this->resultIsObject]);
-                    break;
-                case 'png':
-                    $obj = 'data:image/png;base64,' . base64_encode($response->getBody());
-                    break;
-            }
-            return new Result($obj,
-                $response->getStatusCode(),
-                $response->getReasonPhrase(),
-                $this->resultIsObject);
-        }
-
-        /**
-         * @ignore
-         */
-        private function requestResource($resource, $method, $params = [])
-        {
             //url resource
             $url = "{$this->getApiUrl()}{$resource}";
-            $cookies = [];
+            //$cookies = [];
             $headers = [];
-            if ($this->ticketPVEAuthCookie != null) {
-                $cookies = ['PVEAuthCookie' => $this->ticketPVEAuthCookie];
-                $headers = ['CSRFPreventionToken' => $this->ticketCSRFPreventionToken];
+            if (null != $this->ticketPVEAuthCookie) {
+                $headers[] = "CSRFPreventionToken: {$this->ticketCSRFPreventionToken}";
             }
             //remove null params
             $params = array_filter($params, function ($value) {
-                return $value !== null;
+                return null !== $value;
             });
-            $httpClient = new \GuzzleHttp\Client();
-            switch ($method) {
-                case 'GET':
-                    return $httpClient->get($url, [
-                        'verify' => false,
-                        'exceptions' => false,
-                        'cookies' => $cookies,
-                        'query' => $params,
-                    ]);
-                case 'POST':
-                    return $httpClient->post($url, [
-                        'verify' => false,
-                        'exceptions' => false,
-                        'cookies' => $cookies,
-                        'headers' => $headers,
-                        'body' => $params,
-                    ]);
-                case 'PUT':
-                    return $httpClient->put($url, [
-                        'verify' => false,
-                        'exceptions' => false,
-                        'cookies' => $cookies,
-                        'headers' => $headers,
-                        'body' => $params,
-                    ]);
-                case 'DELETE':
-                    return $httpClient->delete($url, [
-                        'verify' => false,
-                        'exceptions' => false,
-                        'cookies' => $cookies,
-                        'headers' => $headers,
-                        'body' => $params,
-                    ]);
+            if ($this->getDebugLevel() >= 1) {
+                echo "Method: " . method . " , Url: " . $url . "\n";
+                if (method != 'GET') {
+                    echo "Parameters:\n";
+                    var_dump($params);
+                }
             }
-        }
+            $ch = curl_init();
+            switch ($method) {
+                case "GET":
+                    $action_postfields_string = http_build_query($params);
+                    $url .= '?' . $action_postfields_string;
+                    unset($action_postfields_string);
+                    break;
 
+                case "PUT":
+                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+                    $action_postfields_string = http_build_query($params);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $action_postfields_string);
+                    unset($action_postfields_string);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                    break;
+
+                case "POST":
+                    curl_setopt($ch, CURLOPT_POST, true);
+                    $action_postfields_string = http_build_query($params);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $action_postfields_string);
+                    unset($action_postfields_string);
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                    break;
+
+                case "DELETE":
+                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                    break;
+            }
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_HEADER, true);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_COOKIE, "PVEAuthCookie=" . $this->ticketPVEAuthCookie);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            $response = curl_exec($ch);
+            $curlInfo = curl_getinfo($ch);
+            $reasonPhrase = curl_error($ch);
+            $reasonCode = $curlInfo["http_code"];
+            curl_close($ch);
+            unset($ch);
+            $body = substr($response, $curlInfo["header_size"]);
+            unset($response);
+            unset($curlInfo);
+            $obj = null;
+            switch ($this->responseType) {
+                case 'json':
+                    $obj = json_decode($body, !$this->getResultIsObject());
+                    break;
+                case 'png':
+                    $obj = 'data:image/png;base64,' . base64_encode($body);
+                    break;
+            }
+            unset($body);
+            $result = new Result($obj, $reasonCode, $reasonPhrase, $this->resultIsObject);
+            if ($this->getDebugLevel() >= 2) {
+                echo $obj . "\n";
+                echo "StatusCode:          " . $result->getStatusCode() . "\n";
+                echo "ReasonPhrase:        " . $result->getReasonPhrase() . "\n";
+                echo "IsSuccessStatusCode: " . $result->isSuccessStatusCode() . "\n";
+            }
+            if ($this->getDebugLevel() > 0) {
+                echo "=============================";
+            }
+            return $result;
+        }
         /**
          * Wait for task to finish
          * @param string $node Node identifier
@@ -430,17 +446,36 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             while ($isRunning && ($timeStart - time()) < $timeOut) {
                 if ((time() - $waitTime) >= $wait) {
                     $waitTime = time();
-                    $isRunning = $this->getNodes()->get($node)->getTasks()->
-                        get($task)->getStatus()->getRest()->getResponse()->data == "running";
+                    $isRunning = taskIsRunning($node, $task);
                 }
             }
         }
-
+        /**
+         * Check task is running
+         *
+         * @param string $node Node identifier
+         * @param string $task Task identifier
+         * @return bool Is running
+         */
+        function taskIsRunning($node, $task)
+        {
+            return $this->getNodes()->get($node)->getTasks()->get($task)->getStatus()->getRest()->getResponse()->data == "running";
+        }
+        /**
+         * Return exit status code task
+         *
+         * @param string $node Node identifier
+         * @param string $task Task identifier
+         * @return string Message status
+         */
+        function getExitStatusTask($node, $task)
+        {
+            return $this->getNodes()->get($node)->getTasks()->get($task)->getStatus()->getRest()->getResponse()->data->exitstatus;
+        }
         /**
          * @ignore
          */
         private $cluster;
-
         /**
          * Get Cluster
          * @return PVECluster
@@ -449,12 +484,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->cluster ?: ($this->cluster = new PVECluster($this->client));
         }
-
         /**
          * @ignore
          */
         private $nodes;
-
         /**
          * Get Nodes
          * @return PVENodes
@@ -463,12 +496,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->nodes ?: ($this->nodes = new PVENodes($this->client));
         }
-
         /**
          * @ignore
          */
         private $storage;
-
         /**
          * Get Storage
          * @return PVEStorage
@@ -477,12 +508,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->storage ?: ($this->storage = new PVEStorage($this->client));
         }
-
         /**
          * @ignore
          */
         private $access;
-
         /**
          * Get Access
          * @return PVEAccess
@@ -491,12 +520,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->access ?: ($this->access = new PVEAccess($this->client));
         }
-
         /**
          * @ignore
          */
         private $pools;
-
         /**
          * Get Pools
          * @return PVEPools
@@ -505,12 +532,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->pools ?: ($this->pools = new PVEPools($this->client));
         }
-
         /**
          * @ignore
          */
         private $version;
-
         /**
          * Get Version
          * @return PVEVersion
@@ -520,10 +545,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->version ?: ($this->version = new PVEVersion($this->client));
         }
     }
-
     /**
      * Class PVECluster
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECluster extends Base
     {
@@ -534,12 +558,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * @ignore
          */
         private $replication;
-
         /**
          * Get ClusterReplication
          * @return PVEClusterReplication
@@ -548,12 +570,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->replication ?: ($this->replication = new PVEClusterReplication($this->client));
         }
-
         /**
          * @ignore
          */
         private $config;
-
         /**
          * Get ClusterConfig
          * @return PVEClusterConfig
@@ -562,12 +582,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->config ?: ($this->config = new PVEClusterConfig($this->client));
         }
-
         /**
          * @ignore
          */
         private $firewall;
-
         /**
          * Get ClusterFirewall
          * @return PVEClusterFirewall
@@ -576,12 +594,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->firewall ?: ($this->firewall = new PVEClusterFirewall($this->client));
         }
-
         /**
          * @ignore
          */
         private $backup;
-
         /**
          * Get ClusterBackup
          * @return PVEClusterBackup
@@ -590,12 +606,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->backup ?: ($this->backup = new PVEClusterBackup($this->client));
         }
-
         /**
          * @ignore
          */
         private $ha;
-
         /**
          * Get ClusterHa
          * @return PVEClusterHa
@@ -604,12 +618,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->ha ?: ($this->ha = new PVEClusterHa($this->client));
         }
-
         /**
          * @ignore
          */
         private $acme;
-
         /**
          * Get ClusterAcme
          * @return PVEClusterAcme
@@ -618,12 +630,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->acme ?: ($this->acme = new PVEClusterAcme($this->client));
         }
-
         /**
          * @ignore
          */
         private $log;
-
         /**
          * Get ClusterLog
          * @return PVEClusterLog
@@ -632,12 +642,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->log ?: ($this->log = new PVEClusterLog($this->client));
         }
-
         /**
          * @ignore
          */
         private $resources;
-
         /**
          * Get ClusterResources
          * @return PVEClusterResources
@@ -646,12 +654,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->resources ?: ($this->resources = new PVEClusterResources($this->client));
         }
-
         /**
          * @ignore
          */
         private $tasks;
-
         /**
          * Get ClusterTasks
          * @return PVEClusterTasks
@@ -660,12 +666,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->tasks ?: ($this->tasks = new PVEClusterTasks($this->client));
         }
-
         /**
          * @ignore
          */
         private $options;
-
         /**
          * Get ClusterOptions
          * @return PVEClusterOptions
@@ -674,12 +678,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->options ?: ($this->options = new PVEClusterOptions($this->client));
         }
-
         /**
          * @ignore
          */
         private $status;
-
         /**
          * Get ClusterStatus
          * @return PVEClusterStatus
@@ -688,12 +690,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->status ?: ($this->status = new PVEClusterStatus($this->client));
         }
-
         /**
          * @ignore
          */
         private $nextid;
-
         /**
          * Get ClusterNextid
          * @return PVEClusterNextid
@@ -702,7 +702,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->nextid ?: ($this->nextid = new PVEClusterNextid($this->client));
         }
-
         /**
          * Cluster index.
          * @return Result
@@ -711,7 +710,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster");
         }
-
         /**
          * Cluster index.
          * @return Result
@@ -721,10 +719,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEClusterReplication
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterReplication extends Base
     {
@@ -735,7 +732,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get ItemReplicationClusterId
          * @param id
@@ -745,7 +741,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemReplicationClusterId($this->client, $id);
         }
-
         /**
          * List replication jobs.
          * @return Result
@@ -754,7 +749,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/replication");
         }
-
         /**
          * List replication jobs.
          * @return Result
@@ -763,7 +757,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create a new replication job
          * @param string $id Replication Job ID. The ID is composed of a Guest ID and a job number, separated by a hyphen, i.e. '&amp;lt;GUEST&amp;gt;-&amp;lt;JOBNUM&amp;gt;'.
@@ -781,7 +774,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($id, $target, $type, $comment = null, $disable = null, $rate = null, $remove_job = null, $schedule = null, $source = null)
         {
-            $params = ['id' => $id,
+            $params = [
+                'id' => $id,
                 'target' => $target,
                 'type' => $type,
                 'comment' => $comment,
@@ -789,10 +783,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'rate' => $rate,
                 'remove_job' => $remove_job,
                 'schedule' => $schedule,
-                'source' => $source];
+                'source' => $source
+            ];
             return $this->getClient()->create("/cluster/replication", $params);
         }
-
         /**
          * Create a new replication job
          * @param string $id Replication Job ID. The ID is composed of a Guest ID and a job number, separated by a hyphen, i.e. '&amp;lt;GUEST&amp;gt;-&amp;lt;JOBNUM&amp;gt;'.
@@ -813,10 +807,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($id, $target, $type, $comment, $disable, $rate, $remove_job, $schedule, $source);
         }
     }
-
     /**
      * Class PVEItemReplicationClusterId
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemReplicationClusterId extends Base
     {
@@ -824,7 +817,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $id;
-
         /**
          * @ignore
          */
@@ -833,7 +825,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->id = $id;
         }
-
         /**
          * Mark replication job for removal.
          * @param bool $force Will remove the jobconfig entry, but will not cleanup.
@@ -842,11 +833,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function deleteRest($force = null, $keep = null)
         {
-            $params = ['force' => $force,
-                'keep' => $keep];
+            $params = [
+                'force' => $force,
+                'keep' => $keep
+            ];
             return $this->getClient()->delete("/cluster/replication/{$this->id}", $params);
         }
-
         /**
          * Mark replication job for removal.
          * @param bool $force Will remove the jobconfig entry, but will not cleanup.
@@ -857,7 +849,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest($force, $keep);
         }
-
         /**
          * Read replication job configuration.
          * @return Result
@@ -866,7 +857,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/replication/{$this->id}");
         }
-
         /**
          * Read replication job configuration.
          * @return Result
@@ -875,7 +865,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Update replication job configuration.
          * @param string $comment Description.
@@ -891,17 +880,18 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function setRest($comment = null, $delete = null, $digest = null, $disable = null, $rate = null, $remove_job = null, $schedule = null, $source = null)
         {
-            $params = ['comment' => $comment,
+            $params = [
+                'comment' => $comment,
                 'delete' => $delete,
                 'digest' => $digest,
                 'disable' => $disable,
                 'rate' => $rate,
                 'remove_job' => $remove_job,
                 'schedule' => $schedule,
-                'source' => $source];
+                'source' => $source
+            ];
             return $this->getClient()->set("/cluster/replication/{$this->id}", $params);
         }
-
         /**
          * Update replication job configuration.
          * @param string $comment Description.
@@ -920,10 +910,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($comment, $delete, $digest, $disable, $rate, $remove_job, $schedule, $source);
         }
     }
-
     /**
      * Class PVEClusterConfig
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterConfig extends Base
     {
@@ -934,12 +923,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * @ignore
          */
         private $nodes;
-
         /**
          * Get ConfigClusterNodes
          * @return PVEConfigClusterNodes
@@ -948,12 +935,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->nodes ?: ($this->nodes = new PVEConfigClusterNodes($this->client));
         }
-
         /**
          * @ignore
          */
         private $join;
-
         /**
          * Get ConfigClusterJoin
          * @return PVEConfigClusterJoin
@@ -962,12 +947,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->join ?: ($this->join = new PVEConfigClusterJoin($this->client));
         }
-
         /**
          * @ignore
          */
         private $totem;
-
         /**
          * Get ConfigClusterTotem
          * @return PVEConfigClusterTotem
@@ -976,7 +959,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->totem ?: ($this->totem = new PVEConfigClusterTotem($this->client));
         }
-
         /**
          * Directory index.
          * @return Result
@@ -985,7 +967,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/config");
         }
-
         /**
          * Directory index.
          * @return Result
@@ -994,7 +975,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Generate new cluster configuration.
          * @param string $clustername The name of the cluster.
@@ -1008,16 +988,17 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($clustername, $bindnet0_addr = null, $bindnet1_addr = null, $nodeid = null, $ring0_addr = null, $ring1_addr = null, $votes = null)
         {
-            $params = ['clustername' => $clustername,
+            $params = [
+                'clustername' => $clustername,
                 'bindnet0_addr' => $bindnet0_addr,
                 'bindnet1_addr' => $bindnet1_addr,
                 'nodeid' => $nodeid,
                 'ring0_addr' => $ring0_addr,
                 'ring1_addr' => $ring1_addr,
-                'votes' => $votes];
+                'votes' => $votes
+            ];
             return $this->getClient()->create("/cluster/config", $params);
         }
-
         /**
          * Generate new cluster configuration.
          * @param string $clustername The name of the cluster.
@@ -1034,10 +1015,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($clustername, $bindnet0_addr, $bindnet1_addr, $nodeid, $ring0_addr, $ring1_addr, $votes);
         }
     }
-
     /**
      * Class PVEConfigClusterNodes
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEConfigClusterNodes extends Base
     {
@@ -1048,7 +1028,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get ItemNodesConfigClusterNode
          * @param node
@@ -1058,7 +1037,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemNodesConfigClusterNode($this->client, $node);
         }
-
         /**
          * Corosync node list.
          * @return Result
@@ -1067,7 +1045,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/config/nodes");
         }
-
         /**
          * Corosync node list.
          * @return Result
@@ -1077,10 +1054,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEItemNodesConfigClusterNode
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemNodesConfigClusterNode extends Base
     {
@@ -1088,7 +1064,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -1097,7 +1072,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Removes a node from the cluster configuration.
          * @return Result
@@ -1106,7 +1080,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->delete("/cluster/config/nodes/{$this->node}");
         }
-
         /**
          * Removes a node from the cluster configuration.
          * @return Result
@@ -1115,7 +1088,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest();
         }
-
         /**
          * Adds a node to the cluster configuration. This call is for internal use.
          * @param bool $force Do not throw error if node already exists.
@@ -1127,14 +1099,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($force = null, $nodeid = null, $ring0_addr = null, $ring1_addr = null, $votes = null)
         {
-            $params = ['force' => $force,
+            $params = [
+                'force' => $force,
                 'nodeid' => $nodeid,
                 'ring0_addr' => $ring0_addr,
                 'ring1_addr' => $ring1_addr,
-                'votes' => $votes];
+                'votes' => $votes
+            ];
             return $this->getClient()->create("/cluster/config/nodes/{$this->node}", $params);
         }
-
         /**
          * Adds a node to the cluster configuration. This call is for internal use.
          * @param bool $force Do not throw error if node already exists.
@@ -1149,10 +1122,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($force, $nodeid, $ring0_addr, $ring1_addr, $votes);
         }
     }
-
     /**
      * Class PVEConfigClusterJoin
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEConfigClusterJoin extends Base
     {
@@ -1163,10 +1135,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get information needed to join this cluster over the connected node.
-         * @param string $node The node for which the joinee gets the nodeinfo.
+         * @param string $node The node for which the joinee gets the nodeinfo. 
          * @return Result
          */
         public function getRest($node = null)
@@ -1174,17 +1145,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['node' => $node];
             return $this->getClient()->get("/cluster/config/join", $params);
         }
-
         /**
          * Get information needed to join this cluster over the connected node.
-         * @param string $node The node for which the joinee gets the nodeinfo.
+         * @param string $node The node for which the joinee gets the nodeinfo. 
          * @return Result
          */
         public function joinInfo($node = null)
         {
             return $this->getRest($node);
         }
-
         /**
          * Joins this node into an existing cluster.
          * @param string $fingerprint Certificate SHA 256 fingerprint.
@@ -1199,17 +1168,18 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($fingerprint, $hostname, $password, $force = null, $nodeid = null, $ring0_addr = null, $ring1_addr = null, $votes = null)
         {
-            $params = ['fingerprint' => $fingerprint,
+            $params = [
+                'fingerprint' => $fingerprint,
                 'hostname' => $hostname,
                 'password' => $password,
                 'force' => $force,
                 'nodeid' => $nodeid,
                 'ring0_addr' => $ring0_addr,
                 'ring1_addr' => $ring1_addr,
-                'votes' => $votes];
+                'votes' => $votes
+            ];
             return $this->getClient()->create("/cluster/config/join", $params);
         }
-
         /**
          * Joins this node into an existing cluster.
          * @param string $fingerprint Certificate SHA 256 fingerprint.
@@ -1227,10 +1197,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($fingerprint, $hostname, $password, $force, $nodeid, $ring0_addr, $ring1_addr, $votes);
         }
     }
-
     /**
      * Class PVEConfigClusterTotem
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEConfigClusterTotem extends Base
     {
@@ -1241,7 +1210,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get corosync totem protocol settings.
          * @return Result
@@ -1250,7 +1218,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/config/totem");
         }
-
         /**
          * Get corosync totem protocol settings.
          * @return Result
@@ -1260,10 +1227,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEClusterFirewall
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterFirewall extends Base
     {
@@ -1274,12 +1240,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * @ignore
          */
         private $groups;
-
         /**
          * Get FirewallClusterGroups
          * @return PVEFirewallClusterGroups
@@ -1288,12 +1252,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->groups ?: ($this->groups = new PVEFirewallClusterGroups($this->client));
         }
-
         /**
          * @ignore
          */
         private $rules;
-
         /**
          * Get FirewallClusterRules
          * @return PVEFirewallClusterRules
@@ -1302,12 +1264,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->rules ?: ($this->rules = new PVEFirewallClusterRules($this->client));
         }
-
         /**
          * @ignore
          */
         private $ipset;
-
         /**
          * Get FirewallClusterIpset
          * @return PVEFirewallClusterIpset
@@ -1316,12 +1276,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->ipset ?: ($this->ipset = new PVEFirewallClusterIpset($this->client));
         }
-
         /**
          * @ignore
          */
         private $aliases;
-
         /**
          * Get FirewallClusterAliases
          * @return PVEFirewallClusterAliases
@@ -1330,12 +1288,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->aliases ?: ($this->aliases = new PVEFirewallClusterAliases($this->client));
         }
-
         /**
          * @ignore
          */
         private $options;
-
         /**
          * Get FirewallClusterOptions
          * @return PVEFirewallClusterOptions
@@ -1344,12 +1300,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->options ?: ($this->options = new PVEFirewallClusterOptions($this->client));
         }
-
         /**
          * @ignore
          */
         private $macros;
-
         /**
          * Get FirewallClusterMacros
          * @return PVEFirewallClusterMacros
@@ -1358,12 +1312,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->macros ?: ($this->macros = new PVEFirewallClusterMacros($this->client));
         }
-
         /**
          * @ignore
          */
         private $refs;
-
         /**
          * Get FirewallClusterRefs
          * @return PVEFirewallClusterRefs
@@ -1372,7 +1324,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->refs ?: ($this->refs = new PVEFirewallClusterRefs($this->client));
         }
-
         /**
          * Directory index.
          * @return Result
@@ -1381,7 +1332,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/firewall");
         }
-
         /**
          * Directory index.
          * @return Result
@@ -1391,10 +1341,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEFirewallClusterGroups
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallClusterGroups extends Base
     {
@@ -1405,7 +1354,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get ItemGroupsFirewallClusterGroup
          * @param group
@@ -1415,7 +1363,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemGroupsFirewallClusterGroup($this->client, $group);
         }
-
         /**
          * List security groups.
          * @return Result
@@ -1424,7 +1371,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/firewall/groups");
         }
-
         /**
          * List security groups.
          * @return Result
@@ -1433,28 +1379,28 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create new security group.
          * @param string $group Security Group name.
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $rename Rename/update an existing security group. You can set 'rename' to the same value as 'name' to update the 'comment' of an existing group.
          * @return Result
          */
         public function createRest($group, $comment = null, $digest = null, $rename = null)
         {
-            $params = ['group' => $group,
+            $params = [
+                'group' => $group,
                 'comment' => $comment,
                 'digest' => $digest,
-                'rename' => $rename];
+                'rename' => $rename
+            ];
             return $this->getClient()->create("/cluster/firewall/groups", $params);
         }
-
         /**
          * Create new security group.
          * @param string $group Security Group name.
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $rename Rename/update an existing security group. You can set 'rename' to the same value as 'name' to update the 'comment' of an existing group.
          * @return Result
@@ -1464,10 +1410,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($group, $comment, $digest, $rename);
         }
     }
-
     /**
      * Class PVEItemGroupsFirewallClusterGroup
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemGroupsFirewallClusterGroup extends Base
     {
@@ -1475,7 +1420,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $group;
-
         /**
          * @ignore
          */
@@ -1484,7 +1428,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->group = $group;
         }
-
         /**
          * Get ItemGroupGroupsFirewallClusterPos
          * @param pos
@@ -1494,7 +1437,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemGroupGroupsFirewallClusterPos($this->client, $this->group, $pos);
         }
-
         /**
          * Delete security group.
          * @return Result
@@ -1503,7 +1445,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->delete("/cluster/firewall/groups/{$this->group}");
         }
-
         /**
          * Delete security group.
          * @return Result
@@ -1512,7 +1453,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest();
         }
-
         /**
          * List rules.
          * @return Result
@@ -1521,7 +1461,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/firewall/groups/{$this->group}");
         }
-
         /**
          * List rules.
          * @return Result
@@ -1530,7 +1469,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create new rule.
          * @param string $action Rule action ('ACCEPT', 'DROP', 'REJECT') or security group name.
@@ -1542,6 +1480,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $dport Restrict TCP/UDP destination port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @param int $enable Flag to enable/disable a rule.
          * @param string $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
+         * @param string $log Log level for firewall rule.
+         *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
          * @param int $pos Update rule at position &amp;lt;pos&amp;gt;.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
@@ -1549,9 +1489,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @return Result
          */
-        public function createRest($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null)
+        public function createRest($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $log = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null)
         {
-            $params = ['action' => $action,
+            $params = [
+                'action' => $action,
                 'type' => $type,
                 'comment' => $comment,
                 'dest' => $dest,
@@ -1559,14 +1500,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'dport' => $dport,
                 'enable' => $enable,
                 'iface' => $iface,
+                'log' => $log,
                 'macro' => $macro,
                 'pos' => $pos,
                 'proto' => $proto,
                 'source' => $source,
-                'sport' => $sport];
+                'sport' => $sport
+            ];
             return $this->getClient()->create("/cluster/firewall/groups/{$this->group}", $params);
         }
-
         /**
          * Create new rule.
          * @param string $action Rule action ('ACCEPT', 'DROP', 'REJECT') or security group name.
@@ -1578,6 +1520,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $dport Restrict TCP/UDP destination port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @param int $enable Flag to enable/disable a rule.
          * @param string $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
+         * @param string $log Log level for firewall rule.
+         *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
          * @param int $pos Update rule at position &amp;lt;pos&amp;gt;.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
@@ -1585,15 +1529,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @return Result
          */
-        public function createRule($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null)
+        public function createRule($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $log = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null)
         {
-            return $this->createRest($action, $type, $comment, $dest, $digest, $dport, $enable, $iface, $macro, $pos, $proto, $source, $sport);
+            return $this->createRest($action, $type, $comment, $dest, $digest, $dport, $enable, $iface, $log, $macro, $pos, $proto, $source, $sport);
         }
     }
-
     /**
      * Class PVEItemGroupGroupsFirewallClusterPos
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemGroupGroupsFirewallClusterPos extends Base
     {
@@ -1605,7 +1548,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $pos;
-
         /**
          * @ignore
          */
@@ -1615,7 +1557,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->group = $group;
             $this->pos = $pos;
         }
-
         /**
          * Delete rule.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -1626,7 +1567,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['digest' => $digest];
             return $this->getClient()->delete("/cluster/firewall/groups/{$this->group}/{$this->pos}", $params);
         }
-
         /**
          * Delete rule.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -1636,7 +1576,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest($digest);
         }
-
         /**
          * Get single rule data.
          * @return Result
@@ -1645,7 +1584,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/firewall/groups/{$this->group}/{$this->pos}");
         }
-
         /**
          * Get single rule data.
          * @return Result
@@ -1654,7 +1592,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Modify rule data.
          * @param string $action Rule action ('ACCEPT', 'DROP', 'REJECT') or security group name.
@@ -1665,6 +1602,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $dport Restrict TCP/UDP destination port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @param int $enable Flag to enable/disable a rule.
          * @param string $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
+         * @param string $log Log level for firewall rule.
+         *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
          * @param int $moveto Move rule to new position &amp;lt;moveto&amp;gt;. Other arguments are ignored.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
@@ -1674,9 +1613,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: in,out,group
          * @return Result
          */
-        public function setRest($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null)
+        public function setRest($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $log = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null)
         {
-            $params = ['action' => $action,
+            $params = [
+                'action' => $action,
                 'comment' => $comment,
                 'delete' => $delete,
                 'dest' => $dest,
@@ -1684,15 +1624,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'dport' => $dport,
                 'enable' => $enable,
                 'iface' => $iface,
+                'log' => $log,
                 'macro' => $macro,
                 'moveto' => $moveto,
                 'proto' => $proto,
                 'source' => $source,
                 'sport' => $sport,
-                'type' => $type];
+                'type' => $type
+            ];
             return $this->getClient()->set("/cluster/firewall/groups/{$this->group}/{$this->pos}", $params);
         }
-
         /**
          * Modify rule data.
          * @param string $action Rule action ('ACCEPT', 'DROP', 'REJECT') or security group name.
@@ -1703,6 +1644,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $dport Restrict TCP/UDP destination port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @param int $enable Flag to enable/disable a rule.
          * @param string $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
+         * @param string $log Log level for firewall rule.
+         *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
          * @param int $moveto Move rule to new position &amp;lt;moveto&amp;gt;. Other arguments are ignored.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
@@ -1712,15 +1655,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: in,out,group
          * @return Result
          */
-        public function updateRule($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null)
+        public function updateRule($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $log = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null)
         {
-            return $this->setRest($action, $comment, $delete, $dest, $digest, $dport, $enable, $iface, $macro, $moveto, $proto, $source, $sport, $type);
+            return $this->setRest($action, $comment, $delete, $dest, $digest, $dport, $enable, $iface, $log, $macro, $moveto, $proto, $source, $sport, $type);
         }
     }
-
     /**
      * Class PVEFirewallClusterRules
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallClusterRules extends Base
     {
@@ -1731,7 +1673,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get ItemRulesFirewallClusterPos
          * @param pos
@@ -1741,7 +1682,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemRulesFirewallClusterPos($this->client, $pos);
         }
-
         /**
          * List rules.
          * @return Result
@@ -1750,7 +1690,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/firewall/rules");
         }
-
         /**
          * List rules.
          * @return Result
@@ -1759,7 +1698,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create new rule.
          * @param string $action Rule action ('ACCEPT', 'DROP', 'REJECT') or security group name.
@@ -1771,6 +1709,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $dport Restrict TCP/UDP destination port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @param int $enable Flag to enable/disable a rule.
          * @param string $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
+         * @param string $log Log level for firewall rule.
+         *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
          * @param int $pos Update rule at position &amp;lt;pos&amp;gt;.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
@@ -1778,9 +1718,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @return Result
          */
-        public function createRest($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null)
+        public function createRest($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $log = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null)
         {
-            $params = ['action' => $action,
+            $params = [
+                'action' => $action,
                 'type' => $type,
                 'comment' => $comment,
                 'dest' => $dest,
@@ -1788,14 +1729,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'dport' => $dport,
                 'enable' => $enable,
                 'iface' => $iface,
+                'log' => $log,
                 'macro' => $macro,
                 'pos' => $pos,
                 'proto' => $proto,
                 'source' => $source,
-                'sport' => $sport];
+                'sport' => $sport
+            ];
             return $this->getClient()->create("/cluster/firewall/rules", $params);
         }
-
         /**
          * Create new rule.
          * @param string $action Rule action ('ACCEPT', 'DROP', 'REJECT') or security group name.
@@ -1807,6 +1749,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $dport Restrict TCP/UDP destination port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @param int $enable Flag to enable/disable a rule.
          * @param string $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
+         * @param string $log Log level for firewall rule.
+         *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
          * @param int $pos Update rule at position &amp;lt;pos&amp;gt;.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
@@ -1814,15 +1758,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @return Result
          */
-        public function createRule($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null)
+        public function createRule($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $log = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null)
         {
-            return $this->createRest($action, $type, $comment, $dest, $digest, $dport, $enable, $iface, $macro, $pos, $proto, $source, $sport);
+            return $this->createRest($action, $type, $comment, $dest, $digest, $dport, $enable, $iface, $log, $macro, $pos, $proto, $source, $sport);
         }
     }
-
     /**
      * Class PVEItemRulesFirewallClusterPos
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemRulesFirewallClusterPos extends Base
     {
@@ -1830,7 +1773,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $pos;
-
         /**
          * @ignore
          */
@@ -1839,7 +1781,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->pos = $pos;
         }
-
         /**
          * Delete rule.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -1850,7 +1791,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['digest' => $digest];
             return $this->getClient()->delete("/cluster/firewall/rules/{$this->pos}", $params);
         }
-
         /**
          * Delete rule.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -1860,7 +1800,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest($digest);
         }
-
         /**
          * Get single rule data.
          * @return Result
@@ -1869,7 +1808,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/firewall/rules/{$this->pos}");
         }
-
         /**
          * Get single rule data.
          * @return Result
@@ -1878,7 +1816,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Modify rule data.
          * @param string $action Rule action ('ACCEPT', 'DROP', 'REJECT') or security group name.
@@ -1889,6 +1826,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $dport Restrict TCP/UDP destination port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @param int $enable Flag to enable/disable a rule.
          * @param string $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
+         * @param string $log Log level for firewall rule.
+         *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
          * @param int $moveto Move rule to new position &amp;lt;moveto&amp;gt;. Other arguments are ignored.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
@@ -1898,9 +1837,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: in,out,group
          * @return Result
          */
-        public function setRest($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null)
+        public function setRest($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $log = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null)
         {
-            $params = ['action' => $action,
+            $params = [
+                'action' => $action,
                 'comment' => $comment,
                 'delete' => $delete,
                 'dest' => $dest,
@@ -1908,15 +1848,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'dport' => $dport,
                 'enable' => $enable,
                 'iface' => $iface,
+                'log' => $log,
                 'macro' => $macro,
                 'moveto' => $moveto,
                 'proto' => $proto,
                 'source' => $source,
                 'sport' => $sport,
-                'type' => $type];
+                'type' => $type
+            ];
             return $this->getClient()->set("/cluster/firewall/rules/{$this->pos}", $params);
         }
-
         /**
          * Modify rule data.
          * @param string $action Rule action ('ACCEPT', 'DROP', 'REJECT') or security group name.
@@ -1927,6 +1868,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $dport Restrict TCP/UDP destination port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @param int $enable Flag to enable/disable a rule.
          * @param string $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
+         * @param string $log Log level for firewall rule.
+         *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
          * @param int $moveto Move rule to new position &amp;lt;moveto&amp;gt;. Other arguments are ignored.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
@@ -1936,15 +1879,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: in,out,group
          * @return Result
          */
-        public function updateRule($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null)
+        public function updateRule($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $log = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null)
         {
-            return $this->setRest($action, $comment, $delete, $dest, $digest, $dport, $enable, $iface, $macro, $moveto, $proto, $source, $sport, $type);
+            return $this->setRest($action, $comment, $delete, $dest, $digest, $dport, $enable, $iface, $log, $macro, $moveto, $proto, $source, $sport, $type);
         }
     }
-
     /**
      * Class PVEFirewallClusterIpset
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallClusterIpset extends Base
     {
@@ -1955,7 +1897,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get ItemIpsetFirewallClusterName
          * @param name
@@ -1965,7 +1906,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemIpsetFirewallClusterName($this->client, $name);
         }
-
         /**
          * List IPSets
          * @return Result
@@ -1974,7 +1914,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/firewall/ipset");
         }
-
         /**
          * List IPSets
          * @return Result
@@ -1983,28 +1922,28 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create new IPSet
          * @param string $name IP set name.
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $rename Rename an existing IPSet. You can set 'rename' to the same value as 'name' to update the 'comment' of an existing IPSet.
          * @return Result
          */
         public function createRest($name, $comment = null, $digest = null, $rename = null)
         {
-            $params = ['name' => $name,
+            $params = [
+                'name' => $name,
                 'comment' => $comment,
                 'digest' => $digest,
-                'rename' => $rename];
+                'rename' => $rename
+            ];
             return $this->getClient()->create("/cluster/firewall/ipset", $params);
         }
-
         /**
          * Create new IPSet
          * @param string $name IP set name.
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $rename Rename an existing IPSet. You can set 'rename' to the same value as 'name' to update the 'comment' of an existing IPSet.
          * @return Result
@@ -2014,10 +1953,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($name, $comment, $digest, $rename);
         }
     }
-
     /**
      * Class PVEItemIpsetFirewallClusterName
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemIpsetFirewallClusterName extends Base
     {
@@ -2025,7 +1963,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $name;
-
         /**
          * @ignore
          */
@@ -2034,7 +1971,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->name = $name;
         }
-
         /**
          * Get ItemNameIpsetFirewallClusterCidr
          * @param cidr
@@ -2044,7 +1980,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemNameIpsetFirewallClusterCidr($this->client, $this->name, $cidr);
         }
-
         /**
          * Delete IPSet
          * @return Result
@@ -2053,7 +1988,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->delete("/cluster/firewall/ipset/{$this->name}");
         }
-
         /**
          * Delete IPSet
          * @return Result
@@ -2062,7 +1996,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest();
         }
-
         /**
          * List IPSet content
          * @return Result
@@ -2071,7 +2004,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/firewall/ipset/{$this->name}");
         }
-
         /**
          * List IPSet content
          * @return Result
@@ -2080,27 +2012,27 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Add IP or Network to IPSet.
          * @param string $cidr Network/IP specification in CIDR format.
-         * @param string $comment
-         * @param bool $nomatch
+         * @param string $comment 
+         * @param bool $nomatch 
          * @return Result
          */
         public function createRest($cidr, $comment = null, $nomatch = null)
         {
-            $params = ['cidr' => $cidr,
+            $params = [
+                'cidr' => $cidr,
                 'comment' => $comment,
-                'nomatch' => $nomatch];
+                'nomatch' => $nomatch
+            ];
             return $this->getClient()->create("/cluster/firewall/ipset/{$this->name}", $params);
         }
-
         /**
          * Add IP or Network to IPSet.
          * @param string $cidr Network/IP specification in CIDR format.
-         * @param string $comment
-         * @param bool $nomatch
+         * @param string $comment 
+         * @param bool $nomatch 
          * @return Result
          */
         public function createIp($cidr, $comment = null, $nomatch = null)
@@ -2108,10 +2040,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($cidr, $comment, $nomatch);
         }
     }
-
     /**
      * Class PVEItemNameIpsetFirewallClusterCidr
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemNameIpsetFirewallClusterCidr extends Base
     {
@@ -2123,7 +2054,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $cidr;
-
         /**
          * @ignore
          */
@@ -2133,7 +2063,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->name = $name;
             $this->cidr = $cidr;
         }
-
         /**
          * Remove IP or Network from IPSet.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -2144,7 +2073,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['digest' => $digest];
             return $this->getClient()->delete("/cluster/firewall/ipset/{$this->name}/{$this->cidr}", $params);
         }
-
         /**
          * Remove IP or Network from IPSet.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -2154,7 +2082,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest($digest);
         }
-
         /**
          * Read IP or Network settings from IPSet.
          * @return Result
@@ -2163,7 +2090,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/firewall/ipset/{$this->name}/{$this->cidr}");
         }
-
         /**
          * Read IP or Network settings from IPSet.
          * @return Result
@@ -2172,27 +2098,27 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Update IP or Network settings
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
-         * @param bool $nomatch
+         * @param bool $nomatch 
          * @return Result
          */
         public function setRest($comment = null, $digest = null, $nomatch = null)
         {
-            $params = ['comment' => $comment,
+            $params = [
+                'comment' => $comment,
                 'digest' => $digest,
-                'nomatch' => $nomatch];
+                'nomatch' => $nomatch
+            ];
             return $this->getClient()->set("/cluster/firewall/ipset/{$this->name}/{$this->cidr}", $params);
         }
-
         /**
          * Update IP or Network settings
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
-         * @param bool $nomatch
+         * @param bool $nomatch 
          * @return Result
          */
         public function updateIp($comment = null, $digest = null, $nomatch = null)
@@ -2200,10 +2126,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($comment, $digest, $nomatch);
         }
     }
-
     /**
      * Class PVEFirewallClusterAliases
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallClusterAliases extends Base
     {
@@ -2214,7 +2139,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get ItemAliasesFirewallClusterName
          * @param name
@@ -2224,7 +2148,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemAliasesFirewallClusterName($this->client, $name);
         }
-
         /**
          * List aliases
          * @return Result
@@ -2233,7 +2156,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/firewall/aliases");
         }
-
         /**
          * List aliases
          * @return Result
@@ -2242,27 +2164,27 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create IP or Network Alias.
          * @param string $cidr Network/IP specification in CIDR format.
          * @param string $name Alias name.
-         * @param string $comment
+         * @param string $comment 
          * @return Result
          */
         public function createRest($cidr, $name, $comment = null)
         {
-            $params = ['cidr' => $cidr,
+            $params = [
+                'cidr' => $cidr,
                 'name' => $name,
-                'comment' => $comment];
+                'comment' => $comment
+            ];
             return $this->getClient()->create("/cluster/firewall/aliases", $params);
         }
-
         /**
          * Create IP or Network Alias.
          * @param string $cidr Network/IP specification in CIDR format.
          * @param string $name Alias name.
-         * @param string $comment
+         * @param string $comment 
          * @return Result
          */
         public function createAlias($cidr, $name, $comment = null)
@@ -2270,10 +2192,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($cidr, $name, $comment);
         }
     }
-
     /**
      * Class PVEItemAliasesFirewallClusterName
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemAliasesFirewallClusterName extends Base
     {
@@ -2281,7 +2202,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $name;
-
         /**
          * @ignore
          */
@@ -2290,7 +2210,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->name = $name;
         }
-
         /**
          * Remove IP or Network alias.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -2301,7 +2220,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['digest' => $digest];
             return $this->getClient()->delete("/cluster/firewall/aliases/{$this->name}", $params);
         }
-
         /**
          * Remove IP or Network alias.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -2311,7 +2229,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest($digest);
         }
-
         /**
          * Read alias.
          * @return Result
@@ -2320,7 +2237,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/firewall/aliases/{$this->name}");
         }
-
         /**
          * Read alias.
          * @return Result
@@ -2329,28 +2245,28 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Update IP or Network alias.
          * @param string $cidr Network/IP specification in CIDR format.
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $rename Rename an existing alias.
          * @return Result
          */
         public function setRest($cidr, $comment = null, $digest = null, $rename = null)
         {
-            $params = ['cidr' => $cidr,
+            $params = [
+                'cidr' => $cidr,
                 'comment' => $comment,
                 'digest' => $digest,
-                'rename' => $rename];
+                'rename' => $rename
+            ];
             return $this->getClient()->set("/cluster/firewall/aliases/{$this->name}", $params);
         }
-
         /**
          * Update IP or Network alias.
          * @param string $cidr Network/IP specification in CIDR format.
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $rename Rename an existing alias.
          * @return Result
@@ -2360,10 +2276,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($cidr, $comment, $digest, $rename);
         }
     }
-
     /**
      * Class PVEFirewallClusterOptions
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallClusterOptions extends Base
     {
@@ -2374,7 +2289,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get Firewall options.
          * @return Result
@@ -2383,7 +2297,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/firewall/options");
         }
-
         /**
          * Get Firewall options.
          * @return Result
@@ -2392,51 +2305,53 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Set Firewall options.
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param bool $ebtables Enable ebtables rules cluster wide.
          * @param int $enable Enable or disable the firewall cluster wide.
+         * @param string $log_ratelimit Log ratelimiting settings
          * @param string $policy_in Input policy.
          *   Enum: ACCEPT,REJECT,DROP
          * @param string $policy_out Output policy.
          *   Enum: ACCEPT,REJECT,DROP
          * @return Result
          */
-        public function setRest($delete = null, $digest = null, $ebtables = null, $enable = null, $policy_in = null, $policy_out = null)
+        public function setRest($delete = null, $digest = null, $ebtables = null, $enable = null, $log_ratelimit = null, $policy_in = null, $policy_out = null)
         {
-            $params = ['delete' => $delete,
+            $params = [
+                'delete' => $delete,
                 'digest' => $digest,
                 'ebtables' => $ebtables,
                 'enable' => $enable,
+                'log_ratelimit' => $log_ratelimit,
                 'policy_in' => $policy_in,
-                'policy_out' => $policy_out];
+                'policy_out' => $policy_out
+            ];
             return $this->getClient()->set("/cluster/firewall/options", $params);
         }
-
         /**
          * Set Firewall options.
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param bool $ebtables Enable ebtables rules cluster wide.
          * @param int $enable Enable or disable the firewall cluster wide.
+         * @param string $log_ratelimit Log ratelimiting settings
          * @param string $policy_in Input policy.
          *   Enum: ACCEPT,REJECT,DROP
          * @param string $policy_out Output policy.
          *   Enum: ACCEPT,REJECT,DROP
          * @return Result
          */
-        public function setOptions($delete = null, $digest = null, $ebtables = null, $enable = null, $policy_in = null, $policy_out = null)
+        public function setOptions($delete = null, $digest = null, $ebtables = null, $enable = null, $log_ratelimit = null, $policy_in = null, $policy_out = null)
         {
-            return $this->setRest($delete, $digest, $ebtables, $enable, $policy_in, $policy_out);
+            return $this->setRest($delete, $digest, $ebtables, $enable, $log_ratelimit, $policy_in, $policy_out);
         }
     }
-
     /**
      * Class PVEFirewallClusterMacros
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallClusterMacros extends Base
     {
@@ -2447,7 +2362,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * List available macros
          * @return Result
@@ -2456,7 +2370,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/firewall/macros");
         }
-
         /**
          * List available macros
          * @return Result
@@ -2466,10 +2379,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEFirewallClusterRefs
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallClusterRefs extends Base
     {
@@ -2480,7 +2392,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Lists possible IPSet/Alias reference which are allowed in source/dest properties.
          * @param string $type Only list references of specified type.
@@ -2492,7 +2403,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['type' => $type];
             return $this->getClient()->get("/cluster/firewall/refs", $params);
         }
-
         /**
          * Lists possible IPSet/Alias reference which are allowed in source/dest properties.
          * @param string $type Only list references of specified type.
@@ -2504,10 +2414,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($type);
         }
     }
-
     /**
      * Class PVEClusterBackup
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterBackup extends Base
     {
@@ -2518,7 +2427,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get ItemBackupClusterId
          * @param id
@@ -2528,7 +2436,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemBackupClusterId($this->client, $id);
         }
-
         /**
          * List vzdump backup schedule.
          * @return Result
@@ -2537,7 +2444,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/backup");
         }
-
         /**
          * List vzdump backup schedule.
          * @return Result
@@ -2546,7 +2452,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create new vzdump backup job.
          * @param string $starttime Job Start time.
@@ -2583,7 +2488,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($starttime, $all = null, $bwlimit = null, $compress = null, $dow = null, $dumpdir = null, $enabled = null, $exclude = null, $exclude_path = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $node = null, $pigz = null, $quiet = null, $remove = null, $script = null, $size = null, $stdexcludes = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null)
         {
-            $params = ['starttime' => $starttime,
+            $params = [
+                'starttime' => $starttime,
                 'all' => $all,
                 'bwlimit' => $bwlimit,
                 'compress' => $compress,
@@ -2609,10 +2515,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'stopwait' => $stopwait,
                 'storage' => $storage,
                 'tmpdir' => $tmpdir,
-                'vmid' => $vmid];
+                'vmid' => $vmid
+            ];
             return $this->getClient()->create("/cluster/backup", $params);
         }
-
         /**
          * Create new vzdump backup job.
          * @param string $starttime Job Start time.
@@ -2652,10 +2558,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($starttime, $all, $bwlimit, $compress, $dow, $dumpdir, $enabled, $exclude, $exclude_path, $ionice, $lockwait, $mailnotification, $mailto, $maxfiles, $mode, $node, $pigz, $quiet, $remove, $script, $size, $stdexcludes, $stop, $stopwait, $storage, $tmpdir, $vmid);
         }
     }
-
     /**
      * Class PVEItemBackupClusterId
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemBackupClusterId extends Base
     {
@@ -2663,7 +2568,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $id;
-
         /**
          * @ignore
          */
@@ -2672,7 +2576,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->id = $id;
         }
-
         /**
          * Delete vzdump backup job definition.
          * @return Result
@@ -2681,7 +2584,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->delete("/cluster/backup/{$this->id}");
         }
-
         /**
          * Delete vzdump backup job definition.
          * @return Result
@@ -2690,7 +2592,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest();
         }
-
         /**
          * Read vzdump backup job definition.
          * @return Result
@@ -2699,7 +2600,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/backup/{$this->id}");
         }
-
         /**
          * Read vzdump backup job definition.
          * @return Result
@@ -2708,7 +2608,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Update vzdump backup job definition.
          * @param string $starttime Job Start time.
@@ -2746,7 +2645,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function setRest($starttime, $all = null, $bwlimit = null, $compress = null, $delete = null, $dow = null, $dumpdir = null, $enabled = null, $exclude = null, $exclude_path = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $node = null, $pigz = null, $quiet = null, $remove = null, $script = null, $size = null, $stdexcludes = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null)
         {
-            $params = ['starttime' => $starttime,
+            $params = [
+                'starttime' => $starttime,
                 'all' => $all,
                 'bwlimit' => $bwlimit,
                 'compress' => $compress,
@@ -2773,10 +2673,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'stopwait' => $stopwait,
                 'storage' => $storage,
                 'tmpdir' => $tmpdir,
-                'vmid' => $vmid];
+                'vmid' => $vmid
+            ];
             return $this->getClient()->set("/cluster/backup/{$this->id}", $params);
         }
-
         /**
          * Update vzdump backup job definition.
          * @param string $starttime Job Start time.
@@ -2817,10 +2717,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($starttime, $all, $bwlimit, $compress, $delete, $dow, $dumpdir, $enabled, $exclude, $exclude_path, $ionice, $lockwait, $mailnotification, $mailto, $maxfiles, $mode, $node, $pigz, $quiet, $remove, $script, $size, $stdexcludes, $stop, $stopwait, $storage, $tmpdir, $vmid);
         }
     }
-
     /**
      * Class PVEClusterHa
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterHa extends Base
     {
@@ -2831,12 +2730,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * @ignore
          */
         private $resources;
-
         /**
          * Get HaClusterResources
          * @return PVEHaClusterResources
@@ -2845,12 +2742,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->resources ?: ($this->resources = new PVEHaClusterResources($this->client));
         }
-
         /**
          * @ignore
          */
         private $groups;
-
         /**
          * Get HaClusterGroups
          * @return PVEHaClusterGroups
@@ -2859,12 +2754,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->groups ?: ($this->groups = new PVEHaClusterGroups($this->client));
         }
-
         /**
          * @ignore
          */
         private $status;
-
         /**
          * Get HaClusterStatus
          * @return PVEHaClusterStatus
@@ -2873,7 +2766,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->status ?: ($this->status = new PVEHaClusterStatus($this->client));
         }
-
         /**
          * Directory index.
          * @return Result
@@ -2882,7 +2774,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/ha");
         }
-
         /**
          * Directory index.
          * @return Result
@@ -2892,10 +2783,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEHaClusterResources
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEHaClusterResources extends Base
     {
@@ -2906,7 +2796,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get ItemResourcesHaClusterSid
          * @param sid
@@ -2916,7 +2805,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemResourcesHaClusterSid($this->client, $sid);
         }
-
         /**
          * List HA resources.
          * @param string $type Only list resources of specific type
@@ -2928,7 +2816,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['type' => $type];
             return $this->getClient()->get("/cluster/ha/resources", $params);
         }
-
         /**
          * List HA resources.
          * @param string $type Only list resources of specific type
@@ -2939,7 +2826,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest($type);
         }
-
         /**
          * Create a new HA resource.
          * @param string $sid HA resource ID. This consists of a resource type followed by a resource specific name, separated with colon (example: vm:100 / ct:100). For virtual machines and containers, you can simply use the VM or CT id as a shortcut (example: 100).
@@ -2955,16 +2841,17 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($sid, $comment = null, $group = null, $max_relocate = null, $max_restart = null, $state = null, $type = null)
         {
-            $params = ['sid' => $sid,
+            $params = [
+                'sid' => $sid,
                 'comment' => $comment,
                 'group' => $group,
                 'max_relocate' => $max_relocate,
                 'max_restart' => $max_restart,
                 'state' => $state,
-                'type' => $type];
+                'type' => $type
+            ];
             return $this->getClient()->create("/cluster/ha/resources", $params);
         }
-
         /**
          * Create a new HA resource.
          * @param string $sid HA resource ID. This consists of a resource type followed by a resource specific name, separated with colon (example: vm:100 / ct:100). For virtual machines and containers, you can simply use the VM or CT id as a shortcut (example: 100).
@@ -2983,10 +2870,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($sid, $comment, $group, $max_relocate, $max_restart, $state, $type);
         }
     }
-
     /**
      * Class PVEItemResourcesHaClusterSid
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemResourcesHaClusterSid extends Base
     {
@@ -2994,7 +2880,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $sid;
-
         /**
          * @ignore
          */
@@ -3003,12 +2888,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->sid = $sid;
         }
-
         /**
          * @ignore
          */
         private $migrate;
-
         /**
          * Get SidResourcesHaClusterMigrate
          * @return PVESidResourcesHaClusterMigrate
@@ -3017,12 +2900,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->migrate ?: ($this->migrate = new PVESidResourcesHaClusterMigrate($this->client, $this->sid));
         }
-
         /**
          * @ignore
          */
         private $relocate;
-
         /**
          * Get SidResourcesHaClusterRelocate
          * @return PVESidResourcesHaClusterRelocate
@@ -3031,7 +2912,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->relocate ?: ($this->relocate = new PVESidResourcesHaClusterRelocate($this->client, $this->sid));
         }
-
         /**
          * Delete resource configuration.
          * @return Result
@@ -3040,7 +2920,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->delete("/cluster/ha/resources/{$this->sid}");
         }
-
         /**
          * Delete resource configuration.
          * @return Result
@@ -3049,7 +2928,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest();
         }
-
         /**
          * Read resource configuration.
          * @return Result
@@ -3058,7 +2936,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/ha/resources/{$this->sid}");
         }
-
         /**
          * Read resource configuration.
          * @return Result
@@ -3067,7 +2944,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Update resource configuration.
          * @param string $comment Description.
@@ -3082,16 +2958,17 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function setRest($comment = null, $delete = null, $digest = null, $group = null, $max_relocate = null, $max_restart = null, $state = null)
         {
-            $params = ['comment' => $comment,
+            $params = [
+                'comment' => $comment,
                 'delete' => $delete,
                 'digest' => $digest,
                 'group' => $group,
                 'max_relocate' => $max_relocate,
                 'max_restart' => $max_restart,
-                'state' => $state];
+                'state' => $state
+            ];
             return $this->getClient()->set("/cluster/ha/resources/{$this->sid}", $params);
         }
-
         /**
          * Update resource configuration.
          * @param string $comment Description.
@@ -3109,10 +2986,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($comment, $delete, $digest, $group, $max_relocate, $max_restart, $state);
         }
     }
-
     /**
      * Class PVESidResourcesHaClusterMigrate
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVESidResourcesHaClusterMigrate extends Base
     {
@@ -3120,7 +2996,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $sid;
-
         /**
          * @ignore
          */
@@ -3129,10 +3004,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->sid = $sid;
         }
-
         /**
          * Request resource migration (online) to another node.
-         * @param string $node The cluster node name.
+         * @param string $node Target node.
          * @return Result
          */
         public function createRest($node)
@@ -3140,10 +3014,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['node' => $node];
             return $this->getClient()->create("/cluster/ha/resources/{$this->sid}/migrate", $params);
         }
-
         /**
          * Request resource migration (online) to another node.
-         * @param string $node The cluster node name.
+         * @param string $node Target node.
          * @return Result
          */
         public function migrate($node)
@@ -3151,10 +3024,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($node);
         }
     }
-
     /**
      * Class PVESidResourcesHaClusterRelocate
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVESidResourcesHaClusterRelocate extends Base
     {
@@ -3162,7 +3034,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $sid;
-
         /**
          * @ignore
          */
@@ -3171,10 +3042,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->sid = $sid;
         }
-
         /**
          * Request resource relocatzion to another node. This stops the service on the old node, and restarts it on the target node.
-         * @param string $node The cluster node name.
+         * @param string $node Target node.
          * @return Result
          */
         public function createRest($node)
@@ -3182,10 +3052,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['node' => $node];
             return $this->getClient()->create("/cluster/ha/resources/{$this->sid}/relocate", $params);
         }
-
         /**
          * Request resource relocatzion to another node. This stops the service on the old node, and restarts it on the target node.
-         * @param string $node The cluster node name.
+         * @param string $node Target node.
          * @return Result
          */
         public function relocate($node)
@@ -3193,10 +3062,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($node);
         }
     }
-
     /**
      * Class PVEHaClusterGroups
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEHaClusterGroups extends Base
     {
@@ -3207,7 +3075,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get ItemGroupsHaClusterGroup
          * @param group
@@ -3217,7 +3084,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemGroupsHaClusterGroup($this->client, $group);
         }
-
         /**
          * Get HA groups.
          * @return Result
@@ -3226,7 +3092,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/ha/groups");
         }
-
         /**
          * Get HA groups.
          * @return Result
@@ -3235,7 +3100,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create a new HA group.
          * @param string $group The HA group identifier.
@@ -3249,15 +3113,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($group, $nodes, $comment = null, $nofailback = null, $restricted = null, $type = null)
         {
-            $params = ['group' => $group,
+            $params = [
+                'group' => $group,
                 'nodes' => $nodes,
                 'comment' => $comment,
                 'nofailback' => $nofailback,
                 'restricted' => $restricted,
-                'type' => $type];
+                'type' => $type
+            ];
             return $this->getClient()->create("/cluster/ha/groups", $params);
         }
-
         /**
          * Create a new HA group.
          * @param string $group The HA group identifier.
@@ -3274,10 +3139,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($group, $nodes, $comment, $nofailback, $restricted, $type);
         }
     }
-
     /**
      * Class PVEItemGroupsHaClusterGroup
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemGroupsHaClusterGroup extends Base
     {
@@ -3285,7 +3149,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $group;
-
         /**
          * @ignore
          */
@@ -3294,7 +3157,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->group = $group;
         }
-
         /**
          * Delete ha group configuration.
          * @return Result
@@ -3303,7 +3165,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->delete("/cluster/ha/groups/{$this->group}");
         }
-
         /**
          * Delete ha group configuration.
          * @return Result
@@ -3312,7 +3173,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest();
         }
-
         /**
          * Read ha group configuration.
          * @return Result
@@ -3321,7 +3181,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/ha/groups/{$this->group}");
         }
-
         /**
          * Read ha group configuration.
          * @return Result
@@ -3330,7 +3189,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Update ha group configuration.
          * @param string $comment Description.
@@ -3343,15 +3201,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function setRest($comment = null, $delete = null, $digest = null, $nodes = null, $nofailback = null, $restricted = null)
         {
-            $params = ['comment' => $comment,
+            $params = [
+                'comment' => $comment,
                 'delete' => $delete,
                 'digest' => $digest,
                 'nodes' => $nodes,
                 'nofailback' => $nofailback,
-                'restricted' => $restricted];
+                'restricted' => $restricted
+            ];
             return $this->getClient()->set("/cluster/ha/groups/{$this->group}", $params);
         }
-
         /**
          * Update ha group configuration.
          * @param string $comment Description.
@@ -3367,10 +3226,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($comment, $delete, $digest, $nodes, $nofailback, $restricted);
         }
     }
-
     /**
      * Class PVEHaClusterStatus
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEHaClusterStatus extends Base
     {
@@ -3381,12 +3239,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * @ignore
          */
         private $current;
-
         /**
          * Get StatusHaClusterCurrent
          * @return PVEStatusHaClusterCurrent
@@ -3395,12 +3251,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->current ?: ($this->current = new PVEStatusHaClusterCurrent($this->client));
         }
-
         /**
          * @ignore
          */
         private $managerStatus;
-
         /**
          * Get StatusHaClusterManagerStatus
          * @return PVEStatusHaClusterManagerStatus
@@ -3409,7 +3263,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->managerStatus ?: ($this->managerStatus = new PVEStatusHaClusterManagerStatus($this->client));
         }
-
         /**
          * Directory index.
          * @return Result
@@ -3418,7 +3271,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/ha/status");
         }
-
         /**
          * Directory index.
          * @return Result
@@ -3428,10 +3280,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEStatusHaClusterCurrent
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusHaClusterCurrent extends Base
     {
@@ -3442,7 +3293,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get HA manger status.
          * @return Result
@@ -3451,7 +3301,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/ha/status/current");
         }
-
         /**
          * Get HA manger status.
          * @return Result
@@ -3461,10 +3310,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEStatusHaClusterManagerStatus
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusHaClusterManagerStatus extends Base
     {
@@ -3475,7 +3323,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get full HA manger status, including LRM status.
          * @return Result
@@ -3484,7 +3331,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/ha/status/manager_status");
         }
-
         /**
          * Get full HA manger status, including LRM status.
          * @return Result
@@ -3494,10 +3340,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEClusterAcme
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterAcme extends Base
     {
@@ -3508,12 +3353,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * @ignore
          */
         private $account;
-
         /**
          * Get AcmeClusterAccount
          * @return PVEAcmeClusterAccount
@@ -3522,12 +3365,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->account ?: ($this->account = new PVEAcmeClusterAccount($this->client));
         }
-
         /**
          * @ignore
          */
         private $tos;
-
         /**
          * Get AcmeClusterTos
          * @return PVEAcmeClusterTos
@@ -3536,12 +3377,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->tos ?: ($this->tos = new PVEAcmeClusterTos($this->client));
         }
-
         /**
          * @ignore
          */
         private $directories;
-
         /**
          * Get AcmeClusterDirectories
          * @return PVEAcmeClusterDirectories
@@ -3550,7 +3389,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->directories ?: ($this->directories = new PVEAcmeClusterDirectories($this->client));
         }
-
         /**
          * ACMEAccount index.
          * @return Result
@@ -3559,7 +3397,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/acme");
         }
-
         /**
          * ACMEAccount index.
          * @return Result
@@ -3569,10 +3406,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEAcmeClusterAccount
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAcmeClusterAccount extends Base
     {
@@ -3583,7 +3419,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get ItemAccountAcmeClusterName
          * @param name
@@ -3593,7 +3428,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemAccountAcmeClusterName($this->client, $name);
         }
-
         /**
          * ACMEAccount index.
          * @return Result
@@ -3602,7 +3436,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/acme/account");
         }
-
         /**
          * ACMEAccount index.
          * @return Result
@@ -3611,7 +3444,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Register a new ACME account with CA.
          * @param string $contact Contact email addresses.
@@ -3622,13 +3454,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($contact, $directory = null, $name = null, $tos_url = null)
         {
-            $params = ['contact' => $contact,
+            $params = [
+                'contact' => $contact,
                 'directory' => $directory,
                 'name' => $name,
-                'tos_url' => $tos_url];
+                'tos_url' => $tos_url
+            ];
             return $this->getClient()->create("/cluster/acme/account", $params);
         }
-
         /**
          * Register a new ACME account with CA.
          * @param string $contact Contact email addresses.
@@ -3642,10 +3475,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($contact, $directory, $name, $tos_url);
         }
     }
-
     /**
      * Class PVEItemAccountAcmeClusterName
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemAccountAcmeClusterName extends Base
     {
@@ -3653,7 +3485,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $name;
-
         /**
          * @ignore
          */
@@ -3662,7 +3493,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->name = $name;
         }
-
         /**
          * Deactivate existing ACME account at CA.
          * @return Result
@@ -3671,7 +3501,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->delete("/cluster/acme/account/{$this->name}");
         }
-
         /**
          * Deactivate existing ACME account at CA.
          * @return Result
@@ -3680,7 +3509,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest();
         }
-
         /**
          * Return existing ACME account information.
          * @return Result
@@ -3689,7 +3517,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/acme/account/{$this->name}");
         }
-
         /**
          * Return existing ACME account information.
          * @return Result
@@ -3698,7 +3525,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Update existing ACME account information with CA. Note: not specifying any new account information triggers a refresh.
          * @param string $contact Contact email addresses.
@@ -3709,7 +3535,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['contact' => $contact];
             return $this->getClient()->set("/cluster/acme/account/{$this->name}", $params);
         }
-
         /**
          * Update existing ACME account information with CA. Note: not specifying any new account information triggers a refresh.
          * @param string $contact Contact email addresses.
@@ -3720,10 +3545,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($contact);
         }
     }
-
     /**
      * Class PVEAcmeClusterTos
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAcmeClusterTos extends Base
     {
@@ -3734,7 +3558,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Retrieve ACME TermsOfService URL from CA.
          * @param string $directory URL of ACME CA directory endpoint.
@@ -3745,7 +3568,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['directory' => $directory];
             return $this->getClient()->get("/cluster/acme/tos", $params);
         }
-
         /**
          * Retrieve ACME TermsOfService URL from CA.
          * @param string $directory URL of ACME CA directory endpoint.
@@ -3756,10 +3578,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($directory);
         }
     }
-
     /**
      * Class PVEAcmeClusterDirectories
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAcmeClusterDirectories extends Base
     {
@@ -3770,7 +3591,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get named known ACME directory endpoints.
          * @return Result
@@ -3779,7 +3599,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/acme/directories");
         }
-
         /**
          * Get named known ACME directory endpoints.
          * @return Result
@@ -3789,10 +3608,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEClusterLog
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterLog extends Base
     {
@@ -3803,7 +3621,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Read cluster log
          * @param int $max Maximum number of entries.
@@ -3814,7 +3631,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['max' => $max];
             return $this->getClient()->get("/cluster/log", $params);
         }
-
         /**
          * Read cluster log
          * @param int $max Maximum number of entries.
@@ -3825,10 +3641,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($max);
         }
     }
-
     /**
      * Class PVEClusterResources
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterResources extends Base
     {
@@ -3839,10 +3654,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Resources index (cluster wide).
-         * @param string $type
+         * @param string $type 
          *   Enum: vm,storage,node
          * @return Result
          */
@@ -3851,10 +3665,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['type' => $type];
             return $this->getClient()->get("/cluster/resources", $params);
         }
-
         /**
          * Resources index (cluster wide).
-         * @param string $type
+         * @param string $type 
          *   Enum: vm,storage,node
          * @return Result
          */
@@ -3863,10 +3676,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($type);
         }
     }
-
     /**
      * Class PVEClusterTasks
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterTasks extends Base
     {
@@ -3877,7 +3689,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * List recent tasks (cluster wide).
          * @return Result
@@ -3886,7 +3697,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/tasks");
         }
-
         /**
          * List recent tasks (cluster wide).
          * @return Result
@@ -3896,10 +3706,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEClusterOptions
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterOptions extends Base
     {
@@ -3910,7 +3719,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get datacenter options.
          * @return Result
@@ -3919,7 +3727,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/options");
         }
-
         /**
          * Get datacenter options.
          * @return Result
@@ -3928,7 +3735,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Set datacenter options.
          * @param string $bwlimit Set bandwidth/io limits various operations.
@@ -3938,6 +3744,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $email_from Specify email address to send notification from (default is root@$hostname)
          * @param string $fencing Set the fencing mode of the HA cluster. Hardware mode needs a valid configuration of fence devices in /etc/pve/ha/fence.cfg. With both all two modes are used.  WARNING: 'hardware' and 'both' are EXPERIMENTAL &amp; WIP
          *   Enum: watchdog,hardware,both
+         * @param string $ha Cluster wide HA settings.
          * @param string $http_proxy Specify external http proxy which is used for downloads (example: 'http://username:password@host:port/')
          * @param string $keyboard Default keybord layout for vnc server.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
@@ -3947,25 +3754,29 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param int $max_workers Defines how many workers (per node) are maximal started  on actions like 'stopall VMs' or task from the ha-manager.
          * @param string $migration For cluster wide migration settings.
          * @param bool $migration_unsecure Migration is secure using SSH tunnel by default. For secure private networks you can disable it to speed up migration. Deprecated, use the 'migration' property instead!
+         * @param string $u2f u2f
          * @return Result
          */
-        public function setRest($bwlimit = null, $console = null, $delete = null, $email_from = null, $fencing = null, $http_proxy = null, $keyboard = null, $language = null, $mac_prefix = null, $max_workers = null, $migration = null, $migration_unsecure = null)
+        public function setRest($bwlimit = null, $console = null, $delete = null, $email_from = null, $fencing = null, $ha = null, $http_proxy = null, $keyboard = null, $language = null, $mac_prefix = null, $max_workers = null, $migration = null, $migration_unsecure = null, $u2f = null)
         {
-            $params = ['bwlimit' => $bwlimit,
+            $params = [
+                'bwlimit' => $bwlimit,
                 'console' => $console,
                 'delete' => $delete,
                 'email_from' => $email_from,
                 'fencing' => $fencing,
+                'ha' => $ha,
                 'http_proxy' => $http_proxy,
                 'keyboard' => $keyboard,
                 'language' => $language,
                 'mac_prefix' => $mac_prefix,
                 'max_workers' => $max_workers,
                 'migration' => $migration,
-                'migration_unsecure' => $migration_unsecure];
+                'migration_unsecure' => $migration_unsecure,
+                'u2f' => $u2f
+            ];
             return $this->getClient()->set("/cluster/options", $params);
         }
-
         /**
          * Set datacenter options.
          * @param string $bwlimit Set bandwidth/io limits various operations.
@@ -3975,6 +3786,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $email_from Specify email address to send notification from (default is root@$hostname)
          * @param string $fencing Set the fencing mode of the HA cluster. Hardware mode needs a valid configuration of fence devices in /etc/pve/ha/fence.cfg. With both all two modes are used.  WARNING: 'hardware' and 'both' are EXPERIMENTAL &amp; WIP
          *   Enum: watchdog,hardware,both
+         * @param string $ha Cluster wide HA settings.
          * @param string $http_proxy Specify external http proxy which is used for downloads (example: 'http://username:password@host:port/')
          * @param string $keyboard Default keybord layout for vnc server.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
@@ -3984,17 +3796,17 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param int $max_workers Defines how many workers (per node) are maximal started  on actions like 'stopall VMs' or task from the ha-manager.
          * @param string $migration For cluster wide migration settings.
          * @param bool $migration_unsecure Migration is secure using SSH tunnel by default. For secure private networks you can disable it to speed up migration. Deprecated, use the 'migration' property instead!
+         * @param string $u2f u2f
          * @return Result
          */
-        public function setOptions($bwlimit = null, $console = null, $delete = null, $email_from = null, $fencing = null, $http_proxy = null, $keyboard = null, $language = null, $mac_prefix = null, $max_workers = null, $migration = null, $migration_unsecure = null)
+        public function setOptions($bwlimit = null, $console = null, $delete = null, $email_from = null, $fencing = null, $ha = null, $http_proxy = null, $keyboard = null, $language = null, $mac_prefix = null, $max_workers = null, $migration = null, $migration_unsecure = null, $u2f = null)
         {
-            return $this->setRest($bwlimit, $console, $delete, $email_from, $fencing, $http_proxy, $keyboard, $language, $mac_prefix, $max_workers, $migration, $migration_unsecure);
+            return $this->setRest($bwlimit, $console, $delete, $email_from, $fencing, $ha, $http_proxy, $keyboard, $language, $mac_prefix, $max_workers, $migration, $migration_unsecure, $u2f);
         }
     }
-
     /**
      * Class PVEClusterStatus
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterStatus extends Base
     {
@@ -4005,7 +3817,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get cluster status informations.
          * @return Result
@@ -4014,7 +3825,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/cluster/status");
         }
-
         /**
          * Get cluster status informations.
          * @return Result
@@ -4024,10 +3834,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEClusterNextid
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterNextid extends Base
     {
@@ -4038,7 +3847,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get next free VMID. If you pass an VMID it will raise an error if the ID is already used.
          * @param int $vmid The (unique) ID of the VM.
@@ -4049,7 +3857,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['vmid' => $vmid];
             return $this->getClient()->get("/cluster/nextid", $params);
         }
-
         /**
          * Get next free VMID. If you pass an VMID it will raise an error if the ID is already used.
          * @param int $vmid The (unique) ID of the VM.
@@ -4060,10 +3867,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($vmid);
         }
     }
-
     /**
      * Class PVENodes
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodes extends Base
     {
@@ -4074,7 +3880,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get ItemNodesNode
          * @param node
@@ -4084,7 +3889,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemNodesNode($this->client, $node);
         }
-
         /**
          * Cluster node index.
          * @return Result
@@ -4093,7 +3897,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes");
         }
-
         /**
          * Cluster node index.
          * @return Result
@@ -4103,10 +3906,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEItemNodesNode
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemNodesNode extends Base
     {
@@ -4114,7 +3916,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -4123,12 +3924,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * @ignore
          */
         private $qemu;
-
         /**
          * Get NodeNodesQemu
          * @return PVENodeNodesQemu
@@ -4137,12 +3936,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->qemu ?: ($this->qemu = new PVENodeNodesQemu($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $lxc;
-
         /**
          * Get NodeNodesLxc
          * @return PVENodeNodesLxc
@@ -4151,12 +3948,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->lxc ?: ($this->lxc = new PVENodeNodesLxc($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $ceph;
-
         /**
          * Get NodeNodesCeph
          * @return PVENodeNodesCeph
@@ -4165,12 +3960,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->ceph ?: ($this->ceph = new PVENodeNodesCeph($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $vzdump;
-
         /**
          * Get NodeNodesVzdump
          * @return PVENodeNodesVzdump
@@ -4179,12 +3972,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->vzdump ?: ($this->vzdump = new PVENodeNodesVzdump($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $services;
-
         /**
          * Get NodeNodesServices
          * @return PVENodeNodesServices
@@ -4193,12 +3984,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->services ?: ($this->services = new PVENodeNodesServices($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $subscription;
-
         /**
          * Get NodeNodesSubscription
          * @return PVENodeNodesSubscription
@@ -4207,12 +3996,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->subscription ?: ($this->subscription = new PVENodeNodesSubscription($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $network;
-
         /**
          * Get NodeNodesNetwork
          * @return PVENodeNodesNetwork
@@ -4221,12 +4008,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->network ?: ($this->network = new PVENodeNodesNetwork($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $tasks;
-
         /**
          * Get NodeNodesTasks
          * @return PVENodeNodesTasks
@@ -4235,12 +4020,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->tasks ?: ($this->tasks = new PVENodeNodesTasks($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $scan;
-
         /**
          * Get NodeNodesScan
          * @return PVENodeNodesScan
@@ -4249,12 +4032,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->scan ?: ($this->scan = new PVENodeNodesScan($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $hardware;
-
         /**
          * Get NodeNodesHardware
          * @return PVENodeNodesHardware
@@ -4263,12 +4044,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->hardware ?: ($this->hardware = new PVENodeNodesHardware($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $storage;
-
         /**
          * Get NodeNodesStorage
          * @return PVENodeNodesStorage
@@ -4277,12 +4056,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->storage ?: ($this->storage = new PVENodeNodesStorage($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $disks;
-
         /**
          * Get NodeNodesDisks
          * @return PVENodeNodesDisks
@@ -4291,12 +4068,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->disks ?: ($this->disks = new PVENodeNodesDisks($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $apt;
-
         /**
          * Get NodeNodesApt
          * @return PVENodeNodesApt
@@ -4305,12 +4080,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->apt ?: ($this->apt = new PVENodeNodesApt($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $firewall;
-
         /**
          * Get NodeNodesFirewall
          * @return PVENodeNodesFirewall
@@ -4319,12 +4092,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->firewall ?: ($this->firewall = new PVENodeNodesFirewall($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $replication;
-
         /**
          * Get NodeNodesReplication
          * @return PVENodeNodesReplication
@@ -4333,12 +4104,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->replication ?: ($this->replication = new PVENodeNodesReplication($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $certificates;
-
         /**
          * Get NodeNodesCertificates
          * @return PVENodeNodesCertificates
@@ -4347,12 +4116,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->certificates ?: ($this->certificates = new PVENodeNodesCertificates($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $config;
-
         /**
          * Get NodeNodesConfig
          * @return PVENodeNodesConfig
@@ -4361,12 +4128,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->config ?: ($this->config = new PVENodeNodesConfig($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $version;
-
         /**
          * Get NodeNodesVersion
          * @return PVENodeNodesVersion
@@ -4375,12 +4140,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->version ?: ($this->version = new PVENodeNodesVersion($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $status;
-
         /**
          * Get NodeNodesStatus
          * @return PVENodeNodesStatus
@@ -4389,12 +4152,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->status ?: ($this->status = new PVENodeNodesStatus($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $netstat;
-
         /**
          * Get NodeNodesNetstat
          * @return PVENodeNodesNetstat
@@ -4403,12 +4164,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->netstat ?: ($this->netstat = new PVENodeNodesNetstat($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $execute;
-
         /**
          * Get NodeNodesExecute
          * @return PVENodeNodesExecute
@@ -4417,12 +4176,22 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->execute ?: ($this->execute = new PVENodeNodesExecute($this->client, $this->node));
         }
-
+        /**
+         * @ignore
+         */
+        private $wakeonlan;
+        /**
+         * Get NodeNodesWakeonlan
+         * @return PVENodeNodesWakeonlan
+         */
+        public function getWakeonlan()
+        {
+            return $this->wakeonlan ?: ($this->wakeonlan = new PVENodeNodesWakeonlan($this->client, $this->node));
+        }
         /**
          * @ignore
          */
         private $rrd;
-
         /**
          * Get NodeNodesRrd
          * @return PVENodeNodesRrd
@@ -4431,12 +4200,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->rrd ?: ($this->rrd = new PVENodeNodesRrd($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $rrddata;
-
         /**
          * Get NodeNodesRrddata
          * @return PVENodeNodesRrddata
@@ -4445,12 +4212,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->rrddata ?: ($this->rrddata = new PVENodeNodesRrddata($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $syslog;
-
         /**
          * Get NodeNodesSyslog
          * @return PVENodeNodesSyslog
@@ -4459,12 +4224,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->syslog ?: ($this->syslog = new PVENodeNodesSyslog($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $vncshell;
-
         /**
          * Get NodeNodesVncshell
          * @return PVENodeNodesVncshell
@@ -4473,12 +4236,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->vncshell ?: ($this->vncshell = new PVENodeNodesVncshell($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $termproxy;
-
         /**
          * Get NodeNodesTermproxy
          * @return PVENodeNodesTermproxy
@@ -4487,12 +4248,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->termproxy ?: ($this->termproxy = new PVENodeNodesTermproxy($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $vncwebsocket;
-
         /**
          * Get NodeNodesVncwebsocket
          * @return PVENodeNodesVncwebsocket
@@ -4501,12 +4260,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->vncwebsocket ?: ($this->vncwebsocket = new PVENodeNodesVncwebsocket($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $spiceshell;
-
         /**
          * Get NodeNodesSpiceshell
          * @return PVENodeNodesSpiceshell
@@ -4515,12 +4272,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->spiceshell ?: ($this->spiceshell = new PVENodeNodesSpiceshell($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $dns;
-
         /**
          * Get NodeNodesDns
          * @return PVENodeNodesDns
@@ -4529,12 +4284,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->dns ?: ($this->dns = new PVENodeNodesDns($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $time;
-
         /**
          * Get NodeNodesTime
          * @return PVENodeNodesTime
@@ -4543,12 +4296,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->time ?: ($this->time = new PVENodeNodesTime($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $aplinfo;
-
         /**
          * Get NodeNodesAplinfo
          * @return PVENodeNodesAplinfo
@@ -4557,12 +4308,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->aplinfo ?: ($this->aplinfo = new PVENodeNodesAplinfo($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $report;
-
         /**
          * Get NodeNodesReport
          * @return PVENodeNodesReport
@@ -4571,12 +4320,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->report ?: ($this->report = new PVENodeNodesReport($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $startall;
-
         /**
          * Get NodeNodesStartall
          * @return PVENodeNodesStartall
@@ -4585,12 +4332,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->startall ?: ($this->startall = new PVENodeNodesStartall($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $stopall;
-
         /**
          * Get NodeNodesStopall
          * @return PVENodeNodesStopall
@@ -4599,12 +4344,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->stopall ?: ($this->stopall = new PVENodeNodesStopall($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $migrateall;
-
         /**
          * Get NodeNodesMigrateall
          * @return PVENodeNodesMigrateall
@@ -4613,12 +4356,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->migrateall ?: ($this->migrateall = new PVENodeNodesMigrateall($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $hosts;
-
         /**
          * Get NodeNodesHosts
          * @return PVENodeNodesHosts
@@ -4627,7 +4368,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->hosts ?: ($this->hosts = new PVENodeNodesHosts($this->client, $this->node));
         }
-
         /**
          * Node index.
          * @return Result
@@ -4636,7 +4376,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}");
         }
-
         /**
          * Node index.
          * @return Result
@@ -4646,10 +4385,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVENodeNodesQemu
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesQemu extends Base
     {
@@ -4657,7 +4395,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -4666,7 +4403,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get ItemQemuNodeNodesVmid
          * @param vmid
@@ -4676,7 +4412,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemQemuNodeNodesVmid($this->client, $this->node, $vmid);
         }
-
         /**
          * Virtual machine index (per node).
          * @param bool $full Determine the full status of active VMs.
@@ -4687,7 +4422,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['full' => $full];
             return $this->getClient()->get("/nodes/{$this->node}/qemu", $params);
         }
-
         /**
          * Virtual machine index (per node).
          * @param bool $full Determine the full status of active VMs.
@@ -4697,7 +4431,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest($full);
         }
-
         /**
          * Create or restore a virtual machine.
          * @param int $vmid The (unique) ID of the VM.
@@ -4713,8 +4446,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: seabios,ovmf
          * @param string $boot Boot on floppy (a), hard disk (c), CD-ROM (d), or network (n).
          * @param string $bootdisk Enable booting from specified disk.
-         * @param int $bwlimit Override i/o bandwidth limit (in KiB/s).
+         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param string $cdrom This is an alias for option -ide2
+         * @param string $cicustom cloud-init: Specify custom files to replace the automatically generated ones at start.
          * @param string $cipassword cloud-init: Password to assign the user. Using this is generally not recommended. Use ssh keys instead. Also note that older cloud-init versions do not support hashed passwords.
          * @param string $citype Specifies the cloud-init configuration format. The default depends on the configured operating system type (`ostype`. We use the `nocloud` format for Linux, and `configdrive2` for windows.
          *   Enum: configdrive2,nocloud
@@ -4727,18 +4461,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $efidisk0 Configure a Disk for storing EFI vars
          * @param bool $force Allow to overwrite existing VM.
          * @param bool $freeze Freeze CPU at startup (use 'c' monitor command to start execution).
+         * @param string $hookscript Script that will be executed during various steps in the vms lifetime.
          * @param array $hostpciN Map host PCI devices into guest.
          * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory' and 'usb'. Use '0' to disable hotplug completely. Value '1' is an alias for the default 'network,disk,usb'.
          * @param string $hugepages Enable/disable hugepages memory.
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3).
-         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
+         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4. 
+         * @param string $ivshmem Inter-VM shared memory. Useful for direct communication between VMs, or to the host.
          * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.cfg' configuration file.It should not be necessary to set it.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param bool $kvm Enable/disable KVM hardware virtualization.
          * @param bool $localtime Set the real time clock to local time. This is enabled by default if ostype indicates a Microsoft OS.
          * @param string $lock Lock/unlock the VM.
-         *   Enum: migrate,backup,snapshot,rollback
+         *   Enum: backup,clone,create,migrate,rollback,snapshot,snapshot-delete,suspending,suspended
          * @param string $machine Specifies the Qemu machine type.
          * @param int $memory Amount of RAM for the VM in MB. This is the maximum available memory when you use the balloon device.
          * @param int $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
@@ -4784,9 +4520,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $watchdog Create a virtual hardware watchdog device.
          * @return Result
          */
-        public function createRest($vmid, $acpi = null, $agent = null, $arch = null, $archive = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $bwlimit = null, $cdrom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $description = null, $efidisk0 = null, $force = null, $freeze = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $pool = null, $protection = null, $reboot = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $start = null, $startdate = null, $startup = null, $storage = null, $tablet = null, $tdf = null, $template = null, $unique = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null)
+        public function createRest($vmid, $acpi = null, $agent = null, $arch = null, $archive = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $bwlimit = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $description = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $pool = null, $protection = null, $reboot = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $start = null, $startdate = null, $startup = null, $storage = null, $tablet = null, $tdf = null, $template = null, $unique = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null)
         {
-            $params = ['vmid' => $vmid,
+            $params = [
+                'vmid' => $vmid,
                 'acpi' => $acpi,
                 'agent' => $agent,
                 'arch' => $arch,
@@ -4799,6 +4536,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'bootdisk' => $bootdisk,
                 'bwlimit' => $bwlimit,
                 'cdrom' => $cdrom,
+                'cicustom' => $cicustom,
                 'cipassword' => $cipassword,
                 'citype' => $citype,
                 'ciuser' => $ciuser,
@@ -4810,8 +4548,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'efidisk0' => $efidisk0,
                 'force' => $force,
                 'freeze' => $freeze,
+                'hookscript' => $hookscript,
                 'hotplug' => $hotplug,
                 'hugepages' => $hugepages,
+                'ivshmem' => $ivshmem,
                 'keyboard' => $keyboard,
                 'kvm' => $kvm,
                 'localtime' => $localtime,
@@ -4847,7 +4587,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'vga' => $vga,
                 'vmgenid' => $vmgenid,
                 'vmstatestorage' => $vmstatestorage,
-                'watchdog' => $watchdog];
+                'watchdog' => $watchdog
+            ];
             $this->addIndexedParameter($params, 'hostpci', $hostpciN);
             $this->addIndexedParameter($params, 'ide', $ideN);
             $this->addIndexedParameter($params, 'ipconfig', $ipconfigN);
@@ -4862,7 +4603,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->addIndexedParameter($params, 'virtio', $virtioN);
             return $this->getClient()->create("/nodes/{$this->node}/qemu", $params);
         }
-
         /**
          * Create or restore a virtual machine.
          * @param int $vmid The (unique) ID of the VM.
@@ -4878,8 +4618,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: seabios,ovmf
          * @param string $boot Boot on floppy (a), hard disk (c), CD-ROM (d), or network (n).
          * @param string $bootdisk Enable booting from specified disk.
-         * @param int $bwlimit Override i/o bandwidth limit (in KiB/s).
+         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param string $cdrom This is an alias for option -ide2
+         * @param string $cicustom cloud-init: Specify custom files to replace the automatically generated ones at start.
          * @param string $cipassword cloud-init: Password to assign the user. Using this is generally not recommended. Use ssh keys instead. Also note that older cloud-init versions do not support hashed passwords.
          * @param string $citype Specifies the cloud-init configuration format. The default depends on the configured operating system type (`ostype`. We use the `nocloud` format for Linux, and `configdrive2` for windows.
          *   Enum: configdrive2,nocloud
@@ -4892,18 +4633,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $efidisk0 Configure a Disk for storing EFI vars
          * @param bool $force Allow to overwrite existing VM.
          * @param bool $freeze Freeze CPU at startup (use 'c' monitor command to start execution).
+         * @param string $hookscript Script that will be executed during various steps in the vms lifetime.
          * @param array $hostpciN Map host PCI devices into guest.
          * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory' and 'usb'. Use '0' to disable hotplug completely. Value '1' is an alias for the default 'network,disk,usb'.
          * @param string $hugepages Enable/disable hugepages memory.
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3).
-         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
+         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4. 
+         * @param string $ivshmem Inter-VM shared memory. Useful for direct communication between VMs, or to the host.
          * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.cfg' configuration file.It should not be necessary to set it.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param bool $kvm Enable/disable KVM hardware virtualization.
          * @param bool $localtime Set the real time clock to local time. This is enabled by default if ostype indicates a Microsoft OS.
          * @param string $lock Lock/unlock the VM.
-         *   Enum: migrate,backup,snapshot,rollback
+         *   Enum: backup,clone,create,migrate,rollback,snapshot,snapshot-delete,suspending,suspended
          * @param string $machine Specifies the Qemu machine type.
          * @param int $memory Amount of RAM for the VM in MB. This is the maximum available memory when you use the balloon device.
          * @param int $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
@@ -4949,15 +4692,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $watchdog Create a virtual hardware watchdog device.
          * @return Result
          */
-        public function createVm($vmid, $acpi = null, $agent = null, $arch = null, $archive = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $bwlimit = null, $cdrom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $description = null, $efidisk0 = null, $force = null, $freeze = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $pool = null, $protection = null, $reboot = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $start = null, $startdate = null, $startup = null, $storage = null, $tablet = null, $tdf = null, $template = null, $unique = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null)
+        public function createVm($vmid, $acpi = null, $agent = null, $arch = null, $archive = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $bwlimit = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $description = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $pool = null, $protection = null, $reboot = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $start = null, $startdate = null, $startup = null, $storage = null, $tablet = null, $tdf = null, $template = null, $unique = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null)
         {
-            return $this->createRest($vmid, $acpi, $agent, $arch, $archive, $args, $autostart, $balloon, $bios, $boot, $bootdisk, $bwlimit, $cdrom, $cipassword, $citype, $ciuser, $cores, $cpu, $cpulimit, $cpuunits, $description, $efidisk0, $force, $freeze, $hostpciN, $hotplug, $hugepages, $ideN, $ipconfigN, $keyboard, $kvm, $localtime, $lock, $machine, $memory, $migrate_downtime, $migrate_speed, $name, $nameserver, $netN, $numa, $numaN, $onboot, $ostype, $parallelN, $pool, $protection, $reboot, $sataN, $scsiN, $scsihw, $searchdomain, $serialN, $shares, $smbios1, $smp, $sockets, $sshkeys, $start, $startdate, $startup, $storage, $tablet, $tdf, $template, $unique, $unusedN, $usbN, $vcpus, $vga, $virtioN, $vmgenid, $vmstatestorage, $watchdog);
+            return $this->createRest($vmid, $acpi, $agent, $arch, $archive, $args, $autostart, $balloon, $bios, $boot, $bootdisk, $bwlimit, $cdrom, $cicustom, $cipassword, $citype, $ciuser, $cores, $cpu, $cpulimit, $cpuunits, $description, $efidisk0, $force, $freeze, $hookscript, $hostpciN, $hotplug, $hugepages, $ideN, $ipconfigN, $ivshmem, $keyboard, $kvm, $localtime, $lock, $machine, $memory, $migrate_downtime, $migrate_speed, $name, $nameserver, $netN, $numa, $numaN, $onboot, $ostype, $parallelN, $pool, $protection, $reboot, $sataN, $scsiN, $scsihw, $searchdomain, $serialN, $shares, $smbios1, $smp, $sockets, $sshkeys, $start, $startdate, $startup, $storage, $tablet, $tdf, $template, $unique, $unusedN, $usbN, $vcpus, $vga, $virtioN, $vmgenid, $vmstatestorage, $watchdog);
         }
     }
-
     /**
      * Class PVEItemQemuNodeNodesVmid
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemQemuNodeNodesVmid extends Base
     {
@@ -4969,7 +4711,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -4979,12 +4720,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * @ignore
          */
         private $firewall;
-
         /**
          * Get VmidQemuNodeNodesFirewall
          * @return PVEVmidQemuNodeNodesFirewall
@@ -4993,12 +4732,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->firewall ?: ($this->firewall = new PVEVmidQemuNodeNodesFirewall($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $agent;
-
         /**
          * Get VmidQemuNodeNodesAgent
          * @return PVEVmidQemuNodeNodesAgent
@@ -5007,12 +4744,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->agent ?: ($this->agent = new PVEVmidQemuNodeNodesAgent($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $rrd;
-
         /**
          * Get VmidQemuNodeNodesRrd
          * @return PVEVmidQemuNodeNodesRrd
@@ -5021,12 +4756,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->rrd ?: ($this->rrd = new PVEVmidQemuNodeNodesRrd($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $rrddata;
-
         /**
          * Get VmidQemuNodeNodesRrddata
          * @return PVEVmidQemuNodeNodesRrddata
@@ -5035,12 +4768,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->rrddata ?: ($this->rrddata = new PVEVmidQemuNodeNodesRrddata($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $config;
-
         /**
          * Get VmidQemuNodeNodesConfig
          * @return PVEVmidQemuNodeNodesConfig
@@ -5049,12 +4780,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->config ?: ($this->config = new PVEVmidQemuNodeNodesConfig($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $pending;
-
         /**
          * Get VmidQemuNodeNodesPending
          * @return PVEVmidQemuNodeNodesPending
@@ -5063,12 +4792,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->pending ?: ($this->pending = new PVEVmidQemuNodeNodesPending($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $unlink;
-
         /**
          * Get VmidQemuNodeNodesUnlink
          * @return PVEVmidQemuNodeNodesUnlink
@@ -5077,12 +4804,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->unlink ?: ($this->unlink = new PVEVmidQemuNodeNodesUnlink($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $vncproxy;
-
         /**
          * Get VmidQemuNodeNodesVncproxy
          * @return PVEVmidQemuNodeNodesVncproxy
@@ -5091,12 +4816,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->vncproxy ?: ($this->vncproxy = new PVEVmidQemuNodeNodesVncproxy($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $termproxy;
-
         /**
          * Get VmidQemuNodeNodesTermproxy
          * @return PVEVmidQemuNodeNodesTermproxy
@@ -5105,12 +4828,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->termproxy ?: ($this->termproxy = new PVEVmidQemuNodeNodesTermproxy($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $vncwebsocket;
-
         /**
          * Get VmidQemuNodeNodesVncwebsocket
          * @return PVEVmidQemuNodeNodesVncwebsocket
@@ -5119,12 +4840,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->vncwebsocket ?: ($this->vncwebsocket = new PVEVmidQemuNodeNodesVncwebsocket($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $spiceproxy;
-
         /**
          * Get VmidQemuNodeNodesSpiceproxy
          * @return PVEVmidQemuNodeNodesSpiceproxy
@@ -5133,12 +4852,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->spiceproxy ?: ($this->spiceproxy = new PVEVmidQemuNodeNodesSpiceproxy($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $status;
-
         /**
          * Get VmidQemuNodeNodesStatus
          * @return PVEVmidQemuNodeNodesStatus
@@ -5147,12 +4864,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->status ?: ($this->status = new PVEVmidQemuNodeNodesStatus($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $sendkey;
-
         /**
          * Get VmidQemuNodeNodesSendkey
          * @return PVEVmidQemuNodeNodesSendkey
@@ -5161,12 +4876,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->sendkey ?: ($this->sendkey = new PVEVmidQemuNodeNodesSendkey($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $feature;
-
         /**
          * Get VmidQemuNodeNodesFeature
          * @return PVEVmidQemuNodeNodesFeature
@@ -5175,12 +4888,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->feature ?: ($this->feature = new PVEVmidQemuNodeNodesFeature($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $clone;
-
         /**
          * Get VmidQemuNodeNodesClone
          * @return PVEVmidQemuNodeNodesClone
@@ -5189,12 +4900,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->clone ?: ($this->clone = new PVEVmidQemuNodeNodesClone($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $moveDisk;
-
         /**
          * Get VmidQemuNodeNodesMoveDisk
          * @return PVEVmidQemuNodeNodesMoveDisk
@@ -5203,12 +4912,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->moveDisk ?: ($this->moveDisk = new PVEVmidQemuNodeNodesMoveDisk($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $migrate;
-
         /**
          * Get VmidQemuNodeNodesMigrate
          * @return PVEVmidQemuNodeNodesMigrate
@@ -5217,12 +4924,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->migrate ?: ($this->migrate = new PVEVmidQemuNodeNodesMigrate($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $monitor;
-
         /**
          * Get VmidQemuNodeNodesMonitor
          * @return PVEVmidQemuNodeNodesMonitor
@@ -5231,12 +4936,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->monitor ?: ($this->monitor = new PVEVmidQemuNodeNodesMonitor($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $resize;
-
         /**
          * Get VmidQemuNodeNodesResize
          * @return PVEVmidQemuNodeNodesResize
@@ -5245,12 +4948,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->resize ?: ($this->resize = new PVEVmidQemuNodeNodesResize($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $snapshot;
-
         /**
          * Get VmidQemuNodeNodesSnapshot
          * @return PVEVmidQemuNodeNodesSnapshot
@@ -5259,12 +4960,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->snapshot ?: ($this->snapshot = new PVEVmidQemuNodeNodesSnapshot($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $template;
-
         /**
          * Get VmidQemuNodeNodesTemplate
          * @return PVEVmidQemuNodeNodesTemplate
@@ -5273,7 +4972,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->template ?: ($this->template = new PVEVmidQemuNodeNodesTemplate($this->client, $this->node, $this->vmid));
         }
-
         /**
          * Destroy the vm (also delete all used/owned volumes).
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
@@ -5284,7 +4982,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['skiplock' => $skiplock];
             return $this->getClient()->delete("/nodes/{$this->node}/qemu/{$this->vmid}", $params);
         }
-
         /**
          * Destroy the vm (also delete all used/owned volumes).
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
@@ -5294,7 +4991,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest($skiplock);
         }
-
         /**
          * Directory index
          * @return Result
@@ -5303,7 +4999,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}");
         }
-
         /**
          * Directory index
          * @return Result
@@ -5313,10 +5008,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEVmidQemuNodeNodesFirewall
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesFirewall extends Base
     {
@@ -5328,7 +5022,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -5338,12 +5031,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * @ignore
          */
         private $rules;
-
         /**
          * Get FirewallVmidQemuNodeNodesRules
          * @return PVEFirewallVmidQemuNodeNodesRules
@@ -5352,12 +5043,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->rules ?: ($this->rules = new PVEFirewallVmidQemuNodeNodesRules($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $aliases;
-
         /**
          * Get FirewallVmidQemuNodeNodesAliases
          * @return PVEFirewallVmidQemuNodeNodesAliases
@@ -5366,12 +5055,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->aliases ?: ($this->aliases = new PVEFirewallVmidQemuNodeNodesAliases($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $ipset;
-
         /**
          * Get FirewallVmidQemuNodeNodesIpset
          * @return PVEFirewallVmidQemuNodeNodesIpset
@@ -5380,12 +5067,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->ipset ?: ($this->ipset = new PVEFirewallVmidQemuNodeNodesIpset($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $options;
-
         /**
          * Get FirewallVmidQemuNodeNodesOptions
          * @return PVEFirewallVmidQemuNodeNodesOptions
@@ -5394,12 +5079,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->options ?: ($this->options = new PVEFirewallVmidQemuNodeNodesOptions($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $log;
-
         /**
          * Get FirewallVmidQemuNodeNodesLog
          * @return PVEFirewallVmidQemuNodeNodesLog
@@ -5408,12 +5091,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->log ?: ($this->log = new PVEFirewallVmidQemuNodeNodesLog($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $refs;
-
         /**
          * Get FirewallVmidQemuNodeNodesRefs
          * @return PVEFirewallVmidQemuNodeNodesRefs
@@ -5422,7 +5103,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->refs ?: ($this->refs = new PVEFirewallVmidQemuNodeNodesRefs($this->client, $this->node, $this->vmid));
         }
-
         /**
          * Directory index.
          * @return Result
@@ -5431,7 +5111,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/firewall");
         }
-
         /**
          * Directory index.
          * @return Result
@@ -5441,10 +5120,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEFirewallVmidQemuNodeNodesRules
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidQemuNodeNodesRules extends Base
     {
@@ -5456,7 +5134,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -5466,7 +5143,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Get ItemRulesFirewallVmidQemuNodeNodesPos
          * @param pos
@@ -5476,7 +5152,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemRulesFirewallVmidQemuNodeNodesPos($this->client, $this->node, $this->vmid, $pos);
         }
-
         /**
          * List rules.
          * @return Result
@@ -5485,7 +5160,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/rules");
         }
-
         /**
          * List rules.
          * @return Result
@@ -5494,7 +5168,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create new rule.
          * @param string $action Rule action ('ACCEPT', 'DROP', 'REJECT') or security group name.
@@ -5506,6 +5179,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $dport Restrict TCP/UDP destination port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @param int $enable Flag to enable/disable a rule.
          * @param string $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
+         * @param string $log Log level for firewall rule.
+         *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
          * @param int $pos Update rule at position &amp;lt;pos&amp;gt;.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
@@ -5513,9 +5188,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @return Result
          */
-        public function createRest($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null)
+        public function createRest($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $log = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null)
         {
-            $params = ['action' => $action,
+            $params = [
+                'action' => $action,
                 'type' => $type,
                 'comment' => $comment,
                 'dest' => $dest,
@@ -5523,14 +5199,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'dport' => $dport,
                 'enable' => $enable,
                 'iface' => $iface,
+                'log' => $log,
                 'macro' => $macro,
                 'pos' => $pos,
                 'proto' => $proto,
                 'source' => $source,
-                'sport' => $sport];
+                'sport' => $sport
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/rules", $params);
         }
-
         /**
          * Create new rule.
          * @param string $action Rule action ('ACCEPT', 'DROP', 'REJECT') or security group name.
@@ -5542,6 +5219,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $dport Restrict TCP/UDP destination port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @param int $enable Flag to enable/disable a rule.
          * @param string $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
+         * @param string $log Log level for firewall rule.
+         *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
          * @param int $pos Update rule at position &amp;lt;pos&amp;gt;.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
@@ -5549,15 +5228,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @return Result
          */
-        public function createRule($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null)
+        public function createRule($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $log = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null)
         {
-            return $this->createRest($action, $type, $comment, $dest, $digest, $dport, $enable, $iface, $macro, $pos, $proto, $source, $sport);
+            return $this->createRest($action, $type, $comment, $dest, $digest, $dport, $enable, $iface, $log, $macro, $pos, $proto, $source, $sport);
         }
     }
-
     /**
      * Class PVEItemRulesFirewallVmidQemuNodeNodesPos
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemRulesFirewallVmidQemuNodeNodesPos extends Base
     {
@@ -5573,7 +5251,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $pos;
-
         /**
          * @ignore
          */
@@ -5584,7 +5261,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
             $this->pos = $pos;
         }
-
         /**
          * Delete rule.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -5595,7 +5271,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['digest' => $digest];
             return $this->getClient()->delete("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/rules/{$this->pos}", $params);
         }
-
         /**
          * Delete rule.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -5605,7 +5280,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest($digest);
         }
-
         /**
          * Get single rule data.
          * @return Result
@@ -5614,7 +5288,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/rules/{$this->pos}");
         }
-
         /**
          * Get single rule data.
          * @return Result
@@ -5623,7 +5296,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Modify rule data.
          * @param string $action Rule action ('ACCEPT', 'DROP', 'REJECT') or security group name.
@@ -5634,6 +5306,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $dport Restrict TCP/UDP destination port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @param int $enable Flag to enable/disable a rule.
          * @param string $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
+         * @param string $log Log level for firewall rule.
+         *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
          * @param int $moveto Move rule to new position &amp;lt;moveto&amp;gt;. Other arguments are ignored.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
@@ -5643,9 +5317,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: in,out,group
          * @return Result
          */
-        public function setRest($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null)
+        public function setRest($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $log = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null)
         {
-            $params = ['action' => $action,
+            $params = [
+                'action' => $action,
                 'comment' => $comment,
                 'delete' => $delete,
                 'dest' => $dest,
@@ -5653,15 +5328,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'dport' => $dport,
                 'enable' => $enable,
                 'iface' => $iface,
+                'log' => $log,
                 'macro' => $macro,
                 'moveto' => $moveto,
                 'proto' => $proto,
                 'source' => $source,
                 'sport' => $sport,
-                'type' => $type];
+                'type' => $type
+            ];
             return $this->getClient()->set("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/rules/{$this->pos}", $params);
         }
-
         /**
          * Modify rule data.
          * @param string $action Rule action ('ACCEPT', 'DROP', 'REJECT') or security group name.
@@ -5672,6 +5348,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $dport Restrict TCP/UDP destination port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @param int $enable Flag to enable/disable a rule.
          * @param string $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
+         * @param string $log Log level for firewall rule.
+         *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
          * @param int $moveto Move rule to new position &amp;lt;moveto&amp;gt;. Other arguments are ignored.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
@@ -5681,15 +5359,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: in,out,group
          * @return Result
          */
-        public function updateRule($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null)
+        public function updateRule($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $log = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null)
         {
-            return $this->setRest($action, $comment, $delete, $dest, $digest, $dport, $enable, $iface, $macro, $moveto, $proto, $source, $sport, $type);
+            return $this->setRest($action, $comment, $delete, $dest, $digest, $dport, $enable, $iface, $log, $macro, $moveto, $proto, $source, $sport, $type);
         }
     }
-
     /**
      * Class PVEFirewallVmidQemuNodeNodesAliases
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidQemuNodeNodesAliases extends Base
     {
@@ -5701,7 +5378,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -5711,7 +5387,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Get ItemAliasesFirewallVmidQemuNodeNodesName
          * @param name
@@ -5721,7 +5396,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemAliasesFirewallVmidQemuNodeNodesName($this->client, $this->node, $this->vmid, $name);
         }
-
         /**
          * List aliases
          * @return Result
@@ -5730,7 +5404,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/aliases");
         }
-
         /**
          * List aliases
          * @return Result
@@ -5739,27 +5412,27 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create IP or Network Alias.
          * @param string $cidr Network/IP specification in CIDR format.
          * @param string $name Alias name.
-         * @param string $comment
+         * @param string $comment 
          * @return Result
          */
         public function createRest($cidr, $name, $comment = null)
         {
-            $params = ['cidr' => $cidr,
+            $params = [
+                'cidr' => $cidr,
                 'name' => $name,
-                'comment' => $comment];
+                'comment' => $comment
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/aliases", $params);
         }
-
         /**
          * Create IP or Network Alias.
          * @param string $cidr Network/IP specification in CIDR format.
          * @param string $name Alias name.
-         * @param string $comment
+         * @param string $comment 
          * @return Result
          */
         public function createAlias($cidr, $name, $comment = null)
@@ -5767,10 +5440,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($cidr, $name, $comment);
         }
     }
-
     /**
      * Class PVEItemAliasesFirewallVmidQemuNodeNodesName
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemAliasesFirewallVmidQemuNodeNodesName extends Base
     {
@@ -5786,7 +5458,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $name;
-
         /**
          * @ignore
          */
@@ -5797,7 +5468,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
             $this->name = $name;
         }
-
         /**
          * Remove IP or Network alias.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -5808,7 +5478,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['digest' => $digest];
             return $this->getClient()->delete("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/aliases/{$this->name}", $params);
         }
-
         /**
          * Remove IP or Network alias.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -5818,7 +5487,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest($digest);
         }
-
         /**
          * Read alias.
          * @return Result
@@ -5827,7 +5495,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/aliases/{$this->name}");
         }
-
         /**
          * Read alias.
          * @return Result
@@ -5836,28 +5503,28 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Update IP or Network alias.
          * @param string $cidr Network/IP specification in CIDR format.
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $rename Rename an existing alias.
          * @return Result
          */
         public function setRest($cidr, $comment = null, $digest = null, $rename = null)
         {
-            $params = ['cidr' => $cidr,
+            $params = [
+                'cidr' => $cidr,
                 'comment' => $comment,
                 'digest' => $digest,
-                'rename' => $rename];
+                'rename' => $rename
+            ];
             return $this->getClient()->set("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/aliases/{$this->name}", $params);
         }
-
         /**
          * Update IP or Network alias.
          * @param string $cidr Network/IP specification in CIDR format.
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $rename Rename an existing alias.
          * @return Result
@@ -5867,10 +5534,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($cidr, $comment, $digest, $rename);
         }
     }
-
     /**
      * Class PVEFirewallVmidQemuNodeNodesIpset
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidQemuNodeNodesIpset extends Base
     {
@@ -5882,7 +5548,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -5892,7 +5557,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Get ItemIpsetFirewallVmidQemuNodeNodesName
          * @param name
@@ -5902,7 +5566,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemIpsetFirewallVmidQemuNodeNodesName($this->client, $this->node, $this->vmid, $name);
         }
-
         /**
          * List IPSets
          * @return Result
@@ -5911,7 +5574,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset");
         }
-
         /**
          * List IPSets
          * @return Result
@@ -5920,28 +5582,28 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create new IPSet
          * @param string $name IP set name.
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $rename Rename an existing IPSet. You can set 'rename' to the same value as 'name' to update the 'comment' of an existing IPSet.
          * @return Result
          */
         public function createRest($name, $comment = null, $digest = null, $rename = null)
         {
-            $params = ['name' => $name,
+            $params = [
+                'name' => $name,
                 'comment' => $comment,
                 'digest' => $digest,
-                'rename' => $rename];
+                'rename' => $rename
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset", $params);
         }
-
         /**
          * Create new IPSet
          * @param string $name IP set name.
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $rename Rename an existing IPSet. You can set 'rename' to the same value as 'name' to update the 'comment' of an existing IPSet.
          * @return Result
@@ -5951,10 +5613,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($name, $comment, $digest, $rename);
         }
     }
-
     /**
      * Class PVEItemIpsetFirewallVmidQemuNodeNodesName
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemIpsetFirewallVmidQemuNodeNodesName extends Base
     {
@@ -5970,7 +5631,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $name;
-
         /**
          * @ignore
          */
@@ -5981,7 +5641,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
             $this->name = $name;
         }
-
         /**
          * Get ItemNameIpsetFirewallVmidQemuNodeNodesCidr
          * @param cidr
@@ -5991,7 +5650,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemNameIpsetFirewallVmidQemuNodeNodesCidr($this->client, $this->node, $this->vmid, $this->name, $cidr);
         }
-
         /**
          * Delete IPSet
          * @return Result
@@ -6000,7 +5658,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->delete("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset/{$this->name}");
         }
-
         /**
          * Delete IPSet
          * @return Result
@@ -6009,7 +5666,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest();
         }
-
         /**
          * List IPSet content
          * @return Result
@@ -6018,7 +5674,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset/{$this->name}");
         }
-
         /**
          * List IPSet content
          * @return Result
@@ -6027,27 +5682,27 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Add IP or Network to IPSet.
          * @param string $cidr Network/IP specification in CIDR format.
-         * @param string $comment
-         * @param bool $nomatch
+         * @param string $comment 
+         * @param bool $nomatch 
          * @return Result
          */
         public function createRest($cidr, $comment = null, $nomatch = null)
         {
-            $params = ['cidr' => $cidr,
+            $params = [
+                'cidr' => $cidr,
                 'comment' => $comment,
-                'nomatch' => $nomatch];
+                'nomatch' => $nomatch
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset/{$this->name}", $params);
         }
-
         /**
          * Add IP or Network to IPSet.
          * @param string $cidr Network/IP specification in CIDR format.
-         * @param string $comment
-         * @param bool $nomatch
+         * @param string $comment 
+         * @param bool $nomatch 
          * @return Result
          */
         public function createIp($cidr, $comment = null, $nomatch = null)
@@ -6055,10 +5710,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($cidr, $comment, $nomatch);
         }
     }
-
     /**
      * Class PVEItemNameIpsetFirewallVmidQemuNodeNodesCidr
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemNameIpsetFirewallVmidQemuNodeNodesCidr extends Base
     {
@@ -6078,7 +5732,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $cidr;
-
         /**
          * @ignore
          */
@@ -6090,7 +5743,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->name = $name;
             $this->cidr = $cidr;
         }
-
         /**
          * Remove IP or Network from IPSet.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -6101,7 +5753,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['digest' => $digest];
             return $this->getClient()->delete("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset/{$this->name}/{$this->cidr}", $params);
         }
-
         /**
          * Remove IP or Network from IPSet.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -6111,7 +5762,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest($digest);
         }
-
         /**
          * Read IP or Network settings from IPSet.
          * @return Result
@@ -6120,7 +5770,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset/{$this->name}/{$this->cidr}");
         }
-
         /**
          * Read IP or Network settings from IPSet.
          * @return Result
@@ -6129,27 +5778,27 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Update IP or Network settings
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
-         * @param bool $nomatch
+         * @param bool $nomatch 
          * @return Result
          */
         public function setRest($comment = null, $digest = null, $nomatch = null)
         {
-            $params = ['comment' => $comment,
+            $params = [
+                'comment' => $comment,
                 'digest' => $digest,
-                'nomatch' => $nomatch];
+                'nomatch' => $nomatch
+            ];
             return $this->getClient()->set("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset/{$this->name}/{$this->cidr}", $params);
         }
-
         /**
          * Update IP or Network settings
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
-         * @param bool $nomatch
+         * @param bool $nomatch 
          * @return Result
          */
         public function updateIp($comment = null, $digest = null, $nomatch = null)
@@ -6157,10 +5806,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($comment, $digest, $nomatch);
         }
     }
-
     /**
      * Class PVEFirewallVmidQemuNodeNodesOptions
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidQemuNodeNodesOptions extends Base
     {
@@ -6172,7 +5820,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -6182,7 +5829,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Get VM firewall options.
          * @return Result
@@ -6191,7 +5837,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/options");
         }
-
         /**
          * Get VM firewall options.
          * @return Result
@@ -6200,7 +5845,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Set Firewall options.
          * @param string $delete A list of settings you want to delete.
@@ -6223,7 +5867,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function setRest($delete = null, $dhcp = null, $digest = null, $enable = null, $ipfilter = null, $log_level_in = null, $log_level_out = null, $macfilter = null, $ndp = null, $policy_in = null, $policy_out = null, $radv = null)
         {
-            $params = ['delete' => $delete,
+            $params = [
+                'delete' => $delete,
                 'dhcp' => $dhcp,
                 'digest' => $digest,
                 'enable' => $enable,
@@ -6234,10 +5879,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'ndp' => $ndp,
                 'policy_in' => $policy_in,
                 'policy_out' => $policy_out,
-                'radv' => $radv];
+                'radv' => $radv
+            ];
             return $this->getClient()->set("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/options", $params);
         }
-
         /**
          * Set Firewall options.
          * @param string $delete A list of settings you want to delete.
@@ -6263,10 +5908,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($delete, $dhcp, $digest, $enable, $ipfilter, $log_level_in, $log_level_out, $macfilter, $ndp, $policy_in, $policy_out, $radv);
         }
     }
-
     /**
      * Class PVEFirewallVmidQemuNodeNodesLog
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidQemuNodeNodesLog extends Base
     {
@@ -6278,7 +5922,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -6288,24 +5931,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Read firewall log
-         * @param int $limit
-         * @param int $start
+         * @param int $limit 
+         * @param int $start 
          * @return Result
          */
         public function getRest($limit = null, $start = null)
         {
-            $params = ['limit' => $limit,
-                'start' => $start];
+            $params = [
+                'limit' => $limit,
+                'start' => $start
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/log", $params);
         }
-
         /**
          * Read firewall log
-         * @param int $limit
-         * @param int $start
+         * @param int $limit 
+         * @param int $start 
          * @return Result
          */
         public function log($limit = null, $start = null)
@@ -6313,10 +5956,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($limit, $start);
         }
     }
-
     /**
      * Class PVEFirewallVmidQemuNodeNodesRefs
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidQemuNodeNodesRefs extends Base
     {
@@ -6328,7 +5970,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -6338,7 +5979,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Lists possible IPSet/Alias reference which are allowed in source/dest properties.
          * @param string $type Only list references of specified type.
@@ -6350,7 +5990,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['type' => $type];
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/refs", $params);
         }
-
         /**
          * Lists possible IPSet/Alias reference which are allowed in source/dest properties.
          * @param string $type Only list references of specified type.
@@ -6362,10 +6001,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($type);
         }
     }
-
     /**
      * Class PVEVmidQemuNodeNodesAgent
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesAgent extends Base
     {
@@ -6377,7 +6015,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -6387,12 +6024,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * @ignore
          */
         private $fsfreeze_Freeze;
-
         /**
          * Get AgentVmidQemuNodeNodesFsfreeze_Freeze
          * @return PVEAgentVmidQemuNodeNodesFsfreeze_Freeze
@@ -6401,12 +6036,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->fsfreeze_Freeze ?: ($this->fsfreeze_Freeze = new PVEAgentVmidQemuNodeNodesFsfreeze_Freeze($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $fsfreeze_Status;
-
         /**
          * Get AgentVmidQemuNodeNodesFsfreeze_Status
          * @return PVEAgentVmidQemuNodeNodesFsfreeze_Status
@@ -6415,12 +6048,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->fsfreeze_Status ?: ($this->fsfreeze_Status = new PVEAgentVmidQemuNodeNodesFsfreeze_Status($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $fsfreeze_Thaw;
-
         /**
          * Get AgentVmidQemuNodeNodesFsfreeze_Thaw
          * @return PVEAgentVmidQemuNodeNodesFsfreeze_Thaw
@@ -6429,12 +6060,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->fsfreeze_Thaw ?: ($this->fsfreeze_Thaw = new PVEAgentVmidQemuNodeNodesFsfreeze_Thaw($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $fstrim;
-
         /**
          * Get AgentVmidQemuNodeNodesFstrim
          * @return PVEAgentVmidQemuNodeNodesFstrim
@@ -6443,12 +6072,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->fstrim ?: ($this->fstrim = new PVEAgentVmidQemuNodeNodesFstrim($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $get_Fsinfo;
-
         /**
          * Get AgentVmidQemuNodeNodesGet_Fsinfo
          * @return PVEAgentVmidQemuNodeNodesGet_Fsinfo
@@ -6457,12 +6084,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->get_Fsinfo ?: ($this->get_Fsinfo = new PVEAgentVmidQemuNodeNodesGet_Fsinfo($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $get_Host_Name;
-
         /**
          * Get AgentVmidQemuNodeNodesGet_Host_Name
          * @return PVEAgentVmidQemuNodeNodesGet_Host_Name
@@ -6471,12 +6096,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->get_Host_Name ?: ($this->get_Host_Name = new PVEAgentVmidQemuNodeNodesGet_Host_Name($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $get_Memory_Block_Info;
-
         /**
          * Get AgentVmidQemuNodeNodesGet_Memory_Block_Info
          * @return PVEAgentVmidQemuNodeNodesGet_Memory_Block_Info
@@ -6485,12 +6108,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->get_Memory_Block_Info ?: ($this->get_Memory_Block_Info = new PVEAgentVmidQemuNodeNodesGet_Memory_Block_Info($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $get_Memory_Blocks;
-
         /**
          * Get AgentVmidQemuNodeNodesGet_Memory_Blocks
          * @return PVEAgentVmidQemuNodeNodesGet_Memory_Blocks
@@ -6499,12 +6120,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->get_Memory_Blocks ?: ($this->get_Memory_Blocks = new PVEAgentVmidQemuNodeNodesGet_Memory_Blocks($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $get_Osinfo;
-
         /**
          * Get AgentVmidQemuNodeNodesGet_Osinfo
          * @return PVEAgentVmidQemuNodeNodesGet_Osinfo
@@ -6513,12 +6132,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->get_Osinfo ?: ($this->get_Osinfo = new PVEAgentVmidQemuNodeNodesGet_Osinfo($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $get_Time;
-
         /**
          * Get AgentVmidQemuNodeNodesGet_Time
          * @return PVEAgentVmidQemuNodeNodesGet_Time
@@ -6527,12 +6144,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->get_Time ?: ($this->get_Time = new PVEAgentVmidQemuNodeNodesGet_Time($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $get_Timezone;
-
         /**
          * Get AgentVmidQemuNodeNodesGet_Timezone
          * @return PVEAgentVmidQemuNodeNodesGet_Timezone
@@ -6541,12 +6156,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->get_Timezone ?: ($this->get_Timezone = new PVEAgentVmidQemuNodeNodesGet_Timezone($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $get_Users;
-
         /**
          * Get AgentVmidQemuNodeNodesGet_Users
          * @return PVEAgentVmidQemuNodeNodesGet_Users
@@ -6555,12 +6168,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->get_Users ?: ($this->get_Users = new PVEAgentVmidQemuNodeNodesGet_Users($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $get_Vcpus;
-
         /**
          * Get AgentVmidQemuNodeNodesGet_Vcpus
          * @return PVEAgentVmidQemuNodeNodesGet_Vcpus
@@ -6569,12 +6180,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->get_Vcpus ?: ($this->get_Vcpus = new PVEAgentVmidQemuNodeNodesGet_Vcpus($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $info;
-
         /**
          * Get AgentVmidQemuNodeNodesInfo
          * @return PVEAgentVmidQemuNodeNodesInfo
@@ -6583,12 +6192,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->info ?: ($this->info = new PVEAgentVmidQemuNodeNodesInfo($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $network_Get_Interfaces;
-
         /**
          * Get AgentVmidQemuNodeNodesNetwork_Get_Interfaces
          * @return PVEAgentVmidQemuNodeNodesNetwork_Get_Interfaces
@@ -6597,12 +6204,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->network_Get_Interfaces ?: ($this->network_Get_Interfaces = new PVEAgentVmidQemuNodeNodesNetwork_Get_Interfaces($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $ping;
-
         /**
          * Get AgentVmidQemuNodeNodesPing
          * @return PVEAgentVmidQemuNodeNodesPing
@@ -6611,12 +6216,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->ping ?: ($this->ping = new PVEAgentVmidQemuNodeNodesPing($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $shutdown;
-
         /**
          * Get AgentVmidQemuNodeNodesShutdown
          * @return PVEAgentVmidQemuNodeNodesShutdown
@@ -6625,12 +6228,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->shutdown ?: ($this->shutdown = new PVEAgentVmidQemuNodeNodesShutdown($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $suspend_Disk;
-
         /**
          * Get AgentVmidQemuNodeNodesSuspend_Disk
          * @return PVEAgentVmidQemuNodeNodesSuspend_Disk
@@ -6639,12 +6240,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->suspend_Disk ?: ($this->suspend_Disk = new PVEAgentVmidQemuNodeNodesSuspend_Disk($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $suspend_Hybrid;
-
         /**
          * Get AgentVmidQemuNodeNodesSuspend_Hybrid
          * @return PVEAgentVmidQemuNodeNodesSuspend_Hybrid
@@ -6653,12 +6252,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->suspend_Hybrid ?: ($this->suspend_Hybrid = new PVEAgentVmidQemuNodeNodesSuspend_Hybrid($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $suspend_Ram;
-
         /**
          * Get AgentVmidQemuNodeNodesSuspend_Ram
          * @return PVEAgentVmidQemuNodeNodesSuspend_Ram
@@ -6667,12 +6264,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->suspend_Ram ?: ($this->suspend_Ram = new PVEAgentVmidQemuNodeNodesSuspend_Ram($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $set_User_Password;
-
         /**
          * Get AgentVmidQemuNodeNodesSet_User_Password
          * @return PVEAgentVmidQemuNodeNodesSet_User_Password
@@ -6681,12 +6276,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->set_User_Password ?: ($this->set_User_Password = new PVEAgentVmidQemuNodeNodesSet_User_Password($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $exec;
-
         /**
          * Get AgentVmidQemuNodeNodesExec
          * @return PVEAgentVmidQemuNodeNodesExec
@@ -6695,12 +6288,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->exec ?: ($this->exec = new PVEAgentVmidQemuNodeNodesExec($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $exec_Status;
-
         /**
          * Get AgentVmidQemuNodeNodesExec_Status
          * @return PVEAgentVmidQemuNodeNodesExec_Status
@@ -6709,12 +6300,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->exec_Status ?: ($this->exec_Status = new PVEAgentVmidQemuNodeNodesExec_Status($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $file_Read;
-
         /**
          * Get AgentVmidQemuNodeNodesFile_Read
          * @return PVEAgentVmidQemuNodeNodesFile_Read
@@ -6723,12 +6312,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->file_Read ?: ($this->file_Read = new PVEAgentVmidQemuNodeNodesFile_Read($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $file_Write;
-
         /**
          * Get AgentVmidQemuNodeNodesFile_Write
          * @return PVEAgentVmidQemuNodeNodesFile_Write
@@ -6737,7 +6324,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->file_Write ?: ($this->file_Write = new PVEAgentVmidQemuNodeNodesFile_Write($this->client, $this->node, $this->vmid));
         }
-
         /**
          * Qemu Agent command index.
          * @return Result
@@ -6746,7 +6332,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent");
         }
-
         /**
          * Qemu Agent command index.
          * @return Result
@@ -6755,7 +6340,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Execute Qemu Guest Agent commands.
          * @param string $command The QGA command.
@@ -6767,7 +6351,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['command' => $command];
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent", $params);
         }
-
         /**
          * Execute Qemu Guest Agent commands.
          * @param string $command The QGA command.
@@ -6779,10 +6362,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($command);
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesFsfreeze_Freeze
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesFsfreeze_Freeze extends Base
     {
@@ -6794,7 +6376,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -6804,7 +6385,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Execute fsfreeze-freeze.
          * @return Result
@@ -6813,7 +6393,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/fsfreeze-freeze");
         }
-
         /**
          * Execute fsfreeze-freeze.
          * @return Result
@@ -6823,10 +6402,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest();
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesFsfreeze_Status
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesFsfreeze_Status extends Base
     {
@@ -6838,7 +6416,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -6848,7 +6425,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Execute fsfreeze-status.
          * @return Result
@@ -6857,7 +6433,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/fsfreeze-status");
         }
-
         /**
          * Execute fsfreeze-status.
          * @return Result
@@ -6867,10 +6442,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest();
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesFsfreeze_Thaw
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesFsfreeze_Thaw extends Base
     {
@@ -6882,7 +6456,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -6892,7 +6465,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Execute fsfreeze-thaw.
          * @return Result
@@ -6901,7 +6473,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/fsfreeze-thaw");
         }
-
         /**
          * Execute fsfreeze-thaw.
          * @return Result
@@ -6911,10 +6482,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest();
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesFstrim
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesFstrim extends Base
     {
@@ -6926,7 +6496,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -6936,7 +6505,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Execute fstrim.
          * @return Result
@@ -6945,7 +6513,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/fstrim");
         }
-
         /**
          * Execute fstrim.
          * @return Result
@@ -6955,10 +6522,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest();
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesGet_Fsinfo
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesGet_Fsinfo extends Base
     {
@@ -6970,7 +6536,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -6980,7 +6545,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Execute get-fsinfo.
          * @return Result
@@ -6989,7 +6553,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/get-fsinfo");
         }
-
         /**
          * Execute get-fsinfo.
          * @return Result
@@ -6999,10 +6562,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesGet_Host_Name
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesGet_Host_Name extends Base
     {
@@ -7014,7 +6576,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -7024,7 +6585,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Execute get-host-name.
          * @return Result
@@ -7033,7 +6593,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/get-host-name");
         }
-
         /**
          * Execute get-host-name.
          * @return Result
@@ -7043,10 +6602,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesGet_Memory_Block_Info
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesGet_Memory_Block_Info extends Base
     {
@@ -7058,7 +6616,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -7068,7 +6625,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Execute get-memory-block-info.
          * @return Result
@@ -7077,7 +6633,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/get-memory-block-info");
         }
-
         /**
          * Execute get-memory-block-info.
          * @return Result
@@ -7087,10 +6642,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesGet_Memory_Blocks
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesGet_Memory_Blocks extends Base
     {
@@ -7102,7 +6656,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -7112,7 +6665,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Execute get-memory-blocks.
          * @return Result
@@ -7121,7 +6673,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/get-memory-blocks");
         }
-
         /**
          * Execute get-memory-blocks.
          * @return Result
@@ -7131,10 +6682,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesGet_Osinfo
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesGet_Osinfo extends Base
     {
@@ -7146,7 +6696,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -7156,7 +6705,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Execute get-osinfo.
          * @return Result
@@ -7165,7 +6713,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/get-osinfo");
         }
-
         /**
          * Execute get-osinfo.
          * @return Result
@@ -7175,10 +6722,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesGet_Time
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesGet_Time extends Base
     {
@@ -7190,7 +6736,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -7200,7 +6745,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Execute get-time.
          * @return Result
@@ -7209,7 +6753,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/get-time");
         }
-
         /**
          * Execute get-time.
          * @return Result
@@ -7219,10 +6762,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesGet_Timezone
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesGet_Timezone extends Base
     {
@@ -7234,7 +6776,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -7244,7 +6785,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Execute get-timezone.
          * @return Result
@@ -7253,7 +6793,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/get-timezone");
         }
-
         /**
          * Execute get-timezone.
          * @return Result
@@ -7263,10 +6802,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesGet_Users
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesGet_Users extends Base
     {
@@ -7278,7 +6816,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -7288,7 +6825,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Execute get-users.
          * @return Result
@@ -7297,7 +6833,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/get-users");
         }
-
         /**
          * Execute get-users.
          * @return Result
@@ -7307,10 +6842,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesGet_Vcpus
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesGet_Vcpus extends Base
     {
@@ -7322,7 +6856,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -7332,7 +6865,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Execute get-vcpus.
          * @return Result
@@ -7341,7 +6873,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/get-vcpus");
         }
-
         /**
          * Execute get-vcpus.
          * @return Result
@@ -7351,10 +6882,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesInfo
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesInfo extends Base
     {
@@ -7366,7 +6896,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -7376,7 +6905,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Execute info.
          * @return Result
@@ -7385,7 +6913,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/info");
         }
-
         /**
          * Execute info.
          * @return Result
@@ -7395,10 +6922,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesNetwork_Get_Interfaces
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesNetwork_Get_Interfaces extends Base
     {
@@ -7410,7 +6936,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -7420,7 +6945,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Execute network-get-interfaces.
          * @return Result
@@ -7429,7 +6953,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/network-get-interfaces");
         }
-
         /**
          * Execute network-get-interfaces.
          * @return Result
@@ -7439,10 +6962,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesPing
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesPing extends Base
     {
@@ -7454,7 +6976,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -7464,7 +6985,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Execute ping.
          * @return Result
@@ -7473,7 +6993,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/ping");
         }
-
         /**
          * Execute ping.
          * @return Result
@@ -7483,10 +7002,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest();
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesShutdown
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesShutdown extends Base
     {
@@ -7498,7 +7016,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -7508,7 +7025,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Execute shutdown.
          * @return Result
@@ -7517,7 +7033,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/shutdown");
         }
-
         /**
          * Execute shutdown.
          * @return Result
@@ -7527,10 +7042,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest();
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesSuspend_Disk
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesSuspend_Disk extends Base
     {
@@ -7542,7 +7056,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -7552,7 +7065,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Execute suspend-disk.
          * @return Result
@@ -7561,7 +7073,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/suspend-disk");
         }
-
         /**
          * Execute suspend-disk.
          * @return Result
@@ -7571,10 +7082,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest();
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesSuspend_Hybrid
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesSuspend_Hybrid extends Base
     {
@@ -7586,7 +7096,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -7596,7 +7105,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Execute suspend-hybrid.
          * @return Result
@@ -7605,7 +7113,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/suspend-hybrid");
         }
-
         /**
          * Execute suspend-hybrid.
          * @return Result
@@ -7615,10 +7122,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest();
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesSuspend_Ram
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesSuspend_Ram extends Base
     {
@@ -7630,7 +7136,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -7640,7 +7145,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Execute suspend-ram.
          * @return Result
@@ -7649,7 +7153,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/suspend-ram");
         }
-
         /**
          * Execute suspend-ram.
          * @return Result
@@ -7659,10 +7162,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest();
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesSet_User_Password
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesSet_User_Password extends Base
     {
@@ -7674,7 +7176,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -7684,7 +7185,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Sets the password for the given user to the given password
          * @param string $password The new password.
@@ -7694,12 +7194,13 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($password, $username, $crypted = null)
         {
-            $params = ['password' => $password,
+            $params = [
+                'password' => $password,
                 'username' => $username,
-                'crypted' => $crypted];
+                'crypted' => $crypted
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/set-user-password", $params);
         }
-
         /**
          * Sets the password for the given user to the given password
          * @param string $password The new password.
@@ -7712,10 +7213,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($password, $username, $crypted);
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesExec
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesExec extends Base
     {
@@ -7727,7 +7227,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -7737,7 +7236,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Executes the given command in the vm via the guest-agent and returns an object with the pid.
          * @param string $command The command as a list of program + arguments
@@ -7748,7 +7246,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['command' => $command];
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/exec", $params);
         }
-
         /**
          * Executes the given command in the vm via the guest-agent and returns an object with the pid.
          * @param string $command The command as a list of program + arguments
@@ -7759,10 +7256,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($command);
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesExec_Status
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesExec_Status extends Base
     {
@@ -7774,7 +7270,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -7784,7 +7279,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Gets the status of the given pid started by the guest-agent
          * @param int $pid The PID to query
@@ -7795,7 +7289,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['pid' => $pid];
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/exec-status", $params);
         }
-
         /**
          * Gets the status of the given pid started by the guest-agent
          * @param int $pid The PID to query
@@ -7806,10 +7299,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($pid);
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesFile_Read
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesFile_Read extends Base
     {
@@ -7821,7 +7313,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -7831,7 +7322,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Reads the given file via guest agent. Is limited to 16777216 bytes.
          * @param string $file The path to the file
@@ -7842,7 +7332,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['file' => $file];
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/file-read", $params);
         }
-
         /**
          * Reads the given file via guest agent. Is limited to 16777216 bytes.
          * @param string $file The path to the file
@@ -7853,10 +7342,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($file);
         }
     }
-
     /**
      * Class PVEAgentVmidQemuNodeNodesFile_Write
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesFile_Write extends Base
     {
@@ -7868,7 +7356,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -7878,7 +7365,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Writes the given file via guest agent.
          * @param string $content The content to write into the file.
@@ -7887,11 +7373,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($content, $file)
         {
-            $params = ['content' => $content,
-                'file' => $file];
+            $params = [
+                'content' => $content,
+                'file' => $file
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/file-write", $params);
         }
-
         /**
          * Writes the given file via guest agent.
          * @param string $content The content to write into the file.
@@ -7903,10 +7390,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($content, $file);
         }
     }
-
     /**
      * Class PVEVmidQemuNodeNodesRrd
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesRrd extends Base
     {
@@ -7918,7 +7404,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -7928,7 +7413,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Read VM RRD statistics (returns PNG)
          * @param string $ds The list of datasources you want to display.
@@ -7940,12 +7424,13 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRest($ds, $timeframe, $cf = null)
         {
-            $params = ['ds' => $ds,
+            $params = [
+                'ds' => $ds,
                 'timeframe' => $timeframe,
-                'cf' => $cf];
+                'cf' => $cf
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/rrd", $params);
         }
-
         /**
          * Read VM RRD statistics (returns PNG)
          * @param string $ds The list of datasources you want to display.
@@ -7960,10 +7445,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($ds, $timeframe, $cf);
         }
     }
-
     /**
      * Class PVEVmidQemuNodeNodesRrddata
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesRrddata extends Base
     {
@@ -7975,7 +7459,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -7985,7 +7468,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Read VM RRD statistics
          * @param string $timeframe Specify the time frame you are interested in.
@@ -7996,11 +7478,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRest($timeframe, $cf = null)
         {
-            $params = ['timeframe' => $timeframe,
-                'cf' => $cf];
+            $params = [
+                'timeframe' => $timeframe,
+                'cf' => $cf
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/rrddata", $params);
         }
-
         /**
          * Read VM RRD statistics
          * @param string $timeframe Specify the time frame you are interested in.
@@ -8014,10 +7497,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($timeframe, $cf);
         }
     }
-
     /**
      * Class PVEVmidQemuNodeNodesConfig
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesConfig extends Base
     {
@@ -8029,7 +7511,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -8039,28 +7520,30 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Get current virtual machine configuration. This does not include pending configuration changes (see 'pending' API).
          * @param bool $current Get current values (instead of pending values).
+         * @param string $snapshot Fetch config values from given snapshot.
          * @return Result
          */
-        public function getRest($current = null)
+        public function getRest($current = null, $snapshot = null)
         {
-            $params = ['current' => $current];
+            $params = [
+                'current' => $current,
+                'snapshot' => $snapshot
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/config", $params);
         }
-
         /**
          * Get current virtual machine configuration. This does not include pending configuration changes (see 'pending' API).
          * @param bool $current Get current values (instead of pending values).
+         * @param string $snapshot Fetch config values from given snapshot.
          * @return Result
          */
-        public function vmConfig($current = null)
+        public function vmConfig($current = null, $snapshot = null)
         {
-            return $this->getRest($current);
+            return $this->getRest($current, $snapshot);
         }
-
         /**
          * Set virtual machine options (asynchrounous API).
          * @param bool $acpi Enable/disable ACPI.
@@ -8076,6 +7559,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $boot Boot on floppy (a), hard disk (c), CD-ROM (d), or network (n).
          * @param string $bootdisk Enable booting from specified disk.
          * @param string $cdrom This is an alias for option -ide2
+         * @param string $cicustom cloud-init: Specify custom files to replace the automatically generated ones at start.
          * @param string $cipassword cloud-init: Password to assign the user. Using this is generally not recommended. Use ssh keys instead. Also note that older cloud-init versions do not support hashed passwords.
          * @param string $citype Specifies the cloud-init configuration format. The default depends on the configured operating system type (`ostype`. We use the `nocloud` format for Linux, and `configdrive2` for windows.
          *   Enum: configdrive2,nocloud
@@ -8090,18 +7574,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $efidisk0 Configure a Disk for storing EFI vars
          * @param bool $force Force physical removal. Without this, we simple remove the disk from the config file and create an additional configuration entry called 'unused[n]', which contains the volume ID. Unlink of unused[n] always cause physical removal.
          * @param bool $freeze Freeze CPU at startup (use 'c' monitor command to start execution).
+         * @param string $hookscript Script that will be executed during various steps in the vms lifetime.
          * @param array $hostpciN Map host PCI devices into guest.
          * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory' and 'usb'. Use '0' to disable hotplug completely. Value '1' is an alias for the default 'network,disk,usb'.
          * @param string $hugepages Enable/disable hugepages memory.
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3).
-         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
+         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4. 
+         * @param string $ivshmem Inter-VM shared memory. Useful for direct communication between VMs, or to the host.
          * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.cfg' configuration file.It should not be necessary to set it.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param bool $kvm Enable/disable KVM hardware virtualization.
          * @param bool $localtime Set the real time clock to local time. This is enabled by default if ostype indicates a Microsoft OS.
          * @param string $lock Lock/unlock the VM.
-         *   Enum: migrate,backup,snapshot,rollback
+         *   Enum: backup,clone,create,migrate,rollback,snapshot,snapshot-delete,suspending,suspended
          * @param string $machine Specifies the Qemu machine type.
          * @param int $memory Amount of RAM for the VM in MB. This is the maximum available memory when you use the balloon device.
          * @param int $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
@@ -8145,9 +7631,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $watchdog Create a virtual hardware watchdog device.
          * @return Result
          */
-        public function createRest($acpi = null, $agent = null, $arch = null, $args = null, $autostart = null, $background_delay = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null)
+        public function createRest($acpi = null, $agent = null, $arch = null, $args = null, $autostart = null, $background_delay = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null)
         {
-            $params = ['acpi' => $acpi,
+            $params = [
+                'acpi' => $acpi,
                 'agent' => $agent,
                 'arch' => $arch,
                 'args' => $args,
@@ -8158,6 +7645,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'boot' => $boot,
                 'bootdisk' => $bootdisk,
                 'cdrom' => $cdrom,
+                'cicustom' => $cicustom,
                 'cipassword' => $cipassword,
                 'citype' => $citype,
                 'ciuser' => $ciuser,
@@ -8171,8 +7659,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'efidisk0' => $efidisk0,
                 'force' => $force,
                 'freeze' => $freeze,
+                'hookscript' => $hookscript,
                 'hotplug' => $hotplug,
                 'hugepages' => $hugepages,
+                'ivshmem' => $ivshmem,
                 'keyboard' => $keyboard,
                 'kvm' => $kvm,
                 'localtime' => $localtime,
@@ -8206,7 +7696,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'vga' => $vga,
                 'vmgenid' => $vmgenid,
                 'vmstatestorage' => $vmstatestorage,
-                'watchdog' => $watchdog];
+                'watchdog' => $watchdog
+            ];
             $this->addIndexedParameter($params, 'hostpci', $hostpciN);
             $this->addIndexedParameter($params, 'ide', $ideN);
             $this->addIndexedParameter($params, 'ipconfig', $ipconfigN);
@@ -8221,7 +7712,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->addIndexedParameter($params, 'virtio', $virtioN);
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/config", $params);
         }
-
         /**
          * Set virtual machine options (asynchrounous API).
          * @param bool $acpi Enable/disable ACPI.
@@ -8237,6 +7727,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $boot Boot on floppy (a), hard disk (c), CD-ROM (d), or network (n).
          * @param string $bootdisk Enable booting from specified disk.
          * @param string $cdrom This is an alias for option -ide2
+         * @param string $cicustom cloud-init: Specify custom files to replace the automatically generated ones at start.
          * @param string $cipassword cloud-init: Password to assign the user. Using this is generally not recommended. Use ssh keys instead. Also note that older cloud-init versions do not support hashed passwords.
          * @param string $citype Specifies the cloud-init configuration format. The default depends on the configured operating system type (`ostype`. We use the `nocloud` format for Linux, and `configdrive2` for windows.
          *   Enum: configdrive2,nocloud
@@ -8251,18 +7742,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $efidisk0 Configure a Disk for storing EFI vars
          * @param bool $force Force physical removal. Without this, we simple remove the disk from the config file and create an additional configuration entry called 'unused[n]', which contains the volume ID. Unlink of unused[n] always cause physical removal.
          * @param bool $freeze Freeze CPU at startup (use 'c' monitor command to start execution).
+         * @param string $hookscript Script that will be executed during various steps in the vms lifetime.
          * @param array $hostpciN Map host PCI devices into guest.
          * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory' and 'usb'. Use '0' to disable hotplug completely. Value '1' is an alias for the default 'network,disk,usb'.
          * @param string $hugepages Enable/disable hugepages memory.
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3).
-         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
+         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4. 
+         * @param string $ivshmem Inter-VM shared memory. Useful for direct communication between VMs, or to the host.
          * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.cfg' configuration file.It should not be necessary to set it.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param bool $kvm Enable/disable KVM hardware virtualization.
          * @param bool $localtime Set the real time clock to local time. This is enabled by default if ostype indicates a Microsoft OS.
          * @param string $lock Lock/unlock the VM.
-         *   Enum: migrate,backup,snapshot,rollback
+         *   Enum: backup,clone,create,migrate,rollback,snapshot,snapshot-delete,suspending,suspended
          * @param string $machine Specifies the Qemu machine type.
          * @param int $memory Amount of RAM for the VM in MB. This is the maximum available memory when you use the balloon device.
          * @param int $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
@@ -8306,11 +7799,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $watchdog Create a virtual hardware watchdog device.
          * @return Result
          */
-        public function updateVmAsync($acpi = null, $agent = null, $arch = null, $args = null, $autostart = null, $background_delay = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null)
+        public function updateVmAsync($acpi = null, $agent = null, $arch = null, $args = null, $autostart = null, $background_delay = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null)
         {
-            return $this->createRest($acpi, $agent, $arch, $args, $autostart, $background_delay, $balloon, $bios, $boot, $bootdisk, $cdrom, $cipassword, $citype, $ciuser, $cores, $cpu, $cpulimit, $cpuunits, $delete, $description, $digest, $efidisk0, $force, $freeze, $hostpciN, $hotplug, $hugepages, $ideN, $ipconfigN, $keyboard, $kvm, $localtime, $lock, $machine, $memory, $migrate_downtime, $migrate_speed, $name, $nameserver, $netN, $numa, $numaN, $onboot, $ostype, $parallelN, $protection, $reboot, $revert, $sataN, $scsiN, $scsihw, $searchdomain, $serialN, $shares, $skiplock, $smbios1, $smp, $sockets, $sshkeys, $startdate, $startup, $tablet, $tdf, $template, $unusedN, $usbN, $vcpus, $vga, $virtioN, $vmgenid, $vmstatestorage, $watchdog);
+            return $this->createRest($acpi, $agent, $arch, $args, $autostart, $background_delay, $balloon, $bios, $boot, $bootdisk, $cdrom, $cicustom, $cipassword, $citype, $ciuser, $cores, $cpu, $cpulimit, $cpuunits, $delete, $description, $digest, $efidisk0, $force, $freeze, $hookscript, $hostpciN, $hotplug, $hugepages, $ideN, $ipconfigN, $ivshmem, $keyboard, $kvm, $localtime, $lock, $machine, $memory, $migrate_downtime, $migrate_speed, $name, $nameserver, $netN, $numa, $numaN, $onboot, $ostype, $parallelN, $protection, $reboot, $revert, $sataN, $scsiN, $scsihw, $searchdomain, $serialN, $shares, $skiplock, $smbios1, $smp, $sockets, $sshkeys, $startdate, $startup, $tablet, $tdf, $template, $unusedN, $usbN, $vcpus, $vga, $virtioN, $vmgenid, $vmstatestorage, $watchdog);
         }
-
         /**
          * Set virtual machine options (synchrounous API) - You should consider using the POST method instead for any actions involving hotplug or storage allocation.
          * @param bool $acpi Enable/disable ACPI.
@@ -8325,6 +7817,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $boot Boot on floppy (a), hard disk (c), CD-ROM (d), or network (n).
          * @param string $bootdisk Enable booting from specified disk.
          * @param string $cdrom This is an alias for option -ide2
+         * @param string $cicustom cloud-init: Specify custom files to replace the automatically generated ones at start.
          * @param string $cipassword cloud-init: Password to assign the user. Using this is generally not recommended. Use ssh keys instead. Also note that older cloud-init versions do not support hashed passwords.
          * @param string $citype Specifies the cloud-init configuration format. The default depends on the configured operating system type (`ostype`. We use the `nocloud` format for Linux, and `configdrive2` for windows.
          *   Enum: configdrive2,nocloud
@@ -8339,18 +7832,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $efidisk0 Configure a Disk for storing EFI vars
          * @param bool $force Force physical removal. Without this, we simple remove the disk from the config file and create an additional configuration entry called 'unused[n]', which contains the volume ID. Unlink of unused[n] always cause physical removal.
          * @param bool $freeze Freeze CPU at startup (use 'c' monitor command to start execution).
+         * @param string $hookscript Script that will be executed during various steps in the vms lifetime.
          * @param array $hostpciN Map host PCI devices into guest.
          * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory' and 'usb'. Use '0' to disable hotplug completely. Value '1' is an alias for the default 'network,disk,usb'.
          * @param string $hugepages Enable/disable hugepages memory.
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3).
-         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
+         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4. 
+         * @param string $ivshmem Inter-VM shared memory. Useful for direct communication between VMs, or to the host.
          * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.cfg' configuration file.It should not be necessary to set it.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param bool $kvm Enable/disable KVM hardware virtualization.
          * @param bool $localtime Set the real time clock to local time. This is enabled by default if ostype indicates a Microsoft OS.
          * @param string $lock Lock/unlock the VM.
-         *   Enum: migrate,backup,snapshot,rollback
+         *   Enum: backup,clone,create,migrate,rollback,snapshot,snapshot-delete,suspending,suspended
          * @param string $machine Specifies the Qemu machine type.
          * @param int $memory Amount of RAM for the VM in MB. This is the maximum available memory when you use the balloon device.
          * @param int $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
@@ -8394,9 +7889,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $watchdog Create a virtual hardware watchdog device.
          * @return Result
          */
-        public function setRest($acpi = null, $agent = null, $arch = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null)
+        public function setRest($acpi = null, $agent = null, $arch = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null)
         {
-            $params = ['acpi' => $acpi,
+            $params = [
+                'acpi' => $acpi,
                 'agent' => $agent,
                 'arch' => $arch,
                 'args' => $args,
@@ -8406,6 +7902,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'boot' => $boot,
                 'bootdisk' => $bootdisk,
                 'cdrom' => $cdrom,
+                'cicustom' => $cicustom,
                 'cipassword' => $cipassword,
                 'citype' => $citype,
                 'ciuser' => $ciuser,
@@ -8419,8 +7916,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'efidisk0' => $efidisk0,
                 'force' => $force,
                 'freeze' => $freeze,
+                'hookscript' => $hookscript,
                 'hotplug' => $hotplug,
                 'hugepages' => $hugepages,
+                'ivshmem' => $ivshmem,
                 'keyboard' => $keyboard,
                 'kvm' => $kvm,
                 'localtime' => $localtime,
@@ -8454,7 +7953,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'vga' => $vga,
                 'vmgenid' => $vmgenid,
                 'vmstatestorage' => $vmstatestorage,
-                'watchdog' => $watchdog];
+                'watchdog' => $watchdog
+            ];
             $this->addIndexedParameter($params, 'hostpci', $hostpciN);
             $this->addIndexedParameter($params, 'ide', $ideN);
             $this->addIndexedParameter($params, 'ipconfig', $ipconfigN);
@@ -8469,7 +7969,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->addIndexedParameter($params, 'virtio', $virtioN);
             return $this->getClient()->set("/nodes/{$this->node}/qemu/{$this->vmid}/config", $params);
         }
-
         /**
          * Set virtual machine options (synchrounous API) - You should consider using the POST method instead for any actions involving hotplug or storage allocation.
          * @param bool $acpi Enable/disable ACPI.
@@ -8484,6 +7983,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $boot Boot on floppy (a), hard disk (c), CD-ROM (d), or network (n).
          * @param string $bootdisk Enable booting from specified disk.
          * @param string $cdrom This is an alias for option -ide2
+         * @param string $cicustom cloud-init: Specify custom files to replace the automatically generated ones at start.
          * @param string $cipassword cloud-init: Password to assign the user. Using this is generally not recommended. Use ssh keys instead. Also note that older cloud-init versions do not support hashed passwords.
          * @param string $citype Specifies the cloud-init configuration format. The default depends on the configured operating system type (`ostype`. We use the `nocloud` format for Linux, and `configdrive2` for windows.
          *   Enum: configdrive2,nocloud
@@ -8498,18 +7998,20 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $efidisk0 Configure a Disk for storing EFI vars
          * @param bool $force Force physical removal. Without this, we simple remove the disk from the config file and create an additional configuration entry called 'unused[n]', which contains the volume ID. Unlink of unused[n] always cause physical removal.
          * @param bool $freeze Freeze CPU at startup (use 'c' monitor command to start execution).
+         * @param string $hookscript Script that will be executed during various steps in the vms lifetime.
          * @param array $hostpciN Map host PCI devices into guest.
          * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory' and 'usb'. Use '0' to disable hotplug completely. Value '1' is an alias for the default 'network,disk,usb'.
          * @param string $hugepages Enable/disable hugepages memory.
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3).
-         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
+         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4. 
+         * @param string $ivshmem Inter-VM shared memory. Useful for direct communication between VMs, or to the host.
          * @param string $keyboard Keybord layout for vnc server. Default is read from the '/etc/pve/datacenter.cfg' configuration file.It should not be necessary to set it.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param bool $kvm Enable/disable KVM hardware virtualization.
          * @param bool $localtime Set the real time clock to local time. This is enabled by default if ostype indicates a Microsoft OS.
          * @param string $lock Lock/unlock the VM.
-         *   Enum: migrate,backup,snapshot,rollback
+         *   Enum: backup,clone,create,migrate,rollback,snapshot,snapshot-delete,suspending,suspended
          * @param string $machine Specifies the Qemu machine type.
          * @param int $memory Amount of RAM for the VM in MB. This is the maximum available memory when you use the balloon device.
          * @param int $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
@@ -8553,15 +8055,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $watchdog Create a virtual hardware watchdog device.
          * @return Result
          */
-        public function updateVm($acpi = null, $agent = null, $arch = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null)
+        public function updateVm($acpi = null, $agent = null, $arch = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null)
         {
-            return $this->setRest($acpi, $agent, $arch, $args, $autostart, $balloon, $bios, $boot, $bootdisk, $cdrom, $cipassword, $citype, $ciuser, $cores, $cpu, $cpulimit, $cpuunits, $delete, $description, $digest, $efidisk0, $force, $freeze, $hostpciN, $hotplug, $hugepages, $ideN, $ipconfigN, $keyboard, $kvm, $localtime, $lock, $machine, $memory, $migrate_downtime, $migrate_speed, $name, $nameserver, $netN, $numa, $numaN, $onboot, $ostype, $parallelN, $protection, $reboot, $revert, $sataN, $scsiN, $scsihw, $searchdomain, $serialN, $shares, $skiplock, $smbios1, $smp, $sockets, $sshkeys, $startdate, $startup, $tablet, $tdf, $template, $unusedN, $usbN, $vcpus, $vga, $virtioN, $vmgenid, $vmstatestorage, $watchdog);
+            return $this->setRest($acpi, $agent, $arch, $args, $autostart, $balloon, $bios, $boot, $bootdisk, $cdrom, $cicustom, $cipassword, $citype, $ciuser, $cores, $cpu, $cpulimit, $cpuunits, $delete, $description, $digest, $efidisk0, $force, $freeze, $hookscript, $hostpciN, $hotplug, $hugepages, $ideN, $ipconfigN, $ivshmem, $keyboard, $kvm, $localtime, $lock, $machine, $memory, $migrate_downtime, $migrate_speed, $name, $nameserver, $netN, $numa, $numaN, $onboot, $ostype, $parallelN, $protection, $reboot, $revert, $sataN, $scsiN, $scsihw, $searchdomain, $serialN, $shares, $skiplock, $smbios1, $smp, $sockets, $sshkeys, $startdate, $startup, $tablet, $tdf, $template, $unusedN, $usbN, $vcpus, $vga, $virtioN, $vmgenid, $vmstatestorage, $watchdog);
         }
     }
-
     /**
      * Class PVEVmidQemuNodeNodesPending
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesPending extends Base
     {
@@ -8573,7 +8074,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -8583,7 +8083,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Get virtual machine configuration, including pending changes.
          * @return Result
@@ -8592,7 +8091,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/pending");
         }
-
         /**
          * Get virtual machine configuration, including pending changes.
          * @return Result
@@ -8602,10 +8100,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEVmidQemuNodeNodesUnlink
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesUnlink extends Base
     {
@@ -8617,7 +8114,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -8627,7 +8123,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Unlink/delete disk images.
          * @param string $idlist A list of disk IDs you want to delete.
@@ -8636,11 +8131,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function setRest($idlist, $force = null)
         {
-            $params = ['idlist' => $idlist,
-                'force' => $force];
+            $params = [
+                'idlist' => $idlist,
+                'force' => $force
+            ];
             return $this->getClient()->set("/nodes/{$this->node}/qemu/{$this->vmid}/unlink", $params);
         }
-
         /**
          * Unlink/delete disk images.
          * @param string $idlist A list of disk IDs you want to delete.
@@ -8652,10 +8148,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($idlist, $force);
         }
     }
-
     /**
      * Class PVEVmidQemuNodeNodesVncproxy
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesVncproxy extends Base
     {
@@ -8667,7 +8162,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -8677,7 +8171,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Creates a TCP VNC proxy connections.
          * @param bool $websocket starts websockify instead of vncproxy
@@ -8688,7 +8181,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['websocket' => $websocket];
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/vncproxy", $params);
         }
-
         /**
          * Creates a TCP VNC proxy connections.
          * @param bool $websocket starts websockify instead of vncproxy
@@ -8699,10 +8191,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($websocket);
         }
     }
-
     /**
      * Class PVEVmidQemuNodeNodesTermproxy
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesTermproxy extends Base
     {
@@ -8714,7 +8205,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -8724,7 +8214,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Creates a TCP proxy connections.
          * @param string $serial opens a serial terminal (defaults to display)
@@ -8736,7 +8225,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['serial' => $serial];
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/termproxy", $params);
         }
-
         /**
          * Creates a TCP proxy connections.
          * @param string $serial opens a serial terminal (defaults to display)
@@ -8748,10 +8236,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($serial);
         }
     }
-
     /**
      * Class PVEVmidQemuNodeNodesVncwebsocket
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesVncwebsocket extends Base
     {
@@ -8763,7 +8250,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -8773,7 +8259,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Opens a weksocket for VNC traffic.
          * @param int $port Port number returned by previous vncproxy call.
@@ -8782,11 +8267,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRest($port, $vncticket)
         {
-            $params = ['port' => $port,
-                'vncticket' => $vncticket];
+            $params = [
+                'port' => $port,
+                'vncticket' => $vncticket
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/vncwebsocket", $params);
         }
-
         /**
          * Opens a weksocket for VNC traffic.
          * @param int $port Port number returned by previous vncproxy call.
@@ -8798,10 +8284,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($port, $vncticket);
         }
     }
-
     /**
      * Class PVEVmidQemuNodeNodesSpiceproxy
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesSpiceproxy extends Base
     {
@@ -8813,7 +8298,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -8823,7 +8307,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Returns a SPICE configuration to connect to the VM.
          * @param string $proxy SPICE proxy server. This can be used by the client to specify the proxy server. All nodes in a cluster runs 'spiceproxy', so it is up to the client to choose one. By default, we return the node where the VM is currently running. As reasonable setting is to use same node you use to connect to the API (This is window.location.hostname for the JS GUI).
@@ -8834,7 +8317,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['proxy' => $proxy];
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/spiceproxy", $params);
         }
-
         /**
          * Returns a SPICE configuration to connect to the VM.
          * @param string $proxy SPICE proxy server. This can be used by the client to specify the proxy server. All nodes in a cluster runs 'spiceproxy', so it is up to the client to choose one. By default, we return the node where the VM is currently running. As reasonable setting is to use same node you use to connect to the API (This is window.location.hostname for the JS GUI).
@@ -8845,10 +8327,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($proxy);
         }
     }
-
     /**
      * Class PVEVmidQemuNodeNodesStatus
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesStatus extends Base
     {
@@ -8860,7 +8341,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -8870,12 +8350,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * @ignore
          */
         private $current;
-
         /**
          * Get StatusVmidQemuNodeNodesCurrent
          * @return PVEStatusVmidQemuNodeNodesCurrent
@@ -8884,12 +8362,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->current ?: ($this->current = new PVEStatusVmidQemuNodeNodesCurrent($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $start;
-
         /**
          * Get StatusVmidQemuNodeNodesStart
          * @return PVEStatusVmidQemuNodeNodesStart
@@ -8898,12 +8374,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->start ?: ($this->start = new PVEStatusVmidQemuNodeNodesStart($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $stop;
-
         /**
          * Get StatusVmidQemuNodeNodesStop
          * @return PVEStatusVmidQemuNodeNodesStop
@@ -8912,12 +8386,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->stop ?: ($this->stop = new PVEStatusVmidQemuNodeNodesStop($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $reset;
-
         /**
          * Get StatusVmidQemuNodeNodesReset
          * @return PVEStatusVmidQemuNodeNodesReset
@@ -8926,12 +8398,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->reset ?: ($this->reset = new PVEStatusVmidQemuNodeNodesReset($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $shutdown;
-
         /**
          * Get StatusVmidQemuNodeNodesShutdown
          * @return PVEStatusVmidQemuNodeNodesShutdown
@@ -8940,12 +8410,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->shutdown ?: ($this->shutdown = new PVEStatusVmidQemuNodeNodesShutdown($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $suspend;
-
         /**
          * Get StatusVmidQemuNodeNodesSuspend
          * @return PVEStatusVmidQemuNodeNodesSuspend
@@ -8954,12 +8422,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->suspend ?: ($this->suspend = new PVEStatusVmidQemuNodeNodesSuspend($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $resume;
-
         /**
          * Get StatusVmidQemuNodeNodesResume
          * @return PVEStatusVmidQemuNodeNodesResume
@@ -8968,7 +8434,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->resume ?: ($this->resume = new PVEStatusVmidQemuNodeNodesResume($this->client, $this->node, $this->vmid));
         }
-
         /**
          * Directory index
          * @return Result
@@ -8977,7 +8442,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/status");
         }
-
         /**
          * Directory index
          * @return Result
@@ -8987,10 +8451,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEStatusVmidQemuNodeNodesCurrent
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidQemuNodeNodesCurrent extends Base
     {
@@ -9002,7 +8465,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -9012,7 +8474,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Get virtual machine status.
          * @return Result
@@ -9021,7 +8482,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/status/current");
         }
-
         /**
          * Get virtual machine status.
          * @return Result
@@ -9031,10 +8491,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEStatusVmidQemuNodeNodesStart
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidQemuNodeNodesStart extends Base
     {
@@ -9046,7 +8505,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -9056,7 +8514,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Start virtual machine.
          * @param string $machine Specifies the Qemu machine type.
@@ -9071,16 +8528,17 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($machine = null, $migratedfrom = null, $migration_network = null, $migration_type = null, $skiplock = null, $stateuri = null, $targetstorage = null)
         {
-            $params = ['machine' => $machine,
+            $params = [
+                'machine' => $machine,
                 'migratedfrom' => $migratedfrom,
                 'migration_network' => $migration_network,
                 'migration_type' => $migration_type,
                 'skiplock' => $skiplock,
                 'stateuri' => $stateuri,
-                'targetstorage' => $targetstorage];
+                'targetstorage' => $targetstorage
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/status/start", $params);
         }
-
         /**
          * Start virtual machine.
          * @param string $machine Specifies the Qemu machine type.
@@ -9098,10 +8556,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($machine, $migratedfrom, $migration_network, $migration_type, $skiplock, $stateuri, $targetstorage);
         }
     }
-
     /**
      * Class PVEStatusVmidQemuNodeNodesStop
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidQemuNodeNodesStop extends Base
     {
@@ -9113,7 +8570,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -9123,7 +8579,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Stop virtual machine. The qemu process will exit immediately. Thisis akin to pulling the power plug of a running computer and may damage the VM data
          * @param bool $keepActive Do not deactivate storage volumes.
@@ -9134,13 +8589,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($keepActive = null, $migratedfrom = null, $skiplock = null, $timeout = null)
         {
-            $params = ['keepActive' => $keepActive,
+            $params = [
+                'keepActive' => $keepActive,
                 'migratedfrom' => $migratedfrom,
                 'skiplock' => $skiplock,
-                'timeout' => $timeout];
+                'timeout' => $timeout
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/status/stop", $params);
         }
-
         /**
          * Stop virtual machine. The qemu process will exit immediately. Thisis akin to pulling the power plug of a running computer and may damage the VM data
          * @param bool $keepActive Do not deactivate storage volumes.
@@ -9154,10 +8610,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($keepActive, $migratedfrom, $skiplock, $timeout);
         }
     }
-
     /**
      * Class PVEStatusVmidQemuNodeNodesReset
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidQemuNodeNodesReset extends Base
     {
@@ -9169,7 +8624,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -9179,7 +8633,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Reset virtual machine.
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
@@ -9190,7 +8643,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['skiplock' => $skiplock];
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/status/reset", $params);
         }
-
         /**
          * Reset virtual machine.
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
@@ -9201,10 +8653,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($skiplock);
         }
     }
-
     /**
      * Class PVEStatusVmidQemuNodeNodesShutdown
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidQemuNodeNodesShutdown extends Base
     {
@@ -9216,7 +8667,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -9226,7 +8676,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Shutdown virtual machine. This is similar to pressing the power button on a physical machine.This will send an ACPI event for the guest OS, which should then proceed to a clean shutdown.
          * @param bool $forceStop Make sure the VM stops.
@@ -9237,13 +8686,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($forceStop = null, $keepActive = null, $skiplock = null, $timeout = null)
         {
-            $params = ['forceStop' => $forceStop,
+            $params = [
+                'forceStop' => $forceStop,
                 'keepActive' => $keepActive,
                 'skiplock' => $skiplock,
-                'timeout' => $timeout];
+                'timeout' => $timeout
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/status/shutdown", $params);
         }
-
         /**
          * Shutdown virtual machine. This is similar to pressing the power button on a physical machine.This will send an ACPI event for the guest OS, which should then proceed to a clean shutdown.
          * @param bool $forceStop Make sure the VM stops.
@@ -9257,10 +8707,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($forceStop, $keepActive, $skiplock, $timeout);
         }
     }
-
     /**
      * Class PVEStatusVmidQemuNodeNodesSuspend
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidQemuNodeNodesSuspend extends Base
     {
@@ -9272,7 +8721,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -9282,32 +8730,37 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Suspend virtual machine.
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
+         * @param string $statestorage The storage for the VM state
+         * @param bool $todisk If set, suspends the VM to disk. Will be resumed on next VM start.
          * @return Result
          */
-        public function createRest($skiplock = null)
+        public function createRest($skiplock = null, $statestorage = null, $todisk = null)
         {
-            $params = ['skiplock' => $skiplock];
+            $params = [
+                'skiplock' => $skiplock,
+                'statestorage' => $statestorage,
+                'todisk' => $todisk
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/status/suspend", $params);
         }
-
         /**
          * Suspend virtual machine.
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
+         * @param string $statestorage The storage for the VM state
+         * @param bool $todisk If set, suspends the VM to disk. Will be resumed on next VM start.
          * @return Result
          */
-        public function vmSuspend($skiplock = null)
+        public function vmSuspend($skiplock = null, $statestorage = null, $todisk = null)
         {
-            return $this->createRest($skiplock);
+            return $this->createRest($skiplock, $statestorage, $todisk);
         }
     }
-
     /**
      * Class PVEStatusVmidQemuNodeNodesResume
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidQemuNodeNodesResume extends Base
     {
@@ -9319,7 +8772,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -9329,23 +8781,23 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Resume virtual machine.
-         * @param bool $nocheck
+         * @param bool $nocheck 
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
          * @return Result
          */
         public function createRest($nocheck = null, $skiplock = null)
         {
-            $params = ['nocheck' => $nocheck,
-                'skiplock' => $skiplock];
+            $params = [
+                'nocheck' => $nocheck,
+                'skiplock' => $skiplock
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/status/resume", $params);
         }
-
         /**
          * Resume virtual machine.
-         * @param bool $nocheck
+         * @param bool $nocheck 
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
          * @return Result
          */
@@ -9354,10 +8806,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($nocheck, $skiplock);
         }
     }
-
     /**
      * Class PVEVmidQemuNodeNodesSendkey
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesSendkey extends Base
     {
@@ -9369,7 +8820,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -9379,7 +8829,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Send key event to virtual machine.
          * @param string $key The key (qemu monitor encoding).
@@ -9388,11 +8837,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function setRest($key, $skiplock = null)
         {
-            $params = ['key' => $key,
-                'skiplock' => $skiplock];
+            $params = [
+                'key' => $key,
+                'skiplock' => $skiplock
+            ];
             return $this->getClient()->set("/nodes/{$this->node}/qemu/{$this->vmid}/sendkey", $params);
         }
-
         /**
          * Send key event to virtual machine.
          * @param string $key The key (qemu monitor encoding).
@@ -9404,10 +8854,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($key, $skiplock);
         }
     }
-
     /**
      * Class PVEVmidQemuNodeNodesFeature
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesFeature extends Base
     {
@@ -9419,7 +8868,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -9429,7 +8877,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Check if feature for virtual machine is available.
          * @param string $feature Feature to check.
@@ -9439,11 +8886,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRest($feature, $snapname = null)
         {
-            $params = ['feature' => $feature,
-                'snapname' => $snapname];
+            $params = [
+                'feature' => $feature,
+                'snapname' => $snapname
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/feature", $params);
         }
-
         /**
          * Check if feature for virtual machine is available.
          * @param string $feature Feature to check.
@@ -9456,10 +8904,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($feature, $snapname);
         }
     }
-
     /**
      * Class PVEVmidQemuNodeNodesClone
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesClone extends Base
     {
@@ -9471,7 +8918,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -9481,10 +8927,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Create a copy of virtual machine/template.
          * @param int $newid VMID for the clone.
+         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param string $description Description for the new VM.
          * @param string $format Target format for file storage. Only valid for full clone.
          *   Enum: raw,qcow2,vmdk
@@ -9496,9 +8942,11 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $target Target node. Only allowed if the original VM is on shared storage.
          * @return Result
          */
-        public function createRest($newid, $description = null, $format = null, $full = null, $name = null, $pool = null, $snapname = null, $storage = null, $target = null)
+        public function createRest($newid, $bwlimit = null, $description = null, $format = null, $full = null, $name = null, $pool = null, $snapname = null, $storage = null, $target = null)
         {
-            $params = ['newid' => $newid,
+            $params = [
+                'newid' => $newid,
+                'bwlimit' => $bwlimit,
                 'description' => $description,
                 'format' => $format,
                 'full' => $full,
@@ -9506,13 +8954,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'pool' => $pool,
                 'snapname' => $snapname,
                 'storage' => $storage,
-                'target' => $target];
+                'target' => $target
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/clone", $params);
         }
-
         /**
          * Create a copy of virtual machine/template.
          * @param int $newid VMID for the clone.
+         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param string $description Description for the new VM.
          * @param string $format Target format for file storage. Only valid for full clone.
          *   Enum: raw,qcow2,vmdk
@@ -9524,15 +8973,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $target Target node. Only allowed if the original VM is on shared storage.
          * @return Result
          */
-        public function cloneVm($newid, $description = null, $format = null, $full = null, $name = null, $pool = null, $snapname = null, $storage = null, $target = null)
+        public function cloneVm($newid, $bwlimit = null, $description = null, $format = null, $full = null, $name = null, $pool = null, $snapname = null, $storage = null, $target = null)
         {
-            return $this->createRest($newid, $description, $format, $full, $name, $pool, $snapname, $storage, $target);
+            return $this->createRest($newid, $bwlimit, $description, $format, $full, $name, $pool, $snapname, $storage, $target);
         }
     }
-
     /**
      * Class PVEVmidQemuNodeNodesMoveDisk
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesMoveDisk extends Base
     {
@@ -9544,7 +8992,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -9554,48 +9001,50 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Move volume to different storage.
          * @param string $disk The disk you want to move.
          *   Enum: ide0,ide1,ide2,ide3,scsi0,scsi1,scsi2,scsi3,scsi4,scsi5,scsi6,scsi7,scsi8,scsi9,scsi10,scsi11,scsi12,scsi13,virtio0,virtio1,virtio2,virtio3,virtio4,virtio5,virtio6,virtio7,virtio8,virtio9,virtio10,virtio11,virtio12,virtio13,virtio14,virtio15,sata0,sata1,sata2,sata3,sata4,sata5,efidisk0
          * @param string $storage Target storage.
+         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param bool $delete Delete the original disk after successful copy. By default the original disk is kept as unused disk.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $format Target Format.
          *   Enum: raw,qcow2,vmdk
          * @return Result
          */
-        public function createRest($disk, $storage, $delete = null, $digest = null, $format = null)
+        public function createRest($disk, $storage, $bwlimit = null, $delete = null, $digest = null, $format = null)
         {
-            $params = ['disk' => $disk,
+            $params = [
+                'disk' => $disk,
                 'storage' => $storage,
+                'bwlimit' => $bwlimit,
                 'delete' => $delete,
                 'digest' => $digest,
-                'format' => $format];
+                'format' => $format
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/move_disk", $params);
         }
-
         /**
          * Move volume to different storage.
          * @param string $disk The disk you want to move.
          *   Enum: ide0,ide1,ide2,ide3,scsi0,scsi1,scsi2,scsi3,scsi4,scsi5,scsi6,scsi7,scsi8,scsi9,scsi10,scsi11,scsi12,scsi13,virtio0,virtio1,virtio2,virtio3,virtio4,virtio5,virtio6,virtio7,virtio8,virtio9,virtio10,virtio11,virtio12,virtio13,virtio14,virtio15,sata0,sata1,sata2,sata3,sata4,sata5,efidisk0
          * @param string $storage Target storage.
+         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param bool $delete Delete the original disk after successful copy. By default the original disk is kept as unused disk.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $format Target Format.
          *   Enum: raw,qcow2,vmdk
          * @return Result
          */
-        public function moveVmDisk($disk, $storage, $delete = null, $digest = null, $format = null)
+        public function moveVmDisk($disk, $storage, $bwlimit = null, $delete = null, $digest = null, $format = null)
         {
-            return $this->createRest($disk, $storage, $delete, $digest, $format);
+            return $this->createRest($disk, $storage, $bwlimit, $delete, $digest, $format);
         }
     }
-
     /**
      * Class PVEVmidQemuNodeNodesMigrate
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesMigrate extends Base
     {
@@ -9607,7 +9056,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -9617,10 +9065,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Migrate virtual machine. Creates a new migration task.
          * @param string $target Target node.
+         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param bool $force Allow to migrate VMs which use local devices. Only root may use this option.
          * @param string $migration_network CIDR of the (sub) network that is used for migration.
          * @param string $migration_type Migration traffic is encrypted using an SSH tunnel by default. On secure, completely private networks this can be disabled to increase performance.
@@ -9630,21 +9078,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param bool $with_local_disks Enable live storage migration for local disk
          * @return Result
          */
-        public function createRest($target, $force = null, $migration_network = null, $migration_type = null, $online = null, $targetstorage = null, $with_local_disks = null)
+        public function createRest($target, $bwlimit = null, $force = null, $migration_network = null, $migration_type = null, $online = null, $targetstorage = null, $with_local_disks = null)
         {
-            $params = ['target' => $target,
+            $params = [
+                'target' => $target,
+                'bwlimit' => $bwlimit,
                 'force' => $force,
                 'migration_network' => $migration_network,
                 'migration_type' => $migration_type,
                 'online' => $online,
                 'targetstorage' => $targetstorage,
-                'with-local-disks' => $with_local_disks];
+                'with-local-disks' => $with_local_disks
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/migrate", $params);
         }
-
         /**
          * Migrate virtual machine. Creates a new migration task.
          * @param string $target Target node.
+         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param bool $force Allow to migrate VMs which use local devices. Only root may use this option.
          * @param string $migration_network CIDR of the (sub) network that is used for migration.
          * @param string $migration_type Migration traffic is encrypted using an SSH tunnel by default. On secure, completely private networks this can be disabled to increase performance.
@@ -9654,15 +9105,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param bool $with_local_disks Enable live storage migration for local disk
          * @return Result
          */
-        public function migrateVm($target, $force = null, $migration_network = null, $migration_type = null, $online = null, $targetstorage = null, $with_local_disks = null)
+        public function migrateVm($target, $bwlimit = null, $force = null, $migration_network = null, $migration_type = null, $online = null, $targetstorage = null, $with_local_disks = null)
         {
-            return $this->createRest($target, $force, $migration_network, $migration_type, $online, $targetstorage, $with_local_disks);
+            return $this->createRest($target, $bwlimit, $force, $migration_network, $migration_type, $online, $targetstorage, $with_local_disks);
         }
     }
-
     /**
      * Class PVEVmidQemuNodeNodesMonitor
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesMonitor extends Base
     {
@@ -9674,7 +9124,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -9684,7 +9133,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Execute Qemu monitor commands.
          * @param string $command The monitor command.
@@ -9695,7 +9143,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['command' => $command];
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/monitor", $params);
         }
-
         /**
          * Execute Qemu monitor commands.
          * @param string $command The monitor command.
@@ -9706,10 +9153,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($command);
         }
     }
-
     /**
      * Class PVEVmidQemuNodeNodesResize
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesResize extends Base
     {
@@ -9721,7 +9167,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -9731,7 +9176,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Extend volume size.
          * @param string $disk The disk you want to resize.
@@ -9743,13 +9187,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function setRest($disk, $size, $digest = null, $skiplock = null)
         {
-            $params = ['disk' => $disk,
+            $params = [
+                'disk' => $disk,
                 'size' => $size,
                 'digest' => $digest,
-                'skiplock' => $skiplock];
+                'skiplock' => $skiplock
+            ];
             return $this->getClient()->set("/nodes/{$this->node}/qemu/{$this->vmid}/resize", $params);
         }
-
         /**
          * Extend volume size.
          * @param string $disk The disk you want to resize.
@@ -9764,10 +9209,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($disk, $size, $digest, $skiplock);
         }
     }
-
     /**
      * Class PVEVmidQemuNodeNodesSnapshot
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesSnapshot extends Base
     {
@@ -9779,7 +9223,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -9789,7 +9232,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Get ItemSnapshotVmidQemuNodeNodesSnapname
          * @param snapname
@@ -9799,7 +9241,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemSnapshotVmidQemuNodeNodesSnapname($this->client, $this->node, $this->vmid, $snapname);
         }
-
         /**
          * List all snapshots.
          * @return Result
@@ -9808,7 +9249,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot");
         }
-
         /**
          * List all snapshots.
          * @return Result
@@ -9817,7 +9257,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Snapshot a VM.
          * @param string $snapname The name of the snapshot.
@@ -9827,12 +9266,13 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($snapname, $description = null, $vmstate = null)
         {
-            $params = ['snapname' => $snapname,
+            $params = [
+                'snapname' => $snapname,
                 'description' => $description,
-                'vmstate' => $vmstate];
+                'vmstate' => $vmstate
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot", $params);
         }
-
         /**
          * Snapshot a VM.
          * @param string $snapname The name of the snapshot.
@@ -9845,10 +9285,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($snapname, $description, $vmstate);
         }
     }
-
     /**
      * Class PVEItemSnapshotVmidQemuNodeNodesSnapname
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemSnapshotVmidQemuNodeNodesSnapname extends Base
     {
@@ -9864,7 +9303,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $snapname;
-
         /**
          * @ignore
          */
@@ -9875,12 +9313,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
             $this->snapname = $snapname;
         }
-
         /**
          * @ignore
          */
         private $config;
-
         /**
          * Get SnapnameSnapshotVmidQemuNodeNodesConfig
          * @return PVESnapnameSnapshotVmidQemuNodeNodesConfig
@@ -9889,12 +9325,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->config ?: ($this->config = new PVESnapnameSnapshotVmidQemuNodeNodesConfig($this->client, $this->node, $this->vmid, $this->snapname));
         }
-
         /**
          * @ignore
          */
         private $rollback;
-
         /**
          * Get SnapnameSnapshotVmidQemuNodeNodesRollback
          * @return PVESnapnameSnapshotVmidQemuNodeNodesRollback
@@ -9903,7 +9337,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->rollback ?: ($this->rollback = new PVESnapnameSnapshotVmidQemuNodeNodesRollback($this->client, $this->node, $this->vmid, $this->snapname));
         }
-
         /**
          * Delete a VM snapshot.
          * @param bool $force For removal from config file, even if removing disk snapshots fails.
@@ -9914,7 +9347,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['force' => $force];
             return $this->getClient()->delete("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot/{$this->snapname}", $params);
         }
-
         /**
          * Delete a VM snapshot.
          * @param bool $force For removal from config file, even if removing disk snapshots fails.
@@ -9924,18 +9356,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest($force);
         }
-
         /**
-         *
+         * 
          * @return Result
          */
         public function getRest()
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot/{$this->snapname}");
         }
-
         /**
-         *
+         * 
          * @return Result
          */
         public function snapshotCmdIdx()
@@ -9943,10 +9373,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVESnapnameSnapshotVmidQemuNodeNodesConfig
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVESnapnameSnapshotVmidQemuNodeNodesConfig extends Base
     {
@@ -9962,7 +9391,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $snapname;
-
         /**
          * @ignore
          */
@@ -9973,7 +9401,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
             $this->snapname = $snapname;
         }
-
         /**
          * Get snapshot configuration
          * @return Result
@@ -9982,7 +9409,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot/{$this->snapname}/config");
         }
-
         /**
          * Get snapshot configuration
          * @return Result
@@ -9991,7 +9417,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Update snapshot metadata.
          * @param string $description A textual description or comment.
@@ -10002,7 +9427,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['description' => $description];
             return $this->getClient()->set("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot/{$this->snapname}/config", $params);
         }
-
         /**
          * Update snapshot metadata.
          * @param string $description A textual description or comment.
@@ -10013,10 +9437,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($description);
         }
     }
-
     /**
      * Class PVESnapnameSnapshotVmidQemuNodeNodesRollback
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVESnapnameSnapshotVmidQemuNodeNodesRollback extends Base
     {
@@ -10032,7 +9455,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $snapname;
-
         /**
          * @ignore
          */
@@ -10043,7 +9465,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
             $this->snapname = $snapname;
         }
-
         /**
          * Rollback VM state to specified snapshot.
          * @return Result
@@ -10052,7 +9473,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot/{$this->snapname}/rollback");
         }
-
         /**
          * Rollback VM state to specified snapshot.
          * @return Result
@@ -10062,10 +9482,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest();
         }
     }
-
     /**
      * Class PVEVmidQemuNodeNodesTemplate
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesTemplate extends Base
     {
@@ -10077,7 +9496,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -10087,7 +9505,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Create a Template.
          * @param string $disk If you want to convert only 1 disk to base image.
@@ -10099,7 +9516,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['disk' => $disk];
             return $this->getClient()->create("/nodes/{$this->node}/qemu/{$this->vmid}/template", $params);
         }
-
         /**
          * Create a Template.
          * @param string $disk If you want to convert only 1 disk to base image.
@@ -10111,10 +9527,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($disk);
         }
     }
-
     /**
      * Class PVENodeNodesLxc
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesLxc extends Base
     {
@@ -10122,7 +9537,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -10131,7 +9545,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get ItemLxcNodeNodesVmid
          * @param vmid
@@ -10141,7 +9554,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemLxcNodeNodesVmid($this->client, $this->node, $vmid);
         }
-
         /**
          * LXC container index (per node).
          * @return Result
@@ -10150,7 +9562,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/lxc");
         }
-
         /**
          * LXC container index (per node).
          * @return Result
@@ -10159,14 +9570,13 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create or restore a container.
          * @param string $ostemplate The OS template or backup file.
          * @param int $vmid The (unique) ID of the VM.
          * @param string $arch OS architecture type.
          *   Enum: amd64,i386,arm64,armhf
-         * @param int $bwlimit Override i/o bandwidth limit (in KiB/s).
+         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param string $cmode Console mode. By default, the console command tries to open a connection to one of the available tty devices. By setting cmode to 'console' it tries to attach to /dev/console instead. If you set cmode to 'shell', it simply invokes a shell inside the container (no login).
          *   Enum: shell,console,tty
          * @param bool $console Attach a console device (/dev/console) to the container.
@@ -10176,6 +9586,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $description Container description. Only used on the configuration web interface.
          * @param string $features Allow containers access to advanced features.
          * @param bool $force Allow to overwrite existing container.
+         * @param string $hookscript Script that will be exectued during various steps in the containers lifetime.
          * @param string $hostname Set a host name for the container.
          * @param bool $ignore_unpack_errors Ignore errors when extracting the template.
          * @param string $lock Lock/unlock the VM.
@@ -10200,13 +9611,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param int $swap Amount of SWAP for the VM in MB.
          * @param bool $template Enable/disable Template.
          * @param int $tty Specify the number of tty available to the container
+         * @param bool $unique Assign a unique random ethernet address.
          * @param bool $unprivileged Makes the container run as unprivileged user. (Should not be modified manually.)
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
          * @return Result
          */
-        public function createRest($ostemplate, $vmid, $arch = null, $bwlimit = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $description = null, $features = null, $force = null, $hostname = null, $ignore_unpack_errors = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $password = null, $pool = null, $protection = null, $restore = null, $rootfs = null, $searchdomain = null, $ssh_public_keys = null, $start = null, $startup = null, $storage = null, $swap = null, $template = null, $tty = null, $unprivileged = null, $unusedN = null)
+        public function createRest($ostemplate, $vmid, $arch = null, $bwlimit = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $description = null, $features = null, $force = null, $hookscript = null, $hostname = null, $ignore_unpack_errors = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $password = null, $pool = null, $protection = null, $restore = null, $rootfs = null, $searchdomain = null, $ssh_public_keys = null, $start = null, $startup = null, $storage = null, $swap = null, $template = null, $tty = null, $unique = null, $unprivileged = null, $unusedN = null)
         {
-            $params = ['ostemplate' => $ostemplate,
+            $params = [
+                'ostemplate' => $ostemplate,
                 'vmid' => $vmid,
                 'arch' => $arch,
                 'bwlimit' => $bwlimit,
@@ -10218,6 +9631,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'description' => $description,
                 'features' => $features,
                 'force' => $force,
+                'hookscript' => $hookscript,
                 'hostname' => $hostname,
                 'ignore-unpack-errors' => $ignore_unpack_errors,
                 'lock' => $lock,
@@ -10238,20 +9652,21 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'swap' => $swap,
                 'template' => $template,
                 'tty' => $tty,
-                'unprivileged' => $unprivileged];
+                'unique' => $unique,
+                'unprivileged' => $unprivileged
+            ];
             $this->addIndexedParameter($params, 'mp', $mpN);
             $this->addIndexedParameter($params, 'net', $netN);
             $this->addIndexedParameter($params, 'unused', $unusedN);
             return $this->getClient()->create("/nodes/{$this->node}/lxc", $params);
         }
-
         /**
          * Create or restore a container.
          * @param string $ostemplate The OS template or backup file.
          * @param int $vmid The (unique) ID of the VM.
          * @param string $arch OS architecture type.
          *   Enum: amd64,i386,arm64,armhf
-         * @param int $bwlimit Override i/o bandwidth limit (in KiB/s).
+         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param string $cmode Console mode. By default, the console command tries to open a connection to one of the available tty devices. By setting cmode to 'console' it tries to attach to /dev/console instead. If you set cmode to 'shell', it simply invokes a shell inside the container (no login).
          *   Enum: shell,console,tty
          * @param bool $console Attach a console device (/dev/console) to the container.
@@ -10261,6 +9676,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $description Container description. Only used on the configuration web interface.
          * @param string $features Allow containers access to advanced features.
          * @param bool $force Allow to overwrite existing container.
+         * @param string $hookscript Script that will be exectued during various steps in the containers lifetime.
          * @param string $hostname Set a host name for the container.
          * @param bool $ignore_unpack_errors Ignore errors when extracting the template.
          * @param string $lock Lock/unlock the VM.
@@ -10285,19 +9701,19 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param int $swap Amount of SWAP for the VM in MB.
          * @param bool $template Enable/disable Template.
          * @param int $tty Specify the number of tty available to the container
+         * @param bool $unique Assign a unique random ethernet address.
          * @param bool $unprivileged Makes the container run as unprivileged user. (Should not be modified manually.)
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
          * @return Result
          */
-        public function createVm($ostemplate, $vmid, $arch = null, $bwlimit = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $description = null, $features = null, $force = null, $hostname = null, $ignore_unpack_errors = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $password = null, $pool = null, $protection = null, $restore = null, $rootfs = null, $searchdomain = null, $ssh_public_keys = null, $start = null, $startup = null, $storage = null, $swap = null, $template = null, $tty = null, $unprivileged = null, $unusedN = null)
+        public function createVm($ostemplate, $vmid, $arch = null, $bwlimit = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $description = null, $features = null, $force = null, $hookscript = null, $hostname = null, $ignore_unpack_errors = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $password = null, $pool = null, $protection = null, $restore = null, $rootfs = null, $searchdomain = null, $ssh_public_keys = null, $start = null, $startup = null, $storage = null, $swap = null, $template = null, $tty = null, $unique = null, $unprivileged = null, $unusedN = null)
         {
-            return $this->createRest($ostemplate, $vmid, $arch, $bwlimit, $cmode, $console, $cores, $cpulimit, $cpuunits, $description, $features, $force, $hostname, $ignore_unpack_errors, $lock, $memory, $mpN, $nameserver, $netN, $onboot, $ostype, $password, $pool, $protection, $restore, $rootfs, $searchdomain, $ssh_public_keys, $start, $startup, $storage, $swap, $template, $tty, $unprivileged, $unusedN);
+            return $this->createRest($ostemplate, $vmid, $arch, $bwlimit, $cmode, $console, $cores, $cpulimit, $cpuunits, $description, $features, $force, $hookscript, $hostname, $ignore_unpack_errors, $lock, $memory, $mpN, $nameserver, $netN, $onboot, $ostype, $password, $pool, $protection, $restore, $rootfs, $searchdomain, $ssh_public_keys, $start, $startup, $storage, $swap, $template, $tty, $unique, $unprivileged, $unusedN);
         }
     }
-
     /**
      * Class PVEItemLxcNodeNodesVmid
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemLxcNodeNodesVmid extends Base
     {
@@ -10309,7 +9725,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -10319,12 +9734,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * @ignore
          */
         private $config;
-
         /**
          * Get VmidLxcNodeNodesConfig
          * @return PVEVmidLxcNodeNodesConfig
@@ -10333,12 +9746,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->config ?: ($this->config = new PVEVmidLxcNodeNodesConfig($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $status;
-
         /**
          * Get VmidLxcNodeNodesStatus
          * @return PVEVmidLxcNodeNodesStatus
@@ -10347,12 +9758,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->status ?: ($this->status = new PVEVmidLxcNodeNodesStatus($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $snapshot;
-
         /**
          * Get VmidLxcNodeNodesSnapshot
          * @return PVEVmidLxcNodeNodesSnapshot
@@ -10361,12 +9770,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->snapshot ?: ($this->snapshot = new PVEVmidLxcNodeNodesSnapshot($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $firewall;
-
         /**
          * Get VmidLxcNodeNodesFirewall
          * @return PVEVmidLxcNodeNodesFirewall
@@ -10375,12 +9782,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->firewall ?: ($this->firewall = new PVEVmidLxcNodeNodesFirewall($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $rrd;
-
         /**
          * Get VmidLxcNodeNodesRrd
          * @return PVEVmidLxcNodeNodesRrd
@@ -10389,12 +9794,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->rrd ?: ($this->rrd = new PVEVmidLxcNodeNodesRrd($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $rrddata;
-
         /**
          * Get VmidLxcNodeNodesRrddata
          * @return PVEVmidLxcNodeNodesRrddata
@@ -10403,12 +9806,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->rrddata ?: ($this->rrddata = new PVEVmidLxcNodeNodesRrddata($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $vncproxy;
-
         /**
          * Get VmidLxcNodeNodesVncproxy
          * @return PVEVmidLxcNodeNodesVncproxy
@@ -10417,12 +9818,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->vncproxy ?: ($this->vncproxy = new PVEVmidLxcNodeNodesVncproxy($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $termproxy;
-
         /**
          * Get VmidLxcNodeNodesTermproxy
          * @return PVEVmidLxcNodeNodesTermproxy
@@ -10431,12 +9830,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->termproxy ?: ($this->termproxy = new PVEVmidLxcNodeNodesTermproxy($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $vncwebsocket;
-
         /**
          * Get VmidLxcNodeNodesVncwebsocket
          * @return PVEVmidLxcNodeNodesVncwebsocket
@@ -10445,12 +9842,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->vncwebsocket ?: ($this->vncwebsocket = new PVEVmidLxcNodeNodesVncwebsocket($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $spiceproxy;
-
         /**
          * Get VmidLxcNodeNodesSpiceproxy
          * @return PVEVmidLxcNodeNodesSpiceproxy
@@ -10459,12 +9854,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->spiceproxy ?: ($this->spiceproxy = new PVEVmidLxcNodeNodesSpiceproxy($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $migrate;
-
         /**
          * Get VmidLxcNodeNodesMigrate
          * @return PVEVmidLxcNodeNodesMigrate
@@ -10473,12 +9866,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->migrate ?: ($this->migrate = new PVEVmidLxcNodeNodesMigrate($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $feature;
-
         /**
          * Get VmidLxcNodeNodesFeature
          * @return PVEVmidLxcNodeNodesFeature
@@ -10487,12 +9878,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->feature ?: ($this->feature = new PVEVmidLxcNodeNodesFeature($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $template;
-
         /**
          * Get VmidLxcNodeNodesTemplate
          * @return PVEVmidLxcNodeNodesTemplate
@@ -10501,12 +9890,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->template ?: ($this->template = new PVEVmidLxcNodeNodesTemplate($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $clone;
-
         /**
          * Get VmidLxcNodeNodesClone
          * @return PVEVmidLxcNodeNodesClone
@@ -10515,12 +9902,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->clone ?: ($this->clone = new PVEVmidLxcNodeNodesClone($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $resize;
-
         /**
          * Get VmidLxcNodeNodesResize
          * @return PVEVmidLxcNodeNodesResize
@@ -10529,12 +9914,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->resize ?: ($this->resize = new PVEVmidLxcNodeNodesResize($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $moveVolume;
-
         /**
          * Get VmidLxcNodeNodesMoveVolume
          * @return PVEVmidLxcNodeNodesMoveVolume
@@ -10543,7 +9926,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->moveVolume ?: ($this->moveVolume = new PVEVmidLxcNodeNodesMoveVolume($this->client, $this->node, $this->vmid));
         }
-
         /**
          * Destroy the container (also delete all uses files).
          * @return Result
@@ -10552,7 +9934,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->delete("/nodes/{$this->node}/lxc/{$this->vmid}");
         }
-
         /**
          * Destroy the container (also delete all uses files).
          * @return Result
@@ -10561,7 +9942,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest();
         }
-
         /**
          * Directory index
          * @return Result
@@ -10570,7 +9950,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/lxc/{$this->vmid}");
         }
-
         /**
          * Directory index
          * @return Result
@@ -10580,10 +9959,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEVmidLxcNodeNodesConfig
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesConfig extends Base
     {
@@ -10595,7 +9973,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -10605,25 +9982,25 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Get container configuration.
+         * @param string $snapshot Fetch config values from given snapshot.
          * @return Result
          */
-        public function getRest()
+        public function getRest($snapshot = null)
         {
-            return $this->getClient()->get("/nodes/{$this->node}/lxc/{$this->vmid}/config");
+            $params = ['snapshot' => $snapshot];
+            return $this->getClient()->get("/nodes/{$this->node}/lxc/{$this->vmid}/config", $params);
         }
-
         /**
          * Get container configuration.
+         * @param string $snapshot Fetch config values from given snapshot.
          * @return Result
          */
-        public function vmConfig()
+        public function vmConfig($snapshot = null)
         {
-            return $this->getRest();
+            return $this->getRest($snapshot);
         }
-
         /**
          * Set container options.
          * @param string $arch OS architecture type.
@@ -10638,6 +10015,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $description Container description. Only used on the configuration web interface.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $features Allow containers access to advanced features.
+         * @param string $hookscript Script that will be exectued during various steps in the containers lifetime.
          * @param string $hostname Set a host name for the container.
          * @param string $lock Lock/unlock the VM.
          *   Enum: backup,disk,migrate,mounted,rollback,snapshot,snapshot-delete
@@ -10659,9 +10037,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
          * @return Result
          */
-        public function setRest($arch = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $features = null, $hostname = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $protection = null, $rootfs = null, $searchdomain = null, $startup = null, $swap = null, $template = null, $tty = null, $unprivileged = null, $unusedN = null)
+        public function setRest($arch = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $features = null, $hookscript = null, $hostname = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $protection = null, $rootfs = null, $searchdomain = null, $startup = null, $swap = null, $template = null, $tty = null, $unprivileged = null, $unusedN = null)
         {
-            $params = ['arch' => $arch,
+            $params = [
+                'arch' => $arch,
                 'cmode' => $cmode,
                 'console' => $console,
                 'cores' => $cores,
@@ -10671,6 +10050,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'description' => $description,
                 'digest' => $digest,
                 'features' => $features,
+                'hookscript' => $hookscript,
                 'hostname' => $hostname,
                 'lock' => $lock,
                 'memory' => $memory,
@@ -10684,13 +10064,13 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'swap' => $swap,
                 'template' => $template,
                 'tty' => $tty,
-                'unprivileged' => $unprivileged];
+                'unprivileged' => $unprivileged
+            ];
             $this->addIndexedParameter($params, 'mp', $mpN);
             $this->addIndexedParameter($params, 'net', $netN);
             $this->addIndexedParameter($params, 'unused', $unusedN);
             return $this->getClient()->set("/nodes/{$this->node}/lxc/{$this->vmid}/config", $params);
         }
-
         /**
          * Set container options.
          * @param string $arch OS architecture type.
@@ -10705,6 +10085,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $description Container description. Only used on the configuration web interface.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $features Allow containers access to advanced features.
+         * @param string $hookscript Script that will be exectued during various steps in the containers lifetime.
          * @param string $hostname Set a host name for the container.
          * @param string $lock Lock/unlock the VM.
          *   Enum: backup,disk,migrate,mounted,rollback,snapshot,snapshot-delete
@@ -10726,15 +10107,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
          * @return Result
          */
-        public function updateVm($arch = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $features = null, $hostname = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $protection = null, $rootfs = null, $searchdomain = null, $startup = null, $swap = null, $template = null, $tty = null, $unprivileged = null, $unusedN = null)
+        public function updateVm($arch = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $features = null, $hookscript = null, $hostname = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $protection = null, $rootfs = null, $searchdomain = null, $startup = null, $swap = null, $template = null, $tty = null, $unprivileged = null, $unusedN = null)
         {
-            return $this->setRest($arch, $cmode, $console, $cores, $cpulimit, $cpuunits, $delete, $description, $digest, $features, $hostname, $lock, $memory, $mpN, $nameserver, $netN, $onboot, $ostype, $protection, $rootfs, $searchdomain, $startup, $swap, $template, $tty, $unprivileged, $unusedN);
+            return $this->setRest($arch, $cmode, $console, $cores, $cpulimit, $cpuunits, $delete, $description, $digest, $features, $hookscript, $hostname, $lock, $memory, $mpN, $nameserver, $netN, $onboot, $ostype, $protection, $rootfs, $searchdomain, $startup, $swap, $template, $tty, $unprivileged, $unusedN);
         }
     }
-
     /**
      * Class PVEVmidLxcNodeNodesStatus
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesStatus extends Base
     {
@@ -10746,7 +10126,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -10756,12 +10135,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * @ignore
          */
         private $current;
-
         /**
          * Get StatusVmidLxcNodeNodesCurrent
          * @return PVEStatusVmidLxcNodeNodesCurrent
@@ -10770,12 +10147,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->current ?: ($this->current = new PVEStatusVmidLxcNodeNodesCurrent($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $start;
-
         /**
          * Get StatusVmidLxcNodeNodesStart
          * @return PVEStatusVmidLxcNodeNodesStart
@@ -10784,12 +10159,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->start ?: ($this->start = new PVEStatusVmidLxcNodeNodesStart($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $stop;
-
         /**
          * Get StatusVmidLxcNodeNodesStop
          * @return PVEStatusVmidLxcNodeNodesStop
@@ -10798,12 +10171,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->stop ?: ($this->stop = new PVEStatusVmidLxcNodeNodesStop($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $shutdown;
-
         /**
          * Get StatusVmidLxcNodeNodesShutdown
          * @return PVEStatusVmidLxcNodeNodesShutdown
@@ -10812,12 +10183,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->shutdown ?: ($this->shutdown = new PVEStatusVmidLxcNodeNodesShutdown($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $suspend;
-
         /**
          * Get StatusVmidLxcNodeNodesSuspend
          * @return PVEStatusVmidLxcNodeNodesSuspend
@@ -10826,12 +10195,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->suspend ?: ($this->suspend = new PVEStatusVmidLxcNodeNodesSuspend($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $resume;
-
         /**
          * Get StatusVmidLxcNodeNodesResume
          * @return PVEStatusVmidLxcNodeNodesResume
@@ -10840,7 +10207,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->resume ?: ($this->resume = new PVEStatusVmidLxcNodeNodesResume($this->client, $this->node, $this->vmid));
         }
-
         /**
          * Directory index
          * @return Result
@@ -10849,7 +10215,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/lxc/{$this->vmid}/status");
         }
-
         /**
          * Directory index
          * @return Result
@@ -10859,10 +10224,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEStatusVmidLxcNodeNodesCurrent
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidLxcNodeNodesCurrent extends Base
     {
@@ -10874,7 +10238,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -10884,7 +10247,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Get virtual machine status.
          * @return Result
@@ -10893,7 +10255,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/lxc/{$this->vmid}/status/current");
         }
-
         /**
          * Get virtual machine status.
          * @return Result
@@ -10903,10 +10264,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEStatusVmidLxcNodeNodesStart
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidLxcNodeNodesStart extends Base
     {
@@ -10918,7 +10278,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -10928,7 +10287,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Start the container.
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
@@ -10939,7 +10297,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['skiplock' => $skiplock];
             return $this->getClient()->create("/nodes/{$this->node}/lxc/{$this->vmid}/status/start", $params);
         }
-
         /**
          * Start the container.
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
@@ -10950,10 +10307,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($skiplock);
         }
     }
-
     /**
      * Class PVEStatusVmidLxcNodeNodesStop
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidLxcNodeNodesStop extends Base
     {
@@ -10965,7 +10321,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -10975,7 +10330,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Stop the container. This will abruptly stop all processes running in the container.
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
@@ -10986,7 +10340,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['skiplock' => $skiplock];
             return $this->getClient()->create("/nodes/{$this->node}/lxc/{$this->vmid}/status/stop", $params);
         }
-
         /**
          * Stop the container. This will abruptly stop all processes running in the container.
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
@@ -10997,10 +10350,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($skiplock);
         }
     }
-
     /**
      * Class PVEStatusVmidLxcNodeNodesShutdown
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidLxcNodeNodesShutdown extends Base
     {
@@ -11012,7 +10364,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -11022,7 +10373,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Shutdown the container. This will trigger a clean shutdown of the container, see lxc-stop(1) for details.
          * @param bool $forceStop Make sure the Container stops.
@@ -11031,11 +10381,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($forceStop = null, $timeout = null)
         {
-            $params = ['forceStop' => $forceStop,
-                'timeout' => $timeout];
+            $params = [
+                'forceStop' => $forceStop,
+                'timeout' => $timeout
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/lxc/{$this->vmid}/status/shutdown", $params);
         }
-
         /**
          * Shutdown the container. This will trigger a clean shutdown of the container, see lxc-stop(1) for details.
          * @param bool $forceStop Make sure the Container stops.
@@ -11047,10 +10398,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($forceStop, $timeout);
         }
     }
-
     /**
      * Class PVEStatusVmidLxcNodeNodesSuspend
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidLxcNodeNodesSuspend extends Base
     {
@@ -11062,7 +10412,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -11072,7 +10421,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Suspend the container.
          * @return Result
@@ -11081,7 +10429,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->create("/nodes/{$this->node}/lxc/{$this->vmid}/status/suspend");
         }
-
         /**
          * Suspend the container.
          * @return Result
@@ -11091,10 +10438,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest();
         }
     }
-
     /**
      * Class PVEStatusVmidLxcNodeNodesResume
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidLxcNodeNodesResume extends Base
     {
@@ -11106,7 +10452,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -11116,7 +10461,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Resume the container.
          * @return Result
@@ -11125,7 +10469,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->create("/nodes/{$this->node}/lxc/{$this->vmid}/status/resume");
         }
-
         /**
          * Resume the container.
          * @return Result
@@ -11135,10 +10478,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest();
         }
     }
-
     /**
      * Class PVEVmidLxcNodeNodesSnapshot
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesSnapshot extends Base
     {
@@ -11150,7 +10492,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -11160,7 +10501,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Get ItemSnapshotVmidLxcNodeNodesSnapname
          * @param snapname
@@ -11170,7 +10510,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemSnapshotVmidLxcNodeNodesSnapname($this->client, $this->node, $this->vmid, $snapname);
         }
-
         /**
          * List all snapshots.
          * @return Result
@@ -11179,7 +10518,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot");
         }
-
         /**
          * List all snapshots.
          * @return Result
@@ -11188,7 +10526,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Snapshot a container.
          * @param string $snapname The name of the snapshot.
@@ -11197,11 +10534,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($snapname, $description = null)
         {
-            $params = ['snapname' => $snapname,
-                'description' => $description];
+            $params = [
+                'snapname' => $snapname,
+                'description' => $description
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot", $params);
         }
-
         /**
          * Snapshot a container.
          * @param string $snapname The name of the snapshot.
@@ -11213,10 +10551,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($snapname, $description);
         }
     }
-
     /**
      * Class PVEItemSnapshotVmidLxcNodeNodesSnapname
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemSnapshotVmidLxcNodeNodesSnapname extends Base
     {
@@ -11232,7 +10569,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $snapname;
-
         /**
          * @ignore
          */
@@ -11243,12 +10579,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
             $this->snapname = $snapname;
         }
-
         /**
          * @ignore
          */
         private $rollback;
-
         /**
          * Get SnapnameSnapshotVmidLxcNodeNodesRollback
          * @return PVESnapnameSnapshotVmidLxcNodeNodesRollback
@@ -11257,12 +10591,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->rollback ?: ($this->rollback = new PVESnapnameSnapshotVmidLxcNodeNodesRollback($this->client, $this->node, $this->vmid, $this->snapname));
         }
-
         /**
          * @ignore
          */
         private $config;
-
         /**
          * Get SnapnameSnapshotVmidLxcNodeNodesConfig
          * @return PVESnapnameSnapshotVmidLxcNodeNodesConfig
@@ -11271,7 +10603,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->config ?: ($this->config = new PVESnapnameSnapshotVmidLxcNodeNodesConfig($this->client, $this->node, $this->vmid, $this->snapname));
         }
-
         /**
          * Delete a LXC snapshot.
          * @param bool $force For removal from config file, even if removing disk snapshots fails.
@@ -11282,7 +10613,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['force' => $force];
             return $this->getClient()->delete("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot/{$this->snapname}", $params);
         }
-
         /**
          * Delete a LXC snapshot.
          * @param bool $force For removal from config file, even if removing disk snapshots fails.
@@ -11292,18 +10622,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest($force);
         }
-
         /**
-         *
+         * 
          * @return Result
          */
         public function getRest()
         {
             return $this->getClient()->get("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot/{$this->snapname}");
         }
-
         /**
-         *
+         * 
          * @return Result
          */
         public function snapshotCmdIdx()
@@ -11311,10 +10639,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVESnapnameSnapshotVmidLxcNodeNodesRollback
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVESnapnameSnapshotVmidLxcNodeNodesRollback extends Base
     {
@@ -11330,7 +10657,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $snapname;
-
         /**
          * @ignore
          */
@@ -11341,7 +10667,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
             $this->snapname = $snapname;
         }
-
         /**
          * Rollback LXC state to specified snapshot.
          * @return Result
@@ -11350,7 +10675,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->create("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot/{$this->snapname}/rollback");
         }
-
         /**
          * Rollback LXC state to specified snapshot.
          * @return Result
@@ -11360,10 +10684,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest();
         }
     }
-
     /**
      * Class PVESnapnameSnapshotVmidLxcNodeNodesConfig
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVESnapnameSnapshotVmidLxcNodeNodesConfig extends Base
     {
@@ -11379,7 +10702,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $snapname;
-
         /**
          * @ignore
          */
@@ -11390,7 +10712,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
             $this->snapname = $snapname;
         }
-
         /**
          * Get snapshot configuration
          * @return Result
@@ -11399,7 +10720,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot/{$this->snapname}/config");
         }
-
         /**
          * Get snapshot configuration
          * @return Result
@@ -11408,7 +10728,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Update snapshot metadata.
          * @param string $description A textual description or comment.
@@ -11419,7 +10738,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['description' => $description];
             return $this->getClient()->set("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot/{$this->snapname}/config", $params);
         }
-
         /**
          * Update snapshot metadata.
          * @param string $description A textual description or comment.
@@ -11430,10 +10748,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($description);
         }
     }
-
     /**
      * Class PVEVmidLxcNodeNodesFirewall
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesFirewall extends Base
     {
@@ -11445,7 +10762,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -11455,12 +10771,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * @ignore
          */
         private $rules;
-
         /**
          * Get FirewallVmidLxcNodeNodesRules
          * @return PVEFirewallVmidLxcNodeNodesRules
@@ -11469,12 +10783,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->rules ?: ($this->rules = new PVEFirewallVmidLxcNodeNodesRules($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $aliases;
-
         /**
          * Get FirewallVmidLxcNodeNodesAliases
          * @return PVEFirewallVmidLxcNodeNodesAliases
@@ -11483,12 +10795,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->aliases ?: ($this->aliases = new PVEFirewallVmidLxcNodeNodesAliases($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $ipset;
-
         /**
          * Get FirewallVmidLxcNodeNodesIpset
          * @return PVEFirewallVmidLxcNodeNodesIpset
@@ -11497,12 +10807,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->ipset ?: ($this->ipset = new PVEFirewallVmidLxcNodeNodesIpset($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $options;
-
         /**
          * Get FirewallVmidLxcNodeNodesOptions
          * @return PVEFirewallVmidLxcNodeNodesOptions
@@ -11511,12 +10819,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->options ?: ($this->options = new PVEFirewallVmidLxcNodeNodesOptions($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $log;
-
         /**
          * Get FirewallVmidLxcNodeNodesLog
          * @return PVEFirewallVmidLxcNodeNodesLog
@@ -11525,12 +10831,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->log ?: ($this->log = new PVEFirewallVmidLxcNodeNodesLog($this->client, $this->node, $this->vmid));
         }
-
         /**
          * @ignore
          */
         private $refs;
-
         /**
          * Get FirewallVmidLxcNodeNodesRefs
          * @return PVEFirewallVmidLxcNodeNodesRefs
@@ -11539,7 +10843,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->refs ?: ($this->refs = new PVEFirewallVmidLxcNodeNodesRefs($this->client, $this->node, $this->vmid));
         }
-
         /**
          * Directory index.
          * @return Result
@@ -11548,7 +10851,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/lxc/{$this->vmid}/firewall");
         }
-
         /**
          * Directory index.
          * @return Result
@@ -11558,10 +10860,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEFirewallVmidLxcNodeNodesRules
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidLxcNodeNodesRules extends Base
     {
@@ -11573,7 +10874,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -11583,7 +10883,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Get ItemRulesFirewallVmidLxcNodeNodesPos
          * @param pos
@@ -11593,7 +10892,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemRulesFirewallVmidLxcNodeNodesPos($this->client, $this->node, $this->vmid, $pos);
         }
-
         /**
          * List rules.
          * @return Result
@@ -11602,7 +10900,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/rules");
         }
-
         /**
          * List rules.
          * @return Result
@@ -11611,7 +10908,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create new rule.
          * @param string $action Rule action ('ACCEPT', 'DROP', 'REJECT') or security group name.
@@ -11623,6 +10919,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $dport Restrict TCP/UDP destination port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @param int $enable Flag to enable/disable a rule.
          * @param string $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
+         * @param string $log Log level for firewall rule.
+         *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
          * @param int $pos Update rule at position &amp;lt;pos&amp;gt;.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
@@ -11630,9 +10928,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @return Result
          */
-        public function createRest($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null)
+        public function createRest($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $log = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null)
         {
-            $params = ['action' => $action,
+            $params = [
+                'action' => $action,
                 'type' => $type,
                 'comment' => $comment,
                 'dest' => $dest,
@@ -11640,14 +10939,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'dport' => $dport,
                 'enable' => $enable,
                 'iface' => $iface,
+                'log' => $log,
                 'macro' => $macro,
                 'pos' => $pos,
                 'proto' => $proto,
                 'source' => $source,
-                'sport' => $sport];
+                'sport' => $sport
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/rules", $params);
         }
-
         /**
          * Create new rule.
          * @param string $action Rule action ('ACCEPT', 'DROP', 'REJECT') or security group name.
@@ -11659,6 +10959,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $dport Restrict TCP/UDP destination port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @param int $enable Flag to enable/disable a rule.
          * @param string $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
+         * @param string $log Log level for firewall rule.
+         *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
          * @param int $pos Update rule at position &amp;lt;pos&amp;gt;.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
@@ -11666,15 +10968,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @return Result
          */
-        public function createRule($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null)
+        public function createRule($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $log = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null)
         {
-            return $this->createRest($action, $type, $comment, $dest, $digest, $dport, $enable, $iface, $macro, $pos, $proto, $source, $sport);
+            return $this->createRest($action, $type, $comment, $dest, $digest, $dport, $enable, $iface, $log, $macro, $pos, $proto, $source, $sport);
         }
     }
-
     /**
      * Class PVEItemRulesFirewallVmidLxcNodeNodesPos
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemRulesFirewallVmidLxcNodeNodesPos extends Base
     {
@@ -11690,7 +10991,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $pos;
-
         /**
          * @ignore
          */
@@ -11701,7 +11001,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
             $this->pos = $pos;
         }
-
         /**
          * Delete rule.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -11712,7 +11011,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['digest' => $digest];
             return $this->getClient()->delete("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/rules/{$this->pos}", $params);
         }
-
         /**
          * Delete rule.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -11722,7 +11020,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest($digest);
         }
-
         /**
          * Get single rule data.
          * @return Result
@@ -11731,7 +11028,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/rules/{$this->pos}");
         }
-
         /**
          * Get single rule data.
          * @return Result
@@ -11740,7 +11036,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Modify rule data.
          * @param string $action Rule action ('ACCEPT', 'DROP', 'REJECT') or security group name.
@@ -11751,6 +11046,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $dport Restrict TCP/UDP destination port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @param int $enable Flag to enable/disable a rule.
          * @param string $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
+         * @param string $log Log level for firewall rule.
+         *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
          * @param int $moveto Move rule to new position &amp;lt;moveto&amp;gt;. Other arguments are ignored.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
@@ -11760,9 +11057,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: in,out,group
          * @return Result
          */
-        public function setRest($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null)
+        public function setRest($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $log = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null)
         {
-            $params = ['action' => $action,
+            $params = [
+                'action' => $action,
                 'comment' => $comment,
                 'delete' => $delete,
                 'dest' => $dest,
@@ -11770,15 +11068,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'dport' => $dport,
                 'enable' => $enable,
                 'iface' => $iface,
+                'log' => $log,
                 'macro' => $macro,
                 'moveto' => $moveto,
                 'proto' => $proto,
                 'source' => $source,
                 'sport' => $sport,
-                'type' => $type];
+                'type' => $type
+            ];
             return $this->getClient()->set("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/rules/{$this->pos}", $params);
         }
-
         /**
          * Modify rule data.
          * @param string $action Rule action ('ACCEPT', 'DROP', 'REJECT') or security group name.
@@ -11789,6 +11088,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $dport Restrict TCP/UDP destination port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @param int $enable Flag to enable/disable a rule.
          * @param string $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
+         * @param string $log Log level for firewall rule.
+         *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
          * @param int $moveto Move rule to new position &amp;lt;moveto&amp;gt;. Other arguments are ignored.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
@@ -11798,15 +11099,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: in,out,group
          * @return Result
          */
-        public function updateRule($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null)
+        public function updateRule($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $log = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null)
         {
-            return $this->setRest($action, $comment, $delete, $dest, $digest, $dport, $enable, $iface, $macro, $moveto, $proto, $source, $sport, $type);
+            return $this->setRest($action, $comment, $delete, $dest, $digest, $dport, $enable, $iface, $log, $macro, $moveto, $proto, $source, $sport, $type);
         }
     }
-
     /**
      * Class PVEFirewallVmidLxcNodeNodesAliases
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidLxcNodeNodesAliases extends Base
     {
@@ -11818,7 +11118,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -11828,7 +11127,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Get ItemAliasesFirewallVmidLxcNodeNodesName
          * @param name
@@ -11838,7 +11136,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemAliasesFirewallVmidLxcNodeNodesName($this->client, $this->node, $this->vmid, $name);
         }
-
         /**
          * List aliases
          * @return Result
@@ -11847,7 +11144,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/aliases");
         }
-
         /**
          * List aliases
          * @return Result
@@ -11856,27 +11152,27 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create IP or Network Alias.
          * @param string $cidr Network/IP specification in CIDR format.
          * @param string $name Alias name.
-         * @param string $comment
+         * @param string $comment 
          * @return Result
          */
         public function createRest($cidr, $name, $comment = null)
         {
-            $params = ['cidr' => $cidr,
+            $params = [
+                'cidr' => $cidr,
                 'name' => $name,
-                'comment' => $comment];
+                'comment' => $comment
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/aliases", $params);
         }
-
         /**
          * Create IP or Network Alias.
          * @param string $cidr Network/IP specification in CIDR format.
          * @param string $name Alias name.
-         * @param string $comment
+         * @param string $comment 
          * @return Result
          */
         public function createAlias($cidr, $name, $comment = null)
@@ -11884,10 +11180,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($cidr, $name, $comment);
         }
     }
-
     /**
      * Class PVEItemAliasesFirewallVmidLxcNodeNodesName
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemAliasesFirewallVmidLxcNodeNodesName extends Base
     {
@@ -11903,7 +11198,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $name;
-
         /**
          * @ignore
          */
@@ -11914,7 +11208,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
             $this->name = $name;
         }
-
         /**
          * Remove IP or Network alias.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -11925,7 +11218,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['digest' => $digest];
             return $this->getClient()->delete("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/aliases/{$this->name}", $params);
         }
-
         /**
          * Remove IP or Network alias.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -11935,7 +11227,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest($digest);
         }
-
         /**
          * Read alias.
          * @return Result
@@ -11944,7 +11235,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/aliases/{$this->name}");
         }
-
         /**
          * Read alias.
          * @return Result
@@ -11953,28 +11243,28 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Update IP or Network alias.
          * @param string $cidr Network/IP specification in CIDR format.
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $rename Rename an existing alias.
          * @return Result
          */
         public function setRest($cidr, $comment = null, $digest = null, $rename = null)
         {
-            $params = ['cidr' => $cidr,
+            $params = [
+                'cidr' => $cidr,
                 'comment' => $comment,
                 'digest' => $digest,
-                'rename' => $rename];
+                'rename' => $rename
+            ];
             return $this->getClient()->set("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/aliases/{$this->name}", $params);
         }
-
         /**
          * Update IP or Network alias.
          * @param string $cidr Network/IP specification in CIDR format.
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $rename Rename an existing alias.
          * @return Result
@@ -11984,10 +11274,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($cidr, $comment, $digest, $rename);
         }
     }
-
     /**
      * Class PVEFirewallVmidLxcNodeNodesIpset
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidLxcNodeNodesIpset extends Base
     {
@@ -11999,7 +11288,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -12009,7 +11297,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Get ItemIpsetFirewallVmidLxcNodeNodesName
          * @param name
@@ -12019,7 +11306,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemIpsetFirewallVmidLxcNodeNodesName($this->client, $this->node, $this->vmid, $name);
         }
-
         /**
          * List IPSets
          * @return Result
@@ -12028,7 +11314,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset");
         }
-
         /**
          * List IPSets
          * @return Result
@@ -12037,28 +11322,28 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create new IPSet
          * @param string $name IP set name.
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $rename Rename an existing IPSet. You can set 'rename' to the same value as 'name' to update the 'comment' of an existing IPSet.
          * @return Result
          */
         public function createRest($name, $comment = null, $digest = null, $rename = null)
         {
-            $params = ['name' => $name,
+            $params = [
+                'name' => $name,
                 'comment' => $comment,
                 'digest' => $digest,
-                'rename' => $rename];
+                'rename' => $rename
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset", $params);
         }
-
         /**
          * Create new IPSet
          * @param string $name IP set name.
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $rename Rename an existing IPSet. You can set 'rename' to the same value as 'name' to update the 'comment' of an existing IPSet.
          * @return Result
@@ -12068,10 +11353,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($name, $comment, $digest, $rename);
         }
     }
-
     /**
      * Class PVEItemIpsetFirewallVmidLxcNodeNodesName
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemIpsetFirewallVmidLxcNodeNodesName extends Base
     {
@@ -12087,7 +11371,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $name;
-
         /**
          * @ignore
          */
@@ -12098,7 +11381,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->vmid = $vmid;
             $this->name = $name;
         }
-
         /**
          * Get ItemNameIpsetFirewallVmidLxcNodeNodesCidr
          * @param cidr
@@ -12108,7 +11390,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemNameIpsetFirewallVmidLxcNodeNodesCidr($this->client, $this->node, $this->vmid, $this->name, $cidr);
         }
-
         /**
          * Delete IPSet
          * @return Result
@@ -12117,7 +11398,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->delete("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset/{$this->name}");
         }
-
         /**
          * Delete IPSet
          * @return Result
@@ -12126,7 +11406,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest();
         }
-
         /**
          * List IPSet content
          * @return Result
@@ -12135,7 +11414,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset/{$this->name}");
         }
-
         /**
          * List IPSet content
          * @return Result
@@ -12144,27 +11422,27 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Add IP or Network to IPSet.
          * @param string $cidr Network/IP specification in CIDR format.
-         * @param string $comment
-         * @param bool $nomatch
+         * @param string $comment 
+         * @param bool $nomatch 
          * @return Result
          */
         public function createRest($cidr, $comment = null, $nomatch = null)
         {
-            $params = ['cidr' => $cidr,
+            $params = [
+                'cidr' => $cidr,
                 'comment' => $comment,
-                'nomatch' => $nomatch];
+                'nomatch' => $nomatch
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset/{$this->name}", $params);
         }
-
         /**
          * Add IP or Network to IPSet.
          * @param string $cidr Network/IP specification in CIDR format.
-         * @param string $comment
-         * @param bool $nomatch
+         * @param string $comment 
+         * @param bool $nomatch 
          * @return Result
          */
         public function createIp($cidr, $comment = null, $nomatch = null)
@@ -12172,10 +11450,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($cidr, $comment, $nomatch);
         }
     }
-
     /**
      * Class PVEItemNameIpsetFirewallVmidLxcNodeNodesCidr
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemNameIpsetFirewallVmidLxcNodeNodesCidr extends Base
     {
@@ -12195,7 +11472,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $cidr;
-
         /**
          * @ignore
          */
@@ -12207,7 +11483,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->name = $name;
             $this->cidr = $cidr;
         }
-
         /**
          * Remove IP or Network from IPSet.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -12218,7 +11493,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['digest' => $digest];
             return $this->getClient()->delete("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset/{$this->name}/{$this->cidr}", $params);
         }
-
         /**
          * Remove IP or Network from IPSet.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -12228,7 +11502,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest($digest);
         }
-
         /**
          * Read IP or Network settings from IPSet.
          * @return Result
@@ -12237,7 +11510,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset/{$this->name}/{$this->cidr}");
         }
-
         /**
          * Read IP or Network settings from IPSet.
          * @return Result
@@ -12246,27 +11518,27 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Update IP or Network settings
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
-         * @param bool $nomatch
+         * @param bool $nomatch 
          * @return Result
          */
         public function setRest($comment = null, $digest = null, $nomatch = null)
         {
-            $params = ['comment' => $comment,
+            $params = [
+                'comment' => $comment,
                 'digest' => $digest,
-                'nomatch' => $nomatch];
+                'nomatch' => $nomatch
+            ];
             return $this->getClient()->set("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset/{$this->name}/{$this->cidr}", $params);
         }
-
         /**
          * Update IP or Network settings
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
-         * @param bool $nomatch
+         * @param bool $nomatch 
          * @return Result
          */
         public function updateIp($comment = null, $digest = null, $nomatch = null)
@@ -12274,10 +11546,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($comment, $digest, $nomatch);
         }
     }
-
     /**
      * Class PVEFirewallVmidLxcNodeNodesOptions
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidLxcNodeNodesOptions extends Base
     {
@@ -12289,7 +11560,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -12299,7 +11569,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Get VM firewall options.
          * @return Result
@@ -12308,7 +11577,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/options");
         }
-
         /**
          * Get VM firewall options.
          * @return Result
@@ -12317,7 +11585,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Set Firewall options.
          * @param string $delete A list of settings you want to delete.
@@ -12340,7 +11607,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function setRest($delete = null, $dhcp = null, $digest = null, $enable = null, $ipfilter = null, $log_level_in = null, $log_level_out = null, $macfilter = null, $ndp = null, $policy_in = null, $policy_out = null, $radv = null)
         {
-            $params = ['delete' => $delete,
+            $params = [
+                'delete' => $delete,
                 'dhcp' => $dhcp,
                 'digest' => $digest,
                 'enable' => $enable,
@@ -12351,10 +11619,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'ndp' => $ndp,
                 'policy_in' => $policy_in,
                 'policy_out' => $policy_out,
-                'radv' => $radv];
+                'radv' => $radv
+            ];
             return $this->getClient()->set("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/options", $params);
         }
-
         /**
          * Set Firewall options.
          * @param string $delete A list of settings you want to delete.
@@ -12380,10 +11648,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($delete, $dhcp, $digest, $enable, $ipfilter, $log_level_in, $log_level_out, $macfilter, $ndp, $policy_in, $policy_out, $radv);
         }
     }
-
     /**
      * Class PVEFirewallVmidLxcNodeNodesLog
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidLxcNodeNodesLog extends Base
     {
@@ -12395,7 +11662,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -12405,24 +11671,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Read firewall log
-         * @param int $limit
-         * @param int $start
+         * @param int $limit 
+         * @param int $start 
          * @return Result
          */
         public function getRest($limit = null, $start = null)
         {
-            $params = ['limit' => $limit,
-                'start' => $start];
+            $params = [
+                'limit' => $limit,
+                'start' => $start
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/log", $params);
         }
-
         /**
          * Read firewall log
-         * @param int $limit
-         * @param int $start
+         * @param int $limit 
+         * @param int $start 
          * @return Result
          */
         public function log($limit = null, $start = null)
@@ -12430,10 +11696,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($limit, $start);
         }
     }
-
     /**
      * Class PVEFirewallVmidLxcNodeNodesRefs
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidLxcNodeNodesRefs extends Base
     {
@@ -12445,7 +11710,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -12455,7 +11719,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Lists possible IPSet/Alias reference which are allowed in source/dest properties.
          * @param string $type Only list references of specified type.
@@ -12467,7 +11730,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['type' => $type];
             return $this->getClient()->get("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/refs", $params);
         }
-
         /**
          * Lists possible IPSet/Alias reference which are allowed in source/dest properties.
          * @param string $type Only list references of specified type.
@@ -12479,10 +11741,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($type);
         }
     }
-
     /**
      * Class PVEVmidLxcNodeNodesRrd
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesRrd extends Base
     {
@@ -12494,7 +11755,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -12504,7 +11764,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Read VM RRD statistics (returns PNG)
          * @param string $ds The list of datasources you want to display.
@@ -12516,12 +11775,13 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRest($ds, $timeframe, $cf = null)
         {
-            $params = ['ds' => $ds,
+            $params = [
+                'ds' => $ds,
                 'timeframe' => $timeframe,
-                'cf' => $cf];
+                'cf' => $cf
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/lxc/{$this->vmid}/rrd", $params);
         }
-
         /**
          * Read VM RRD statistics (returns PNG)
          * @param string $ds The list of datasources you want to display.
@@ -12536,10 +11796,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($ds, $timeframe, $cf);
         }
     }
-
     /**
      * Class PVEVmidLxcNodeNodesRrddata
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesRrddata extends Base
     {
@@ -12551,7 +11810,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -12561,7 +11819,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Read VM RRD statistics
          * @param string $timeframe Specify the time frame you are interested in.
@@ -12572,11 +11829,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRest($timeframe, $cf = null)
         {
-            $params = ['timeframe' => $timeframe,
-                'cf' => $cf];
+            $params = [
+                'timeframe' => $timeframe,
+                'cf' => $cf
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/lxc/{$this->vmid}/rrddata", $params);
         }
-
         /**
          * Read VM RRD statistics
          * @param string $timeframe Specify the time frame you are interested in.
@@ -12590,10 +11848,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($timeframe, $cf);
         }
     }
-
     /**
      * Class PVEVmidLxcNodeNodesVncproxy
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesVncproxy extends Base
     {
@@ -12605,7 +11862,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -12615,7 +11871,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Creates a TCP VNC proxy connections.
          * @param int $height sets the height of the console in pixels.
@@ -12625,12 +11880,13 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($height = null, $websocket = null, $width = null)
         {
-            $params = ['height' => $height,
+            $params = [
+                'height' => $height,
                 'websocket' => $websocket,
-                'width' => $width];
+                'width' => $width
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/lxc/{$this->vmid}/vncproxy", $params);
         }
-
         /**
          * Creates a TCP VNC proxy connections.
          * @param int $height sets the height of the console in pixels.
@@ -12643,10 +11899,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($height, $websocket, $width);
         }
     }
-
     /**
      * Class PVEVmidLxcNodeNodesTermproxy
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesTermproxy extends Base
     {
@@ -12658,7 +11913,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -12668,7 +11922,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Creates a TCP proxy connection.
          * @return Result
@@ -12677,7 +11930,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->create("/nodes/{$this->node}/lxc/{$this->vmid}/termproxy");
         }
-
         /**
          * Creates a TCP proxy connection.
          * @return Result
@@ -12687,10 +11939,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest();
         }
     }
-
     /**
      * Class PVEVmidLxcNodeNodesVncwebsocket
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesVncwebsocket extends Base
     {
@@ -12702,7 +11953,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -12712,7 +11962,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Opens a weksocket for VNC traffic.
          * @param int $port Port number returned by previous vncproxy call.
@@ -12721,11 +11970,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRest($port, $vncticket)
         {
-            $params = ['port' => $port,
-                'vncticket' => $vncticket];
+            $params = [
+                'port' => $port,
+                'vncticket' => $vncticket
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/lxc/{$this->vmid}/vncwebsocket", $params);
         }
-
         /**
          * Opens a weksocket for VNC traffic.
          * @param int $port Port number returned by previous vncproxy call.
@@ -12737,10 +11987,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($port, $vncticket);
         }
     }
-
     /**
      * Class PVEVmidLxcNodeNodesSpiceproxy
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesSpiceproxy extends Base
     {
@@ -12752,7 +12001,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -12762,7 +12010,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Returns a SPICE configuration to connect to the CT.
          * @param string $proxy SPICE proxy server. This can be used by the client to specify the proxy server. All nodes in a cluster runs 'spiceproxy', so it is up to the client to choose one. By default, we return the node where the VM is currently running. As reasonable setting is to use same node you use to connect to the API (This is window.location.hostname for the JS GUI).
@@ -12773,7 +12020,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['proxy' => $proxy];
             return $this->getClient()->create("/nodes/{$this->node}/lxc/{$this->vmid}/spiceproxy", $params);
         }
-
         /**
          * Returns a SPICE configuration to connect to the CT.
          * @param string $proxy SPICE proxy server. This can be used by the client to specify the proxy server. All nodes in a cluster runs 'spiceproxy', so it is up to the client to choose one. By default, we return the node where the VM is currently running. As reasonable setting is to use same node you use to connect to the API (This is window.location.hostname for the JS GUI).
@@ -12784,10 +12030,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($proxy);
         }
     }
-
     /**
      * Class PVEVmidLxcNodeNodesMigrate
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesMigrate extends Base
     {
@@ -12799,7 +12044,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -12809,44 +12053,46 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Migrate the container to another node. Creates a new migration task.
          * @param string $target Target node.
+         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param bool $force Force migration despite local bind / device mounts. NOTE: deprecated, use 'shared' property of mount point instead.
          * @param bool $online Use online/live migration.
          * @param bool $restart Use restart migration
          * @param int $timeout Timeout in seconds for shutdown for restart migration
          * @return Result
          */
-        public function createRest($target, $force = null, $online = null, $restart = null, $timeout = null)
+        public function createRest($target, $bwlimit = null, $force = null, $online = null, $restart = null, $timeout = null)
         {
-            $params = ['target' => $target,
+            $params = [
+                'target' => $target,
+                'bwlimit' => $bwlimit,
                 'force' => $force,
                 'online' => $online,
                 'restart' => $restart,
-                'timeout' => $timeout];
+                'timeout' => $timeout
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/lxc/{$this->vmid}/migrate", $params);
         }
-
         /**
          * Migrate the container to another node. Creates a new migration task.
          * @param string $target Target node.
+         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param bool $force Force migration despite local bind / device mounts. NOTE: deprecated, use 'shared' property of mount point instead.
          * @param bool $online Use online/live migration.
          * @param bool $restart Use restart migration
          * @param int $timeout Timeout in seconds for shutdown for restart migration
          * @return Result
          */
-        public function migrateVm($target, $force = null, $online = null, $restart = null, $timeout = null)
+        public function migrateVm($target, $bwlimit = null, $force = null, $online = null, $restart = null, $timeout = null)
         {
-            return $this->createRest($target, $force, $online, $restart, $timeout);
+            return $this->createRest($target, $bwlimit, $force, $online, $restart, $timeout);
         }
     }
-
     /**
      * Class PVEVmidLxcNodeNodesFeature
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesFeature extends Base
     {
@@ -12858,7 +12104,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -12868,7 +12113,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Check if feature for virtual machine is available.
          * @param string $feature Feature to check.
@@ -12878,11 +12122,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRest($feature, $snapname = null)
         {
-            $params = ['feature' => $feature,
-                'snapname' => $snapname];
+            $params = [
+                'feature' => $feature,
+                'snapname' => $snapname
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/lxc/{$this->vmid}/feature", $params);
         }
-
         /**
          * Check if feature for virtual machine is available.
          * @param string $feature Feature to check.
@@ -12895,10 +12140,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($feature, $snapname);
         }
     }
-
     /**
      * Class PVEVmidLxcNodeNodesTemplate
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesTemplate extends Base
     {
@@ -12910,7 +12154,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -12920,7 +12163,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Create a Template.
          * @return Result
@@ -12929,7 +12171,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->create("/nodes/{$this->node}/lxc/{$this->vmid}/template");
         }
-
         /**
          * Create a Template.
          * @return Result
@@ -12939,10 +12180,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest();
         }
     }
-
     /**
      * Class PVEVmidLxcNodeNodesClone
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesClone extends Base
     {
@@ -12954,7 +12194,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -12964,10 +12203,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Create a container clone/copy
          * @param int $newid VMID for the clone.
+         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param string $description Description for the new CT.
          * @param bool $full Create a full copy of all disks. This is always done when you clone a normal CT. For CT templates, we try to create a linked clone by default.
          * @param string $hostname Set a hostname for the new CT.
@@ -12977,22 +12216,25 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $target Target node. Only allowed if the original VM is on shared storage.
          * @return Result
          */
-        public function createRest($newid, $description = null, $full = null, $hostname = null, $pool = null, $snapname = null, $storage = null, $target = null)
+        public function createRest($newid, $bwlimit = null, $description = null, $full = null, $hostname = null, $pool = null, $snapname = null, $storage = null, $target = null)
         {
-            $params = ['newid' => $newid,
+            $params = [
+                'newid' => $newid,
+                'bwlimit' => $bwlimit,
                 'description' => $description,
                 'full' => $full,
                 'hostname' => $hostname,
                 'pool' => $pool,
                 'snapname' => $snapname,
                 'storage' => $storage,
-                'target' => $target];
+                'target' => $target
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/lxc/{$this->vmid}/clone", $params);
         }
-
         /**
          * Create a container clone/copy
          * @param int $newid VMID for the clone.
+         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param string $description Description for the new CT.
          * @param bool $full Create a full copy of all disks. This is always done when you clone a normal CT. For CT templates, we try to create a linked clone by default.
          * @param string $hostname Set a hostname for the new CT.
@@ -13002,15 +12244,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $target Target node. Only allowed if the original VM is on shared storage.
          * @return Result
          */
-        public function cloneVm($newid, $description = null, $full = null, $hostname = null, $pool = null, $snapname = null, $storage = null, $target = null)
+        public function cloneVm($newid, $bwlimit = null, $description = null, $full = null, $hostname = null, $pool = null, $snapname = null, $storage = null, $target = null)
         {
-            return $this->createRest($newid, $description, $full, $hostname, $pool, $snapname, $storage, $target);
+            return $this->createRest($newid, $bwlimit, $description, $full, $hostname, $pool, $snapname, $storage, $target);
         }
     }
-
     /**
      * Class PVEVmidLxcNodeNodesResize
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesResize extends Base
     {
@@ -13022,7 +12263,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -13032,7 +12272,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Resize a container mount point.
          * @param string $disk The disk you want to resize.
@@ -13043,12 +12282,13 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function setRest($disk, $size, $digest = null)
         {
-            $params = ['disk' => $disk,
+            $params = [
+                'disk' => $disk,
                 'size' => $size,
-                'digest' => $digest];
+                'digest' => $digest
+            ];
             return $this->getClient()->set("/nodes/{$this->node}/lxc/{$this->vmid}/resize", $params);
         }
-
         /**
          * Resize a container mount point.
          * @param string $disk The disk you want to resize.
@@ -13062,10 +12302,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($disk, $size, $digest);
         }
     }
-
     /**
      * Class PVEVmidLxcNodeNodesMoveVolume
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesMoveVolume extends Base
     {
@@ -13077,7 +12316,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $vmid;
-
         /**
          * @ignore
          */
@@ -13087,43 +12325,45 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->vmid = $vmid;
         }
-
         /**
          * Move a rootfs-/mp-volume to a different storage
          * @param string $storage Target Storage.
          * @param string $volume Volume which will be moved.
          *   Enum: rootfs,mp0,mp1,mp2,mp3,mp4,mp5,mp6,mp7,mp8,mp9,mp10,mp11,mp12,mp13,mp14,mp15,mp16,mp17,mp18,mp19,mp20,mp21,mp22,mp23,mp24,mp25,mp26,mp27,mp28,mp29,mp30,mp31,mp32,mp33,mp34,mp35,mp36,mp37,mp38,mp39,mp40,mp41,mp42,mp43,mp44,mp45,mp46,mp47,mp48,mp49,mp50,mp51,mp52,mp53,mp54,mp55,mp56,mp57,mp58,mp59,mp60,mp61,mp62,mp63,mp64,mp65,mp66,mp67,mp68,mp69,mp70,mp71,mp72,mp73,mp74,mp75,mp76,mp77,mp78,mp79,mp80,mp81,mp82,mp83,mp84,mp85,mp86,mp87,mp88,mp89,mp90,mp91,mp92,mp93,mp94,mp95,mp96,mp97,mp98,mp99,mp100,mp101,mp102,mp103,mp104,mp105,mp106,mp107,mp108,mp109,mp110,mp111,mp112,mp113,mp114,mp115,mp116,mp117,mp118,mp119,mp120,mp121,mp122,mp123,mp124,mp125,mp126,mp127,mp128,mp129,mp130,mp131,mp132,mp133,mp134,mp135,mp136,mp137,mp138,mp139,mp140,mp141,mp142,mp143,mp144,mp145,mp146,mp147,mp148,mp149,mp150,mp151,mp152,mp153,mp154,mp155,mp156,mp157,mp158,mp159,mp160,mp161,mp162,mp163,mp164,mp165,mp166,mp167,mp168,mp169,mp170,mp171,mp172,mp173,mp174,mp175,mp176,mp177,mp178,mp179,mp180,mp181,mp182,mp183,mp184,mp185,mp186,mp187,mp188,mp189,mp190,mp191,mp192,mp193,mp194,mp195,mp196,mp197,mp198,mp199,mp200,mp201,mp202,mp203,mp204,mp205,mp206,mp207,mp208,mp209,mp210,mp211,mp212,mp213,mp214,mp215,mp216,mp217,mp218,mp219,mp220,mp221,mp222,mp223,mp224,mp225,mp226,mp227,mp228,mp229,mp230,mp231,mp232,mp233,mp234,mp235,mp236,mp237,mp238,mp239,mp240,mp241,mp242,mp243,mp244,mp245,mp246,mp247,mp248,mp249,mp250,mp251,mp252,mp253,mp254,mp255
+         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param bool $delete Delete the original volume after successful copy. By default the original is kept as an unused volume entry.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @return Result
          */
-        public function createRest($storage, $volume, $delete = null, $digest = null)
+        public function createRest($storage, $volume, $bwlimit = null, $delete = null, $digest = null)
         {
-            $params = ['storage' => $storage,
+            $params = [
+                'storage' => $storage,
                 'volume' => $volume,
+                'bwlimit' => $bwlimit,
                 'delete' => $delete,
-                'digest' => $digest];
+                'digest' => $digest
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/lxc/{$this->vmid}/move_volume", $params);
         }
-
         /**
          * Move a rootfs-/mp-volume to a different storage
          * @param string $storage Target Storage.
          * @param string $volume Volume which will be moved.
          *   Enum: rootfs,mp0,mp1,mp2,mp3,mp4,mp5,mp6,mp7,mp8,mp9,mp10,mp11,mp12,mp13,mp14,mp15,mp16,mp17,mp18,mp19,mp20,mp21,mp22,mp23,mp24,mp25,mp26,mp27,mp28,mp29,mp30,mp31,mp32,mp33,mp34,mp35,mp36,mp37,mp38,mp39,mp40,mp41,mp42,mp43,mp44,mp45,mp46,mp47,mp48,mp49,mp50,mp51,mp52,mp53,mp54,mp55,mp56,mp57,mp58,mp59,mp60,mp61,mp62,mp63,mp64,mp65,mp66,mp67,mp68,mp69,mp70,mp71,mp72,mp73,mp74,mp75,mp76,mp77,mp78,mp79,mp80,mp81,mp82,mp83,mp84,mp85,mp86,mp87,mp88,mp89,mp90,mp91,mp92,mp93,mp94,mp95,mp96,mp97,mp98,mp99,mp100,mp101,mp102,mp103,mp104,mp105,mp106,mp107,mp108,mp109,mp110,mp111,mp112,mp113,mp114,mp115,mp116,mp117,mp118,mp119,mp120,mp121,mp122,mp123,mp124,mp125,mp126,mp127,mp128,mp129,mp130,mp131,mp132,mp133,mp134,mp135,mp136,mp137,mp138,mp139,mp140,mp141,mp142,mp143,mp144,mp145,mp146,mp147,mp148,mp149,mp150,mp151,mp152,mp153,mp154,mp155,mp156,mp157,mp158,mp159,mp160,mp161,mp162,mp163,mp164,mp165,mp166,mp167,mp168,mp169,mp170,mp171,mp172,mp173,mp174,mp175,mp176,mp177,mp178,mp179,mp180,mp181,mp182,mp183,mp184,mp185,mp186,mp187,mp188,mp189,mp190,mp191,mp192,mp193,mp194,mp195,mp196,mp197,mp198,mp199,mp200,mp201,mp202,mp203,mp204,mp205,mp206,mp207,mp208,mp209,mp210,mp211,mp212,mp213,mp214,mp215,mp216,mp217,mp218,mp219,mp220,mp221,mp222,mp223,mp224,mp225,mp226,mp227,mp228,mp229,mp230,mp231,mp232,mp233,mp234,mp235,mp236,mp237,mp238,mp239,mp240,mp241,mp242,mp243,mp244,mp245,mp246,mp247,mp248,mp249,mp250,mp251,mp252,mp253,mp254,mp255
+         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param bool $delete Delete the original volume after successful copy. By default the original is kept as an unused volume entry.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @return Result
          */
-        public function moveVolume($storage, $volume, $delete = null, $digest = null)
+        public function moveVolume($storage, $volume, $bwlimit = null, $delete = null, $digest = null)
         {
-            return $this->createRest($storage, $volume, $delete, $digest);
+            return $this->createRest($storage, $volume, $bwlimit, $delete, $digest);
         }
     }
-
     /**
      * Class PVENodeNodesCeph
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesCeph extends Base
     {
@@ -13131,7 +12371,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -13140,12 +12379,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * @ignore
          */
         private $osd;
-
         /**
          * Get CephNodeNodesOsd
          * @return PVECephNodeNodesOsd
@@ -13154,12 +12391,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->osd ?: ($this->osd = new PVECephNodeNodesOsd($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $mds;
-
         /**
          * Get CephNodeNodesMds
          * @return PVECephNodeNodesMds
@@ -13168,82 +12403,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->mds ?: ($this->mds = new PVECephNodeNodesMds($this->client, $this->node));
         }
-
-        /**
-         * @ignore
-         */
-        private $fs;
-
-        /**
-         * Get CephNodeNodesFs
-         * @return PVECephNodeNodesFs
-         */
-        public function getFs()
-        {
-            return $this->fs ?: ($this->fs = new PVECephNodeNodesFs($this->client, $this->node));
-        }
-
-        /**
-         * @ignore
-         */
-        private $disks;
-
-        /**
-         * Get CephNodeNodesDisks
-         * @return PVECephNodeNodesDisks
-         */
-        public function getDisks()
-        {
-            return $this->disks ?: ($this->disks = new PVECephNodeNodesDisks($this->client, $this->node));
-        }
-
-        /**
-         * @ignore
-         */
-        private $config;
-
-        /**
-         * Get CephNodeNodesConfig
-         * @return PVECephNodeNodesConfig
-         */
-        public function getConfig()
-        {
-            return $this->config ?: ($this->config = new PVECephNodeNodesConfig($this->client, $this->node));
-        }
-
-        /**
-         * @ignore
-         */
-        private $mon;
-
-        /**
-         * Get CephNodeNodesMon
-         * @return PVECephNodeNodesMon
-         */
-        public function getMon()
-        {
-            return $this->mon ?: ($this->mon = new PVECephNodeNodesMon($this->client, $this->node));
-        }
-
-        /**
-         * @ignore
-         */
-        private $init;
-
-        /**
-         * Get CephNodeNodesInit
-         * @return PVECephNodeNodesInit
-         */
-        public function getInit()
-        {
-            return $this->init ?: ($this->init = new PVECephNodeNodesInit($this->client, $this->node));
-        }
-
         /**
          * @ignore
          */
         private $mgr;
-
         /**
          * Get CephNodeNodesMgr
          * @return PVECephNodeNodesMgr
@@ -13252,12 +12415,70 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->mgr ?: ($this->mgr = new PVECephNodeNodesMgr($this->client, $this->node));
         }
-
+        /**
+         * @ignore
+         */
+        private $mon;
+        /**
+         * Get CephNodeNodesMon
+         * @return PVECephNodeNodesMon
+         */
+        public function getMon()
+        {
+            return $this->mon ?: ($this->mon = new PVECephNodeNodesMon($this->client, $this->node));
+        }
+        /**
+         * @ignore
+         */
+        private $fs;
+        /**
+         * Get CephNodeNodesFs
+         * @return PVECephNodeNodesFs
+         */
+        public function getFs()
+        {
+            return $this->fs ?: ($this->fs = new PVECephNodeNodesFs($this->client, $this->node));
+        }
+        /**
+         * @ignore
+         */
+        private $disks;
+        /**
+         * Get CephNodeNodesDisks
+         * @return PVECephNodeNodesDisks
+         */
+        public function getDisks()
+        {
+            return $this->disks ?: ($this->disks = new PVECephNodeNodesDisks($this->client, $this->node));
+        }
+        /**
+         * @ignore
+         */
+        private $config;
+        /**
+         * Get CephNodeNodesConfig
+         * @return PVECephNodeNodesConfig
+         */
+        public function getConfig()
+        {
+            return $this->config ?: ($this->config = new PVECephNodeNodesConfig($this->client, $this->node));
+        }
+        /**
+         * @ignore
+         */
+        private $init;
+        /**
+         * Get CephNodeNodesInit
+         * @return PVECephNodeNodesInit
+         */
+        public function getInit()
+        {
+            return $this->init ?: ($this->init = new PVECephNodeNodesInit($this->client, $this->node));
+        }
         /**
          * @ignore
          */
         private $stop;
-
         /**
          * Get CephNodeNodesStop
          * @return PVECephNodeNodesStop
@@ -13266,12 +12487,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->stop ?: ($this->stop = new PVECephNodeNodesStop($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $start;
-
         /**
          * Get CephNodeNodesStart
          * @return PVECephNodeNodesStart
@@ -13280,12 +12499,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->start ?: ($this->start = new PVECephNodeNodesStart($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $restart;
-
         /**
          * Get CephNodeNodesRestart
          * @return PVECephNodeNodesRestart
@@ -13294,12 +12511,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->restart ?: ($this->restart = new PVECephNodeNodesRestart($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $status;
-
         /**
          * Get CephNodeNodesStatus
          * @return PVECephNodeNodesStatus
@@ -13308,12 +12523,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->status ?: ($this->status = new PVECephNodeNodesStatus($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $pools;
-
         /**
          * Get CephNodeNodesPools
          * @return PVECephNodeNodesPools
@@ -13322,12 +12535,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->pools ?: ($this->pools = new PVECephNodeNodesPools($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $flags;
-
         /**
          * Get CephNodeNodesFlags
          * @return PVECephNodeNodesFlags
@@ -13336,12 +12547,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->flags ?: ($this->flags = new PVECephNodeNodesFlags($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $crush;
-
         /**
          * Get CephNodeNodesCrush
          * @return PVECephNodeNodesCrush
@@ -13350,12 +12559,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->crush ?: ($this->crush = new PVECephNodeNodesCrush($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $log;
-
         /**
          * Get CephNodeNodesLog
          * @return PVECephNodeNodesLog
@@ -13364,12 +12571,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->log ?: ($this->log = new PVECephNodeNodesLog($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $rules;
-
         /**
          * Get CephNodeNodesRules
          * @return PVECephNodeNodesRules
@@ -13378,7 +12583,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->rules ?: ($this->rules = new PVECephNodeNodesRules($this->client, $this->node));
         }
-
         /**
          * Directory index.
          * @return Result
@@ -13387,7 +12591,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/ceph");
         }
-
         /**
          * Directory index.
          * @return Result
@@ -13397,10 +12600,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVECephNodeNodesOsd
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesOsd extends Base
     {
@@ -13408,7 +12610,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -13417,7 +12618,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get ItemOsdCephNodeNodesOsdid
          * @param osdid
@@ -13427,7 +12627,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemOsdCephNodeNodesOsdid($this->client, $this->node, $osdid);
         }
-
         /**
          * Get Ceph osd list/tree.
          * @return Result
@@ -13436,7 +12635,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/ceph/osd");
         }
-
         /**
          * Get Ceph osd list/tree.
          * @return Result
@@ -13445,7 +12643,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create OSD
          * @param string $dev Block device name.
@@ -13458,14 +12655,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($dev, $bluestore = null, $fstype = null, $journal_dev = null, $wal_dev = null)
         {
-            $params = ['dev' => $dev,
+            $params = [
+                'dev' => $dev,
                 'bluestore' => $bluestore,
                 'fstype' => $fstype,
                 'journal_dev' => $journal_dev,
-                'wal_dev' => $wal_dev];
+                'wal_dev' => $wal_dev
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/ceph/osd", $params);
         }
-
         /**
          * Create OSD
          * @param string $dev Block device name.
@@ -13481,10 +12679,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($dev, $bluestore, $fstype, $journal_dev, $wal_dev);
         }
     }
-
     /**
      * Class PVEItemOsdCephNodeNodesOsdid
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemOsdCephNodeNodesOsdid extends Base
     {
@@ -13496,7 +12693,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $osdid;
-
         /**
          * @ignore
          */
@@ -13506,12 +12702,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->osdid = $osdid;
         }
-
         /**
          * @ignore
          */
         private $in;
-
         /**
          * Get OsdidOsdCephNodeNodesIn
          * @return PVEOsdidOsdCephNodeNodesIn
@@ -13520,12 +12714,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->in ?: ($this->in = new PVEOsdidOsdCephNodeNodesIn($this->client, $this->node, $this->osdid));
         }
-
         /**
          * @ignore
          */
         private $out;
-
         /**
          * Get OsdidOsdCephNodeNodesOut
          * @return PVEOsdidOsdCephNodeNodesOut
@@ -13534,7 +12726,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->out ?: ($this->out = new PVEOsdidOsdCephNodeNodesOut($this->client, $this->node, $this->osdid));
         }
-
         /**
          * Destroy OSD
          * @param bool $cleanup If set, we remove partition table entries.
@@ -13545,7 +12736,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['cleanup' => $cleanup];
             return $this->getClient()->delete("/nodes/{$this->node}/ceph/osd/{$this->osdid}", $params);
         }
-
         /**
          * Destroy OSD
          * @param bool $cleanup If set, we remove partition table entries.
@@ -13556,10 +12746,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->deleteRest($cleanup);
         }
     }
-
     /**
      * Class PVEOsdidOsdCephNodeNodesIn
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEOsdidOsdCephNodeNodesIn extends Base
     {
@@ -13571,7 +12760,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $osdid;
-
         /**
          * @ignore
          */
@@ -13581,7 +12769,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->osdid = $osdid;
         }
-
         /**
          * ceph osd in
          * @return Result
@@ -13590,7 +12777,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->create("/nodes/{$this->node}/ceph/osd/{$this->osdid}/in");
         }
-
         /**
          * ceph osd in
          * @return Result
@@ -13600,10 +12786,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest();
         }
     }
-
     /**
      * Class PVEOsdidOsdCephNodeNodesOut
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEOsdidOsdCephNodeNodesOut extends Base
     {
@@ -13615,7 +12800,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $osdid;
-
         /**
          * @ignore
          */
@@ -13625,7 +12809,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->osdid = $osdid;
         }
-
         /**
          * ceph osd out
          * @return Result
@@ -13634,7 +12817,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->create("/nodes/{$this->node}/ceph/osd/{$this->osdid}/out");
         }
-
         /**
          * ceph osd out
          * @return Result
@@ -13644,10 +12826,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest();
         }
     }
-
     /**
      * Class PVECephNodeNodesMds
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesMds extends Base
     {
@@ -13655,7 +12836,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -13664,7 +12844,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get ItemMdsCephNodeNodesName
          * @param name
@@ -13674,7 +12853,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemMdsCephNodeNodesName($this->client, $this->node, $name);
         }
-
         /**
          * MDS directory index.
          * @return Result
@@ -13683,7 +12861,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/ceph/mds");
         }
-
         /**
          * MDS directory index.
          * @return Result
@@ -13693,10 +12870,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEItemMdsCephNodeNodesName
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemMdsCephNodeNodesName extends Base
     {
@@ -13708,7 +12884,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $name;
-
         /**
          * @ignore
          */
@@ -13718,7 +12893,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->name = $name;
         }
-
         /**
          * Destroy Ceph Metadata Server
          * @return Result
@@ -13727,7 +12901,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->delete("/nodes/{$this->node}/ceph/mds/{$this->name}");
         }
-
         /**
          * Destroy Ceph Metadata Server
          * @return Result
@@ -13736,7 +12909,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest();
         }
-
         /**
          * Create Ceph Metadata Server (MDS)
          * @param bool $hotstandby Determines whether a ceph-mds daemon should poll and replay the log of an active MDS. Faster switch on MDS failure, but needs more idle resources.
@@ -13747,7 +12919,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['hotstandby' => $hotstandby];
             return $this->getClient()->create("/nodes/{$this->node}/ceph/mds/{$this->name}", $params);
         }
-
         /**
          * Create Ceph Metadata Server (MDS)
          * @param bool $hotstandby Determines whether a ceph-mds daemon should poll and replay the log of an active MDS. Faster switch on MDS failure, but needs more idle resources.
@@ -13758,18 +12929,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($hotstandby);
         }
     }
-
     /**
-     * Class PVECephNodeNodesFs
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * Class PVECephNodeNodesMgr
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
-    class PVECephNodeNodesFs extends Base
+    class PVECephNodeNodesMgr extends Base
     {
         /**
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -13778,41 +12947,40 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
-         * Get ItemFsCephNodeNodesName
-         * @param name
-         * @return PVEItemFsCephNodeNodesName
+         * Get ItemMgrCephNodeNodesId
+         * @param id
+         * @return PVEItemMgrCephNodeNodesId
          */
-        public function get($name)
+        public function get($id)
         {
-            return new PVEItemFsCephNodeNodesName($this->client, $this->node, $name);
+            return new PVEItemMgrCephNodeNodesId($this->client, $this->node, $id);
         }
-
         /**
-         * Directory index.
+         * Create Ceph Manager
+         * @param string $id The ID for the manager, when omitted the same as the nodename
          * @return Result
          */
-        public function getRest()
+        public function createRest($id = null)
         {
-            return $this->getClient()->get("/nodes/{$this->node}/ceph/fs");
+            $params = ['id' => $id];
+            return $this->getClient()->create("/nodes/{$this->node}/ceph/mgr", $params);
         }
-
         /**
-         * Directory index.
+         * Create Ceph Manager
+         * @param string $id The ID for the manager, when omitted the same as the nodename
          * @return Result
          */
-        public function index()
+        public function createmgr($id = null)
         {
-            return $this->getRest();
+            return $this->createRest($id);
         }
     }
-
     /**
-     * Class PVEItemFsCephNodeNodesName
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * Class PVEItemMgrCephNodeNodesId
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
-    class PVEItemFsCephNodeNodesName extends Base
+    class PVEItemMgrCephNodeNodesId extends Base
     {
         /**
          * @ignore
@@ -13821,129 +12989,36 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         /**
          * @ignore
          */
-        private $name;
-
+        private $id;
         /**
          * @ignore
          */
-        function __construct($client, $node, $name)
+        function __construct($client, $node, $id)
         {
             $this->client = $client;
             $this->node = $node;
-            $this->name = $name;
+            $this->id = $id;
         }
-
         /**
-         * Create a Ceph filesystem
-         * @param bool $add_storage Configure the created CephFS as storage for this cluster.
-         * @param int $pg_num Number of placement groups for the backing data pool. The metadata pool will use a quarter of this.
+         * Destroy Ceph Manager.
          * @return Result
          */
-        public function createRest($add_storage = null, $pg_num = null)
+        public function deleteRest()
         {
-            $params = ['add-storage' => $add_storage,
-                'pg_num' => $pg_num];
-            return $this->getClient()->create("/nodes/{$this->node}/ceph/fs/{$this->name}", $params);
+            return $this->getClient()->delete("/nodes/{$this->node}/ceph/mgr/{$this->id}");
         }
-
         /**
-         * Create a Ceph filesystem
-         * @param bool $add_storage Configure the created CephFS as storage for this cluster.
-         * @param int $pg_num Number of placement groups for the backing data pool. The metadata pool will use a quarter of this.
+         * Destroy Ceph Manager.
          * @return Result
          */
-        public function createfs($add_storage = null, $pg_num = null)
+        public function destroymgr()
         {
-            return $this->createRest($add_storage, $pg_num);
+            return $this->deleteRest();
         }
     }
-
-    /**
-     * Class PVECephNodeNodesDisks
-     * @package EnterpriseVE\ProxmoxVE\Api
-     */
-    class PVECephNodeNodesDisks extends Base
-    {
-        /**
-         * @ignore
-         */
-        private $node;
-
-        /**
-         * @ignore
-         */
-        function __construct($client, $node)
-        {
-            $this->client = $client;
-            $this->node = $node;
-        }
-
-        /**
-         * List local disks.
-         * @param string $type Only list specific types of disks.
-         *   Enum: unused,journal_disks
-         * @return Result
-         */
-        public function getRest($type = null)
-        {
-            $params = ['type' => $type];
-            return $this->getClient()->get("/nodes/{$this->node}/ceph/disks", $params);
-        }
-
-        /**
-         * List local disks.
-         * @param string $type Only list specific types of disks.
-         *   Enum: unused,journal_disks
-         * @return Result
-         */
-        public function disks($type = null)
-        {
-            return $this->getRest($type);
-        }
-    }
-
-    /**
-     * Class PVECephNodeNodesConfig
-     * @package EnterpriseVE\ProxmoxVE\Api
-     */
-    class PVECephNodeNodesConfig extends Base
-    {
-        /**
-         * @ignore
-         */
-        private $node;
-
-        /**
-         * @ignore
-         */
-        function __construct($client, $node)
-        {
-            $this->client = $client;
-            $this->node = $node;
-        }
-
-        /**
-         * Get Ceph configuration.
-         * @return Result
-         */
-        public function getRest()
-        {
-            return $this->getClient()->get("/nodes/{$this->node}/ceph/config");
-        }
-
-        /**
-         * Get Ceph configuration.
-         * @return Result
-         */
-        public function config()
-        {
-            return $this->getRest();
-        }
-    }
-
     /**
      * Class PVECephNodeNodesMon
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesMon extends Base
     {
@@ -13951,7 +13026,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -13960,7 +13034,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get ItemMonCephNodeNodesMonid
          * @param monid
@@ -13970,7 +13043,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemMonCephNodeNodesMonid($this->client, $this->node, $monid);
         }
-
         /**
          * Get Ceph monitor list.
          * @return Result
@@ -13979,7 +13051,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/ceph/mon");
         }
-
         /**
          * Get Ceph monitor list.
          * @return Result
@@ -13988,7 +13059,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create Ceph Monitor and Manager
          * @param bool $exclude_manager When set, only a monitor will be created.
@@ -13998,12 +13068,13 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($exclude_manager = null, $id = null, $mon_address = null)
         {
-            $params = ['exclude-manager' => $exclude_manager,
+            $params = [
+                'exclude-manager' => $exclude_manager,
                 'id' => $id,
-                'mon-address' => $mon_address];
+                'mon-address' => $mon_address
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/ceph/mon", $params);
         }
-
         /**
          * Create Ceph Monitor and Manager
          * @param bool $exclude_manager When set, only a monitor will be created.
@@ -14016,10 +13087,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($exclude_manager, $id, $mon_address);
         }
     }
-
     /**
      * Class PVEItemMonCephNodeNodesMonid
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemMonCephNodeNodesMonid extends Base
     {
@@ -14031,7 +13101,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $monid;
-
         /**
          * @ignore
          */
@@ -14041,7 +13110,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->monid = $monid;
         }
-
         /**
          * Destroy Ceph Monitor and Manager.
          * @param bool $exclude_manager When set, removes only the monitor, not the manager
@@ -14052,7 +13120,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['exclude-manager' => $exclude_manager];
             return $this->getClient()->delete("/nodes/{$this->node}/ceph/mon/{$this->monid}", $params);
         }
-
         /**
          * Destroy Ceph Monitor and Manager.
          * @param bool $exclude_manager When set, removes only the monitor, not the manager
@@ -14063,18 +13130,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->deleteRest($exclude_manager);
         }
     }
-
     /**
-     * Class PVECephNodeNodesInit
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * Class PVECephNodeNodesFs
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
-    class PVECephNodeNodesInit extends Base
+    class PVECephNodeNodesFs extends Base
     {
         /**
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -14083,7 +13148,173 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
+        /**
+         * Get ItemFsCephNodeNodesName
+         * @param name
+         * @return PVEItemFsCephNodeNodesName
+         */
+        public function get($name)
+        {
+            return new PVEItemFsCephNodeNodesName($this->client, $this->node, $name);
+        }
+        /**
+         * Directory index.
+         * @return Result
+         */
+        public function getRest()
+        {
+            return $this->getClient()->get("/nodes/{$this->node}/ceph/fs");
+        }
+        /**
+         * Directory index.
+         * @return Result
+         */
+        public function index()
+        {
+            return $this->getRest();
+        }
+    }
+    /**
+     * Class PVEItemFsCephNodeNodesName
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVEItemFsCephNodeNodesName extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $name;
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $name)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->name = $name;
+        }
+        /**
+         * Create a Ceph filesystem
+         * @param bool $add_storage Configure the created CephFS as storage for this cluster.
+         * @param int $pg_num Number of placement groups for the backing data pool. The metadata pool will use a quarter of this.
+         * @return Result
+         */
+        public function createRest($add_storage = null, $pg_num = null)
+        {
+            $params = [
+                'add-storage' => $add_storage,
+                'pg_num' => $pg_num
+            ];
+            return $this->getClient()->create("/nodes/{$this->node}/ceph/fs/{$this->name}", $params);
+        }
+        /**
+         * Create a Ceph filesystem
+         * @param bool $add_storage Configure the created CephFS as storage for this cluster.
+         * @param int $pg_num Number of placement groups for the backing data pool. The metadata pool will use a quarter of this.
+         * @return Result
+         */
+        public function createfs($add_storage = null, $pg_num = null)
+        {
+            return $this->createRest($add_storage, $pg_num);
+        }
+    }
+    /**
+     * Class PVECephNodeNodesDisks
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVECephNodeNodesDisks extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        function __construct($client, $node)
+        {
+            $this->client = $client;
+            $this->node = $node;
+        }
+        /**
+         * List local disks.
+         * @param string $type Only list specific types of disks.
+         *   Enum: unused,journal_disks
+         * @return Result
+         */
+        public function getRest($type = null)
+        {
+            $params = ['type' => $type];
+            return $this->getClient()->get("/nodes/{$this->node}/ceph/disks", $params);
+        }
+        /**
+         * List local disks.
+         * @param string $type Only list specific types of disks.
+         *   Enum: unused,journal_disks
+         * @return Result
+         */
+        public function disks($type = null)
+        {
+            return $this->getRest($type);
+        }
+    }
+    /**
+     * Class PVECephNodeNodesConfig
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVECephNodeNodesConfig extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        function __construct($client, $node)
+        {
+            $this->client = $client;
+            $this->node = $node;
+        }
+        /**
+         * Get Ceph configuration.
+         * @return Result
+         */
+        public function getRest()
+        {
+            return $this->getClient()->get("/nodes/{$this->node}/ceph/config");
+        }
+        /**
+         * Get Ceph configuration.
+         * @return Result
+         */
+        public function config()
+        {
+            return $this->getRest();
+        }
+    }
+    /**
+     * Class PVECephNodeNodesInit
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVECephNodeNodesInit extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        function __construct($client, $node)
+        {
+            $this->client = $client;
+            $this->node = $node;
+        }
         /**
          * Create initial ceph default configuration and setup symlinks.
          * @param string $cluster_network Declare a separate cluster network, OSDs will routeheartbeat, object replication and recovery traffic over it
@@ -14096,15 +13327,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($cluster_network = null, $disable_cephx = null, $min_size = null, $network = null, $pg_bits = null, $size = null)
         {
-            $params = ['cluster-network' => $cluster_network,
+            $params = [
+                'cluster-network' => $cluster_network,
                 'disable_cephx' => $disable_cephx,
                 'min_size' => $min_size,
                 'network' => $network,
                 'pg_bits' => $pg_bits,
-                'size' => $size];
+                'size' => $size
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/ceph/init", $params);
         }
-
         /**
          * Create initial ceph default configuration and setup symlinks.
          * @param string $cluster_network Declare a separate cluster network, OSDs will routeheartbeat, object replication and recovery traffic over it
@@ -14120,106 +13352,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($cluster_network, $disable_cephx, $min_size, $network, $pg_bits, $size);
         }
     }
-
-    /**
-     * Class PVECephNodeNodesMgr
-     * @package EnterpriseVE\ProxmoxVE\Api
-     */
-    class PVECephNodeNodesMgr extends Base
-    {
-        /**
-         * @ignore
-         */
-        private $node;
-
-        /**
-         * @ignore
-         */
-        function __construct($client, $node)
-        {
-            $this->client = $client;
-            $this->node = $node;
-        }
-
-        /**
-         * Get ItemMgrCephNodeNodesId
-         * @param id
-         * @return PVEItemMgrCephNodeNodesId
-         */
-        public function get($id)
-        {
-            return new PVEItemMgrCephNodeNodesId($this->client, $this->node, $id);
-        }
-
-        /**
-         * Create Ceph Manager
-         * @param string $id The ID for the manager, when omitted the same as the nodename
-         * @return Result
-         */
-        public function createRest($id = null)
-        {
-            $params = ['id' => $id];
-            return $this->getClient()->create("/nodes/{$this->node}/ceph/mgr", $params);
-        }
-
-        /**
-         * Create Ceph Manager
-         * @param string $id The ID for the manager, when omitted the same as the nodename
-         * @return Result
-         */
-        public function createmgr($id = null)
-        {
-            return $this->createRest($id);
-        }
-    }
-
-    /**
-     * Class PVEItemMgrCephNodeNodesId
-     * @package EnterpriseVE\ProxmoxVE\Api
-     */
-    class PVEItemMgrCephNodeNodesId extends Base
-    {
-        /**
-         * @ignore
-         */
-        private $node;
-        /**
-         * @ignore
-         */
-        private $id;
-
-        /**
-         * @ignore
-         */
-        function __construct($client, $node, $id)
-        {
-            $this->client = $client;
-            $this->node = $node;
-            $this->id = $id;
-        }
-
-        /**
-         * Destroy Ceph Manager.
-         * @return Result
-         */
-        public function deleteRest()
-        {
-            return $this->getClient()->delete("/nodes/{$this->node}/ceph/mgr/{$this->id}");
-        }
-
-        /**
-         * Destroy Ceph Manager.
-         * @return Result
-         */
-        public function destroymgr()
-        {
-            return $this->deleteRest();
-        }
-    }
-
     /**
      * Class PVECephNodeNodesStop
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesStop extends Base
     {
@@ -14227,7 +13362,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -14236,7 +13370,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Stop ceph services.
          * @param string $service Ceph service name.
@@ -14247,7 +13380,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['service' => $service];
             return $this->getClient()->create("/nodes/{$this->node}/ceph/stop", $params);
         }
-
         /**
          * Stop ceph services.
          * @param string $service Ceph service name.
@@ -14258,10 +13390,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($service);
         }
     }
-
     /**
      * Class PVECephNodeNodesStart
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesStart extends Base
     {
@@ -14269,7 +13400,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -14278,7 +13408,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Start ceph services.
          * @param string $service Ceph service name.
@@ -14289,7 +13418,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['service' => $service];
             return $this->getClient()->create("/nodes/{$this->node}/ceph/start", $params);
         }
-
         /**
          * Start ceph services.
          * @param string $service Ceph service name.
@@ -14300,10 +13428,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($service);
         }
     }
-
     /**
      * Class PVECephNodeNodesRestart
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesRestart extends Base
     {
@@ -14311,7 +13438,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -14320,7 +13446,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Restart ceph services.
          * @param string $service Ceph service name.
@@ -14331,7 +13456,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['service' => $service];
             return $this->getClient()->create("/nodes/{$this->node}/ceph/restart", $params);
         }
-
         /**
          * Restart ceph services.
          * @param string $service Ceph service name.
@@ -14342,10 +13466,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($service);
         }
     }
-
     /**
      * Class PVECephNodeNodesStatus
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesStatus extends Base
     {
@@ -14353,7 +13476,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -14362,7 +13484,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get ceph status.
          * @return Result
@@ -14371,7 +13492,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/ceph/status");
         }
-
         /**
          * Get ceph status.
          * @return Result
@@ -14381,10 +13501,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVECephNodeNodesPools
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesPools extends Base
     {
@@ -14392,7 +13511,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -14401,7 +13519,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get ItemPoolsCephNodeNodesName
          * @param name
@@ -14411,7 +13528,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemPoolsCephNodeNodesName($this->client, $this->node, $name);
         }
-
         /**
          * List all pools.
          * @return Result
@@ -14420,7 +13536,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/ceph/pools");
         }
-
         /**
          * List all pools.
          * @return Result
@@ -14429,7 +13544,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create POOL
          * @param string $name The name of the pool. It must be unique.
@@ -14444,16 +13558,17 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($name, $add_storages = null, $application = null, $crush_rule = null, $min_size = null, $pg_num = null, $size = null)
         {
-            $params = ['name' => $name,
+            $params = [
+                'name' => $name,
                 'add_storages' => $add_storages,
                 'application' => $application,
                 'crush_rule' => $crush_rule,
                 'min_size' => $min_size,
                 'pg_num' => $pg_num,
-                'size' => $size];
+                'size' => $size
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/ceph/pools", $params);
         }
-
         /**
          * Create POOL
          * @param string $name The name of the pool. It must be unique.
@@ -14471,10 +13586,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($name, $add_storages, $application, $crush_rule, $min_size, $pg_num, $size);
         }
     }
-
     /**
      * Class PVEItemPoolsCephNodeNodesName
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemPoolsCephNodeNodesName extends Base
     {
@@ -14486,7 +13600,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $name;
-
         /**
          * @ignore
          */
@@ -14496,7 +13609,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->name = $name;
         }
-
         /**
          * Destroy pool
          * @param bool $force If true, destroys pool even if in use
@@ -14505,11 +13617,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function deleteRest($force = null, $remove_storages = null)
         {
-            $params = ['force' => $force,
-                'remove_storages' => $remove_storages];
+            $params = [
+                'force' => $force,
+                'remove_storages' => $remove_storages
+            ];
             return $this->getClient()->delete("/nodes/{$this->node}/ceph/pools/{$this->name}", $params);
         }
-
         /**
          * Destroy pool
          * @param bool $force If true, destroys pool even if in use
@@ -14521,10 +13634,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->deleteRest($force, $remove_storages);
         }
     }
-
     /**
      * Class PVECephNodeNodesFlags
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesFlags extends Base
     {
@@ -14532,7 +13644,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -14541,7 +13652,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get ItemFlagsCephNodeNodesFlag
          * @param flag
@@ -14551,7 +13661,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemFlagsCephNodeNodesFlag($this->client, $this->node, $flag);
         }
-
         /**
          * get all set ceph flags
          * @return Result
@@ -14560,7 +13669,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/ceph/flags");
         }
-
         /**
          * get all set ceph flags
          * @return Result
@@ -14570,10 +13678,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEItemFlagsCephNodeNodesFlag
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemFlagsCephNodeNodesFlag extends Base
     {
@@ -14585,7 +13692,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $flag;
-
         /**
          * @ignore
          */
@@ -14595,7 +13701,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->flag = $flag;
         }
-
         /**
          * Unset a ceph flag
          * @return Result
@@ -14604,7 +13709,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->delete("/nodes/{$this->node}/ceph/flags/{$this->flag}");
         }
-
         /**
          * Unset a ceph flag
          * @return Result
@@ -14613,7 +13717,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest();
         }
-
         /**
          * Set a ceph flag
          * @return Result
@@ -14622,7 +13725,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->create("/nodes/{$this->node}/ceph/flags/{$this->flag}");
         }
-
         /**
          * Set a ceph flag
          * @return Result
@@ -14632,10 +13734,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest();
         }
     }
-
     /**
      * Class PVECephNodeNodesCrush
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesCrush extends Base
     {
@@ -14643,7 +13744,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -14652,7 +13752,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get OSD crush map
          * @return Result
@@ -14661,7 +13760,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/ceph/crush");
         }
-
         /**
          * Get OSD crush map
          * @return Result
@@ -14671,10 +13769,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVECephNodeNodesLog
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesLog extends Base
     {
@@ -14682,7 +13779,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -14691,24 +13787,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Read ceph log
-         * @param int $limit
-         * @param int $start
+         * @param int $limit 
+         * @param int $start 
          * @return Result
          */
         public function getRest($limit = null, $start = null)
         {
-            $params = ['limit' => $limit,
-                'start' => $start];
+            $params = [
+                'limit' => $limit,
+                'start' => $start
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/ceph/log", $params);
         }
-
         /**
          * Read ceph log
-         * @param int $limit
-         * @param int $start
+         * @param int $limit 
+         * @param int $start 
          * @return Result
          */
         public function log($limit = null, $start = null)
@@ -14716,10 +13812,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($limit, $start);
         }
     }
-
     /**
      * Class PVECephNodeNodesRules
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesRules extends Base
     {
@@ -14727,7 +13822,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -14736,7 +13830,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * List ceph rules.
          * @return Result
@@ -14745,7 +13838,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/ceph/rules");
         }
-
         /**
          * List ceph rules.
          * @return Result
@@ -14755,10 +13847,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVENodeNodesVzdump
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesVzdump extends Base
     {
@@ -14766,7 +13857,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -14775,12 +13865,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * @ignore
          */
         private $extractconfig;
-
         /**
          * Get VzdumpNodeNodesExtractconfig
          * @return PVEVzdumpNodeNodesExtractconfig
@@ -14789,7 +13877,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->extractconfig ?: ($this->extractconfig = new PVEVzdumpNodeNodesExtractconfig($this->client, $this->node));
         }
-
         /**
          * Create backup.
          * @param bool $all Backup all known guest systems on this host.
@@ -14823,7 +13910,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($all = null, $bwlimit = null, $compress = null, $dumpdir = null, $exclude = null, $exclude_path = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $pigz = null, $quiet = null, $remove = null, $script = null, $size = null, $stdexcludes = null, $stdout = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null)
         {
-            $params = ['all' => $all,
+            $params = [
+                'all' => $all,
                 'bwlimit' => $bwlimit,
                 'compress' => $compress,
                 'dumpdir' => $dumpdir,
@@ -14846,10 +13934,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'stopwait' => $stopwait,
                 'storage' => $storage,
                 'tmpdir' => $tmpdir,
-                'vmid' => $vmid];
+                'vmid' => $vmid
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/vzdump", $params);
         }
-
         /**
          * Create backup.
          * @param bool $all Backup all known guest systems on this host.
@@ -14886,10 +13974,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($all, $bwlimit, $compress, $dumpdir, $exclude, $exclude_path, $ionice, $lockwait, $mailnotification, $mailto, $maxfiles, $mode, $pigz, $quiet, $remove, $script, $size, $stdexcludes, $stdout, $stop, $stopwait, $storage, $tmpdir, $vmid);
         }
     }
-
     /**
      * Class PVEVzdumpNodeNodesExtractconfig
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVzdumpNodeNodesExtractconfig extends Base
     {
@@ -14897,7 +13984,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -14906,7 +13992,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Extract configuration from vzdump backup archive.
          * @param string $volume Volume identifier
@@ -14917,7 +14002,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['volume' => $volume];
             return $this->getClient()->get("/nodes/{$this->node}/vzdump/extractconfig", $params);
         }
-
         /**
          * Extract configuration from vzdump backup archive.
          * @param string $volume Volume identifier
@@ -14928,10 +14012,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($volume);
         }
     }
-
     /**
      * Class PVENodeNodesServices
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesServices extends Base
     {
@@ -14939,7 +14022,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -14948,7 +14030,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get ItemServicesNodeNodesService
          * @param service
@@ -14958,7 +14039,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemServicesNodeNodesService($this->client, $this->node, $service);
         }
-
         /**
          * Service list.
          * @return Result
@@ -14967,7 +14047,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/services");
         }
-
         /**
          * Service list.
          * @return Result
@@ -14977,10 +14056,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEItemServicesNodeNodesService
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemServicesNodeNodesService extends Base
     {
@@ -14992,7 +14070,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $service;
-
         /**
          * @ignore
          */
@@ -15002,12 +14079,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->service = $service;
         }
-
         /**
          * @ignore
          */
         private $state;
-
         /**
          * Get ServiceServicesNodeNodesState
          * @return PVEServiceServicesNodeNodesState
@@ -15016,12 +14091,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->state ?: ($this->state = new PVEServiceServicesNodeNodesState($this->client, $this->node, $this->service));
         }
-
         /**
          * @ignore
          */
         private $start;
-
         /**
          * Get ServiceServicesNodeNodesStart
          * @return PVEServiceServicesNodeNodesStart
@@ -15030,12 +14103,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->start ?: ($this->start = new PVEServiceServicesNodeNodesStart($this->client, $this->node, $this->service));
         }
-
         /**
          * @ignore
          */
         private $stop;
-
         /**
          * Get ServiceServicesNodeNodesStop
          * @return PVEServiceServicesNodeNodesStop
@@ -15044,12 +14115,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->stop ?: ($this->stop = new PVEServiceServicesNodeNodesStop($this->client, $this->node, $this->service));
         }
-
         /**
          * @ignore
          */
         private $restart;
-
         /**
          * Get ServiceServicesNodeNodesRestart
          * @return PVEServiceServicesNodeNodesRestart
@@ -15058,12 +14127,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->restart ?: ($this->restart = new PVEServiceServicesNodeNodesRestart($this->client, $this->node, $this->service));
         }
-
         /**
          * @ignore
          */
         private $reload;
-
         /**
          * Get ServiceServicesNodeNodesReload
          * @return PVEServiceServicesNodeNodesReload
@@ -15072,7 +14139,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->reload ?: ($this->reload = new PVEServiceServicesNodeNodesReload($this->client, $this->node, $this->service));
         }
-
         /**
          * Directory index
          * @return Result
@@ -15081,7 +14147,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/services/{$this->service}");
         }
-
         /**
          * Directory index
          * @return Result
@@ -15091,10 +14156,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEServiceServicesNodeNodesState
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEServiceServicesNodeNodesState extends Base
     {
@@ -15106,7 +14170,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $service;
-
         /**
          * @ignore
          */
@@ -15116,7 +14179,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->service = $service;
         }
-
         /**
          * Read service properties
          * @return Result
@@ -15125,7 +14187,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/services/{$this->service}/state");
         }
-
         /**
          * Read service properties
          * @return Result
@@ -15135,10 +14196,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEServiceServicesNodeNodesStart
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEServiceServicesNodeNodesStart extends Base
     {
@@ -15150,7 +14210,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $service;
-
         /**
          * @ignore
          */
@@ -15160,7 +14219,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->service = $service;
         }
-
         /**
          * Start service.
          * @return Result
@@ -15169,7 +14227,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->create("/nodes/{$this->node}/services/{$this->service}/start");
         }
-
         /**
          * Start service.
          * @return Result
@@ -15179,10 +14236,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest();
         }
     }
-
     /**
      * Class PVEServiceServicesNodeNodesStop
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEServiceServicesNodeNodesStop extends Base
     {
@@ -15194,7 +14250,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $service;
-
         /**
          * @ignore
          */
@@ -15204,7 +14259,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->service = $service;
         }
-
         /**
          * Stop service.
          * @return Result
@@ -15213,7 +14267,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->create("/nodes/{$this->node}/services/{$this->service}/stop");
         }
-
         /**
          * Stop service.
          * @return Result
@@ -15223,10 +14276,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest();
         }
     }
-
     /**
      * Class PVEServiceServicesNodeNodesRestart
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEServiceServicesNodeNodesRestart extends Base
     {
@@ -15238,7 +14290,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $service;
-
         /**
          * @ignore
          */
@@ -15248,7 +14299,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->service = $service;
         }
-
         /**
          * Restart service.
          * @return Result
@@ -15257,7 +14307,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->create("/nodes/{$this->node}/services/{$this->service}/restart");
         }
-
         /**
          * Restart service.
          * @return Result
@@ -15267,10 +14316,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest();
         }
     }
-
     /**
      * Class PVEServiceServicesNodeNodesReload
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEServiceServicesNodeNodesReload extends Base
     {
@@ -15282,7 +14330,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $service;
-
         /**
          * @ignore
          */
@@ -15292,7 +14339,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->service = $service;
         }
-
         /**
          * Reload service.
          * @return Result
@@ -15301,7 +14347,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->create("/nodes/{$this->node}/services/{$this->service}/reload");
         }
-
         /**
          * Reload service.
          * @return Result
@@ -15311,10 +14356,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest();
         }
     }
-
     /**
      * Class PVENodeNodesSubscription
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesSubscription extends Base
     {
@@ -15322,7 +14366,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -15331,7 +14374,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Read subscription info.
          * @return Result
@@ -15340,7 +14382,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/subscription");
         }
-
         /**
          * Read subscription info.
          * @return Result
@@ -15349,7 +14390,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Update subscription info.
          * @param bool $force Always connect to server, even if we have up to date info inside local cache.
@@ -15360,7 +14400,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['force' => $force];
             return $this->getClient()->create("/nodes/{$this->node}/subscription", $params);
         }
-
         /**
          * Update subscription info.
          * @param bool $force Always connect to server, even if we have up to date info inside local cache.
@@ -15370,7 +14409,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->createRest($force);
         }
-
         /**
          * Set subscription key.
          * @param string $key Proxmox VE subscription key
@@ -15381,7 +14419,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['key' => $key];
             return $this->getClient()->set("/nodes/{$this->node}/subscription", $params);
         }
-
         /**
          * Set subscription key.
          * @param string $key Proxmox VE subscription key
@@ -15392,10 +14429,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($key);
         }
     }
-
     /**
      * Class PVENodeNodesNetwork
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesNetwork extends Base
     {
@@ -15403,7 +14439,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -15412,7 +14447,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get ItemNetworkNodeNodesIface
          * @param iface
@@ -15422,7 +14456,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemNetworkNodeNodesIface($this->client, $this->node, $iface);
         }
-
         /**
          * Revert network configuration changes.
          * @return Result
@@ -15431,7 +14464,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->delete("/nodes/{$this->node}/network");
         }
-
         /**
          * Revert network configuration changes.
          * @return Result
@@ -15440,7 +14472,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest();
         }
-
         /**
          * List available networks
          * @param string $type Only list specific interface types.
@@ -15452,7 +14483,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['type' => $type];
             return $this->getClient()->get("/nodes/{$this->node}/network", $params);
         }
-
         /**
          * List available networks
          * @param string $type Only list specific interface types.
@@ -15463,7 +14493,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest($type);
         }
-
         /**
          * Create network device configuration
          * @param string $iface Network interface name.
@@ -15494,7 +14523,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($iface, $type, $address = null, $address6 = null, $autostart = null, $bond_mode = null, $bond_xmit_hash_policy = null, $bridge_ports = null, $bridge_vlan_aware = null, $comments = null, $comments6 = null, $gateway = null, $gateway6 = null, $netmask = null, $netmask6 = null, $ovs_bonds = null, $ovs_bridge = null, $ovs_options = null, $ovs_ports = null, $ovs_tag = null, $slaves = null)
         {
-            $params = ['iface' => $iface,
+            $params = [
+                'iface' => $iface,
                 'type' => $type,
                 'address' => $address,
                 'address6' => $address6,
@@ -15514,10 +14544,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'ovs_options' => $ovs_options,
                 'ovs_ports' => $ovs_ports,
                 'ovs_tag' => $ovs_tag,
-                'slaves' => $slaves];
+                'slaves' => $slaves
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/network", $params);
         }
-
         /**
          * Create network device configuration
          * @param string $iface Network interface name.
@@ -15550,7 +14580,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->createRest($iface, $type, $address, $address6, $autostart, $bond_mode, $bond_xmit_hash_policy, $bridge_ports, $bridge_vlan_aware, $comments, $comments6, $gateway, $gateway6, $netmask, $netmask6, $ovs_bonds, $ovs_bridge, $ovs_options, $ovs_ports, $ovs_tag, $slaves);
         }
-
         /**
          * Reload network configuration
          * @return Result
@@ -15559,7 +14588,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->set("/nodes/{$this->node}/network");
         }
-
         /**
          * Reload network configuration
          * @return Result
@@ -15569,10 +14597,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest();
         }
     }
-
     /**
      * Class PVEItemNetworkNodeNodesIface
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemNetworkNodeNodesIface extends Base
     {
@@ -15584,7 +14611,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $iface;
-
         /**
          * @ignore
          */
@@ -15594,7 +14620,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->iface = $iface;
         }
-
         /**
          * Delete network device configuration
          * @return Result
@@ -15603,7 +14628,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->delete("/nodes/{$this->node}/network/{$this->iface}");
         }
-
         /**
          * Delete network device configuration
          * @return Result
@@ -15612,7 +14636,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest();
         }
-
         /**
          * Read network device configuration
          * @return Result
@@ -15621,7 +14644,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/network/{$this->iface}");
         }
-
         /**
          * Read network device configuration
          * @return Result
@@ -15630,7 +14652,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Update network device configuration
          * @param string $type Network interface type
@@ -15661,7 +14682,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function setRest($type, $address = null, $address6 = null, $autostart = null, $bond_mode = null, $bond_xmit_hash_policy = null, $bridge_ports = null, $bridge_vlan_aware = null, $comments = null, $comments6 = null, $delete = null, $gateway = null, $gateway6 = null, $netmask = null, $netmask6 = null, $ovs_bonds = null, $ovs_bridge = null, $ovs_options = null, $ovs_ports = null, $ovs_tag = null, $slaves = null)
         {
-            $params = ['type' => $type,
+            $params = [
+                'type' => $type,
                 'address' => $address,
                 'address6' => $address6,
                 'autostart' => $autostart,
@@ -15681,10 +14703,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'ovs_options' => $ovs_options,
                 'ovs_ports' => $ovs_ports,
                 'ovs_tag' => $ovs_tag,
-                'slaves' => $slaves];
+                'slaves' => $slaves
+            ];
             return $this->getClient()->set("/nodes/{$this->node}/network/{$this->iface}", $params);
         }
-
         /**
          * Update network device configuration
          * @param string $type Network interface type
@@ -15718,10 +14740,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($type, $address, $address6, $autostart, $bond_mode, $bond_xmit_hash_policy, $bridge_ports, $bridge_vlan_aware, $comments, $comments6, $delete, $gateway, $gateway6, $netmask, $netmask6, $ovs_bonds, $ovs_bridge, $ovs_options, $ovs_ports, $ovs_tag, $slaves);
         }
     }
-
     /**
      * Class PVENodeNodesTasks
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesTasks extends Base
     {
@@ -15729,7 +14750,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -15738,7 +14758,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get ItemTasksNodeNodesUpid
          * @param upid
@@ -15748,44 +14767,51 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemTasksNodeNodesUpid($this->client, $this->node, $upid);
         }
-
         /**
          * Read task list for one node (finished tasks).
-         * @param bool $errors
+         * @param bool $errors 
          * @param int $limit Only list this amount of tasks.
+         * @param string $source List archived, active or all tasks.
+         *   Enum: archive,active,all
          * @param int $start List tasks beginning from this offset.
+         * @param string $typefilter Only list tasks of this type (e.g., vzstart, vzdump).
          * @param string $userfilter Only list tasks from this user.
          * @param int $vmid Only list tasks for this VM.
          * @return Result
          */
-        public function getRest($errors = null, $limit = null, $start = null, $userfilter = null, $vmid = null)
+        public function getRest($errors = null, $limit = null, $source = null, $start = null, $typefilter = null, $userfilter = null, $vmid = null)
         {
-            $params = ['errors' => $errors,
+            $params = [
+                'errors' => $errors,
                 'limit' => $limit,
+                'source' => $source,
                 'start' => $start,
+                'typefilter' => $typefilter,
                 'userfilter' => $userfilter,
-                'vmid' => $vmid];
+                'vmid' => $vmid
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/tasks", $params);
         }
-
         /**
          * Read task list for one node (finished tasks).
-         * @param bool $errors
+         * @param bool $errors 
          * @param int $limit Only list this amount of tasks.
+         * @param string $source List archived, active or all tasks.
+         *   Enum: archive,active,all
          * @param int $start List tasks beginning from this offset.
+         * @param string $typefilter Only list tasks of this type (e.g., vzstart, vzdump).
          * @param string $userfilter Only list tasks from this user.
          * @param int $vmid Only list tasks for this VM.
          * @return Result
          */
-        public function nodeTasks($errors = null, $limit = null, $start = null, $userfilter = null, $vmid = null)
+        public function nodeTasks($errors = null, $limit = null, $source = null, $start = null, $typefilter = null, $userfilter = null, $vmid = null)
         {
-            return $this->getRest($errors, $limit, $start, $userfilter, $vmid);
+            return $this->getRest($errors, $limit, $source, $start, $typefilter, $userfilter, $vmid);
         }
     }
-
     /**
      * Class PVEItemTasksNodeNodesUpid
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemTasksNodeNodesUpid extends Base
     {
@@ -15797,7 +14823,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $upid;
-
         /**
          * @ignore
          */
@@ -15807,12 +14832,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->upid = $upid;
         }
-
         /**
          * @ignore
          */
         private $log;
-
         /**
          * Get UpidTasksNodeNodesLog
          * @return PVEUpidTasksNodeNodesLog
@@ -15821,12 +14844,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->log ?: ($this->log = new PVEUpidTasksNodeNodesLog($this->client, $this->node, $this->upid));
         }
-
         /**
          * @ignore
          */
         private $status;
-
         /**
          * Get UpidTasksNodeNodesStatus
          * @return PVEUpidTasksNodeNodesStatus
@@ -15835,7 +14856,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->status ?: ($this->status = new PVEUpidTasksNodeNodesStatus($this->client, $this->node, $this->upid));
         }
-
         /**
          * Stop a task.
          * @return Result
@@ -15844,7 +14864,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->delete("/nodes/{$this->node}/tasks/{$this->upid}");
         }
-
         /**
          * Stop a task.
          * @return Result
@@ -15853,18 +14872,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest();
         }
-
         /**
-         *
+         * 
          * @return Result
          */
         public function getRest()
         {
             return $this->getClient()->get("/nodes/{$this->node}/tasks/{$this->upid}");
         }
-
         /**
-         *
+         * 
          * @return Result
          */
         public function upidIndex()
@@ -15872,10 +14889,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEUpidTasksNodeNodesLog
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEUpidTasksNodeNodesLog extends Base
     {
@@ -15887,7 +14903,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $upid;
-
         /**
          * @ignore
          */
@@ -15897,24 +14912,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->upid = $upid;
         }
-
         /**
          * Read task log.
-         * @param int $limit
-         * @param int $start
+         * @param int $limit 
+         * @param int $start 
          * @return Result
          */
         public function getRest($limit = null, $start = null)
         {
-            $params = ['limit' => $limit,
-                'start' => $start];
+            $params = [
+                'limit' => $limit,
+                'start' => $start
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/tasks/{$this->upid}/log", $params);
         }
-
         /**
          * Read task log.
-         * @param int $limit
-         * @param int $start
+         * @param int $limit 
+         * @param int $start 
          * @return Result
          */
         public function readTaskLog($limit = null, $start = null)
@@ -15922,10 +14937,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($limit, $start);
         }
     }
-
     /**
      * Class PVEUpidTasksNodeNodesStatus
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEUpidTasksNodeNodesStatus extends Base
     {
@@ -15937,7 +14951,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $upid;
-
         /**
          * @ignore
          */
@@ -15947,7 +14960,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->upid = $upid;
         }
-
         /**
          * Read task status.
          * @return Result
@@ -15956,7 +14968,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/tasks/{$this->upid}/status");
         }
-
         /**
          * Read task status.
          * @return Result
@@ -15966,10 +14977,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVENodeNodesScan
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesScan extends Base
     {
@@ -15977,7 +14987,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -15986,12 +14995,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * @ignore
          */
         private $zfs;
-
         /**
          * Get ScanNodeNodesZfs
          * @return PVEScanNodeNodesZfs
@@ -16000,12 +15007,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->zfs ?: ($this->zfs = new PVEScanNodeNodesZfs($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $nfs;
-
         /**
          * Get ScanNodeNodesNfs
          * @return PVEScanNodeNodesNfs
@@ -16014,12 +15019,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->nfs ?: ($this->nfs = new PVEScanNodeNodesNfs($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $cifs;
-
         /**
          * Get ScanNodeNodesCifs
          * @return PVEScanNodeNodesCifs
@@ -16028,12 +15031,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->cifs ?: ($this->cifs = new PVEScanNodeNodesCifs($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $glusterfs;
-
         /**
          * Get ScanNodeNodesGlusterfs
          * @return PVEScanNodeNodesGlusterfs
@@ -16042,12 +15043,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->glusterfs ?: ($this->glusterfs = new PVEScanNodeNodesGlusterfs($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $iscsi;
-
         /**
          * Get ScanNodeNodesIscsi
          * @return PVEScanNodeNodesIscsi
@@ -16056,12 +15055,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->iscsi ?: ($this->iscsi = new PVEScanNodeNodesIscsi($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $lvm;
-
         /**
          * Get ScanNodeNodesLvm
          * @return PVEScanNodeNodesLvm
@@ -16070,12 +15067,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->lvm ?: ($this->lvm = new PVEScanNodeNodesLvm($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $lvmthin;
-
         /**
          * Get ScanNodeNodesLvmthin
          * @return PVEScanNodeNodesLvmthin
@@ -16084,12 +15079,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->lvmthin ?: ($this->lvmthin = new PVEScanNodeNodesLvmthin($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $usb;
-
         /**
          * Get ScanNodeNodesUsb
          * @return PVEScanNodeNodesUsb
@@ -16098,7 +15091,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->usb ?: ($this->usb = new PVEScanNodeNodesUsb($this->client, $this->node));
         }
-
         /**
          * Index of available scan methods
          * @return Result
@@ -16107,7 +15099,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/scan");
         }
-
         /**
          * Index of available scan methods
          * @return Result
@@ -16117,10 +15108,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEScanNodeNodesZfs
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEScanNodeNodesZfs extends Base
     {
@@ -16128,7 +15118,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -16137,7 +15126,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Scan zfs pool list on local node.
          * @return Result
@@ -16146,7 +15134,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/scan/zfs");
         }
-
         /**
          * Scan zfs pool list on local node.
          * @return Result
@@ -16156,10 +15143,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEScanNodeNodesNfs
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEScanNodeNodesNfs extends Base
     {
@@ -16167,7 +15153,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -16176,7 +15161,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Scan remote NFS server.
          * @param string $server The server address (name or IP).
@@ -16187,7 +15171,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['server' => $server];
             return $this->getClient()->get("/nodes/{$this->node}/scan/nfs", $params);
         }
-
         /**
          * Scan remote NFS server.
          * @param string $server The server address (name or IP).
@@ -16198,10 +15181,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($server);
         }
     }
-
     /**
      * Class PVEScanNodeNodesCifs
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEScanNodeNodesCifs extends Base
     {
@@ -16209,7 +15191,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -16218,7 +15199,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Scan remote CIFS server.
          * @param string $server The server address (name or IP).
@@ -16229,13 +15209,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRest($server, $domain = null, $password = null, $username = null)
         {
-            $params = ['server' => $server,
+            $params = [
+                'server' => $server,
                 'domain' => $domain,
                 'password' => $password,
-                'username' => $username];
+                'username' => $username
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/scan/cifs", $params);
         }
-
         /**
          * Scan remote CIFS server.
          * @param string $server The server address (name or IP).
@@ -16249,10 +15230,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($server, $domain, $password, $username);
         }
     }
-
     /**
      * Class PVEScanNodeNodesGlusterfs
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEScanNodeNodesGlusterfs extends Base
     {
@@ -16260,7 +15240,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -16269,7 +15248,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Scan remote GlusterFS server.
          * @param string $server The server address (name or IP).
@@ -16280,7 +15258,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['server' => $server];
             return $this->getClient()->get("/nodes/{$this->node}/scan/glusterfs", $params);
         }
-
         /**
          * Scan remote GlusterFS server.
          * @param string $server The server address (name or IP).
@@ -16291,10 +15268,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($server);
         }
     }
-
     /**
      * Class PVEScanNodeNodesIscsi
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEScanNodeNodesIscsi extends Base
     {
@@ -16302,7 +15278,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -16311,7 +15286,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Scan remote iSCSI server.
          * @param string $portal The iSCSI portal (IP or DNS name with optional port).
@@ -16322,7 +15296,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['portal' => $portal];
             return $this->getClient()->get("/nodes/{$this->node}/scan/iscsi", $params);
         }
-
         /**
          * Scan remote iSCSI server.
          * @param string $portal The iSCSI portal (IP or DNS name with optional port).
@@ -16333,10 +15306,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($portal);
         }
     }
-
     /**
      * Class PVEScanNodeNodesLvm
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEScanNodeNodesLvm extends Base
     {
@@ -16344,7 +15316,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -16353,7 +15324,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * List local LVM volume groups.
          * @return Result
@@ -16362,7 +15332,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/scan/lvm");
         }
-
         /**
          * List local LVM volume groups.
          * @return Result
@@ -16372,10 +15341,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEScanNodeNodesLvmthin
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEScanNodeNodesLvmthin extends Base
     {
@@ -16383,7 +15351,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -16392,10 +15359,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * List local LVM Thin Pools.
-         * @param string $vg
+         * @param string $vg 
          * @return Result
          */
         public function getRest($vg)
@@ -16403,10 +15369,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['vg' => $vg];
             return $this->getClient()->get("/nodes/{$this->node}/scan/lvmthin", $params);
         }
-
         /**
          * List local LVM Thin Pools.
-         * @param string $vg
+         * @param string $vg 
          * @return Result
          */
         public function lvmthinscan($vg)
@@ -16414,10 +15379,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($vg);
         }
     }
-
     /**
      * Class PVEScanNodeNodesUsb
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEScanNodeNodesUsb extends Base
     {
@@ -16425,7 +15389,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -16434,7 +15397,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * List local USB devices.
          * @return Result
@@ -16443,7 +15405,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/scan/usb");
         }
-
         /**
          * List local USB devices.
          * @return Result
@@ -16453,10 +15414,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVENodeNodesHardware
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesHardware extends Base
     {
@@ -16464,7 +15424,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -16473,12 +15432,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * @ignore
          */
         private $pci;
-
         /**
          * Get HardwareNodeNodesPci
          * @return PVEHardwareNodeNodesPci
@@ -16487,7 +15444,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->pci ?: ($this->pci = new PVEHardwareNodeNodesPci($this->client, $this->node));
         }
-
         /**
          * Index of hardware types
          * @return Result
@@ -16496,7 +15452,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/hardware");
         }
-
         /**
          * Index of hardware types
          * @return Result
@@ -16506,10 +15461,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEHardwareNodeNodesPci
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEHardwareNodeNodesPci extends Base
     {
@@ -16517,7 +15471,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -16526,7 +15479,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get ItemPciHardwareNodeNodesPciid
          * @param pciid
@@ -16536,7 +15488,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemPciHardwareNodeNodesPciid($this->client, $this->node, $pciid);
         }
-
         /**
          * List local PCI devices.
          * @param string $pci_class_blacklist A list of blacklisted PCI classes, which will not be returned. Following are filtered by default: Memory Controller (05), Bridge (06), Generic System Peripheral (08) and Processor (0b).
@@ -16545,11 +15496,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRest($pci_class_blacklist = null, $verbose = null)
         {
-            $params = ['pci-class-blacklist' => $pci_class_blacklist,
-                'verbose' => $verbose];
+            $params = [
+                'pci-class-blacklist' => $pci_class_blacklist,
+                'verbose' => $verbose
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/hardware/pci", $params);
         }
-
         /**
          * List local PCI devices.
          * @param string $pci_class_blacklist A list of blacklisted PCI classes, which will not be returned. Following are filtered by default: Memory Controller (05), Bridge (06), Generic System Peripheral (08) and Processor (0b).
@@ -16561,10 +15513,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($pci_class_blacklist, $verbose);
         }
     }
-
     /**
      * Class PVEItemPciHardwareNodeNodesPciid
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemPciHardwareNodeNodesPciid extends Base
     {
@@ -16576,7 +15527,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $pciid;
-
         /**
          * @ignore
          */
@@ -16586,12 +15536,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->pciid = $pciid;
         }
-
         /**
          * @ignore
          */
         private $mdev;
-
         /**
          * Get PciidPciHardwareNodeNodesMdev
          * @return PVEPciidPciHardwareNodeNodesMdev
@@ -16600,7 +15548,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->mdev ?: ($this->mdev = new PVEPciidPciHardwareNodeNodesMdev($this->client, $this->node, $this->pciid));
         }
-
         /**
          * Index of available pci methods
          * @return Result
@@ -16609,7 +15556,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/hardware/pci/{$this->pciid}");
         }
-
         /**
          * Index of available pci methods
          * @return Result
@@ -16619,10 +15565,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEPciidPciHardwareNodeNodesMdev
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEPciidPciHardwareNodeNodesMdev extends Base
     {
@@ -16634,7 +15579,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $pciid;
-
         /**
          * @ignore
          */
@@ -16644,7 +15588,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->pciid = $pciid;
         }
-
         /**
          * List mediated device types for given PCI device.
          * @return Result
@@ -16653,7 +15596,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/hardware/pci/{$this->pciid}/mdev");
         }
-
         /**
          * List mediated device types for given PCI device.
          * @return Result
@@ -16663,10 +15605,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVENodeNodesStorage
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesStorage extends Base
     {
@@ -16674,7 +15615,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -16683,7 +15623,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get ItemStorageNodeNodesStorage
          * @param storage
@@ -16693,7 +15632,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemStorageNodeNodesStorage($this->client, $this->node, $storage);
         }
-
         /**
          * Get status for all datastores.
          * @param string $content Only list stores which support this content type.
@@ -16705,14 +15643,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRest($content = null, $enabled = null, $format = null, $storage = null, $target = null)
         {
-            $params = ['content' => $content,
+            $params = [
+                'content' => $content,
                 'enabled' => $enabled,
                 'format' => $format,
                 'storage' => $storage,
-                'target' => $target];
+                'target' => $target
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/storage", $params);
         }
-
         /**
          * Get status for all datastores.
          * @param string $content Only list stores which support this content type.
@@ -16727,10 +15666,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($content, $enabled, $format, $storage, $target);
         }
     }
-
     /**
      * Class PVEItemStorageNodeNodesStorage
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemStorageNodeNodesStorage extends Base
     {
@@ -16742,7 +15680,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $storage;
-
         /**
          * @ignore
          */
@@ -16752,12 +15689,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->storage = $storage;
         }
-
         /**
          * @ignore
          */
         private $content;
-
         /**
          * Get StorageStorageNodeNodesContent
          * @return PVEStorageStorageNodeNodesContent
@@ -16766,12 +15701,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->content ?: ($this->content = new PVEStorageStorageNodeNodesContent($this->client, $this->node, $this->storage));
         }
-
         /**
          * @ignore
          */
         private $status;
-
         /**
          * Get StorageStorageNodeNodesStatus
          * @return PVEStorageStorageNodeNodesStatus
@@ -16780,12 +15713,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->status ?: ($this->status = new PVEStorageStorageNodeNodesStatus($this->client, $this->node, $this->storage));
         }
-
         /**
          * @ignore
          */
         private $rrd;
-
         /**
          * Get StorageStorageNodeNodesRrd
          * @return PVEStorageStorageNodeNodesRrd
@@ -16794,12 +15725,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->rrd ?: ($this->rrd = new PVEStorageStorageNodeNodesRrd($this->client, $this->node, $this->storage));
         }
-
         /**
          * @ignore
          */
         private $rrddata;
-
         /**
          * Get StorageStorageNodeNodesRrddata
          * @return PVEStorageStorageNodeNodesRrddata
@@ -16808,12 +15737,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->rrddata ?: ($this->rrddata = new PVEStorageStorageNodeNodesRrddata($this->client, $this->node, $this->storage));
         }
-
         /**
          * @ignore
          */
         private $upload;
-
         /**
          * Get StorageStorageNodeNodesUpload
          * @return PVEStorageStorageNodeNodesUpload
@@ -16822,18 +15749,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->upload ?: ($this->upload = new PVEStorageStorageNodeNodesUpload($this->client, $this->node, $this->storage));
         }
-
         /**
-         *
+         * 
          * @return Result
          */
         public function getRest()
         {
             return $this->getClient()->get("/nodes/{$this->node}/storage/{$this->storage}");
         }
-
         /**
-         *
+         * 
          * @return Result
          */
         public function diridx()
@@ -16841,10 +15766,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEStorageStorageNodeNodesContent
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStorageStorageNodeNodesContent extends Base
     {
@@ -16856,7 +15780,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $storage;
-
         /**
          * @ignore
          */
@@ -16866,7 +15789,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->storage = $storage;
         }
-
         /**
          * Get ItemContentStorageStorageNodeNodesVolume
          * @param volume
@@ -16876,7 +15798,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemContentStorageStorageNodeNodesVolume($this->client, $this->node, $this->storage, $volume);
         }
-
         /**
          * List storage content.
          * @param string $content Only list content of this type.
@@ -16885,11 +15806,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRest($content = null, $vmid = null)
         {
-            $params = ['content' => $content,
-                'vmid' => $vmid];
+            $params = [
+                'content' => $content,
+                'vmid' => $vmid
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/storage/{$this->storage}/content", $params);
         }
-
         /**
          * List storage content.
          * @param string $content Only list content of this type.
@@ -16900,31 +15822,31 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest($content, $vmid);
         }
-
         /**
          * Allocate disk images.
          * @param string $filename The name of the file to create.
          * @param string $size Size in kilobyte (1024 bytes). Optional suffixes 'M' (megabyte, 1024K) and 'G' (gigabyte, 1024M)
          * @param int $vmid Specify owner VM
-         * @param string $format
+         * @param string $format 
          *   Enum: raw,qcow2,subvol
          * @return Result
          */
         public function createRest($filename, $size, $vmid, $format = null)
         {
-            $params = ['filename' => $filename,
+            $params = [
+                'filename' => $filename,
                 'size' => $size,
                 'vmid' => $vmid,
-                'format' => $format];
+                'format' => $format
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/storage/{$this->storage}/content", $params);
         }
-
         /**
          * Allocate disk images.
          * @param string $filename The name of the file to create.
          * @param string $size Size in kilobyte (1024 bytes). Optional suffixes 'M' (megabyte, 1024K) and 'G' (gigabyte, 1024M)
          * @param int $vmid Specify owner VM
-         * @param string $format
+         * @param string $format 
          *   Enum: raw,qcow2,subvol
          * @return Result
          */
@@ -16933,10 +15855,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($filename, $size, $vmid, $format);
         }
     }
-
     /**
      * Class PVEItemContentStorageStorageNodeNodesVolume
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemContentStorageStorageNodeNodesVolume extends Base
     {
@@ -16952,7 +15873,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $volume;
-
         /**
          * @ignore
          */
@@ -16963,7 +15883,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->storage = $storage;
             $this->volume = $volume;
         }
-
         /**
          * Delete volume
          * @return Result
@@ -16972,7 +15891,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->delete("/nodes/{$this->node}/storage/{$this->storage}/content/{$this->volume}");
         }
-
         /**
          * Delete volume
          * @return Result
@@ -16981,7 +15899,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest();
         }
-
         /**
          * Get volume attributes
          * @return Result
@@ -16990,7 +15907,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/storage/{$this->storage}/content/{$this->volume}");
         }
-
         /**
          * Get volume attributes
          * @return Result
@@ -16999,7 +15915,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Copy a volume. This is experimental code - do not use.
          * @param string $target Target volume identifier
@@ -17008,11 +15923,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($target, $target_node = null)
         {
-            $params = ['target' => $target,
-                'target_node' => $target_node];
+            $params = [
+                'target' => $target,
+                'target_node' => $target_node
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/storage/{$this->storage}/content/{$this->volume}", $params);
         }
-
         /**
          * Copy a volume. This is experimental code - do not use.
          * @param string $target Target volume identifier
@@ -17024,10 +15940,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($target, $target_node);
         }
     }
-
     /**
      * Class PVEStorageStorageNodeNodesStatus
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStorageStorageNodeNodesStatus extends Base
     {
@@ -17039,7 +15954,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $storage;
-
         /**
          * @ignore
          */
@@ -17049,7 +15963,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->storage = $storage;
         }
-
         /**
          * Read storage status.
          * @return Result
@@ -17058,7 +15971,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/storage/{$this->storage}/status");
         }
-
         /**
          * Read storage status.
          * @return Result
@@ -17068,10 +15980,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEStorageStorageNodeNodesRrd
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStorageStorageNodeNodesRrd extends Base
     {
@@ -17083,7 +15994,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $storage;
-
         /**
          * @ignore
          */
@@ -17093,7 +16003,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->storage = $storage;
         }
-
         /**
          * Read storage RRD statistics (returns PNG).
          * @param string $ds The list of datasources you want to display.
@@ -17105,12 +16014,13 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRest($ds, $timeframe, $cf = null)
         {
-            $params = ['ds' => $ds,
+            $params = [
+                'ds' => $ds,
                 'timeframe' => $timeframe,
-                'cf' => $cf];
+                'cf' => $cf
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/storage/{$this->storage}/rrd", $params);
         }
-
         /**
          * Read storage RRD statistics (returns PNG).
          * @param string $ds The list of datasources you want to display.
@@ -17125,10 +16035,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($ds, $timeframe, $cf);
         }
     }
-
     /**
      * Class PVEStorageStorageNodeNodesRrddata
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStorageStorageNodeNodesRrddata extends Base
     {
@@ -17140,7 +16049,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $storage;
-
         /**
          * @ignore
          */
@@ -17150,7 +16058,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->storage = $storage;
         }
-
         /**
          * Read storage RRD statistics.
          * @param string $timeframe Specify the time frame you are interested in.
@@ -17161,11 +16068,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRest($timeframe, $cf = null)
         {
-            $params = ['timeframe' => $timeframe,
-                'cf' => $cf];
+            $params = [
+                'timeframe' => $timeframe,
+                'cf' => $cf
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/storage/{$this->storage}/rrddata", $params);
         }
-
         /**
          * Read storage RRD statistics.
          * @param string $timeframe Specify the time frame you are interested in.
@@ -17179,10 +16087,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($timeframe, $cf);
         }
     }
-
     /**
      * Class PVEStorageStorageNodeNodesUpload
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStorageStorageNodeNodesUpload extends Base
     {
@@ -17194,7 +16101,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $storage;
-
         /**
          * @ignore
          */
@@ -17204,7 +16110,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->storage = $storage;
         }
-
         /**
          * Upload templates and ISO images.
          * @param string $content Content type.
@@ -17214,12 +16119,13 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($content, $filename, $tmpfilename = null)
         {
-            $params = ['content' => $content,
+            $params = [
+                'content' => $content,
                 'filename' => $filename,
-                'tmpfilename' => $tmpfilename];
+                'tmpfilename' => $tmpfilename
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/storage/{$this->storage}/upload", $params);
         }
-
         /**
          * Upload templates and ISO images.
          * @param string $content Content type.
@@ -17232,10 +16138,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($content, $filename, $tmpfilename);
         }
     }
-
     /**
      * Class PVENodeNodesDisks
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesDisks extends Base
     {
@@ -17243,7 +16148,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -17252,12 +16156,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * @ignore
          */
         private $lvm;
-
         /**
          * Get DisksNodeNodesLvm
          * @return PVEDisksNodeNodesLvm
@@ -17266,12 +16168,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->lvm ?: ($this->lvm = new PVEDisksNodeNodesLvm($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $lvmthin;
-
         /**
          * Get DisksNodeNodesLvmthin
          * @return PVEDisksNodeNodesLvmthin
@@ -17280,12 +16180,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->lvmthin ?: ($this->lvmthin = new PVEDisksNodeNodesLvmthin($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $directory;
-
         /**
          * Get DisksNodeNodesDirectory
          * @return PVEDisksNodeNodesDirectory
@@ -17294,12 +16192,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->directory ?: ($this->directory = new PVEDisksNodeNodesDirectory($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $zfs;
-
         /**
          * Get DisksNodeNodesZfs
          * @return PVEDisksNodeNodesZfs
@@ -17308,12 +16204,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->zfs ?: ($this->zfs = new PVEDisksNodeNodesZfs($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $list;
-
         /**
          * Get DisksNodeNodesList
          * @return PVEDisksNodeNodesList
@@ -17322,12 +16216,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->list ?: ($this->list = new PVEDisksNodeNodesList($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $smart;
-
         /**
          * Get DisksNodeNodesSmart
          * @return PVEDisksNodeNodesSmart
@@ -17336,12 +16228,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->smart ?: ($this->smart = new PVEDisksNodeNodesSmart($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $initgpt;
-
         /**
          * Get DisksNodeNodesInitgpt
          * @return PVEDisksNodeNodesInitgpt
@@ -17350,7 +16240,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->initgpt ?: ($this->initgpt = new PVEDisksNodeNodesInitgpt($this->client, $this->node));
         }
-
         /**
          * Node index.
          * @return Result
@@ -17359,7 +16248,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/disks");
         }
-
         /**
          * Node index.
          * @return Result
@@ -17369,10 +16257,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEDisksNodeNodesLvm
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEDisksNodeNodesLvm extends Base
     {
@@ -17380,7 +16267,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -17389,7 +16275,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * List LVM Volume Groups
          * @return Result
@@ -17398,7 +16283,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/disks/lvm");
         }
-
         /**
          * List LVM Volume Groups
          * @return Result
@@ -17407,7 +16291,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create an LVM Volume Group
          * @param string $device The block device you want to create the volume group on
@@ -17417,12 +16300,13 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($device, $name, $add_storage = null)
         {
-            $params = ['device' => $device,
+            $params = [
+                'device' => $device,
                 'name' => $name,
-                'add_storage' => $add_storage];
+                'add_storage' => $add_storage
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/disks/lvm", $params);
         }
-
         /**
          * Create an LVM Volume Group
          * @param string $device The block device you want to create the volume group on
@@ -17435,10 +16319,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($device, $name, $add_storage);
         }
     }
-
     /**
      * Class PVEDisksNodeNodesLvmthin
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEDisksNodeNodesLvmthin extends Base
     {
@@ -17446,7 +16329,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -17455,7 +16337,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * List LVM thinpools
          * @return Result
@@ -17464,7 +16345,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/disks/lvmthin");
         }
-
         /**
          * List LVM thinpools
          * @return Result
@@ -17473,7 +16353,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create an LVM thinpool
          * @param string $device The block device you want to create the thinpool on.
@@ -17483,12 +16362,13 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($device, $name, $add_storage = null)
         {
-            $params = ['device' => $device,
+            $params = [
+                'device' => $device,
                 'name' => $name,
-                'add_storage' => $add_storage];
+                'add_storage' => $add_storage
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/disks/lvmthin", $params);
         }
-
         /**
          * Create an LVM thinpool
          * @param string $device The block device you want to create the thinpool on.
@@ -17501,10 +16381,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($device, $name, $add_storage);
         }
     }
-
     /**
      * Class PVEDisksNodeNodesDirectory
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEDisksNodeNodesDirectory extends Base
     {
@@ -17512,7 +16391,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -17521,7 +16399,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * PVE Managed Directory storages.
          * @return Result
@@ -17530,7 +16407,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/disks/directory");
         }
-
         /**
          * PVE Managed Directory storages.
          * @return Result
@@ -17539,7 +16415,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create a Filesystem on an unused disk. Will be mounted under '/mnt/pve/NAME'.
          * @param string $device The block device you want to create the filesystem on.
@@ -17551,13 +16426,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($device, $name, $add_storage = null, $filesystem = null)
         {
-            $params = ['device' => $device,
+            $params = [
+                'device' => $device,
                 'name' => $name,
                 'add_storage' => $add_storage,
-                'filesystem' => $filesystem];
+                'filesystem' => $filesystem
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/disks/directory", $params);
         }
-
         /**
          * Create a Filesystem on an unused disk. Will be mounted under '/mnt/pve/NAME'.
          * @param string $device The block device you want to create the filesystem on.
@@ -17572,10 +16448,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($device, $name, $add_storage, $filesystem);
         }
     }
-
     /**
      * Class PVEDisksNodeNodesZfs
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEDisksNodeNodesZfs extends Base
     {
@@ -17583,7 +16458,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -17592,7 +16466,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get ItemZfsDisksNodeNodesName
          * @param name
@@ -17602,7 +16475,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemZfsDisksNodeNodesName($this->client, $this->node, $name);
         }
-
         /**
          * List Zpools.
          * @return Result
@@ -17611,7 +16483,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/disks/zfs");
         }
-
         /**
          * List Zpools.
          * @return Result
@@ -17620,7 +16491,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create a ZFS pool.
          * @param string $devices The block devices you want to create the zpool on.
@@ -17635,15 +16505,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($devices, $name, $raidlevel, $add_storage = null, $ashift = null, $compression = null)
         {
-            $params = ['devices' => $devices,
+            $params = [
+                'devices' => $devices,
                 'name' => $name,
                 'raidlevel' => $raidlevel,
                 'add_storage' => $add_storage,
                 'ashift' => $ashift,
-                'compression' => $compression];
+                'compression' => $compression
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/disks/zfs", $params);
         }
-
         /**
          * Create a ZFS pool.
          * @param string $devices The block devices you want to create the zpool on.
@@ -17661,10 +16532,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($devices, $name, $raidlevel, $add_storage, $ashift, $compression);
         }
     }
-
     /**
      * Class PVEItemZfsDisksNodeNodesName
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemZfsDisksNodeNodesName extends Base
     {
@@ -17676,7 +16546,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $name;
-
         /**
          * @ignore
          */
@@ -17686,7 +16555,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->name = $name;
         }
-
         /**
          * Get details about a zpool.
          * @return Result
@@ -17695,7 +16563,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/disks/zfs/{$this->name}");
         }
-
         /**
          * Get details about a zpool.
          * @return Result
@@ -17705,10 +16572,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEDisksNodeNodesList
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEDisksNodeNodesList extends Base
     {
@@ -17716,7 +16582,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -17725,7 +16590,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * List local disks.
          * @param bool $skipsmart Skip smart checks.
@@ -17735,11 +16599,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRest($skipsmart = null, $type = null)
         {
-            $params = ['skipsmart' => $skipsmart,
-                'type' => $type];
+            $params = [
+                'skipsmart' => $skipsmart,
+                'type' => $type
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/disks/list", $params);
         }
-
         /**
          * List local disks.
          * @param bool $skipsmart Skip smart checks.
@@ -17752,10 +16617,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($skipsmart, $type);
         }
     }
-
     /**
      * Class PVEDisksNodeNodesSmart
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEDisksNodeNodesSmart extends Base
     {
@@ -17763,7 +16627,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -17772,7 +16635,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get SMART Health of a disk.
          * @param string $disk Block device name
@@ -17781,11 +16643,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRest($disk, $healthonly = null)
         {
-            $params = ['disk' => $disk,
-                'healthonly' => $healthonly];
+            $params = [
+                'disk' => $disk,
+                'healthonly' => $healthonly
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/disks/smart", $params);
         }
-
         /**
          * Get SMART Health of a disk.
          * @param string $disk Block device name
@@ -17797,10 +16660,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($disk, $healthonly);
         }
     }
-
     /**
      * Class PVEDisksNodeNodesInitgpt
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEDisksNodeNodesInitgpt extends Base
     {
@@ -17808,7 +16670,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -17817,7 +16678,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Initialize Disk with GPT
          * @param string $disk Block device name
@@ -17826,11 +16686,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($disk, $uuid = null)
         {
-            $params = ['disk' => $disk,
-                'uuid' => $uuid];
+            $params = [
+                'disk' => $disk,
+                'uuid' => $uuid
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/disks/initgpt", $params);
         }
-
         /**
          * Initialize Disk with GPT
          * @param string $disk Block device name
@@ -17842,10 +16703,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($disk, $uuid);
         }
     }
-
     /**
      * Class PVENodeNodesApt
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesApt extends Base
     {
@@ -17853,7 +16713,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -17862,12 +16721,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * @ignore
          */
         private $update;
-
         /**
          * Get AptNodeNodesUpdate
          * @return PVEAptNodeNodesUpdate
@@ -17876,12 +16733,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->update ?: ($this->update = new PVEAptNodeNodesUpdate($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $changelog;
-
         /**
          * Get AptNodeNodesChangelog
          * @return PVEAptNodeNodesChangelog
@@ -17890,12 +16745,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->changelog ?: ($this->changelog = new PVEAptNodeNodesChangelog($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $versions;
-
         /**
          * Get AptNodeNodesVersions
          * @return PVEAptNodeNodesVersions
@@ -17904,7 +16757,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->versions ?: ($this->versions = new PVEAptNodeNodesVersions($this->client, $this->node));
         }
-
         /**
          * Directory index for apt (Advanced Package Tool).
          * @return Result
@@ -17913,7 +16765,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/apt");
         }
-
         /**
          * Directory index for apt (Advanced Package Tool).
          * @return Result
@@ -17923,10 +16774,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEAptNodeNodesUpdate
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAptNodeNodesUpdate extends Base
     {
@@ -17934,7 +16784,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -17943,7 +16792,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * List available updates.
          * @return Result
@@ -17952,7 +16800,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/apt/update");
         }
-
         /**
          * List available updates.
          * @return Result
@@ -17961,7 +16808,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * This is used to resynchronize the package index files from their sources (apt-get update).
          * @param bool $notify Send notification mail about new packages (to email address specified for user 'root@pam').
@@ -17970,11 +16816,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($notify = null, $quiet = null)
         {
-            $params = ['notify' => $notify,
-                'quiet' => $quiet];
+            $params = [
+                'notify' => $notify,
+                'quiet' => $quiet
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/apt/update", $params);
         }
-
         /**
          * This is used to resynchronize the package index files from their sources (apt-get update).
          * @param bool $notify Send notification mail about new packages (to email address specified for user 'root@pam').
@@ -17986,10 +16833,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($notify, $quiet);
         }
     }
-
     /**
      * Class PVEAptNodeNodesChangelog
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAptNodeNodesChangelog extends Base
     {
@@ -17997,7 +16843,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -18006,7 +16851,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get package changelogs.
          * @param string $name Package name.
@@ -18015,11 +16859,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRest($name, $version = null)
         {
-            $params = ['name' => $name,
-                'version' => $version];
+            $params = [
+                'name' => $name,
+                'version' => $version
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/apt/changelog", $params);
         }
-
         /**
          * Get package changelogs.
          * @param string $name Package name.
@@ -18031,10 +16876,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($name, $version);
         }
     }
-
     /**
      * Class PVEAptNodeNodesVersions
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAptNodeNodesVersions extends Base
     {
@@ -18042,7 +16886,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -18051,7 +16894,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get package information for important Proxmox packages.
          * @return Result
@@ -18060,7 +16902,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/apt/versions");
         }
-
         /**
          * Get package information for important Proxmox packages.
          * @return Result
@@ -18070,10 +16911,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVENodeNodesFirewall
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesFirewall extends Base
     {
@@ -18081,7 +16921,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -18090,12 +16929,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * @ignore
          */
         private $rules;
-
         /**
          * Get FirewallNodeNodesRules
          * @return PVEFirewallNodeNodesRules
@@ -18104,12 +16941,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->rules ?: ($this->rules = new PVEFirewallNodeNodesRules($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $options;
-
         /**
          * Get FirewallNodeNodesOptions
          * @return PVEFirewallNodeNodesOptions
@@ -18118,12 +16953,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->options ?: ($this->options = new PVEFirewallNodeNodesOptions($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $log;
-
         /**
          * Get FirewallNodeNodesLog
          * @return PVEFirewallNodeNodesLog
@@ -18132,7 +16965,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->log ?: ($this->log = new PVEFirewallNodeNodesLog($this->client, $this->node));
         }
-
         /**
          * Directory index.
          * @return Result
@@ -18141,7 +16973,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/firewall");
         }
-
         /**
          * Directory index.
          * @return Result
@@ -18151,10 +16982,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEFirewallNodeNodesRules
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallNodeNodesRules extends Base
     {
@@ -18162,7 +16992,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -18171,7 +17000,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get ItemRulesFirewallNodeNodesPos
          * @param pos
@@ -18181,7 +17009,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemRulesFirewallNodeNodesPos($this->client, $this->node, $pos);
         }
-
         /**
          * List rules.
          * @return Result
@@ -18190,7 +17017,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/firewall/rules");
         }
-
         /**
          * List rules.
          * @return Result
@@ -18199,7 +17025,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create new rule.
          * @param string $action Rule action ('ACCEPT', 'DROP', 'REJECT') or security group name.
@@ -18211,6 +17036,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $dport Restrict TCP/UDP destination port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @param int $enable Flag to enable/disable a rule.
          * @param string $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
+         * @param string $log Log level for firewall rule.
+         *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
          * @param int $pos Update rule at position &amp;lt;pos&amp;gt;.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
@@ -18218,9 +17045,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @return Result
          */
-        public function createRest($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null)
+        public function createRest($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $log = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null)
         {
-            $params = ['action' => $action,
+            $params = [
+                'action' => $action,
                 'type' => $type,
                 'comment' => $comment,
                 'dest' => $dest,
@@ -18228,14 +17056,15 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'dport' => $dport,
                 'enable' => $enable,
                 'iface' => $iface,
+                'log' => $log,
                 'macro' => $macro,
                 'pos' => $pos,
                 'proto' => $proto,
                 'source' => $source,
-                'sport' => $sport];
+                'sport' => $sport
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/firewall/rules", $params);
         }
-
         /**
          * Create new rule.
          * @param string $action Rule action ('ACCEPT', 'DROP', 'REJECT') or security group name.
@@ -18247,6 +17076,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $dport Restrict TCP/UDP destination port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @param int $enable Flag to enable/disable a rule.
          * @param string $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
+         * @param string $log Log level for firewall rule.
+         *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
          * @param int $pos Update rule at position &amp;lt;pos&amp;gt;.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
@@ -18254,15 +17085,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @return Result
          */
-        public function createRule($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null)
+        public function createRule($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $log = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null)
         {
-            return $this->createRest($action, $type, $comment, $dest, $digest, $dport, $enable, $iface, $macro, $pos, $proto, $source, $sport);
+            return $this->createRest($action, $type, $comment, $dest, $digest, $dport, $enable, $iface, $log, $macro, $pos, $proto, $source, $sport);
         }
     }
-
     /**
      * Class PVEItemRulesFirewallNodeNodesPos
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemRulesFirewallNodeNodesPos extends Base
     {
@@ -18274,7 +17104,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $pos;
-
         /**
          * @ignore
          */
@@ -18284,7 +17113,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->pos = $pos;
         }
-
         /**
          * Delete rule.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -18295,7 +17123,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['digest' => $digest];
             return $this->getClient()->delete("/nodes/{$this->node}/firewall/rules/{$this->pos}", $params);
         }
-
         /**
          * Delete rule.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -18305,7 +17132,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest($digest);
         }
-
         /**
          * Get single rule data.
          * @return Result
@@ -18314,7 +17140,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/firewall/rules/{$this->pos}");
         }
-
         /**
          * Get single rule data.
          * @return Result
@@ -18323,7 +17148,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Modify rule data.
          * @param string $action Rule action ('ACCEPT', 'DROP', 'REJECT') or security group name.
@@ -18334,6 +17158,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $dport Restrict TCP/UDP destination port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @param int $enable Flag to enable/disable a rule.
          * @param string $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
+         * @param string $log Log level for firewall rule.
+         *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
          * @param int $moveto Move rule to new position &amp;lt;moveto&amp;gt;. Other arguments are ignored.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
@@ -18343,9 +17169,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: in,out,group
          * @return Result
          */
-        public function setRest($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null)
+        public function setRest($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $log = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null)
         {
-            $params = ['action' => $action,
+            $params = [
+                'action' => $action,
                 'comment' => $comment,
                 'delete' => $delete,
                 'dest' => $dest,
@@ -18353,15 +17180,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'dport' => $dport,
                 'enable' => $enable,
                 'iface' => $iface,
+                'log' => $log,
                 'macro' => $macro,
                 'moveto' => $moveto,
                 'proto' => $proto,
                 'source' => $source,
                 'sport' => $sport,
-                'type' => $type];
+                'type' => $type
+            ];
             return $this->getClient()->set("/nodes/{$this->node}/firewall/rules/{$this->pos}", $params);
         }
-
         /**
          * Modify rule data.
          * @param string $action Rule action ('ACCEPT', 'DROP', 'REJECT') or security group name.
@@ -18372,6 +17200,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $dport Restrict TCP/UDP destination port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
          * @param int $enable Flag to enable/disable a rule.
          * @param string $iface Network interface name. You have to use network configuration key names for VMs and containers ('net\d+'). Host related rules can use arbitrary strings.
+         * @param string $log Log level for firewall rule.
+         *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
          * @param int $moveto Move rule to new position &amp;lt;moveto&amp;gt;. Other arguments are ignored.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
@@ -18381,15 +17211,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: in,out,group
          * @return Result
          */
-        public function updateRule($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null)
+        public function updateRule($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $iface = null, $log = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null)
         {
-            return $this->setRest($action, $comment, $delete, $dest, $digest, $dport, $enable, $iface, $macro, $moveto, $proto, $source, $sport, $type);
+            return $this->setRest($action, $comment, $delete, $dest, $digest, $dport, $enable, $iface, $log, $macro, $moveto, $proto, $source, $sport, $type);
         }
     }
-
     /**
      * Class PVEFirewallNodeNodesOptions
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallNodeNodesOptions extends Base
     {
@@ -18397,7 +17226,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -18406,7 +17234,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get host firewall options.
          * @return Result
@@ -18415,7 +17242,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/firewall/options");
         }
-
         /**
          * Get host firewall options.
          * @return Result
@@ -18424,7 +17250,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Set Firewall options.
          * @param string $delete A list of settings you want to delete.
@@ -18434,7 +17259,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $log_level_out Log level for outgoing traffic.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
+         * @param bool $log_nf_conntrack Enable logging of conntrack information.
          * @param bool $ndp Enable NDP.
+         * @param bool $nf_conntrack_allow_invalid Allow invalid packets on connection tracking.
          * @param int $nf_conntrack_max Maximum number of tracked connections.
          * @param int $nf_conntrack_tcp_timeout_established Conntrack established timeout.
          * @param bool $nosmurfs Enable SMURFS filter.
@@ -18445,23 +17272,26 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param bool $tcpflags Filter illegal combinations of TCP flags.
          * @return Result
          */
-        public function setRest($delete = null, $digest = null, $enable = null, $log_level_in = null, $log_level_out = null, $ndp = null, $nf_conntrack_max = null, $nf_conntrack_tcp_timeout_established = null, $nosmurfs = null, $smurf_log_level = null, $tcp_flags_log_level = null, $tcpflags = null)
+        public function setRest($delete = null, $digest = null, $enable = null, $log_level_in = null, $log_level_out = null, $log_nf_conntrack = null, $ndp = null, $nf_conntrack_allow_invalid = null, $nf_conntrack_max = null, $nf_conntrack_tcp_timeout_established = null, $nosmurfs = null, $smurf_log_level = null, $tcp_flags_log_level = null, $tcpflags = null)
         {
-            $params = ['delete' => $delete,
+            $params = [
+                'delete' => $delete,
                 'digest' => $digest,
                 'enable' => $enable,
                 'log_level_in' => $log_level_in,
                 'log_level_out' => $log_level_out,
+                'log_nf_conntrack' => $log_nf_conntrack,
                 'ndp' => $ndp,
+                'nf_conntrack_allow_invalid' => $nf_conntrack_allow_invalid,
                 'nf_conntrack_max' => $nf_conntrack_max,
                 'nf_conntrack_tcp_timeout_established' => $nf_conntrack_tcp_timeout_established,
                 'nosmurfs' => $nosmurfs,
                 'smurf_log_level' => $smurf_log_level,
                 'tcp_flags_log_level' => $tcp_flags_log_level,
-                'tcpflags' => $tcpflags];
+                'tcpflags' => $tcpflags
+            ];
             return $this->getClient()->set("/nodes/{$this->node}/firewall/options", $params);
         }
-
         /**
          * Set Firewall options.
          * @param string $delete A list of settings you want to delete.
@@ -18471,7 +17301,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $log_level_out Log level for outgoing traffic.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
+         * @param bool $log_nf_conntrack Enable logging of conntrack information.
          * @param bool $ndp Enable NDP.
+         * @param bool $nf_conntrack_allow_invalid Allow invalid packets on connection tracking.
          * @param int $nf_conntrack_max Maximum number of tracked connections.
          * @param int $nf_conntrack_tcp_timeout_established Conntrack established timeout.
          * @param bool $nosmurfs Enable SMURFS filter.
@@ -18482,15 +17314,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param bool $tcpflags Filter illegal combinations of TCP flags.
          * @return Result
          */
-        public function setOptions($delete = null, $digest = null, $enable = null, $log_level_in = null, $log_level_out = null, $ndp = null, $nf_conntrack_max = null, $nf_conntrack_tcp_timeout_established = null, $nosmurfs = null, $smurf_log_level = null, $tcp_flags_log_level = null, $tcpflags = null)
+        public function setOptions($delete = null, $digest = null, $enable = null, $log_level_in = null, $log_level_out = null, $log_nf_conntrack = null, $ndp = null, $nf_conntrack_allow_invalid = null, $nf_conntrack_max = null, $nf_conntrack_tcp_timeout_established = null, $nosmurfs = null, $smurf_log_level = null, $tcp_flags_log_level = null, $tcpflags = null)
         {
-            return $this->setRest($delete, $digest, $enable, $log_level_in, $log_level_out, $ndp, $nf_conntrack_max, $nf_conntrack_tcp_timeout_established, $nosmurfs, $smurf_log_level, $tcp_flags_log_level, $tcpflags);
+            return $this->setRest($delete, $digest, $enable, $log_level_in, $log_level_out, $log_nf_conntrack, $ndp, $nf_conntrack_allow_invalid, $nf_conntrack_max, $nf_conntrack_tcp_timeout_established, $nosmurfs, $smurf_log_level, $tcp_flags_log_level, $tcpflags);
         }
     }
-
     /**
      * Class PVEFirewallNodeNodesLog
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallNodeNodesLog extends Base
     {
@@ -18498,7 +17329,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -18507,24 +17337,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Read firewall log
-         * @param int $limit
-         * @param int $start
+         * @param int $limit 
+         * @param int $start 
          * @return Result
          */
         public function getRest($limit = null, $start = null)
         {
-            $params = ['limit' => $limit,
-                'start' => $start];
+            $params = [
+                'limit' => $limit,
+                'start' => $start
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/firewall/log", $params);
         }
-
         /**
          * Read firewall log
-         * @param int $limit
-         * @param int $start
+         * @param int $limit 
+         * @param int $start 
          * @return Result
          */
         public function log($limit = null, $start = null)
@@ -18532,10 +17362,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($limit, $start);
         }
     }
-
     /**
      * Class PVENodeNodesReplication
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesReplication extends Base
     {
@@ -18543,7 +17372,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -18552,7 +17380,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get ItemReplicationNodeNodesId
          * @param id
@@ -18562,7 +17389,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemReplicationNodeNodesId($this->client, $this->node, $id);
         }
-
         /**
          * List status of all replication jobs on this node.
          * @param int $guest Only list replication jobs for this guest.
@@ -18573,7 +17399,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['guest' => $guest];
             return $this->getClient()->get("/nodes/{$this->node}/replication", $params);
         }
-
         /**
          * List status of all replication jobs on this node.
          * @param int $guest Only list replication jobs for this guest.
@@ -18584,10 +17409,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($guest);
         }
     }
-
     /**
      * Class PVEItemReplicationNodeNodesId
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemReplicationNodeNodesId extends Base
     {
@@ -18599,7 +17423,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $id;
-
         /**
          * @ignore
          */
@@ -18609,12 +17432,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->id = $id;
         }
-
         /**
          * @ignore
          */
         private $status;
-
         /**
          * Get IdReplicationNodeNodesStatus
          * @return PVEIdReplicationNodeNodesStatus
@@ -18623,12 +17444,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->status ?: ($this->status = new PVEIdReplicationNodeNodesStatus($this->client, $this->node, $this->id));
         }
-
         /**
          * @ignore
          */
         private $log;
-
         /**
          * Get IdReplicationNodeNodesLog
          * @return PVEIdReplicationNodeNodesLog
@@ -18637,12 +17456,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->log ?: ($this->log = new PVEIdReplicationNodeNodesLog($this->client, $this->node, $this->id));
         }
-
         /**
          * @ignore
          */
         private $scheduleNow;
-
         /**
          * Get IdReplicationNodeNodesScheduleNow
          * @return PVEIdReplicationNodeNodesScheduleNow
@@ -18651,7 +17468,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->scheduleNow ?: ($this->scheduleNow = new PVEIdReplicationNodeNodesScheduleNow($this->client, $this->node, $this->id));
         }
-
         /**
          * Directory index.
          * @return Result
@@ -18660,7 +17476,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/replication/{$this->id}");
         }
-
         /**
          * Directory index.
          * @return Result
@@ -18670,10 +17485,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEIdReplicationNodeNodesStatus
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEIdReplicationNodeNodesStatus extends Base
     {
@@ -18685,7 +17499,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $id;
-
         /**
          * @ignore
          */
@@ -18695,7 +17508,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->id = $id;
         }
-
         /**
          * Get replication job status.
          * @return Result
@@ -18704,7 +17516,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/replication/{$this->id}/status");
         }
-
         /**
          * Get replication job status.
          * @return Result
@@ -18714,10 +17525,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEIdReplicationNodeNodesLog
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEIdReplicationNodeNodesLog extends Base
     {
@@ -18729,7 +17539,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $id;
-
         /**
          * @ignore
          */
@@ -18739,24 +17548,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->id = $id;
         }
-
         /**
          * Read replication job log.
-         * @param int $limit
-         * @param int $start
+         * @param int $limit 
+         * @param int $start 
          * @return Result
          */
         public function getRest($limit = null, $start = null)
         {
-            $params = ['limit' => $limit,
-                'start' => $start];
+            $params = [
+                'limit' => $limit,
+                'start' => $start
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/replication/{$this->id}/log", $params);
         }
-
         /**
          * Read replication job log.
-         * @param int $limit
-         * @param int $start
+         * @param int $limit 
+         * @param int $start 
          * @return Result
          */
         public function readJobLog($limit = null, $start = null)
@@ -18764,10 +17573,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($limit, $start);
         }
     }
-
     /**
      * Class PVEIdReplicationNodeNodesScheduleNow
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEIdReplicationNodeNodesScheduleNow extends Base
     {
@@ -18779,7 +17587,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $id;
-
         /**
          * @ignore
          */
@@ -18789,7 +17596,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->node = $node;
             $this->id = $id;
         }
-
         /**
          * Schedule replication job to start as soon as possible.
          * @return Result
@@ -18798,7 +17604,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->create("/nodes/{$this->node}/replication/{$this->id}/schedule_now");
         }
-
         /**
          * Schedule replication job to start as soon as possible.
          * @return Result
@@ -18808,10 +17613,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest();
         }
     }
-
     /**
      * Class PVENodeNodesCertificates
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesCertificates extends Base
     {
@@ -18819,7 +17623,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -18828,12 +17631,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * @ignore
          */
         private $acme;
-
         /**
          * Get CertificatesNodeNodesAcme
          * @return PVECertificatesNodeNodesAcme
@@ -18842,12 +17643,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->acme ?: ($this->acme = new PVECertificatesNodeNodesAcme($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $info;
-
         /**
          * Get CertificatesNodeNodesInfo
          * @return PVECertificatesNodeNodesInfo
@@ -18856,12 +17655,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->info ?: ($this->info = new PVECertificatesNodeNodesInfo($this->client, $this->node));
         }
-
         /**
          * @ignore
          */
         private $custom;
-
         /**
          * Get CertificatesNodeNodesCustom
          * @return PVECertificatesNodeNodesCustom
@@ -18870,7 +17667,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->custom ?: ($this->custom = new PVECertificatesNodeNodesCustom($this->client, $this->node));
         }
-
         /**
          * Node index.
          * @return Result
@@ -18879,7 +17675,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/certificates");
         }
-
         /**
          * Node index.
          * @return Result
@@ -18889,10 +17684,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVECertificatesNodeNodesAcme
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECertificatesNodeNodesAcme extends Base
     {
@@ -18900,7 +17694,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -18909,12 +17702,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * @ignore
          */
         private $certificate;
-
         /**
          * Get AcmeCertificatesNodeNodesCertificate
          * @return PVEAcmeCertificatesNodeNodesCertificate
@@ -18923,7 +17714,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->certificate ?: ($this->certificate = new PVEAcmeCertificatesNodeNodesCertificate($this->client, $this->node));
         }
-
         /**
          * ACME index.
          * @return Result
@@ -18932,7 +17722,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/certificates/acme");
         }
-
         /**
          * ACME index.
          * @return Result
@@ -18942,10 +17731,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEAcmeCertificatesNodeNodesCertificate
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAcmeCertificatesNodeNodesCertificate extends Base
     {
@@ -18953,7 +17741,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -18962,7 +17749,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Revoke existing certificate from CA.
          * @return Result
@@ -18971,7 +17757,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->delete("/nodes/{$this->node}/certificates/acme/certificate");
         }
-
         /**
          * Revoke existing certificate from CA.
          * @return Result
@@ -18980,7 +17765,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest();
         }
-
         /**
          * Order a new certificate from ACME-compatible CA.
          * @param bool $force Overwrite existing custom certificate.
@@ -18991,7 +17775,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['force' => $force];
             return $this->getClient()->create("/nodes/{$this->node}/certificates/acme/certificate", $params);
         }
-
         /**
          * Order a new certificate from ACME-compatible CA.
          * @param bool $force Overwrite existing custom certificate.
@@ -19001,7 +17784,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->createRest($force);
         }
-
         /**
          * Renew existing certificate from CA.
          * @param bool $force Force renewal even if expiry is more than 30 days away.
@@ -19012,7 +17794,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['force' => $force];
             return $this->getClient()->set("/nodes/{$this->node}/certificates/acme/certificate", $params);
         }
-
         /**
          * Renew existing certificate from CA.
          * @param bool $force Force renewal even if expiry is more than 30 days away.
@@ -19023,10 +17804,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($force);
         }
     }
-
     /**
      * Class PVECertificatesNodeNodesInfo
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECertificatesNodeNodesInfo extends Base
     {
@@ -19034,7 +17814,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -19043,7 +17822,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get information about node's certificates.
          * @return Result
@@ -19052,7 +17830,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/certificates/info");
         }
-
         /**
          * Get information about node's certificates.
          * @return Result
@@ -19062,10 +17839,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVECertificatesNodeNodesCustom
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECertificatesNodeNodesCustom extends Base
     {
@@ -19073,7 +17849,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -19082,7 +17857,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * DELETE custom certificate chain and key.
          * @param bool $restart Restart pveproxy.
@@ -19093,7 +17867,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['restart' => $restart];
             return $this->getClient()->delete("/nodes/{$this->node}/certificates/custom", $params);
         }
-
         /**
          * DELETE custom certificate chain and key.
          * @param bool $restart Restart pveproxy.
@@ -19103,7 +17876,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest($restart);
         }
-
         /**
          * Upload or update custom certificate chain and key.
          * @param string $certificates PEM encoded certificate (chain).
@@ -19114,13 +17886,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($certificates, $force = null, $key = null, $restart = null)
         {
-            $params = ['certificates' => $certificates,
+            $params = [
+                'certificates' => $certificates,
                 'force' => $force,
                 'key' => $key,
-                'restart' => $restart];
+                'restart' => $restart
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/certificates/custom", $params);
         }
-
         /**
          * Upload or update custom certificate chain and key.
          * @param string $certificates PEM encoded certificate (chain).
@@ -19134,10 +17907,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($certificates, $force, $key, $restart);
         }
     }
-
     /**
      * Class PVENodeNodesConfig
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesConfig extends Base
     {
@@ -19145,7 +17917,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -19154,7 +17925,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get node configuration options.
          * @return Result
@@ -19163,7 +17933,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/config");
         }
-
         /**
          * Get node configuration options.
          * @return Result
@@ -19172,41 +17941,43 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Set node configuration options.
          * @param string $acme Node specific ACME settings.
          * @param string $delete A list of settings you want to delete.
          * @param string $description Node description/comment.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
+         * @param string $wakeonlan MAC address for wake on LAN
          * @return Result
          */
-        public function setRest($acme = null, $delete = null, $description = null, $digest = null)
+        public function setRest($acme = null, $delete = null, $description = null, $digest = null, $wakeonlan = null)
         {
-            $params = ['acme' => $acme,
+            $params = [
+                'acme' => $acme,
                 'delete' => $delete,
                 'description' => $description,
-                'digest' => $digest];
+                'digest' => $digest,
+                'wakeonlan' => $wakeonlan
+            ];
             return $this->getClient()->set("/nodes/{$this->node}/config", $params);
         }
-
         /**
          * Set node configuration options.
          * @param string $acme Node specific ACME settings.
          * @param string $delete A list of settings you want to delete.
          * @param string $description Node description/comment.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
+         * @param string $wakeonlan MAC address for wake on LAN
          * @return Result
          */
-        public function setOptions($acme = null, $delete = null, $description = null, $digest = null)
+        public function setOptions($acme = null, $delete = null, $description = null, $digest = null, $wakeonlan = null)
         {
-            return $this->setRest($acme, $delete, $description, $digest);
+            return $this->setRest($acme, $delete, $description, $digest, $wakeonlan);
         }
     }
-
     /**
      * Class PVENodeNodesVersion
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesVersion extends Base
     {
@@ -19214,7 +17985,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -19223,7 +17993,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * API version details
          * @return Result
@@ -19232,7 +18001,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/version");
         }
-
         /**
          * API version details
          * @return Result
@@ -19242,10 +18010,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVENodeNodesStatus
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesStatus extends Base
     {
@@ -19253,7 +18020,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -19262,7 +18028,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Read node status
          * @return Result
@@ -19271,7 +18036,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/status");
         }
-
         /**
          * Read node status
          * @return Result
@@ -19280,7 +18044,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Reboot or shutdown a node.
          * @param string $command Specify the command.
@@ -19292,7 +18055,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['command' => $command];
             return $this->getClient()->create("/nodes/{$this->node}/status", $params);
         }
-
         /**
          * Reboot or shutdown a node.
          * @param string $command Specify the command.
@@ -19304,10 +18066,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($command);
         }
     }
-
     /**
      * Class PVENodeNodesNetstat
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesNetstat extends Base
     {
@@ -19315,7 +18076,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -19324,7 +18084,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Read tap/vm network device interface counters
          * @return Result
@@ -19333,7 +18092,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/netstat");
         }
-
         /**
          * Read tap/vm network device interface counters
          * @return Result
@@ -19343,10 +18101,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVENodeNodesExecute
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesExecute extends Base
     {
@@ -19354,7 +18111,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -19363,7 +18119,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Execute multiple commands in order.
          * @param string $commands JSON encoded array of commands.
@@ -19374,7 +18129,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['commands' => $commands];
             return $this->getClient()->create("/nodes/{$this->node}/execute", $params);
         }
-
         /**
          * Execute multiple commands in order.
          * @param string $commands JSON encoded array of commands.
@@ -19385,18 +18139,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($commands);
         }
     }
-
     /**
-     * Class PVENodeNodesRrd
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * Class PVENodeNodesWakeonlan
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
-    class PVENodeNodesRrd extends Base
+    class PVENodeNodesWakeonlan extends Base
     {
         /**
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -19405,7 +18157,41 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
+        /**
+         * Try to wake a node via 'wake on LAN' network packet.
+         * @return Result
+         */
+        public function createRest()
+        {
+            return $this->getClient()->create("/nodes/{$this->node}/wakeonlan");
+        }
+        /**
+         * Try to wake a node via 'wake on LAN' network packet.
+         * @return Result
+         */
+        public function wakeonlan()
+        {
+            return $this->createRest();
+        }
+    }
+    /**
+     * Class PVENodeNodesRrd
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVENodeNodesRrd extends Base
+    {
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        function __construct($client, $node)
+        {
+            $this->client = $client;
+            $this->node = $node;
+        }
         /**
          * Read node RRD statistics (returns PNG)
          * @param string $ds The list of datasources you want to display.
@@ -19417,12 +18203,13 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRest($ds, $timeframe, $cf = null)
         {
-            $params = ['ds' => $ds,
+            $params = [
+                'ds' => $ds,
                 'timeframe' => $timeframe,
-                'cf' => $cf];
+                'cf' => $cf
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/rrd", $params);
         }
-
         /**
          * Read node RRD statistics (returns PNG)
          * @param string $ds The list of datasources you want to display.
@@ -19437,10 +18224,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($ds, $timeframe, $cf);
         }
     }
-
     /**
      * Class PVENodeNodesRrddata
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesRrddata extends Base
     {
@@ -19448,7 +18234,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -19457,7 +18242,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Read node RRD statistics
          * @param string $timeframe Specify the time frame you are interested in.
@@ -19468,11 +18252,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRest($timeframe, $cf = null)
         {
-            $params = ['timeframe' => $timeframe,
-                'cf' => $cf];
+            $params = [
+                'timeframe' => $timeframe,
+                'cf' => $cf
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/rrddata", $params);
         }
-
         /**
          * Read node RRD statistics
          * @param string $timeframe Specify the time frame you are interested in.
@@ -19486,10 +18271,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($timeframe, $cf);
         }
     }
-
     /**
      * Class PVENodeNodesSyslog
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesSyslog extends Base
     {
@@ -19497,7 +18281,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -19506,32 +18289,32 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Read system log
-         * @param int $limit
+         * @param int $limit 
          * @param string $service Service ID
          * @param string $since Display all log since this date-time string.
-         * @param int $start
+         * @param int $start 
          * @param string $until Display all log until this date-time string.
          * @return Result
          */
         public function getRest($limit = null, $service = null, $since = null, $start = null, $until = null)
         {
-            $params = ['limit' => $limit,
+            $params = [
+                'limit' => $limit,
                 'service' => $service,
                 'since' => $since,
                 'start' => $start,
-                'until' => $until];
+                'until' => $until
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/syslog", $params);
         }
-
         /**
          * Read system log
-         * @param int $limit
+         * @param int $limit 
          * @param string $service Service ID
          * @param string $since Display all log since this date-time string.
-         * @param int $start
+         * @param int $start 
          * @param string $until Display all log until this date-time string.
          * @return Result
          */
@@ -19540,10 +18323,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($limit, $service, $since, $start, $until);
         }
     }
-
     /**
      * Class PVENodeNodesVncshell
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesVncshell extends Base
     {
@@ -19551,7 +18333,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -19560,41 +18341,45 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Creates a VNC Shell proxy.
+         * @param string $cmd Run specific command or default to login.
+         *   Enum: upgrade,ceph_install,login
          * @param int $height sets the height of the console in pixels.
-         * @param bool $upgrade Run 'apt-get dist-upgrade' instead of normal shell.
+         * @param bool $upgrade Deprecated, use the 'cmd' property instead! Run 'apt-get dist-upgrade' instead of normal shell.
          * @param bool $websocket use websocket instead of standard vnc.
          * @param int $width sets the width of the console in pixels.
          * @return Result
          */
-        public function createRest($height = null, $upgrade = null, $websocket = null, $width = null)
+        public function createRest($cmd = null, $height = null, $upgrade = null, $websocket = null, $width = null)
         {
-            $params = ['height' => $height,
+            $params = [
+                'cmd' => $cmd,
+                'height' => $height,
                 'upgrade' => $upgrade,
                 'websocket' => $websocket,
-                'width' => $width];
+                'width' => $width
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/vncshell", $params);
         }
-
         /**
          * Creates a VNC Shell proxy.
+         * @param string $cmd Run specific command or default to login.
+         *   Enum: upgrade,ceph_install,login
          * @param int $height sets the height of the console in pixels.
-         * @param bool $upgrade Run 'apt-get dist-upgrade' instead of normal shell.
+         * @param bool $upgrade Deprecated, use the 'cmd' property instead! Run 'apt-get dist-upgrade' instead of normal shell.
          * @param bool $websocket use websocket instead of standard vnc.
          * @param int $width sets the width of the console in pixels.
          * @return Result
          */
-        public function vncshell($height = null, $upgrade = null, $websocket = null, $width = null)
+        public function vncshell($cmd = null, $height = null, $upgrade = null, $websocket = null, $width = null)
         {
-            return $this->createRest($height, $upgrade, $websocket, $width);
+            return $this->createRest($cmd, $height, $upgrade, $websocket, $width);
         }
     }
-
     /**
      * Class PVENodeNodesTermproxy
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesTermproxy extends Base
     {
@@ -19602,7 +18387,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -19611,32 +18395,36 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Creates a VNC Shell proxy.
-         * @param bool $upgrade Run 'apt-get dist-upgrade' instead of normal shell.
+         * @param string $cmd Run specific command or default to login.
+         *   Enum: upgrade,ceph_install,login
+         * @param bool $upgrade Deprecated, use the 'cmd' property instead! Run 'apt-get dist-upgrade' instead of normal shell.
          * @return Result
          */
-        public function createRest($upgrade = null)
+        public function createRest($cmd = null, $upgrade = null)
         {
-            $params = ['upgrade' => $upgrade];
+            $params = [
+                'cmd' => $cmd,
+                'upgrade' => $upgrade
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/termproxy", $params);
         }
-
         /**
          * Creates a VNC Shell proxy.
-         * @param bool $upgrade Run 'apt-get dist-upgrade' instead of normal shell.
+         * @param string $cmd Run specific command or default to login.
+         *   Enum: upgrade,ceph_install,login
+         * @param bool $upgrade Deprecated, use the 'cmd' property instead! Run 'apt-get dist-upgrade' instead of normal shell.
          * @return Result
          */
-        public function termproxy($upgrade = null)
+        public function termproxy($cmd = null, $upgrade = null)
         {
-            return $this->createRest($upgrade);
+            return $this->createRest($cmd, $upgrade);
         }
     }
-
     /**
      * Class PVENodeNodesVncwebsocket
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesVncwebsocket extends Base
     {
@@ -19644,7 +18432,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -19653,7 +18440,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Opens a weksocket for VNC traffic.
          * @param int $port Port number returned by previous vncproxy call.
@@ -19662,11 +18448,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function getRest($port, $vncticket)
         {
-            $params = ['port' => $port,
-                'vncticket' => $vncticket];
+            $params = [
+                'port' => $port,
+                'vncticket' => $vncticket
+            ];
             return $this->getClient()->get("/nodes/{$this->node}/vncwebsocket", $params);
         }
-
         /**
          * Opens a weksocket for VNC traffic.
          * @param int $port Port number returned by previous vncproxy call.
@@ -19678,10 +18465,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest($port, $vncticket);
         }
     }
-
     /**
      * Class PVENodeNodesSpiceshell
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesSpiceshell extends Base
     {
@@ -19689,7 +18475,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -19698,35 +18483,39 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Creates a SPICE shell.
+         * @param string $cmd Run specific command or default to login.
+         *   Enum: upgrade,ceph_install,login
          * @param string $proxy SPICE proxy server. This can be used by the client to specify the proxy server. All nodes in a cluster runs 'spiceproxy', so it is up to the client to choose one. By default, we return the node where the VM is currently running. As reasonable setting is to use same node you use to connect to the API (This is window.location.hostname for the JS GUI).
-         * @param bool $upgrade Run 'apt-get dist-upgrade' instead of normal shell.
+         * @param bool $upgrade Deprecated, use the 'cmd' property instead! Run 'apt-get dist-upgrade' instead of normal shell.
          * @return Result
          */
-        public function createRest($proxy = null, $upgrade = null)
+        public function createRest($cmd = null, $proxy = null, $upgrade = null)
         {
-            $params = ['proxy' => $proxy,
-                'upgrade' => $upgrade];
+            $params = [
+                'cmd' => $cmd,
+                'proxy' => $proxy,
+                'upgrade' => $upgrade
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/spiceshell", $params);
         }
-
         /**
          * Creates a SPICE shell.
+         * @param string $cmd Run specific command or default to login.
+         *   Enum: upgrade,ceph_install,login
          * @param string $proxy SPICE proxy server. This can be used by the client to specify the proxy server. All nodes in a cluster runs 'spiceproxy', so it is up to the client to choose one. By default, we return the node where the VM is currently running. As reasonable setting is to use same node you use to connect to the API (This is window.location.hostname for the JS GUI).
-         * @param bool $upgrade Run 'apt-get dist-upgrade' instead of normal shell.
+         * @param bool $upgrade Deprecated, use the 'cmd' property instead! Run 'apt-get dist-upgrade' instead of normal shell.
          * @return Result
          */
-        public function spiceshell($proxy = null, $upgrade = null)
+        public function spiceshell($cmd = null, $proxy = null, $upgrade = null)
         {
-            return $this->createRest($proxy, $upgrade);
+            return $this->createRest($cmd, $proxy, $upgrade);
         }
     }
-
     /**
      * Class PVENodeNodesDns
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesDns extends Base
     {
@@ -19734,7 +18523,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -19743,7 +18531,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Read DNS settings.
          * @return Result
@@ -19752,7 +18539,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/dns");
         }
-
         /**
          * Read DNS settings.
          * @return Result
@@ -19761,7 +18547,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Write DNS settings.
          * @param string $search Search domain for host-name lookup.
@@ -19772,13 +18557,14 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function setRest($search, $dns1 = null, $dns2 = null, $dns3 = null)
         {
-            $params = ['search' => $search,
+            $params = [
+                'search' => $search,
                 'dns1' => $dns1,
                 'dns2' => $dns2,
-                'dns3' => $dns3];
+                'dns3' => $dns3
+            ];
             return $this->getClient()->set("/nodes/{$this->node}/dns", $params);
         }
-
         /**
          * Write DNS settings.
          * @param string $search Search domain for host-name lookup.
@@ -19792,10 +18578,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($search, $dns1, $dns2, $dns3);
         }
     }
-
     /**
      * Class PVENodeNodesTime
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesTime extends Base
     {
@@ -19803,7 +18588,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -19812,7 +18596,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Read server time and time zone settings.
          * @return Result
@@ -19821,7 +18604,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/time");
         }
-
         /**
          * Read server time and time zone settings.
          * @return Result
@@ -19830,7 +18612,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Set time zone.
          * @param string $timezone Time zone. The file '/usr/share/zoneinfo/zone.tab' contains the list of valid names.
@@ -19841,7 +18622,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['timezone' => $timezone];
             return $this->getClient()->set("/nodes/{$this->node}/time", $params);
         }
-
         /**
          * Set time zone.
          * @param string $timezone Time zone. The file '/usr/share/zoneinfo/zone.tab' contains the list of valid names.
@@ -19852,10 +18632,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($timezone);
         }
     }
-
     /**
      * Class PVENodeNodesAplinfo
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesAplinfo extends Base
     {
@@ -19863,7 +18642,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -19872,7 +18650,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get list of appliances.
          * @return Result
@@ -19881,7 +18658,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/aplinfo");
         }
-
         /**
          * Get list of appliances.
          * @return Result
@@ -19890,7 +18666,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Download appliance templates.
          * @param string $storage The storage where the template will be stored
@@ -19899,11 +18674,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($storage, $template)
         {
-            $params = ['storage' => $storage,
-                'template' => $template];
+            $params = [
+                'storage' => $storage,
+                'template' => $template
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/aplinfo", $params);
         }
-
         /**
          * Download appliance templates.
          * @param string $storage The storage where the template will be stored
@@ -19915,10 +18691,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($storage, $template);
         }
     }
-
     /**
      * Class PVENodeNodesReport
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesReport extends Base
     {
@@ -19926,7 +18701,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -19935,7 +18709,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Gather various systems information about a node
          * @return Result
@@ -19944,7 +18717,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/report");
         }
-
         /**
          * Gather various systems information about a node
          * @return Result
@@ -19954,10 +18726,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVENodeNodesStartall
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesStartall extends Base
     {
@@ -19965,7 +18736,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -19974,7 +18744,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Start all VMs and containers (when onboot=1).
          * @param bool $force force if onboot=0.
@@ -19983,11 +18752,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($force = null, $vms = null)
         {
-            $params = ['force' => $force,
-                'vms' => $vms];
+            $params = [
+                'force' => $force,
+                'vms' => $vms
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/startall", $params);
         }
-
         /**
          * Start all VMs and containers (when onboot=1).
          * @param bool $force force if onboot=0.
@@ -19999,10 +18769,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($force, $vms);
         }
     }
-
     /**
      * Class PVENodeNodesStopall
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesStopall extends Base
     {
@@ -20010,7 +18779,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -20019,7 +18787,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Stop all VMs and Containers.
          * @param string $vms Only consider Guests with these IDs.
@@ -20030,7 +18797,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['vms' => $vms];
             return $this->getClient()->create("/nodes/{$this->node}/stopall", $params);
         }
-
         /**
          * Stop all VMs and Containers.
          * @param string $vms Only consider Guests with these IDs.
@@ -20041,10 +18807,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($vms);
         }
     }
-
     /**
      * Class PVENodeNodesMigrateall
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesMigrateall extends Base
     {
@@ -20052,7 +18817,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -20061,7 +18825,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Migrate all VMs and Containers.
          * @param string $target Target node.
@@ -20071,12 +18834,13 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($target, $maxworkers = null, $vms = null)
         {
-            $params = ['target' => $target,
+            $params = [
+                'target' => $target,
                 'maxworkers' => $maxworkers,
-                'vms' => $vms];
+                'vms' => $vms
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/migrateall", $params);
         }
-
         /**
          * Migrate all VMs and Containers.
          * @param string $target Target node.
@@ -20089,10 +18853,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($target, $maxworkers, $vms);
         }
     }
-
     /**
      * Class PVENodeNodesHosts
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesHosts extends Base
     {
@@ -20100,7 +18863,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $node;
-
         /**
          * @ignore
          */
@@ -20109,7 +18871,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->node = $node;
         }
-
         /**
          * Get the content of /etc/hosts.
          * @return Result
@@ -20118,7 +18879,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/nodes/{$this->node}/hosts");
         }
-
         /**
          * Get the content of /etc/hosts.
          * @return Result
@@ -20127,7 +18887,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Write /etc/hosts.
          * @param string $data The target content of /etc/hosts.
@@ -20136,11 +18895,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($data, $digest = null)
         {
-            $params = ['data' => $data,
-                'digest' => $digest];
+            $params = [
+                'data' => $data,
+                'digest' => $digest
+            ];
             return $this->getClient()->create("/nodes/{$this->node}/hosts", $params);
         }
-
         /**
          * Write /etc/hosts.
          * @param string $data The target content of /etc/hosts.
@@ -20152,10 +18912,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($data, $digest);
         }
     }
-
     /**
      * Class PVEStorage
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStorage extends Base
     {
@@ -20166,7 +18925,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get ItemStorageStorage
          * @param storage
@@ -20176,7 +18934,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemStorageStorage($this->client, $storage);
         }
-
         /**
          * Storage index.
          * @param string $type Only list storage of specific type
@@ -20188,7 +18945,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['type' => $type];
             return $this->getClient()->get("/storage", $params);
         }
-
         /**
          * Storage index.
          * @param string $type Only list storage of specific type
@@ -20199,7 +18955,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest($type);
         }
-
         /**
          * Create a new storage.
          * @param string $storage The storage identifier.
@@ -20211,7 +18966,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $bwlimit Set bandwidth/io limits various operations.
          * @param string $comstar_hg host group for comstar views
          * @param string $comstar_tg target group for comstar views
-         * @param string $content Allowed content types.  NOTE: the value 'rootdir' is used for Containers, and value 'images' for VMs.
+         * @param string $content Allowed content types.  NOTE: the value 'rootdir' is used for Containers, and value 'images' for VMs. 
          * @param bool $disable Flag to disable the storage.
          * @param string $domain CIFS domain.
          * @param string $export NFS export path.
@@ -20254,7 +19009,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($storage, $type, $authsupported = null, $base = null, $blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $disable = null, $domain = null, $export = null, $format = null, $fuse = null, $is_mountpoint = null, $iscsiprovider = null, $krbd = null, $lio_tpg = null, $maxfiles = null, $mkdir = null, $monhost = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $path = null, $pool = null, $portal = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $share = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $target = null, $thinpool = null, $transport = null, $username = null, $vgname = null, $volume = null)
         {
-            $params = ['storage' => $storage,
+            $params = [
+                'storage' => $storage,
                 'type' => $type,
                 'authsupported' => $authsupported,
                 'base' => $base,
@@ -20298,10 +19054,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'transport' => $transport,
                 'username' => $username,
                 'vgname' => $vgname,
-                'volume' => $volume];
+                'volume' => $volume
+            ];
             return $this->getClient()->create("/storage", $params);
         }
-
         /**
          * Create a new storage.
          * @param string $storage The storage identifier.
@@ -20313,7 +19069,7 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @param string $bwlimit Set bandwidth/io limits various operations.
          * @param string $comstar_hg host group for comstar views
          * @param string $comstar_tg target group for comstar views
-         * @param string $content Allowed content types.  NOTE: the value 'rootdir' is used for Containers, and value 'images' for VMs.
+         * @param string $content Allowed content types.  NOTE: the value 'rootdir' is used for Containers, and value 'images' for VMs. 
          * @param bool $disable Flag to disable the storage.
          * @param string $domain CIFS domain.
          * @param string $export NFS export path.
@@ -20359,10 +19115,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($storage, $type, $authsupported, $base, $blocksize, $bwlimit, $comstar_hg, $comstar_tg, $content, $disable, $domain, $export, $format, $fuse, $is_mountpoint, $iscsiprovider, $krbd, $lio_tpg, $maxfiles, $mkdir, $monhost, $nodes, $nowritecache, $options, $password, $path, $pool, $portal, $redundancy, $saferemove, $saferemove_throughput, $server, $server2, $share, $shared, $smbversion, $sparse, $subdir, $tagged_only, $target, $thinpool, $transport, $username, $vgname, $volume);
         }
     }
-
     /**
      * Class PVEItemStorageStorage
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemStorageStorage extends Base
     {
@@ -20370,7 +19125,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $storage;
-
         /**
          * @ignore
          */
@@ -20379,7 +19133,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->storage = $storage;
         }
-
         /**
          * Delete storage configuration.
          * @return Result
@@ -20388,7 +19141,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->delete("/storage/{$this->storage}");
         }
-
         /**
          * Delete storage configuration.
          * @return Result
@@ -20397,7 +19149,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest();
         }
-
         /**
          * Read storage configuration.
          * @return Result
@@ -20406,7 +19157,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/storage/{$this->storage}");
         }
-
         /**
          * Read storage configuration.
          * @return Result
@@ -20415,14 +19165,13 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Update storage configuration.
          * @param string $blocksize block size
          * @param string $bwlimit Set bandwidth/io limits various operations.
          * @param string $comstar_hg host group for comstar views
          * @param string $comstar_tg target group for comstar views
-         * @param string $content Allowed content types.  NOTE: the value 'rootdir' is used for Containers, and value 'images' for VMs.
+         * @param string $content Allowed content types.  NOTE: the value 'rootdir' is used for Containers, and value 'images' for VMs. 
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param bool $disable Flag to disable the storage.
@@ -20458,7 +19207,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function setRest($blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $delete = null, $digest = null, $disable = null, $domain = null, $format = null, $fuse = null, $is_mountpoint = null, $krbd = null, $lio_tpg = null, $maxfiles = null, $mkdir = null, $monhost = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $pool = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $transport = null, $username = null)
         {
-            $params = ['blocksize' => $blocksize,
+            $params = [
+                'blocksize' => $blocksize,
                 'bwlimit' => $bwlimit,
                 'comstar_hg' => $comstar_hg,
                 'comstar_tg' => $comstar_tg,
@@ -20491,17 +19241,17 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'subdir' => $subdir,
                 'tagged_only' => $tagged_only,
                 'transport' => $transport,
-                'username' => $username];
+                'username' => $username
+            ];
             return $this->getClient()->set("/storage/{$this->storage}", $params);
         }
-
         /**
          * Update storage configuration.
          * @param string $blocksize block size
          * @param string $bwlimit Set bandwidth/io limits various operations.
          * @param string $comstar_hg host group for comstar views
          * @param string $comstar_tg target group for comstar views
-         * @param string $content Allowed content types.  NOTE: the value 'rootdir' is used for Containers, and value 'images' for VMs.
+         * @param string $content Allowed content types.  NOTE: the value 'rootdir' is used for Containers, and value 'images' for VMs. 
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param bool $disable Flag to disable the storage.
@@ -20540,10 +19290,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($blocksize, $bwlimit, $comstar_hg, $comstar_tg, $content, $delete, $digest, $disable, $domain, $format, $fuse, $is_mountpoint, $krbd, $lio_tpg, $maxfiles, $mkdir, $monhost, $nodes, $nowritecache, $options, $password, $pool, $redundancy, $saferemove, $saferemove_throughput, $server, $server2, $shared, $smbversion, $sparse, $subdir, $tagged_only, $transport, $username);
         }
     }
-
     /**
      * Class PVEAccess
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAccess extends Base
     {
@@ -20554,12 +19303,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * @ignore
          */
         private $users;
-
         /**
          * Get AccessUsers
          * @return PVEAccessUsers
@@ -20568,12 +19315,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->users ?: ($this->users = new PVEAccessUsers($this->client));
         }
-
         /**
          * @ignore
          */
         private $groups;
-
         /**
          * Get AccessGroups
          * @return PVEAccessGroups
@@ -20582,12 +19327,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->groups ?: ($this->groups = new PVEAccessGroups($this->client));
         }
-
         /**
          * @ignore
          */
         private $roles;
-
         /**
          * Get AccessRoles
          * @return PVEAccessRoles
@@ -20596,12 +19339,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->roles ?: ($this->roles = new PVEAccessRoles($this->client));
         }
-
         /**
          * @ignore
          */
         private $acl;
-
         /**
          * Get AccessAcl
          * @return PVEAccessAcl
@@ -20610,12 +19351,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->acl ?: ($this->acl = new PVEAccessAcl($this->client));
         }
-
         /**
          * @ignore
          */
         private $domains;
-
         /**
          * Get AccessDomains
          * @return PVEAccessDomains
@@ -20624,12 +19363,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->domains ?: ($this->domains = new PVEAccessDomains($this->client));
         }
-
         /**
          * @ignore
          */
         private $ticket;
-
         /**
          * Get AccessTicket
          * @return PVEAccessTicket
@@ -20638,12 +19375,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->ticket ?: ($this->ticket = new PVEAccessTicket($this->client));
         }
-
         /**
          * @ignore
          */
         private $password;
-
         /**
          * Get AccessPassword
          * @return PVEAccessPassword
@@ -20652,7 +19387,18 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->password ?: ($this->password = new PVEAccessPassword($this->client));
         }
-
+        /**
+         * @ignore
+         */
+        private $tfa;
+        /**
+         * Get AccessTfa
+         * @return PVEAccessTfa
+         */
+        public function getTfa()
+        {
+            return $this->tfa ?: ($this->tfa = new PVEAccessTfa($this->client));
+        }
         /**
          * Directory index.
          * @return Result
@@ -20661,7 +19407,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/access");
         }
-
         /**
          * Directory index.
          * @return Result
@@ -20671,10 +19416,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->getRest();
         }
     }
-
     /**
      * Class PVEAccessUsers
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAccessUsers extends Base
     {
@@ -20685,7 +19429,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get ItemUsersAccessUserid
          * @param userid
@@ -20695,7 +19438,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemUsersAccessUserid($this->client, $userid);
         }
-
         /**
          * User index.
          * @param bool $enabled Optional filter for enable property.
@@ -20706,7 +19448,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['enabled' => $enabled];
             return $this->getClient()->get("/access/users", $params);
         }
-
         /**
          * User index.
          * @param bool $enabled Optional filter for enable property.
@@ -20716,24 +19457,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest($enabled);
         }
-
         /**
          * Create new user.
          * @param string $userid User ID
-         * @param string $comment
-         * @param string $email
+         * @param string $comment 
+         * @param string $email 
          * @param bool $enable Enable the account (default). You can set this to '0' to disable the account
          * @param int $expire Account expiration date (seconds since epoch). '0' means no expiration date.
-         * @param string $firstname
-         * @param string $groups
+         * @param string $firstname 
+         * @param string $groups 
          * @param string $keys Keys for two factor auth (yubico).
-         * @param string $lastname
+         * @param string $lastname 
          * @param string $password Initial password.
          * @return Result
          */
         public function createRest($userid, $comment = null, $email = null, $enable = null, $expire = null, $firstname = null, $groups = null, $keys = null, $lastname = null, $password = null)
         {
-            $params = ['userid' => $userid,
+            $params = [
+                'userid' => $userid,
                 'comment' => $comment,
                 'email' => $email,
                 'enable' => $enable,
@@ -20742,21 +19483,21 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'groups' => $groups,
                 'keys' => $keys,
                 'lastname' => $lastname,
-                'password' => $password];
+                'password' => $password
+            ];
             return $this->getClient()->create("/access/users", $params);
         }
-
         /**
          * Create new user.
          * @param string $userid User ID
-         * @param string $comment
-         * @param string $email
+         * @param string $comment 
+         * @param string $email 
          * @param bool $enable Enable the account (default). You can set this to '0' to disable the account
          * @param int $expire Account expiration date (seconds since epoch). '0' means no expiration date.
-         * @param string $firstname
-         * @param string $groups
+         * @param string $firstname 
+         * @param string $groups 
          * @param string $keys Keys for two factor auth (yubico).
-         * @param string $lastname
+         * @param string $lastname 
          * @param string $password Initial password.
          * @return Result
          */
@@ -20765,10 +19506,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($userid, $comment, $email, $enable, $expire, $firstname, $groups, $keys, $lastname, $password);
         }
     }
-
     /**
      * Class PVEItemUsersAccessUserid
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemUsersAccessUserid extends Base
     {
@@ -20776,7 +19516,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $userid;
-
         /**
          * @ignore
          */
@@ -20785,7 +19524,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->userid = $userid;
         }
-
         /**
          * Delete user.
          * @return Result
@@ -20794,7 +19532,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->delete("/access/users/{$this->userid}");
         }
-
         /**
          * Delete user.
          * @return Result
@@ -20803,7 +19540,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest();
         }
-
         /**
          * Get user configuration.
          * @return Result
@@ -20812,7 +19548,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/access/users/{$this->userid}");
         }
-
         /**
          * Get user configuration.
          * @return Result
@@ -20821,23 +19556,23 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Update user configuration.
-         * @param bool $append
-         * @param string $comment
-         * @param string $email
+         * @param bool $append 
+         * @param string $comment 
+         * @param string $email 
          * @param bool $enable Enable the account (default). You can set this to '0' to disable the account
          * @param int $expire Account expiration date (seconds since epoch). '0' means no expiration date.
-         * @param string $firstname
-         * @param string $groups
+         * @param string $firstname 
+         * @param string $groups 
          * @param string $keys Keys for two factor auth (yubico).
-         * @param string $lastname
+         * @param string $lastname 
          * @return Result
          */
         public function setRest($append = null, $comment = null, $email = null, $enable = null, $expire = null, $firstname = null, $groups = null, $keys = null, $lastname = null)
         {
-            $params = ['append' => $append,
+            $params = [
+                'append' => $append,
                 'comment' => $comment,
                 'email' => $email,
                 'enable' => $enable,
@@ -20845,21 +19580,21 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'firstname' => $firstname,
                 'groups' => $groups,
                 'keys' => $keys,
-                'lastname' => $lastname];
+                'lastname' => $lastname
+            ];
             return $this->getClient()->set("/access/users/{$this->userid}", $params);
         }
-
         /**
          * Update user configuration.
-         * @param bool $append
-         * @param string $comment
-         * @param string $email
+         * @param bool $append 
+         * @param string $comment 
+         * @param string $email 
          * @param bool $enable Enable the account (default). You can set this to '0' to disable the account
          * @param int $expire Account expiration date (seconds since epoch). '0' means no expiration date.
-         * @param string $firstname
-         * @param string $groups
+         * @param string $firstname 
+         * @param string $groups 
          * @param string $keys Keys for two factor auth (yubico).
-         * @param string $lastname
+         * @param string $lastname 
          * @return Result
          */
         public function updateUser($append = null, $comment = null, $email = null, $enable = null, $expire = null, $firstname = null, $groups = null, $keys = null, $lastname = null)
@@ -20867,10 +19602,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($append, $comment, $email, $enable, $expire, $firstname, $groups, $keys, $lastname);
         }
     }
-
     /**
      * Class PVEAccessGroups
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAccessGroups extends Base
     {
@@ -20881,7 +19615,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get ItemGroupsAccessGroupid
          * @param groupid
@@ -20891,7 +19624,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemGroupsAccessGroupid($this->client, $groupid);
         }
-
         /**
          * Group index.
          * @return Result
@@ -20900,7 +19632,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/access/groups");
         }
-
         /**
          * Group index.
          * @return Result
@@ -20909,24 +19640,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create new group.
-         * @param string $groupid
-         * @param string $comment
+         * @param string $groupid 
+         * @param string $comment 
          * @return Result
          */
         public function createRest($groupid, $comment = null)
         {
-            $params = ['groupid' => $groupid,
-                'comment' => $comment];
+            $params = [
+                'groupid' => $groupid,
+                'comment' => $comment
+            ];
             return $this->getClient()->create("/access/groups", $params);
         }
-
         /**
          * Create new group.
-         * @param string $groupid
-         * @param string $comment
+         * @param string $groupid 
+         * @param string $comment 
          * @return Result
          */
         public function createGroup($groupid, $comment = null)
@@ -20934,10 +19665,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($groupid, $comment);
         }
     }
-
     /**
      * Class PVEItemGroupsAccessGroupid
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemGroupsAccessGroupid extends Base
     {
@@ -20945,7 +19675,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $groupid;
-
         /**
          * @ignore
          */
@@ -20954,7 +19683,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->groupid = $groupid;
         }
-
         /**
          * Delete group.
          * @return Result
@@ -20963,7 +19691,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->delete("/access/groups/{$this->groupid}");
         }
-
         /**
          * Delete group.
          * @return Result
@@ -20972,7 +19699,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest();
         }
-
         /**
          * Get group configuration.
          * @return Result
@@ -20981,7 +19707,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/access/groups/{$this->groupid}");
         }
-
         /**
          * Get group configuration.
          * @return Result
@@ -20990,10 +19715,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Update group data.
-         * @param string $comment
+         * @param string $comment 
          * @return Result
          */
         public function setRest($comment = null)
@@ -21001,10 +19725,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $params = ['comment' => $comment];
             return $this->getClient()->set("/access/groups/{$this->groupid}", $params);
         }
-
         /**
          * Update group data.
-         * @param string $comment
+         * @param string $comment 
          * @return Result
          */
         public function updateGroup($comment = null)
@@ -21012,10 +19735,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($comment);
         }
     }
-
     /**
      * Class PVEAccessRoles
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAccessRoles extends Base
     {
@@ -21026,7 +19748,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get ItemRolesAccessRoleid
          * @param roleid
@@ -21036,7 +19757,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemRolesAccessRoleid($this->client, $roleid);
         }
-
         /**
          * Role index.
          * @return Result
@@ -21045,7 +19765,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/access/roles");
         }
-
         /**
          * Role index.
          * @return Result
@@ -21054,24 +19773,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create new role.
-         * @param string $roleid
-         * @param string $privs
+         * @param string $roleid 
+         * @param string $privs 
          * @return Result
          */
         public function createRest($roleid, $privs = null)
         {
-            $params = ['roleid' => $roleid,
-                'privs' => $privs];
+            $params = [
+                'roleid' => $roleid,
+                'privs' => $privs
+            ];
             return $this->getClient()->create("/access/roles", $params);
         }
-
         /**
          * Create new role.
-         * @param string $roleid
-         * @param string $privs
+         * @param string $roleid 
+         * @param string $privs 
          * @return Result
          */
         public function createRole($roleid, $privs = null)
@@ -21079,10 +19798,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($roleid, $privs);
         }
     }
-
     /**
      * Class PVEItemRolesAccessRoleid
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemRolesAccessRoleid extends Base
     {
@@ -21090,7 +19808,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $roleid;
-
         /**
          * @ignore
          */
@@ -21099,7 +19816,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->roleid = $roleid;
         }
-
         /**
          * Delete role.
          * @return Result
@@ -21108,7 +19824,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->delete("/access/roles/{$this->roleid}");
         }
-
         /**
          * Delete role.
          * @return Result
@@ -21117,7 +19832,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest();
         }
-
         /**
          * Get role configuration.
          * @return Result
@@ -21126,7 +19840,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/access/roles/{$this->roleid}");
         }
-
         /**
          * Get role configuration.
          * @return Result
@@ -21135,24 +19848,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Update an existing role.
-         * @param bool $append
-         * @param string $privs
+         * @param bool $append 
+         * @param string $privs 
          * @return Result
          */
         public function setRest($append = null, $privs = null)
         {
-            $params = ['append' => $append,
-                'privs' => $privs];
+            $params = [
+                'append' => $append,
+                'privs' => $privs
+            ];
             return $this->getClient()->set("/access/roles/{$this->roleid}", $params);
         }
-
         /**
          * Update an existing role.
-         * @param bool $append
-         * @param string $privs
+         * @param bool $append 
+         * @param string $privs 
          * @return Result
          */
         public function updateRole($append = null, $privs = null)
@@ -21160,10 +19873,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($append, $privs);
         }
     }
-
     /**
      * Class PVEAccessAcl
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAccessAcl extends Base
     {
@@ -21174,7 +19886,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get Access Control List (ACLs).
          * @return Result
@@ -21183,7 +19894,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/access/acl");
         }
-
         /**
          * Get Access Control List (ACLs).
          * @return Result
@@ -21192,7 +19902,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Update Access Control List (add or remove permissions).
          * @param string $path Access control path
@@ -21205,15 +19914,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function setRest($path, $roles, $delete = null, $groups = null, $propagate = null, $users = null)
         {
-            $params = ['path' => $path,
+            $params = [
+                'path' => $path,
                 'roles' => $roles,
                 'delete' => $delete,
                 'groups' => $groups,
                 'propagate' => $propagate,
-                'users' => $users];
+                'users' => $users
+            ];
             return $this->getClient()->set("/access/acl", $params);
         }
-
         /**
          * Update Access Control List (add or remove permissions).
          * @param string $path Access control path
@@ -21229,10 +19939,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($path, $roles, $delete, $groups, $propagate, $users);
         }
     }
-
     /**
      * Class PVEAccessDomains
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAccessDomains extends Base
     {
@@ -21243,7 +19952,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get ItemDomainsAccessRealm
          * @param realm
@@ -21253,7 +19961,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemDomainsAccessRealm($this->client, $realm);
         }
-
         /**
          * Authentication domain index.
          * @return Result
@@ -21262,7 +19969,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/access/domains");
         }
-
         /**
          * Authentication domain index.
          * @return Result
@@ -21271,7 +19977,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Add an authentication server.
          * @param string $realm Authentication domain ID
@@ -21296,7 +20001,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($realm, $type, $base_dn = null, $bind_dn = null, $capath = null, $cert = null, $certkey = null, $comment = null, $default = null, $domain = null, $port = null, $secure = null, $server1 = null, $server2 = null, $tfa = null, $user_attr = null, $verify = null)
         {
-            $params = ['realm' => $realm,
+            $params = [
+                'realm' => $realm,
                 'type' => $type,
                 'base_dn' => $base_dn,
                 'bind_dn' => $bind_dn,
@@ -21312,10 +20018,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'server2' => $server2,
                 'tfa' => $tfa,
                 'user_attr' => $user_attr,
-                'verify' => $verify];
+                'verify' => $verify
+            ];
             return $this->getClient()->create("/access/domains", $params);
         }
-
         /**
          * Add an authentication server.
          * @param string $realm Authentication domain ID
@@ -21343,10 +20049,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($realm, $type, $base_dn, $bind_dn, $capath, $cert, $certkey, $comment, $default, $domain, $port, $secure, $server1, $server2, $tfa, $user_attr, $verify);
         }
     }
-
     /**
      * Class PVEItemDomainsAccessRealm
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemDomainsAccessRealm extends Base
     {
@@ -21354,7 +20059,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $realm;
-
         /**
          * @ignore
          */
@@ -21363,7 +20067,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->realm = $realm;
         }
-
         /**
          * Delete an authentication server.
          * @return Result
@@ -21372,7 +20075,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->delete("/access/domains/{$this->realm}");
         }
-
         /**
          * Delete an authentication server.
          * @return Result
@@ -21381,7 +20083,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest();
         }
-
         /**
          * Get auth server configuration.
          * @return Result
@@ -21390,7 +20091,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/access/domains/{$this->realm}");
         }
-
         /**
          * Get auth server configuration.
          * @return Result
@@ -21399,7 +20099,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Update authentication server settings.
          * @param string $base_dn LDAP base domain name
@@ -21423,7 +20122,8 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function setRest($base_dn = null, $bind_dn = null, $capath = null, $cert = null, $certkey = null, $comment = null, $default = null, $delete = null, $digest = null, $domain = null, $port = null, $secure = null, $server1 = null, $server2 = null, $tfa = null, $user_attr = null, $verify = null)
         {
-            $params = ['base_dn' => $base_dn,
+            $params = [
+                'base_dn' => $base_dn,
                 'bind_dn' => $bind_dn,
                 'capath' => $capath,
                 'cert' => $cert,
@@ -21439,10 +20139,10 @@ namespace EnterpriseVE\ProxmoxVE\Api {
                 'server2' => $server2,
                 'tfa' => $tfa,
                 'user_attr' => $user_attr,
-                'verify' => $verify];
+                'verify' => $verify
+            ];
             return $this->getClient()->set("/access/domains/{$this->realm}", $params);
         }
-
         /**
          * Update authentication server settings.
          * @param string $base_dn LDAP base domain name
@@ -21469,10 +20169,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($base_dn, $bind_dn, $capath, $cert, $certkey, $comment, $default, $delete, $digest, $domain, $port, $secure, $server1, $server2, $tfa, $user_attr, $verify);
         }
     }
-
     /**
      * Class PVEAccessTicket
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAccessTicket extends Base
     {
@@ -21483,7 +20182,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Dummy. Useful for formatters which want to provide a login page.
          * @return Result
@@ -21492,7 +20190,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/access/ticket");
         }
-
         /**
          * Dummy. Useful for formatters which want to provide a login page.
          * @return Result
@@ -21501,7 +20198,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create or verify authentication ticket.
          * @param string $password The secret password. This can also be a valid ticket.
@@ -21514,15 +20210,16 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function createRest($password, $username, $otp = null, $path = null, $privs = null, $realm = null)
         {
-            $params = ['password' => $password,
+            $params = [
+                'password' => $password,
                 'username' => $username,
                 'otp' => $otp,
                 'path' => $path,
                 'privs' => $privs,
-                'realm' => $realm];
+                'realm' => $realm
+            ];
             return $this->getClient()->create("/access/ticket", $params);
         }
-
         /**
          * Create or verify authentication ticket.
          * @param string $password The secret password. This can also be a valid ticket.
@@ -21538,10 +20235,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($password, $username, $otp, $path, $privs, $realm);
         }
     }
-
     /**
      * Class PVEAccessPassword
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAccessPassword extends Base
     {
@@ -21552,7 +20248,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Change user password.
          * @param string $password The new password.
@@ -21561,11 +20256,12 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function setRest($password, $userid)
         {
-            $params = ['password' => $password,
-                'userid' => $userid];
+            $params = [
+                'password' => $password,
+                'userid' => $userid
+            ];
             return $this->getClient()->set("/access/password", $params);
         }
-
         /**
          * Change user password.
          * @param string $password The new password.
@@ -21577,10 +20273,80 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($password, $userid);
         }
     }
-
+    /**
+     * Class PVEAccessTfa
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVEAccessTfa extends Base
+    {
+        /**
+         * @ignore
+         */
+        function __construct($client)
+        {
+            $this->client = $client;
+        }
+        /**
+         * Finish a u2f challenge.
+         * @param string $response The response to the current authentication challenge.
+         * @return Result
+         */
+        public function createRest($response)
+        {
+            $params = ['response' => $response];
+            return $this->getClient()->create("/access/tfa", $params);
+        }
+        /**
+         * Finish a u2f challenge.
+         * @param string $response The response to the current authentication challenge.
+         * @return Result
+         */
+        public function verifyTfa($response)
+        {
+            return $this->createRest($response);
+        }
+        /**
+         * Change user u2f authentication.
+         * @param string $action The action to perform
+         *   Enum: delete,new,confirm
+         * @param string $userid User ID
+         * @param string $config A TFA configuration. This must currently be of type TOTP of not set at all.
+         * @param string $key When adding TOTP, the shared secret value.
+         * @param string $password The current password.
+         * @param string $response Either the the response to the current u2f registration challenge, or, when adding TOTP, the currently valid TOTP value.
+         * @return Result
+         */
+        public function setRest($action, $userid, $config = null, $key = null, $password = null, $response = null)
+        {
+            $params = [
+                'action' => $action,
+                'userid' => $userid,
+                'config' => $config,
+                'key' => $key,
+                'password' => $password,
+                'response' => $response
+            ];
+            return $this->getClient()->set("/access/tfa", $params);
+        }
+        /**
+         * Change user u2f authentication.
+         * @param string $action The action to perform
+         *   Enum: delete,new,confirm
+         * @param string $userid User ID
+         * @param string $config A TFA configuration. This must currently be of type TOTP of not set at all.
+         * @param string $key When adding TOTP, the shared secret value.
+         * @param string $password The current password.
+         * @param string $response Either the the response to the current u2f registration challenge, or, when adding TOTP, the currently valid TOTP value.
+         * @return Result
+         */
+        public function changeTfa($action, $userid, $config = null, $key = null, $password = null, $response = null)
+        {
+            return $this->setRest($action, $userid, $config, $key, $password, $response);
+        }
+    }
     /**
      * Class PVEPools
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEPools extends Base
     {
@@ -21591,7 +20357,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * Get ItemPoolsPoolid
          * @param poolid
@@ -21601,7 +20366,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return new PVEItemPoolsPoolid($this->client, $poolid);
         }
-
         /**
          * Pool index.
          * @return Result
@@ -21610,7 +20374,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/pools");
         }
-
         /**
          * Pool index.
          * @return Result
@@ -21619,24 +20382,24 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Create new pool.
-         * @param string $poolid
-         * @param string $comment
+         * @param string $poolid 
+         * @param string $comment 
          * @return Result
          */
         public function createRest($poolid, $comment = null)
         {
-            $params = ['poolid' => $poolid,
-                'comment' => $comment];
+            $params = [
+                'poolid' => $poolid,
+                'comment' => $comment
+            ];
             return $this->getClient()->create("/pools", $params);
         }
-
         /**
          * Create new pool.
-         * @param string $poolid
-         * @param string $comment
+         * @param string $poolid 
+         * @param string $comment 
          * @return Result
          */
         public function createPool($poolid, $comment = null)
@@ -21644,10 +20407,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->createRest($poolid, $comment);
         }
     }
-
     /**
      * Class PVEItemPoolsPoolid
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemPoolsPoolid extends Base
     {
@@ -21655,7 +20417,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          * @ignore
          */
         private $poolid;
-
         /**
          * @ignore
          */
@@ -21664,7 +20425,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             $this->client = $client;
             $this->poolid = $poolid;
         }
-
         /**
          * Delete pool.
          * @return Result
@@ -21673,7 +20433,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->delete("/pools/{$this->poolid}");
         }
-
         /**
          * Delete pool.
          * @return Result
@@ -21682,7 +20441,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->deleteRest();
         }
-
         /**
          * Get pool configuration.
          * @return Result
@@ -21691,7 +20449,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/pools/{$this->poolid}");
         }
-
         /**
          * Get pool configuration.
          * @return Result
@@ -21700,10 +20457,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getRest();
         }
-
         /**
          * Update pool data.
-         * @param string $comment
+         * @param string $comment 
          * @param bool $delete Remove vms/storage (instead of adding it).
          * @param string $storage List of storage IDs.
          * @param string $vms List of virtual machines.
@@ -21711,16 +20467,17 @@ namespace EnterpriseVE\ProxmoxVE\Api {
          */
         public function setRest($comment = null, $delete = null, $storage = null, $vms = null)
         {
-            $params = ['comment' => $comment,
+            $params = [
+                'comment' => $comment,
                 'delete' => $delete,
                 'storage' => $storage,
-                'vms' => $vms];
+                'vms' => $vms
+            ];
             return $this->getClient()->set("/pools/{$this->poolid}", $params);
         }
-
         /**
          * Update pool data.
-         * @param string $comment
+         * @param string $comment 
          * @param bool $delete Remove vms/storage (instead of adding it).
          * @param string $storage List of storage IDs.
          * @param string $vms List of virtual machines.
@@ -21731,10 +20488,9 @@ namespace EnterpriseVE\ProxmoxVE\Api {
             return $this->setRest($comment, $delete, $storage, $vms);
         }
     }
-
     /**
      * Class PVEVersion
-     * @package EnterpriseVE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVersion extends Base
     {
@@ -21745,7 +20501,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             $this->client = $client;
         }
-
         /**
          * API version details. The result also includes the global datacenter confguration.
          * @return Result
@@ -21754,7 +20509,6 @@ namespace EnterpriseVE\ProxmoxVE\Api {
         {
             return $this->getClient()->get("/version");
         }
-
         /**
          * API version details. The result also includes the global datacenter confguration.
          * @return Result
