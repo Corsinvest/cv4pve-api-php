@@ -1,2 +1,6 @@
 /vendor/
 composer.phar
+phpdox.phar
+phpdox.xml
+phpDocumentor.phar
+/nbproject/private/
