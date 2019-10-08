@@ -1,9 +1,9 @@
 <?php
 
 require_once '../vendor/autoload.php';
-require_once '../src/Client.php';
+require_once '../src/PveClient.php';
 
-$client = new \Corsinvest\ProxmoxVE\Api\Client($argv[1]);
+$client = new \Corsinvest\ProxmoxVE\Api\PveClient($argv[1]);
 if ($client->login($argv[2], $argv[3])) {
     $result = $client->getVersion()->version();
 
@@ -36,14 +36,14 @@ if ($client->login($argv[2], $argv[3])) {
     var_dump($retArr);
     echo "\n" . $retArr['data']['release'];
 
-    //eneble return objet
+    //enable return objet
     $client->setResultIsObject(true);
 
     //image rrd
     $client->setResponseType('png');
     echo "<img src='{$client->getNodes()->get("pve1")->getRrd()->rrd('cpu', 'day')->getResponse()}' \>";
 
-    //resewt json result
+    //reset json result
     $client->setResponseType('json');
     var_dump($client->get('/version')->getResponse());
 }

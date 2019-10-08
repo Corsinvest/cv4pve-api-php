@@ -1,5 +1,23 @@
 <?php
 
+/*
+ * This file is part of the cv4pve-api-php https://github.com/Corsinvest/cv4pve-api-php,
+ * Copyright (C) 2016 Corsinvest Srl
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace Corsinvest\ProxmoxVE\Api;
 
 /**
@@ -31,11 +49,77 @@ class Result {
     /**
      * @ignore
      */
-    function __construct($response, $statusCode, $reasonPhrase, $resultIsObject) {
+    private $requestResource;
+
+    /**
+     * @ignore
+     */
+    private $requestParameters;
+
+    /**
+     * @ignore
+     */
+    private $methodType;
+
+        /**
+     * @ignore
+     */
+    private $responseType;
+    
+    /**
+     * @ignore
+     */
+    function __construct($response,
+            $statusCode,
+            $reasonPhrase,
+            $resultIsObject,
+            $requestResource,
+            $requestParameters,
+            $methodType,
+            $responseType) {
         $this->statusCode = $statusCode;
         $this->reasonPhrase = $reasonPhrase;
         $this->response = $response;
         $this->resultIsObject = $resultIsObject;
+        $this->requestResource = $requestResource;
+        $this->requestParameters = $requestParameters;
+        $this->methodType = $methodType;
+        $this->responseType = $responseType;
+    }
+
+    /**
+     * Request method type
+     *
+     * @return
+     */
+    function getMethodType() {
+        return $this->methodType;
+    }
+
+    /**
+     * Response type
+     *
+     * @return
+     */
+    function getResponseType() {
+        return $this->responseType;
+    }
+
+    /**
+     * Resource request
+     *
+     * @return
+     */
+    function getRequestResource() {
+        return $this->requestResource;
+    }
+
+    /**
+     * Request parameter
+     * @return 
+     */
+    function getRequestParameters() {
+        return $this->requestParameters;
     }
 
     /**

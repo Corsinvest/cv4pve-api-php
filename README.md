@@ -2,9 +2,9 @@
 
 [![License](https://img.shields.io/github/license/Corsinvest/cv4pve-api-php.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html) ![Packagist Version](https://img.shields.io/packagist/v/corsinvest/cv4pve-api-php.svg) [![Donate to this project using Paypal](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=PPM9JHLQLRV2S&item_name=Open+Source+Project&currency_code=EUR&source=url)
 
-ProxmoVE Client API PHP
+Proxmox VE Client API PHP
 
-[ProxmoxVE Api](https://pve.proxmox.com/pve-docs/api-viewer/)
+[Proxmox VE Api](https://pve.proxmox.com/pve-docs/api-viewer/)
 
 [Packagist](https://packagist.org/packages/Corsinvest/cv4pve-api-php)
 
@@ -26,17 +26,17 @@ Corsinvest for Proxmox VE Api Client  (Made in Italy)
 
 ## General
 
-The client is generated from a JSON Api on ProxmoxVE.
+The client is generated from a JSON Api on Proxmox VE.
 
 This PHP 5.4+ library allows you to interact with your Proxmox server via API.
-The client is generated from a JSON Api on ProxmoxVE.
+The client is generated from a JSON Api on Proxmox VE.
 
 ## Result
 
 The result is class **Result** and contain methods:
 
-* **getResponse()** returned from ProxmoxVE (data,errors,...) Object/Array
-* **responseInError** (bool) : Contains errors from ProxmoxVE.
+* **getResponse()** returned from Proxmox VE (data,errors,...) Object/Array
+* **responseInError** (bool) : Contains errors from Proxmox VE.
 * **getStatusCode()** (int) : Status code of the HTTP response.
 * **getReasonPhrase()** (string): The reason phrase which typically is sent by servers together with the status code.
 * **isSuccessStatusCode()** (bool) : Gets a value that indicates if the HTTP response was successful.
@@ -45,7 +45,7 @@ The result is class **Result** and contain methods:
 ## Main features
 
 * Easy to learn
-* No dependency external lybrary only native curl
+* No dependency external library only native curl
 * Method named
 * Method no named rest (same parameters)
   * getRest
@@ -59,15 +59,15 @@ The result is class **Result** and contain methods:
 * Tree structure
   * $client->getNodes()->get("pve1")->getQemu()->get(100)->getSnapshot()->snapshotList()->getResponse()->data
 * Return data proxmox
-* Return result status
-  * getStatusCode
-  * getReasonPhrase
-  * isSuccessStatusCode
+* Return result
+  * Request
+  * Response
+  * Status
 * Wait task finish task
   * waitForTaskToFinish
   * taskIsRunning
   * getExitStatusTask
-* Method directry access
+* Method direct access
   * get
   * set
   * create
@@ -106,7 +106,7 @@ Or add this to your `composer.json` file:
 // Require the autoloader
 require_once 'vendor/autoload.php';
 
-$client = new Corsinvest\ProxmoxVE\Api\Client("192.168.0.24");
+$client = new Corsinvest\ProxmoxVE\Api\PveClient("192.168.0.24");
 
 //login check bool
 if($client->login('root','password','pam')){
@@ -146,14 +146,14 @@ if($client->login('root','password','pam')){
   var_dump($retArr);
   echo "\n" . $retArr['data']['release'];
 
-  //eneble return objet
+  //enable return objet
   $client->setResultIsObject(true);
 
   //image rrd
   $client->setResponseType('png');
   echo "<img src='{$client->getNodes()->get("pve1")->getRrd()->rrd('cpu','day')->getResponse()}' \>";
 
-  //resewt json result
+  //result json result
   $client->setResponseType('json');
   var_dump($client->get('/version')->getResponse());
 }

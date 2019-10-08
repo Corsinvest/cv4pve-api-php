@@ -1,13 +1,15 @@
 {
     "name": "corsinvest/cv4pve-api-php",
-    "description": "Corsinvest ProxmoVE Client API PHP",
+    "description": "Corsinvest Proxmox VE Client API PHP",
     "keywords": [
         "Proxmox",
-        "ProxmoxVE",
+        "Proxmox VE",
         "API",
         "KVM",
         "LXC",
         "Virtualization",
+        "Cluster",
+        "Client API",
         "Corsinvest"
     ],
     "type": "library",

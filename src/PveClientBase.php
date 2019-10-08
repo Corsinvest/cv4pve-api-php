@@ -1,5 +1,23 @@
 <?php
 
+/*
+ * This file is part of the cv4pve-api-php https://github.com/Corsinvest/cv4pve-api-php,
+ * Copyright (C) 2016 Corsinvest Srl
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace Corsinvest\ProxmoxVE\Api;
 
 /**
@@ -8,7 +26,7 @@ namespace Corsinvest\ProxmoxVE\Api;
  *
  * Proxmox VE Client Base
  */
-class ClientBase {
+class PveClientBase {
 
     /**
      * @ignore
@@ -168,47 +186,47 @@ class ClientBase {
     /**
      * Execute method GET
      * @param string $resource Url request
-     * @param array $params Additional parameters
+     * @param array $parameters Additional parameters
      * @return Result
      */
-    public function get($resource, $params = []) {
-        return $this->executeAction($resource, 'GET', $params);
+    public function get($resource, $parameters = []) {
+        return $this->executeAction($resource, 'GET', $parameters);
     }
 
     /**
      * Execute method PUT
      * @param string $resource Url request
-     * @param array $params Additional parameters
+     * @param array $parameters Additional parameters
      * @return Result
      */
-    public function set($resource, $params = []) {
-        return $this->executeAction($resource, 'PUT', $params);
+    public function set($resource, $parameters = []) {
+        return $this->executeAction($resource, 'PUT', $parameters);
     }
 
     /**
      * Execute method POST
      * @param string $resource Url request
-     * @param array $params Additional parameters
+     * @param array $parameters Additional parameters
      * @return Result
      */
-    public function create($resource, $params = []) {
-        return $this->executeAction($resource, 'POST', $params);
+    public function create($resource, $parameters = []) {
+        return $this->executeAction($resource, 'POST', $parameters);
     }
 
     /**
      * Execute method DELETE
      * @param string $resource Url request
-     * @param array $params Additional parameters
+     * @param array $parameters Additional parameters
      * @return Result
      */
-    public function delete($resource, $params = []) {
-        return $this->executeAction($resource, 'DELETE', $params);
+    public function delete($resource, $parameters = []) {
+        return $this->executeAction($resource, 'DELETE', $parameters);
     }
 
     /**
      * @ignore
      */
-    private function executeAction($resource, $method, $params = []) {
+    private function executeAction($resource, $method, $parameters = []) {
         //url resource
         $url = "{$this->getApiUrl()}{$resource}";
         //$cookies = [];
@@ -218,7 +236,7 @@ class ClientBase {
         }
 
         //remove null params
-        $params = array_filter($params, function ($value) {
+        $params = array_filter($parameters, function ($value) {
             return null !== $value;
         });
 
@@ -230,12 +248,14 @@ class ClientBase {
             }
         }
 
+        $methodType = "";
         $prox_ch = curl_init();
         switch ($method) {
             case "GET":
                 $action_postfields_string = http_build_query($params);
                 $url .= '?' . $action_postfields_string;
                 unset($action_postfields_string);
+                $methodType = "GET";
                 break;
 
             case "PUT":
@@ -244,6 +264,7 @@ class ClientBase {
                 curl_setopt($prox_ch, CURLOPT_POSTFIELDS, $action_postfields_string);
                 unset($action_postfields_string);
                 curl_setopt($prox_ch, CURLOPT_HTTPHEADER, $headers);
+                $methodType = "SET";
                 break;
 
             case "POST":
@@ -252,11 +273,13 @@ class ClientBase {
                 curl_setopt($prox_ch, CURLOPT_POSTFIELDS, $action_postfields_string);
                 unset($action_postfields_string);
                 curl_setopt($prox_ch, CURLOPT_HTTPHEADER, $headers);
+                $methodType = "CREATE";
                 break;
 
             case "DELETE":
                 curl_setopt($prox_ch, CURLOPT_CUSTOMREQUEST, "DELETE");
                 curl_setopt($prox_ch, CURLOPT_HTTPHEADER, $headers);
+                $methodType = "DELETE";
                 break;
         }
 
@@ -279,29 +302,40 @@ class ClientBase {
 
         $obj = null;
         switch ($this->responseType) {
-            case 'json': $obj = json_decode($body, !$this->getResultIsObject());
+            case 'json':
+                $obj = json_decode($body, !$this->getResultIsObject());
                 break;
-            case 'png': $obj = 'data:image/png;base64,' . base64_encode($body);
+
+            case 'png':
+                $obj = 'data:image/png;base64,' . base64_encode($body);
                 break;
         }
         unset($body);
 
-        $lastResult = new Result($obj, $reasonCode, $reasonPhrase, $this->resultIsObject);
+        $lastResult = new Result($obj,
+                $reasonCode,
+                $reasonPhrase,
+                $this->resultIsObject,
+                $resource,
+                $parameters,
+                $methodType,
+                $this->responseType);
+
         if ($this->getDebugLevel() >= 2) {
             echo $obj . "\n";
             echo "StatusCode:          " . $lastResult->getStatusCode() . "\n";
             echo "ReasonPhrase:        " . $lastResult->getReasonPhrase() . "\n";
             echo "IsSuccessStatusCode: " . $lastResult->isSuccessStatusCode() . "\n";
         }
-        if ($this->getDebugLevel() > 0) {
 
+        if ($this->getDebugLevel() > 0) {
             echo "=============================";
         }
         return $lastResult;
     }
 
     /**
-     * Gets the lasr result action
+     * Gets the last result action
      * @return Result
      */
     public function getLastResult() {
@@ -314,8 +348,9 @@ class ClientBase {
      * @param string $task Task identifier
      * @param int $wait Millisecond wait next check
      * @param int $timeOut Millisecond timeout
+     * @return int 0 Success
      */
-    function waitForTaskToFinish($node, $task, $wait = 500, $timeOut = 10000) {
+    public function waitForTaskToFinish($node, $task, $wait = 500, $timeOut = 10000) {
         $isRunning = true;
         if ($wait <= 0) {
             $wait = 500;
@@ -331,6 +366,19 @@ class ClientBase {
                 $isRunning = taskIsRunning($node, $task);
             }
         }
+
+        return $timeStart - time() < $timeOut ? 0 : 1;
+    }
+
+    /**
+     * Wait for task to finish
+     * @param string $task Task identifier
+     * @param int $wait Millisecond wait next check
+     * @param int $timeOut Millisecond timeout
+     * @return int 0 Success
+     */
+    function waitForTaskToFinish1($task, $wait = 500, $timeOut = 10000) {
+        return waitForTaskToFinish(split(':', $task)[1], $task, $wait, $timeOut);
     }
 
     /**
