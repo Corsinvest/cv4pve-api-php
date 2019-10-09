@@ -61,11 +61,11 @@ class Result {
      */
     private $methodType;
 
-        /**
+    /**
      * @ignore
      */
     private $responseType;
-    
+
     /**
      * @ignore
      */
@@ -89,8 +89,7 @@ class Result {
 
     /**
      * Request method type
-     *
-     * @return
+     * @return string
      */
     function getMethodType() {
         return $this->methodType;
@@ -98,8 +97,7 @@ class Result {
 
     /**
      * Response type
-     *
-     * @return
+     * @return string
      */
     function getResponseType() {
         return $this->responseType;
@@ -107,8 +105,7 @@ class Result {
 
     /**
      * Resource request
-     *
-     * @return
+     * @return string
      */
     function getRequestResource() {
         return $this->requestResource;

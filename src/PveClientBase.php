@@ -170,16 +170,25 @@ class PveClientBase {
             $userName = $uData[0];
             $realm = $uData[1];
         }
+
         $oldResultIsObject = $this->getResultIsObject();
         $this->setResultIsObject(true);
-        $params = ['password' => $password, 'username' => $userName, 'realm' => $realm];
+
+        $params = [
+            'password' => $password,
+            'username' => $userName,
+            'realm' => $realm
+        ];
+
         $result = $this->create("/access/ticket", $params);
         $this->setResultIsObject($oldResultIsObject);
+        
         if ($result->isSuccessStatusCode()) {
             $this->ticketCSRFPreventionToken = $result->getResponse()->data->CSRFPreventionToken;
             $this->ticketPVEAuthCookie = $result->getResponse()->data->ticket;
             return true;
         }
+        
         return false;
     }
 
@@ -252,26 +261,26 @@ class PveClientBase {
         $prox_ch = curl_init();
         switch ($method) {
             case "GET":
-                $action_postfields_string = http_build_query($params);
-                $url .= '?' . $action_postfields_string;
-                unset($action_postfields_string);
+                $action_postfields = http_build_query($params);
+                $url .= '?' . $action_postfields;
+                unset($action_postfields);
                 $methodType = "GET";
                 break;
 
             case "PUT":
                 curl_setopt($prox_ch, CURLOPT_CUSTOMREQUEST, "PUT");
-                $action_postfields_string = http_build_query($params);
-                curl_setopt($prox_ch, CURLOPT_POSTFIELDS, $action_postfields_string);
-                unset($action_postfields_string);
+                $action_postfields = http_build_query($params);
+                curl_setopt($prox_ch, CURLOPT_POSTFIELDS, $action_postfields);
+                unset($action_postfields);
                 curl_setopt($prox_ch, CURLOPT_HTTPHEADER, $headers);
                 $methodType = "SET";
                 break;
 
             case "POST":
                 curl_setopt($prox_ch, CURLOPT_POST, true);
-                $action_postfields_string = http_build_query($params);
-                curl_setopt($prox_ch, CURLOPT_POSTFIELDS, $action_postfields_string);
-                unset($action_postfields_string);
+                $action_postfields = http_build_query($params);
+                curl_setopt($prox_ch, CURLOPT_POSTFIELDS, $action_postfields);
+                unset($action_postfields);
                 curl_setopt($prox_ch, CURLOPT_HTTPHEADER, $headers);
                 $methodType = "CREATE";
                 break;
