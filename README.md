@@ -1,18 +1,12 @@
 # cv4pve-api-php
 
-[![License](https://img.shields.io/github/license/Corsinvest/cv4pve-api-php.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html) ![Packagist Version](https://img.shields.io/packagist/v/corsinvest/cv4pve-api-php.svg) [![Donate to this project using Paypal](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=PPM9JHLQLRV2S&item_name=Open+Source+Project&currency_code=EUR&source=url)
+[![License](https://img.shields.io/github/license/Corsinvest/cv4pve-api-php.svg)](LICENSE.md) ![Packagist Version](https://img.shields.io/packagist/v/corsinvest/cv4pve-api-php.svg)
 
 Proxmox VE Client API PHP
 
 [Proxmox VE Api](https://pve.proxmox.com/pve-docs/api-viewer/)
 
 [Packagist](https://packagist.org/packages/Corsinvest/cv4pve-api-php)
-
-# **Donations**
-
-If you like my work and want to support it, then please consider to deposit a donation through **Paypal** by clicking on the next button:
-
-[![paypal](https://www.paypalobjects.com/en_US/IT/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=PPM9JHLQLRV2S&item_name=Open+Source+Project&currency_code=EUR&source=url)
 
 ```text
    ______                _                      __
@@ -23,6 +17,15 @@ If you like my work and want to support it, then please consider to deposit a do
 
 Corsinvest for Proxmox VE Api Client  (Made in Italy)
 ```
+
+## Copyright and License
+
+Copyright: Corsinvest Srl
+For licensing details please visit [LICENSE.md](LICENSE.md)
+
+## Commercial Support
+
+This software is part of a suite of tools called cv4pve-tools. If you want commercial support, visit the [site](https://www.corsinvest.it/cv4pve-tools)
 
 ## General
 
