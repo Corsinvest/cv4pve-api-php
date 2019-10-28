@@ -109,6 +109,8 @@ Or add this to your `composer.json` file:
 // Require the autoloader
 require_once 'vendor/autoload.php';
 
+//if you want use lite version only get/set/create/delete use PveClientBase
+
 $client = new Corsinvest\ProxmoxVE\Api\PveClient("192.168.0.24");
 
 //login check bool
