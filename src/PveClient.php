@@ -235,6 +235,19 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * @ignore
          */
+        private $ceph;
+
+        /**
+         * Get ClusterCeph
+         * @return PVEClusterCeph
+         */
+        public function getCeph() {
+            return $this->ceph ?: ($this->ceph = new PVEClusterCeph($this->client));
+        }
+
+        /**
+         * @ignore
+         */
         private $log;
 
         /**
@@ -308,19 +321,6 @@ namespace Corsinvest\ProxmoxVE\Api {
          */
         public function getNextid() {
             return $this->nextid ?: ($this->nextid = new PVEClusterNextid($this->client));
-        }
-
-        /**
-         * @ignore
-         */
-        private $ceph;
-
-        /**
-         * Get ClusterCeph
-         * @return PVEClusterCeph
-         */
-        public function getCeph() {
-            return $this->ceph ?: ($this->ceph = new PVEClusterCeph($this->client));
         }
 
         /**
@@ -3487,6 +3487,308 @@ namespace Corsinvest\ProxmoxVE\Api {
     }
 
     /**
+     * Class PVEClusterCeph
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVEClusterCeph {
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        function __construct($client) {
+            $this->client = $client;
+        }
+
+        /**
+         * @ignore
+         */
+        private $metadata;
+
+        /**
+         * Get CephClusterMetadata
+         * @return PVECephClusterMetadata
+         */
+        public function getMetadata() {
+            return $this->metadata ?: ($this->metadata = new PVECephClusterMetadata($this->client));
+        }
+
+        /**
+         * @ignore
+         */
+        private $status;
+
+        /**
+         * Get CephClusterStatus
+         * @return PVECephClusterStatus
+         */
+        public function getStatus() {
+            return $this->status ?: ($this->status = new PVECephClusterStatus($this->client));
+        }
+
+        /**
+         * @ignore
+         */
+        private $flags;
+
+        /**
+         * Get CephClusterFlags
+         * @return PVECephClusterFlags
+         */
+        public function getFlags() {
+            return $this->flags ?: ($this->flags = new PVECephClusterFlags($this->client));
+        }
+
+        /**
+         * Cluster ceph index.
+         * @return Result
+         */
+        public function getRest() {
+            return $this->client->get("/cluster/ceph");
+        }
+
+        /**
+         * Cluster ceph index.
+         * @return Result
+         */
+        public function cephindex() {
+            return $this->getRest();
+        }
+
+    }
+
+    /**
+     * Class PVECephClusterMetadata
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVECephClusterMetadata {
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        function __construct($client) {
+            $this->client = $client;
+        }
+
+        /**
+         * Get ceph metadata.
+         * @return Result
+         */
+        public function getRest() {
+            return $this->client->get("/cluster/ceph/metadata");
+        }
+
+        /**
+         * Get ceph metadata.
+         * @return Result
+         */
+        public function metadata() {
+            return $this->getRest();
+        }
+
+    }
+
+    /**
+     * Class PVECephClusterStatus
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVECephClusterStatus {
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        function __construct($client) {
+            $this->client = $client;
+        }
+
+        /**
+         * Get ceph status.
+         * @return Result
+         */
+        public function getRest() {
+            return $this->client->get("/cluster/ceph/status");
+        }
+
+        /**
+         * Get ceph status.
+         * @return Result
+         */
+        public function status() {
+            return $this->getRest();
+        }
+
+    }
+
+    /**
+     * Class PVECephClusterFlags
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVECephClusterFlags {
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        function __construct($client) {
+            $this->client = $client;
+        }
+
+        /**
+         * Get ItemFlagsCephClusterFlag
+         * @param flag
+         * @return PVEItemFlagsCephClusterFlag
+         */
+        public function get($flag) {
+            return new PVEItemFlagsCephClusterFlag($this->client, $flag);
+        }
+
+        /**
+         * get the status of all ceph flags
+         * @return Result
+         */
+        public function getRest() {
+            return $this->client->get("/cluster/ceph/flags");
+        }
+
+        /**
+         * get the status of all ceph flags
+         * @return Result
+         */
+        public function getAllFlags() {
+            return $this->getRest();
+        }
+
+        /**
+         * Set/Unset multiple ceph flags at once.
+         * @param bool $nobackfill Backfilling of PGs is suspended.
+         * @param bool $nodeep_scrub Deep Scrubbing is disabled.
+         * @param bool $nodown OSD failure reports are being ignored, such that the monitors will not mark OSDs down.
+         * @param bool $noin OSDs that were previously marked out will not be marked back in when they start.
+         * @param bool $noout OSDs will not automatically be marked out after the configured interval.
+         * @param bool $norebalance Rebalancing of PGs is suspended.
+         * @param bool $norecover Recovery of PGs is suspended.
+         * @param bool $noscrub Scrubbing is disabled.
+         * @param bool $notieragent Cache tiering activity is suspended.
+         * @param bool $noup OSDs are not allowed to start.
+         * @param bool $pause Pauses read and writes.
+         * @return Result
+         */
+        public function setRest($nobackfill = null, $nodeep_scrub = null, $nodown = null, $noin = null, $noout = null, $norebalance = null, $norecover = null, $noscrub = null, $notieragent = null, $noup = null, $pause = null) {
+            $params = ['nobackfill' => $nobackfill,
+                'nodeep-scrub' => $nodeep_scrub,
+                'nodown' => $nodown,
+                'noin' => $noin,
+                'noout' => $noout,
+                'norebalance' => $norebalance,
+                'norecover' => $norecover,
+                'noscrub' => $noscrub,
+                'notieragent' => $notieragent,
+                'noup' => $noup,
+                'pause' => $pause];
+            return $this->client->set("/cluster/ceph/flags", $params);
+        }
+
+        /**
+         * Set/Unset multiple ceph flags at once.
+         * @param bool $nobackfill Backfilling of PGs is suspended.
+         * @param bool $nodeep_scrub Deep Scrubbing is disabled.
+         * @param bool $nodown OSD failure reports are being ignored, such that the monitors will not mark OSDs down.
+         * @param bool $noin OSDs that were previously marked out will not be marked back in when they start.
+         * @param bool $noout OSDs will not automatically be marked out after the configured interval.
+         * @param bool $norebalance Rebalancing of PGs is suspended.
+         * @param bool $norecover Recovery of PGs is suspended.
+         * @param bool $noscrub Scrubbing is disabled.
+         * @param bool $notieragent Cache tiering activity is suspended.
+         * @param bool $noup OSDs are not allowed to start.
+         * @param bool $pause Pauses read and writes.
+         * @return Result
+         */
+        public function setFlags($nobackfill = null, $nodeep_scrub = null, $nodown = null, $noin = null, $noout = null, $norebalance = null, $norecover = null, $noscrub = null, $notieragent = null, $noup = null, $pause = null) {
+            return $this->setRest($nobackfill, $nodeep_scrub, $nodown, $noin, $noout, $norebalance, $norecover, $noscrub, $notieragent, $noup, $pause);
+        }
+
+    }
+
+    /**
+     * Class PVEItemFlagsCephClusterFlag
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVEItemFlagsCephClusterFlag {
+
+        /**
+         * @ignore
+         */
+        private $flag;
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $flag) {
+            $this->client = $client;
+            $this->flag = $flag;
+        }
+
+        /**
+         * Get the status of a specific ceph flag.
+         * @return Result
+         */
+        public function getRest() {
+            return $this->client->get("/cluster/ceph/flags/{$this->flag}");
+        }
+
+        /**
+         * Get the status of a specific ceph flag.
+         * @return Result
+         */
+        public function getFlag() {
+            return $this->getRest();
+        }
+
+        /**
+         * Set or clear (unset) a specific ceph flag
+         * @param bool $value The new value of the flag
+         * @return Result
+         */
+        public function setRest($value) {
+            $params = ['value' => $value];
+            return $this->client->set("/cluster/ceph/flags/{$this->flag}", $params);
+        }
+
+        /**
+         * Set or clear (unset) a specific ceph flag
+         * @param bool $value The new value of the flag
+         * @return Result
+         */
+        public function updateFlag($value) {
+            return $this->setRest($value);
+        }
+
+    }
+
+    /**
      * Class PVEClusterLog
      * @package Corsinvest\VE\ProxmoxVE\Api 
      */
@@ -3546,7 +3848,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Resources index (cluster wide).
          * @param string $type 
-         *   Enum: vm,storage,node
+         *   Enum: vm,storage,node,sdn
          * @return Result
          */
         public function getRest($type = null) {
@@ -3557,7 +3859,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Resources index (cluster wide).
          * @param string $type 
-         *   Enum: vm,storage,node
+         *   Enum: vm,storage,node,sdn
          * @return Result
          */
         public function resources($type = null) {
@@ -3650,7 +3952,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $keyboard Default keybord layout for vnc server.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param string $language Default GUI language.
-         *   Enum: zh_CN,zh_TW,ca,en,eu,fr,de,it,es,ja,nb,nn,fa,pl,pt_BR,ru,sl,sv,tr
+         *   Enum: ca,da,de,en,es,eu,fa,fr,he,it,ja,nb,nn,pl,pt_BR,ru,sl,sv,tr,zh_CN,zh_TW
          * @param string $mac_prefix Prefix for autogenerated MAC addresses.
          * @param int $max_workers Defines how many workers (per node) are maximal started  on actions like 'stopall VMs' or task from the ha-manager.
          * @param string $migration For cluster wide migration settings.
@@ -3690,7 +3992,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $keyboard Default keybord layout for vnc server.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param string $language Default GUI language.
-         *   Enum: zh_CN,zh_TW,ca,en,eu,fr,de,it,es,ja,nb,nn,fa,pl,pt_BR,ru,sl,sv,tr
+         *   Enum: ca,da,de,en,es,eu,fa,fr,he,it,ja,nb,nn,pl,pt_BR,ru,sl,sv,tr,zh_CN,zh_TW
          * @param string $mac_prefix Prefix for autogenerated MAC addresses.
          * @param int $max_workers Defines how many workers (per node) are maximal started  on actions like 'stopall VMs' or task from the ha-manager.
          * @param string $migration For cluster wide migration settings.
@@ -3775,140 +4077,6 @@ namespace Corsinvest\ProxmoxVE\Api {
          */
         public function nextid($vmid = null) {
             return $this->getRest($vmid);
-        }
-
-    }
-
-    /**
-     * Class PVEClusterCeph
-     * @package Corsinvest\VE\ProxmoxVE\Api 
-     */
-    class PVEClusterCeph {
-
-        /**
-         * @ignore
-         */
-        private $client;
-
-        /**
-         * @ignore
-         */
-        function __construct($client) {
-            $this->client = $client;
-        }
-
-        /**
-         * @ignore
-         */
-        private $metadata;
-
-        /**
-         * Get CephClusterMetadata
-         * @return PVECephClusterMetadata
-         */
-        public function getMetadata() {
-            return $this->metadata ?: ($this->metadata = new PVECephClusterMetadata($this->client));
-        }
-
-        /**
-         * @ignore
-         */
-        private $status;
-
-        /**
-         * Get CephClusterStatus
-         * @return PVECephClusterStatus
-         */
-        public function getStatus() {
-            return $this->status ?: ($this->status = new PVECephClusterStatus($this->client));
-        }
-
-        /**
-         * Cluster ceph index.
-         * @return Result
-         */
-        public function getRest() {
-            return $this->client->get("/cluster/ceph");
-        }
-
-        /**
-         * Cluster ceph index.
-         * @return Result
-         */
-        public function cephindex() {
-            return $this->getRest();
-        }
-
-    }
-
-    /**
-     * Class PVECephClusterMetadata
-     * @package Corsinvest\VE\ProxmoxVE\Api 
-     */
-    class PVECephClusterMetadata {
-
-        /**
-         * @ignore
-         */
-        private $client;
-
-        /**
-         * @ignore
-         */
-        function __construct($client) {
-            $this->client = $client;
-        }
-
-        /**
-         * Get ceph metadata.
-         * @return Result
-         */
-        public function getRest() {
-            return $this->client->get("/cluster/ceph/metadata");
-        }
-
-        /**
-         * Get ceph metadata.
-         * @return Result
-         */
-        public function cephMetadata() {
-            return $this->getRest();
-        }
-
-    }
-
-    /**
-     * Class PVECephClusterStatus
-     * @package Corsinvest\VE\ProxmoxVE\Api 
-     */
-    class PVECephClusterStatus {
-
-        /**
-         * @ignore
-         */
-        private $client;
-
-        /**
-         * @ignore
-         */
-        function __construct($client) {
-            $this->client = $client;
-        }
-
-        /**
-         * Get ceph status.
-         * @return Result
-         */
-        public function getRest() {
-            return $this->client->get("/cluster/ceph/status");
-        }
-
-        /**
-         * Get ceph status.
-         * @return Result
-         */
-        public function cephstatus() {
-            return $this->getRest();
         }
 
     }
@@ -4555,6 +4723,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: x86_64,aarch64
          * @param string $archive The backup file.
          * @param string $args Arbitrary arguments passed to kvm.
+         * @param string $audio0 Configure a audio device, useful in combination with QXL/Spice.
          * @param bool $autostart Automatic restart after crash (currently ignored).
          * @param int $balloon Amount of target RAM for the VM in MB. Using zero disables the ballon driver.
          * @param string $bios Select BIOS implementation.
@@ -4616,12 +4785,14 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $smbios1 Specify SMBIOS type 1 fields.
          * @param int $smp The number of CPUs. Please use option -sockets instead.
          * @param int $sockets The number of CPU sockets.
+         * @param string $spice_enhancements Configure additional enhancements for SPICE.
          * @param string $sshkeys cloud-init: Setup public SSH keys (one key per line, OpenSSH format).
          * @param bool $start Start VM after it was created successfully.
          * @param string $startdate Set the initial date of the real time clock. Valid format for date are: 'now' or '2006-06-17T16:01:21' or '2006-06-17'.
          * @param string $startup Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
          * @param string $storage Default storage.
          * @param bool $tablet Enable/disable the USB tablet device.
+         * @param string $tags Tags of the VM. This is only meta information.
          * @param bool $tdf Enable/disable time drift fix.
          * @param bool $template Enable/disable Template.
          * @param bool $unique Assign a unique random ethernet address.
@@ -4635,13 +4806,14 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $watchdog Create a virtual hardware watchdog device.
          * @return Result
          */
-        public function createRest($vmid, $acpi = null, $agent = null, $arch = null, $archive = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $bwlimit = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $description = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $pool = null, $protection = null, $reboot = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $start = null, $startdate = null, $startup = null, $storage = null, $tablet = null, $tdf = null, $template = null, $unique = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null) {
+        public function createRest($vmid, $acpi = null, $agent = null, $arch = null, $archive = null, $args = null, $audio0 = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $bwlimit = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $description = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $pool = null, $protection = null, $reboot = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $smbios1 = null, $smp = null, $sockets = null, $spice_enhancements = null, $sshkeys = null, $start = null, $startdate = null, $startup = null, $storage = null, $tablet = null, $tags = null, $tdf = null, $template = null, $unique = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null) {
             $params = ['vmid' => $vmid,
                 'acpi' => $acpi,
                 'agent' => $agent,
                 'arch' => $arch,
                 'archive' => $archive,
                 'args' => $args,
+                'audio0' => $audio0,
                 'autostart' => $autostart,
                 'balloon' => $balloon,
                 'bios' => $bios,
@@ -4687,12 +4859,14 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'smbios1' => $smbios1,
                 'smp' => $smp,
                 'sockets' => $sockets,
+                'spice_enhancements' => $spice_enhancements,
                 'sshkeys' => $sshkeys,
                 'start' => $start,
                 'startdate' => $startdate,
                 'startup' => $startup,
                 'storage' => $storage,
                 'tablet' => $tablet,
+                'tags' => $tags,
                 'tdf' => $tdf,
                 'template' => $template,
                 'unique' => $unique,
@@ -4725,6 +4899,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: x86_64,aarch64
          * @param string $archive The backup file.
          * @param string $args Arbitrary arguments passed to kvm.
+         * @param string $audio0 Configure a audio device, useful in combination with QXL/Spice.
          * @param bool $autostart Automatic restart after crash (currently ignored).
          * @param int $balloon Amount of target RAM for the VM in MB. Using zero disables the ballon driver.
          * @param string $bios Select BIOS implementation.
@@ -4786,12 +4961,14 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $smbios1 Specify SMBIOS type 1 fields.
          * @param int $smp The number of CPUs. Please use option -sockets instead.
          * @param int $sockets The number of CPU sockets.
+         * @param string $spice_enhancements Configure additional enhancements for SPICE.
          * @param string $sshkeys cloud-init: Setup public SSH keys (one key per line, OpenSSH format).
          * @param bool $start Start VM after it was created successfully.
          * @param string $startdate Set the initial date of the real time clock. Valid format for date are: 'now' or '2006-06-17T16:01:21' or '2006-06-17'.
          * @param string $startup Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
          * @param string $storage Default storage.
          * @param bool $tablet Enable/disable the USB tablet device.
+         * @param string $tags Tags of the VM. This is only meta information.
          * @param bool $tdf Enable/disable time drift fix.
          * @param bool $template Enable/disable Template.
          * @param bool $unique Assign a unique random ethernet address.
@@ -4805,8 +4982,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $watchdog Create a virtual hardware watchdog device.
          * @return Result
          */
-        public function createVm($vmid, $acpi = null, $agent = null, $arch = null, $archive = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $bwlimit = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $description = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $pool = null, $protection = null, $reboot = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $start = null, $startdate = null, $startup = null, $storage = null, $tablet = null, $tdf = null, $template = null, $unique = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null) {
-            return $this->createRest($vmid, $acpi, $agent, $arch, $archive, $args, $autostart, $balloon, $bios, $boot, $bootdisk, $bwlimit, $cdrom, $cicustom, $cipassword, $citype, $ciuser, $cores, $cpu, $cpulimit, $cpuunits, $description, $efidisk0, $force, $freeze, $hookscript, $hostpciN, $hotplug, $hugepages, $ideN, $ipconfigN, $ivshmem, $keyboard, $kvm, $localtime, $lock, $machine, $memory, $migrate_downtime, $migrate_speed, $name, $nameserver, $netN, $numa, $numaN, $onboot, $ostype, $parallelN, $pool, $protection, $reboot, $sataN, $scsiN, $scsihw, $searchdomain, $serialN, $shares, $smbios1, $smp, $sockets, $sshkeys, $start, $startdate, $startup, $storage, $tablet, $tdf, $template, $unique, $unusedN, $usbN, $vcpus, $vga, $virtioN, $vmgenid, $vmstatestorage, $watchdog);
+        public function createVm($vmid, $acpi = null, $agent = null, $arch = null, $archive = null, $args = null, $audio0 = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $bwlimit = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $description = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $pool = null, $protection = null, $reboot = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $smbios1 = null, $smp = null, $sockets = null, $spice_enhancements = null, $sshkeys = null, $start = null, $startdate = null, $startup = null, $storage = null, $tablet = null, $tags = null, $tdf = null, $template = null, $unique = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null) {
+            return $this->createRest($vmid, $acpi, $agent, $arch, $archive, $args, $audio0, $autostart, $balloon, $bios, $boot, $bootdisk, $bwlimit, $cdrom, $cicustom, $cipassword, $citype, $ciuser, $cores, $cpu, $cpulimit, $cpuunits, $description, $efidisk0, $force, $freeze, $hookscript, $hostpciN, $hotplug, $hugepages, $ideN, $ipconfigN, $ivshmem, $keyboard, $kvm, $localtime, $lock, $machine, $memory, $migrate_downtime, $migrate_speed, $name, $nameserver, $netN, $numa, $numaN, $onboot, $ostype, $parallelN, $pool, $protection, $reboot, $sataN, $scsiN, $scsihw, $searchdomain, $serialN, $shares, $smbios1, $smp, $sockets, $spice_enhancements, $sshkeys, $start, $startdate, $startup, $storage, $tablet, $tags, $tdf, $template, $unique, $unusedN, $usbN, $vcpus, $vga, $virtioN, $vmgenid, $vmstatestorage, $watchdog);
         }
 
     }
@@ -5129,21 +5306,24 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Destroy the vm (also delete all used/owned volumes).
+         * @param bool $purge Remove vmid from backup cron jobs.
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
          * @return Result
          */
-        public function deleteRest($skiplock = null) {
-            $params = ['skiplock' => $skiplock];
+        public function deleteRest($purge = null, $skiplock = null) {
+            $params = ['purge' => $purge,
+                'skiplock' => $skiplock];
             return $this->client->delete("/nodes/{$this->node}/qemu/{$this->vmid}", $params);
         }
 
         /**
          * Destroy the vm (also delete all used/owned volumes).
+         * @param bool $purge Remove vmid from backup cron jobs.
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
          * @return Result
          */
-        public function destroyVm($skiplock = null) {
-            return $this->deleteRest($skiplock);
+        public function destroyVm($purge = null, $skiplock = null) {
+            return $this->deleteRest($purge, $skiplock);
         }
 
         /**
@@ -6081,7 +6261,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $log_level_out Log level for outgoing traffic.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param bool $macfilter Enable/disable MAC address filter.
-         * @param bool $ndp Enable NDP.
+         * @param bool $ndp Enable NDP (Neighbor Discovery Protocol).
          * @param string $policy_in Input policy.
          *   Enum: ACCEPT,REJECT,DROP
          * @param string $policy_out Output policy.
@@ -6117,7 +6297,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $log_level_out Log level for outgoing traffic.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param bool $macfilter Enable/disable MAC address filter.
-         * @param bool $ndp Enable NDP.
+         * @param bool $ndp Enable NDP (Neighbor Discovery Protocol).
          * @param string $policy_in Input policy.
          *   Enum: ACCEPT,REJECT,DROP
          * @param string $policy_out Output policy.
@@ -8034,6 +8214,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $arch Virtual processor architecture. Defaults to the host.
          *   Enum: x86_64,aarch64
          * @param string $args Arbitrary arguments passed to kvm.
+         * @param string $audio0 Configure a audio device, useful in combination with QXL/Spice.
          * @param bool $autostart Automatic restart after crash (currently ignored).
          * @param int $background_delay Time to wait for the task to finish. We return 'null' if the task finish within that time.
          * @param int $balloon Amount of target RAM for the VM in MB. Using zero disables the ballon driver.
@@ -8098,10 +8279,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $smbios1 Specify SMBIOS type 1 fields.
          * @param int $smp The number of CPUs. Please use option -sockets instead.
          * @param int $sockets The number of CPU sockets.
+         * @param string $spice_enhancements Configure additional enhancements for SPICE.
          * @param string $sshkeys cloud-init: Setup public SSH keys (one key per line, OpenSSH format).
          * @param string $startdate Set the initial date of the real time clock. Valid format for date are: 'now' or '2006-06-17T16:01:21' or '2006-06-17'.
          * @param string $startup Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
          * @param bool $tablet Enable/disable the USB tablet device.
+         * @param string $tags Tags of the VM. This is only meta information.
          * @param bool $tdf Enable/disable time drift fix.
          * @param bool $template Enable/disable Template.
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
@@ -8114,11 +8297,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $watchdog Create a virtual hardware watchdog device.
          * @return Result
          */
-        public function createRest($acpi = null, $agent = null, $arch = null, $args = null, $autostart = null, $background_delay = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null) {
+        public function createRest($acpi = null, $agent = null, $arch = null, $args = null, $audio0 = null, $autostart = null, $background_delay = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $spice_enhancements = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tags = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null) {
             $params = ['acpi' => $acpi,
                 'agent' => $agent,
                 'arch' => $arch,
                 'args' => $args,
+                'audio0' => $audio0,
                 'autostart' => $autostart,
                 'background_delay' => $background_delay,
                 'balloon' => $balloon,
@@ -8167,10 +8351,12 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'smbios1' => $smbios1,
                 'smp' => $smp,
                 'sockets' => $sockets,
+                'spice_enhancements' => $spice_enhancements,
                 'sshkeys' => $sshkeys,
                 'startdate' => $startdate,
                 'startup' => $startup,
                 'tablet' => $tablet,
+                'tags' => $tags,
                 'tdf' => $tdf,
                 'template' => $template,
                 'vcpus' => $vcpus,
@@ -8200,6 +8386,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $arch Virtual processor architecture. Defaults to the host.
          *   Enum: x86_64,aarch64
          * @param string $args Arbitrary arguments passed to kvm.
+         * @param string $audio0 Configure a audio device, useful in combination with QXL/Spice.
          * @param bool $autostart Automatic restart after crash (currently ignored).
          * @param int $background_delay Time to wait for the task to finish. We return 'null' if the task finish within that time.
          * @param int $balloon Amount of target RAM for the VM in MB. Using zero disables the ballon driver.
@@ -8264,10 +8451,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $smbios1 Specify SMBIOS type 1 fields.
          * @param int $smp The number of CPUs. Please use option -sockets instead.
          * @param int $sockets The number of CPU sockets.
+         * @param string $spice_enhancements Configure additional enhancements for SPICE.
          * @param string $sshkeys cloud-init: Setup public SSH keys (one key per line, OpenSSH format).
          * @param string $startdate Set the initial date of the real time clock. Valid format for date are: 'now' or '2006-06-17T16:01:21' or '2006-06-17'.
          * @param string $startup Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
          * @param bool $tablet Enable/disable the USB tablet device.
+         * @param string $tags Tags of the VM. This is only meta information.
          * @param bool $tdf Enable/disable time drift fix.
          * @param bool $template Enable/disable Template.
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
@@ -8280,8 +8469,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $watchdog Create a virtual hardware watchdog device.
          * @return Result
          */
-        public function updateVmAsync($acpi = null, $agent = null, $arch = null, $args = null, $autostart = null, $background_delay = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null) {
-            return $this->createRest($acpi, $agent, $arch, $args, $autostart, $background_delay, $balloon, $bios, $boot, $bootdisk, $cdrom, $cicustom, $cipassword, $citype, $ciuser, $cores, $cpu, $cpulimit, $cpuunits, $delete, $description, $digest, $efidisk0, $force, $freeze, $hookscript, $hostpciN, $hotplug, $hugepages, $ideN, $ipconfigN, $ivshmem, $keyboard, $kvm, $localtime, $lock, $machine, $memory, $migrate_downtime, $migrate_speed, $name, $nameserver, $netN, $numa, $numaN, $onboot, $ostype, $parallelN, $protection, $reboot, $revert, $sataN, $scsiN, $scsihw, $searchdomain, $serialN, $shares, $skiplock, $smbios1, $smp, $sockets, $sshkeys, $startdate, $startup, $tablet, $tdf, $template, $unusedN, $usbN, $vcpus, $vga, $virtioN, $vmgenid, $vmstatestorage, $watchdog);
+        public function updateVmAsync($acpi = null, $agent = null, $arch = null, $args = null, $audio0 = null, $autostart = null, $background_delay = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $spice_enhancements = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tags = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null) {
+            return $this->createRest($acpi, $agent, $arch, $args, $audio0, $autostart, $background_delay, $balloon, $bios, $boot, $bootdisk, $cdrom, $cicustom, $cipassword, $citype, $ciuser, $cores, $cpu, $cpulimit, $cpuunits, $delete, $description, $digest, $efidisk0, $force, $freeze, $hookscript, $hostpciN, $hotplug, $hugepages, $ideN, $ipconfigN, $ivshmem, $keyboard, $kvm, $localtime, $lock, $machine, $memory, $migrate_downtime, $migrate_speed, $name, $nameserver, $netN, $numa, $numaN, $onboot, $ostype, $parallelN, $protection, $reboot, $revert, $sataN, $scsiN, $scsihw, $searchdomain, $serialN, $shares, $skiplock, $smbios1, $smp, $sockets, $spice_enhancements, $sshkeys, $startdate, $startup, $tablet, $tags, $tdf, $template, $unusedN, $usbN, $vcpus, $vga, $virtioN, $vmgenid, $vmstatestorage, $watchdog);
         }
 
         /**
@@ -8291,6 +8480,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $arch Virtual processor architecture. Defaults to the host.
          *   Enum: x86_64,aarch64
          * @param string $args Arbitrary arguments passed to kvm.
+         * @param string $audio0 Configure a audio device, useful in combination with QXL/Spice.
          * @param bool $autostart Automatic restart after crash (currently ignored).
          * @param int $balloon Amount of target RAM for the VM in MB. Using zero disables the ballon driver.
          * @param string $bios Select BIOS implementation.
@@ -8354,10 +8544,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $smbios1 Specify SMBIOS type 1 fields.
          * @param int $smp The number of CPUs. Please use option -sockets instead.
          * @param int $sockets The number of CPU sockets.
+         * @param string $spice_enhancements Configure additional enhancements for SPICE.
          * @param string $sshkeys cloud-init: Setup public SSH keys (one key per line, OpenSSH format).
          * @param string $startdate Set the initial date of the real time clock. Valid format for date are: 'now' or '2006-06-17T16:01:21' or '2006-06-17'.
          * @param string $startup Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
          * @param bool $tablet Enable/disable the USB tablet device.
+         * @param string $tags Tags of the VM. This is only meta information.
          * @param bool $tdf Enable/disable time drift fix.
          * @param bool $template Enable/disable Template.
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
@@ -8370,11 +8562,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $watchdog Create a virtual hardware watchdog device.
          * @return Result
          */
-        public function setRest($acpi = null, $agent = null, $arch = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null) {
+        public function setRest($acpi = null, $agent = null, $arch = null, $args = null, $audio0 = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $spice_enhancements = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tags = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null) {
             $params = ['acpi' => $acpi,
                 'agent' => $agent,
                 'arch' => $arch,
                 'args' => $args,
+                'audio0' => $audio0,
                 'autostart' => $autostart,
                 'balloon' => $balloon,
                 'bios' => $bios,
@@ -8422,10 +8615,12 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'smbios1' => $smbios1,
                 'smp' => $smp,
                 'sockets' => $sockets,
+                'spice_enhancements' => $spice_enhancements,
                 'sshkeys' => $sshkeys,
                 'startdate' => $startdate,
                 'startup' => $startup,
                 'tablet' => $tablet,
+                'tags' => $tags,
                 'tdf' => $tdf,
                 'template' => $template,
                 'vcpus' => $vcpus,
@@ -8455,6 +8650,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $arch Virtual processor architecture. Defaults to the host.
          *   Enum: x86_64,aarch64
          * @param string $args Arbitrary arguments passed to kvm.
+         * @param string $audio0 Configure a audio device, useful in combination with QXL/Spice.
          * @param bool $autostart Automatic restart after crash (currently ignored).
          * @param int $balloon Amount of target RAM for the VM in MB. Using zero disables the ballon driver.
          * @param string $bios Select BIOS implementation.
@@ -8518,10 +8714,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $smbios1 Specify SMBIOS type 1 fields.
          * @param int $smp The number of CPUs. Please use option -sockets instead.
          * @param int $sockets The number of CPU sockets.
+         * @param string $spice_enhancements Configure additional enhancements for SPICE.
          * @param string $sshkeys cloud-init: Setup public SSH keys (one key per line, OpenSSH format).
          * @param string $startdate Set the initial date of the real time clock. Valid format for date are: 'now' or '2006-06-17T16:01:21' or '2006-06-17'.
          * @param string $startup Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
          * @param bool $tablet Enable/disable the USB tablet device.
+         * @param string $tags Tags of the VM. This is only meta information.
          * @param bool $tdf Enable/disable time drift fix.
          * @param bool $template Enable/disable Template.
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
@@ -8534,8 +8732,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $watchdog Create a virtual hardware watchdog device.
          * @return Result
          */
-        public function updateVm($acpi = null, $agent = null, $arch = null, $args = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null) {
-            return $this->setRest($acpi, $agent, $arch, $args, $autostart, $balloon, $bios, $boot, $bootdisk, $cdrom, $cicustom, $cipassword, $citype, $ciuser, $cores, $cpu, $cpulimit, $cpuunits, $delete, $description, $digest, $efidisk0, $force, $freeze, $hookscript, $hostpciN, $hotplug, $hugepages, $ideN, $ipconfigN, $ivshmem, $keyboard, $kvm, $localtime, $lock, $machine, $memory, $migrate_downtime, $migrate_speed, $name, $nameserver, $netN, $numa, $numaN, $onboot, $ostype, $parallelN, $protection, $reboot, $revert, $sataN, $scsiN, $scsihw, $searchdomain, $serialN, $shares, $skiplock, $smbios1, $smp, $sockets, $sshkeys, $startdate, $startup, $tablet, $tdf, $template, $unusedN, $usbN, $vcpus, $vga, $virtioN, $vmgenid, $vmstatestorage, $watchdog);
+        public function updateVm($acpi = null, $agent = null, $arch = null, $args = null, $audio0 = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $spice_enhancements = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tags = null, $tdf = null, $template = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null) {
+            return $this->setRest($acpi, $agent, $arch, $args, $audio0, $autostart, $balloon, $bios, $boot, $bootdisk, $cdrom, $cicustom, $cipassword, $citype, $ciuser, $cores, $cpu, $cpulimit, $cpuunits, $delete, $description, $digest, $efidisk0, $force, $freeze, $hookscript, $hostpciN, $hotplug, $hugepages, $ideN, $ipconfigN, $ivshmem, $keyboard, $kvm, $localtime, $lock, $machine, $memory, $migrate_downtime, $migrate_speed, $name, $nameserver, $netN, $numa, $numaN, $onboot, $ostype, $parallelN, $protection, $reboot, $revert, $sataN, $scsiN, $scsihw, $searchdomain, $serialN, $shares, $skiplock, $smbios1, $smp, $sockets, $spice_enhancements, $sshkeys, $startdate, $startup, $tablet, $tags, $tdf, $template, $unusedN, $usbN, $vcpus, $vga, $virtioN, $vmgenid, $vmstatestorage, $watchdog);
         }
 
     }
@@ -8949,6 +9147,19 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * @ignore
          */
+        private $reboot;
+
+        /**
+         * Get StatusVmidQemuNodeNodesReboot
+         * @return PVEStatusVmidQemuNodeNodesReboot
+         */
+        public function getReboot() {
+            return $this->reboot ?: ($this->reboot = new PVEStatusVmidQemuNodeNodesReboot($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
         private $suspend;
 
         /**
@@ -9276,6 +9487,57 @@ namespace Corsinvest\ProxmoxVE\Api {
          */
         public function vmShutdown($forceStop = null, $keepActive = null, $skiplock = null, $timeout = null) {
             return $this->createRest($forceStop, $keepActive, $skiplock, $timeout);
+        }
+
+    }
+
+    /**
+     * Class PVEStatusVmidQemuNodeNodesReboot
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVEStatusVmidQemuNodeNodesReboot {
+
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid) {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Reboot the VM by shutting it down, and starting it again. Applies pending changes.
+         * @param int $timeout Wait maximal timeout seconds for the shutdown.
+         * @return Result
+         */
+        public function createRest($timeout = null) {
+            $params = ['timeout' => $timeout];
+            return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/status/reboot", $params);
+        }
+
+        /**
+         * Reboot the VM by shutting it down, and starting it again. Applies pending changes.
+         * @param int $timeout Wait maximal timeout seconds for the shutdown.
+         * @return Result
+         */
+        public function vmReboot($timeout = null) {
+            return $this->createRest($timeout);
         }
 
     }
@@ -9708,7 +9970,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $migration_network CIDR of the (sub) network that is used for migration.
          * @param string $migration_type Migration traffic is encrypted using an SSH tunnel by default. On secure, completely private networks this can be disabled to increase performance.
          *   Enum: secure,insecure
-         * @param bool $online Use online/live migration.
+         * @param bool $online Use online/live migration if VM is running. Ignored if VM is stopped.
          * @param string $targetstorage Default target storage.
          * @param bool $with_local_disks Enable live storage migration for local disk
          * @return Result
@@ -9733,7 +9995,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $migration_network CIDR of the (sub) network that is used for migration.
          * @param string $migration_type Migration traffic is encrypted using an SSH tunnel by default. On secure, completely private networks this can be disabled to increase performance.
          *   Enum: secure,insecure
-         * @param bool $online Use online/live migration.
+         * @param bool $online Use online/live migration if VM is running. Ignored if VM is stopped.
          * @param string $targetstorage Default target storage.
          * @param bool $with_local_disks Enable live storage migration for local disk
          * @return Result
@@ -10385,7 +10647,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $hostname Set a host name for the container.
          * @param bool $ignore_unpack_errors Ignore errors when extracting the template.
          * @param string $lock Lock/unlock the VM.
-         *   Enum: backup,create,disk,fstrim,migrate,mounted,rollback,snapshot,snapshot-delete
+         *   Enum: backup,create,destroyed,disk,fstrim,migrate,mounted,rollback,snapshot,snapshot-delete
          * @param int $memory Amount of RAM for the VM in MB.
          * @param array $mpN Use volume as container mount point.
          * @param string $nameserver Sets DNS server IP address for a container. Create will automatically use the setting from the host if you neither set searchdomain nor nameserver.
@@ -10404,6 +10666,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $startup Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
          * @param string $storage Default Storage.
          * @param int $swap Amount of SWAP for the VM in MB.
+         * @param string $tags Tags of the Container. This is only meta information.
          * @param bool $template Enable/disable Template.
          * @param int $tty Specify the number of tty available to the container
          * @param bool $unique Assign a unique random ethernet address.
@@ -10411,7 +10674,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
          * @return Result
          */
-        public function createRest($ostemplate, $vmid, $arch = null, $bwlimit = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $description = null, $features = null, $force = null, $hookscript = null, $hostname = null, $ignore_unpack_errors = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $password = null, $pool = null, $protection = null, $restore = null, $rootfs = null, $searchdomain = null, $ssh_public_keys = null, $start = null, $startup = null, $storage = null, $swap = null, $template = null, $tty = null, $unique = null, $unprivileged = null, $unusedN = null) {
+        public function createRest($ostemplate, $vmid, $arch = null, $bwlimit = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $description = null, $features = null, $force = null, $hookscript = null, $hostname = null, $ignore_unpack_errors = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $password = null, $pool = null, $protection = null, $restore = null, $rootfs = null, $searchdomain = null, $ssh_public_keys = null, $start = null, $startup = null, $storage = null, $swap = null, $tags = null, $template = null, $tty = null, $unique = null, $unprivileged = null, $unusedN = null) {
             $params = ['ostemplate' => $ostemplate,
                 'vmid' => $vmid,
                 'arch' => $arch,
@@ -10443,6 +10706,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'startup' => $startup,
                 'storage' => $storage,
                 'swap' => $swap,
+                'tags' => $tags,
                 'template' => $template,
                 'tty' => $tty,
                 'unique' => $unique,
@@ -10473,7 +10737,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $hostname Set a host name for the container.
          * @param bool $ignore_unpack_errors Ignore errors when extracting the template.
          * @param string $lock Lock/unlock the VM.
-         *   Enum: backup,create,disk,fstrim,migrate,mounted,rollback,snapshot,snapshot-delete
+         *   Enum: backup,create,destroyed,disk,fstrim,migrate,mounted,rollback,snapshot,snapshot-delete
          * @param int $memory Amount of RAM for the VM in MB.
          * @param array $mpN Use volume as container mount point.
          * @param string $nameserver Sets DNS server IP address for a container. Create will automatically use the setting from the host if you neither set searchdomain nor nameserver.
@@ -10492,6 +10756,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $startup Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
          * @param string $storage Default Storage.
          * @param int $swap Amount of SWAP for the VM in MB.
+         * @param string $tags Tags of the Container. This is only meta information.
          * @param bool $template Enable/disable Template.
          * @param int $tty Specify the number of tty available to the container
          * @param bool $unique Assign a unique random ethernet address.
@@ -10499,8 +10764,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
          * @return Result
          */
-        public function createVm($ostemplate, $vmid, $arch = null, $bwlimit = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $description = null, $features = null, $force = null, $hookscript = null, $hostname = null, $ignore_unpack_errors = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $password = null, $pool = null, $protection = null, $restore = null, $rootfs = null, $searchdomain = null, $ssh_public_keys = null, $start = null, $startup = null, $storage = null, $swap = null, $template = null, $tty = null, $unique = null, $unprivileged = null, $unusedN = null) {
-            return $this->createRest($ostemplate, $vmid, $arch, $bwlimit, $cmode, $console, $cores, $cpulimit, $cpuunits, $description, $features, $force, $hookscript, $hostname, $ignore_unpack_errors, $lock, $memory, $mpN, $nameserver, $netN, $onboot, $ostype, $password, $pool, $protection, $restore, $rootfs, $searchdomain, $ssh_public_keys, $start, $startup, $storage, $swap, $template, $tty, $unique, $unprivileged, $unusedN);
+        public function createVm($ostemplate, $vmid, $arch = null, $bwlimit = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $description = null, $features = null, $force = null, $hookscript = null, $hostname = null, $ignore_unpack_errors = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $password = null, $pool = null, $protection = null, $restore = null, $rootfs = null, $searchdomain = null, $ssh_public_keys = null, $start = null, $startup = null, $storage = null, $swap = null, $tags = null, $template = null, $tty = null, $unique = null, $unprivileged = null, $unusedN = null) {
+            return $this->createRest($ostemplate, $vmid, $arch, $bwlimit, $cmode, $console, $cores, $cpulimit, $cpuunits, $description, $features, $force, $hookscript, $hostname, $ignore_unpack_errors, $lock, $memory, $mpN, $nameserver, $netN, $onboot, $ostype, $password, $pool, $protection, $restore, $rootfs, $searchdomain, $ssh_public_keys, $start, $startup, $storage, $swap, $tags, $template, $tty, $unique, $unprivileged, $unusedN);
         }
 
     }
@@ -10744,19 +11009,35 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
-         * Destroy the container (also delete all uses files).
-         * @return Result
+         * @ignore
          */
-        public function deleteRest() {
-            return $this->client->delete("/nodes/{$this->node}/lxc/{$this->vmid}");
+        private $pending;
+
+        /**
+         * Get VmidLxcNodeNodesPending
+         * @return PVEVmidLxcNodeNodesPending
+         */
+        public function getPending() {
+            return $this->pending ?: ($this->pending = new PVEVmidLxcNodeNodesPending($this->client, $this->node, $this->vmid));
         }
 
         /**
          * Destroy the container (also delete all uses files).
+         * @param bool $purge Remove vmid from backup cron jobs.
          * @return Result
          */
-        public function destroyVm() {
-            return $this->deleteRest();
+        public function deleteRest($purge = null) {
+            $params = ['purge' => $purge];
+            return $this->client->delete("/nodes/{$this->node}/lxc/{$this->vmid}", $params);
+        }
+
+        /**
+         * Destroy the container (also delete all uses files).
+         * @param bool $purge Remove vmid from backup cron jobs.
+         * @return Result
+         */
+        public function destroyVm($purge = null) {
+            return $this->deleteRest($purge);
         }
 
         /**
@@ -10809,21 +11090,24 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Get container configuration.
+         * @param bool $current Get current values (instead of pending values).
          * @param string $snapshot Fetch config values from given snapshot.
          * @return Result
          */
-        public function getRest($snapshot = null) {
-            $params = ['snapshot' => $snapshot];
+        public function getRest($current = null, $snapshot = null) {
+            $params = ['current' => $current,
+                'snapshot' => $snapshot];
             return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/config", $params);
         }
 
         /**
          * Get container configuration.
+         * @param bool $current Get current values (instead of pending values).
          * @param string $snapshot Fetch config values from given snapshot.
          * @return Result
          */
-        public function vmConfig($snapshot = null) {
-            return $this->getRest($snapshot);
+        public function vmConfig($current = null, $snapshot = null) {
+            return $this->getRest($current, $snapshot);
         }
 
         /**
@@ -10843,7 +11127,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $hookscript Script that will be exectued during various steps in the containers lifetime.
          * @param string $hostname Set a host name for the container.
          * @param string $lock Lock/unlock the VM.
-         *   Enum: backup,create,disk,fstrim,migrate,mounted,rollback,snapshot,snapshot-delete
+         *   Enum: backup,create,destroyed,disk,fstrim,migrate,mounted,rollback,snapshot,snapshot-delete
          * @param int $memory Amount of RAM for the VM in MB.
          * @param array $mpN Use volume as container mount point.
          * @param string $nameserver Sets DNS server IP address for a container. Create will automatically use the setting from the host if you neither set searchdomain nor nameserver.
@@ -10852,17 +11136,19 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $ostype OS type. This is used to setup configuration inside the container, and corresponds to lxc setup scripts in /usr/share/lxc/config/&amp;lt;ostype&amp;gt;.common.conf. Value 'unmanaged' can be used to skip and OS specific setup.
          *   Enum: debian,ubuntu,centos,fedora,opensuse,archlinux,alpine,gentoo,unmanaged
          * @param bool $protection Sets the protection flag of the container. This will prevent the CT or CT's disk remove/update operation.
+         * @param string $revert Revert a pending change.
          * @param string $rootfs Use volume as container root.
          * @param string $searchdomain Sets DNS search domains for a container. Create will automatically use the setting from the host if you neither set searchdomain nor nameserver.
          * @param string $startup Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
          * @param int $swap Amount of SWAP for the VM in MB.
+         * @param string $tags Tags of the Container. This is only meta information.
          * @param bool $template Enable/disable Template.
          * @param int $tty Specify the number of tty available to the container
          * @param bool $unprivileged Makes the container run as unprivileged user. (Should not be modified manually.)
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
          * @return Result
          */
-        public function setRest($arch = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $features = null, $hookscript = null, $hostname = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $protection = null, $rootfs = null, $searchdomain = null, $startup = null, $swap = null, $template = null, $tty = null, $unprivileged = null, $unusedN = null) {
+        public function setRest($arch = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $features = null, $hookscript = null, $hostname = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $protection = null, $revert = null, $rootfs = null, $searchdomain = null, $startup = null, $swap = null, $tags = null, $template = null, $tty = null, $unprivileged = null, $unusedN = null) {
             $params = ['arch' => $arch,
                 'cmode' => $cmode,
                 'console' => $console,
@@ -10881,10 +11167,12 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'onboot' => $onboot,
                 'ostype' => $ostype,
                 'protection' => $protection,
+                'revert' => $revert,
                 'rootfs' => $rootfs,
                 'searchdomain' => $searchdomain,
                 'startup' => $startup,
                 'swap' => $swap,
+                'tags' => $tags,
                 'template' => $template,
                 'tty' => $tty,
                 'unprivileged' => $unprivileged];
@@ -10911,7 +11199,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $hookscript Script that will be exectued during various steps in the containers lifetime.
          * @param string $hostname Set a host name for the container.
          * @param string $lock Lock/unlock the VM.
-         *   Enum: backup,create,disk,fstrim,migrate,mounted,rollback,snapshot,snapshot-delete
+         *   Enum: backup,create,destroyed,disk,fstrim,migrate,mounted,rollback,snapshot,snapshot-delete
          * @param int $memory Amount of RAM for the VM in MB.
          * @param array $mpN Use volume as container mount point.
          * @param string $nameserver Sets DNS server IP address for a container. Create will automatically use the setting from the host if you neither set searchdomain nor nameserver.
@@ -10920,18 +11208,20 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $ostype OS type. This is used to setup configuration inside the container, and corresponds to lxc setup scripts in /usr/share/lxc/config/&amp;lt;ostype&amp;gt;.common.conf. Value 'unmanaged' can be used to skip and OS specific setup.
          *   Enum: debian,ubuntu,centos,fedora,opensuse,archlinux,alpine,gentoo,unmanaged
          * @param bool $protection Sets the protection flag of the container. This will prevent the CT or CT's disk remove/update operation.
+         * @param string $revert Revert a pending change.
          * @param string $rootfs Use volume as container root.
          * @param string $searchdomain Sets DNS search domains for a container. Create will automatically use the setting from the host if you neither set searchdomain nor nameserver.
          * @param string $startup Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
          * @param int $swap Amount of SWAP for the VM in MB.
+         * @param string $tags Tags of the Container. This is only meta information.
          * @param bool $template Enable/disable Template.
          * @param int $tty Specify the number of tty available to the container
          * @param bool $unprivileged Makes the container run as unprivileged user. (Should not be modified manually.)
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
          * @return Result
          */
-        public function updateVm($arch = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $features = null, $hookscript = null, $hostname = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $protection = null, $rootfs = null, $searchdomain = null, $startup = null, $swap = null, $template = null, $tty = null, $unprivileged = null, $unusedN = null) {
-            return $this->setRest($arch, $cmode, $console, $cores, $cpulimit, $cpuunits, $delete, $description, $digest, $features, $hookscript, $hostname, $lock, $memory, $mpN, $nameserver, $netN, $onboot, $ostype, $protection, $rootfs, $searchdomain, $startup, $swap, $template, $tty, $unprivileged, $unusedN);
+        public function updateVm($arch = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $features = null, $hookscript = null, $hostname = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $protection = null, $revert = null, $rootfs = null, $searchdomain = null, $startup = null, $swap = null, $tags = null, $template = null, $tty = null, $unprivileged = null, $unusedN = null) {
+            return $this->setRest($arch, $cmode, $console, $cores, $cpulimit, $cpuunits, $delete, $description, $digest, $features, $hookscript, $hostname, $lock, $memory, $mpN, $nameserver, $netN, $onboot, $ostype, $protection, $revert, $rootfs, $searchdomain, $startup, $swap, $tags, $template, $tty, $unprivileged, $unusedN);
         }
 
     }
@@ -11042,6 +11332,19 @@ namespace Corsinvest\ProxmoxVE\Api {
          */
         public function getResume() {
             return $this->resume ?: ($this->resume = new PVEStatusVmidLxcNodeNodesResume($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $reboot;
+
+        /**
+         * Get StatusVmidLxcNodeNodesReboot
+         * @return PVEStatusVmidLxcNodeNodesReboot
+         */
+        public function getReboot() {
+            return $this->reboot ?: ($this->reboot = new PVEStatusVmidLxcNodeNodesReboot($this->client, $this->node, $this->vmid));
         }
 
         /**
@@ -11358,6 +11661,57 @@ namespace Corsinvest\ProxmoxVE\Api {
          */
         public function vmResume() {
             return $this->createRest();
+        }
+
+    }
+
+    /**
+     * Class PVEStatusVmidLxcNodeNodesReboot
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVEStatusVmidLxcNodeNodesReboot {
+
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid) {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Reboot the container by shutting it down, and starting it again. Applies pending changes.
+         * @param int $timeout Wait maximal timeout seconds for the shutdown.
+         * @return Result
+         */
+        public function createRest($timeout = null) {
+            $params = ['timeout' => $timeout];
+            return $this->client->create("/nodes/{$this->node}/lxc/{$this->vmid}/status/reboot", $params);
+        }
+
+        /**
+         * Reboot the container by shutting it down, and starting it again. Applies pending changes.
+         * @param int $timeout Wait maximal timeout seconds for the shutdown.
+         * @return Result
+         */
+        public function vmReboot($timeout = null) {
+            return $this->createRest($timeout);
         }
 
     }
@@ -12584,7 +12938,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $log_level_out Log level for outgoing traffic.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param bool $macfilter Enable/disable MAC address filter.
-         * @param bool $ndp Enable NDP.
+         * @param bool $ndp Enable NDP (Neighbor Discovery Protocol).
          * @param string $policy_in Input policy.
          *   Enum: ACCEPT,REJECT,DROP
          * @param string $policy_out Output policy.
@@ -12620,7 +12974,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $log_level_out Log level for outgoing traffic.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param bool $macfilter Enable/disable MAC address filter.
-         * @param bool $ndp Enable NDP.
+         * @param bool $ndp Enable NDP (Neighbor Discovery Protocol).
          * @param string $policy_in Input policy.
          *   Enum: ACCEPT,REJECT,DROP
          * @param string $policy_out Output policy.
@@ -13435,6 +13789,54 @@ namespace Corsinvest\ProxmoxVE\Api {
          */
         public function moveVolume($storage, $volume, $bwlimit = null, $delete = null, $digest = null) {
             return $this->createRest($storage, $volume, $bwlimit, $delete, $digest);
+        }
+
+    }
+
+    /**
+     * Class PVEVmidLxcNodeNodesPending
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVEVmidLxcNodeNodesPending {
+
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid) {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Get container configuration, including pending changes.
+         * @return Result
+         */
+        public function getRest() {
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/pending");
+        }
+
+        /**
+         * Get container configuration, including pending changes.
+         * @return Result
+         */
+        public function vmPending() {
+            return $this->getRest();
         }
 
     }
@@ -15103,7 +15505,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
-         * Set a ceph flag
+         * Set a specific ceph flag
          * @return Result
          */
         public function createRest() {
@@ -15111,7 +15513,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
-         * Set a ceph flag
+         * Set a specific ceph flag
          * @return Result
          */
         public function setFlag() {
@@ -17554,18 +17956,21 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Delete volume
+         * @param int $delay Time to wait for the task to finish. We return 'null' if the task finish within that time.
          * @return Result
          */
-        public function deleteRest() {
-            return $this->client->delete("/nodes/{$this->node}/storage/{$this->storage}/content/{$this->volume}");
+        public function deleteRest($delay = null) {
+            $params = ['delay' => $delay];
+            return $this->client->delete("/nodes/{$this->node}/storage/{$this->storage}/content/{$this->volume}", $params);
         }
 
         /**
          * Delete volume
+         * @param int $delay Time to wait for the task to finish. We return 'null' if the task finish within that time.
          * @return Result
          */
-        public function delete() {
-            return $this->deleteRest();
+        public function delete($delay = null) {
+            return $this->deleteRest($delay);
         }
 
         /**
@@ -19065,11 +19470,15 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $log_level_out Log level for outgoing traffic.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param bool $log_nf_conntrack Enable logging of conntrack information.
-         * @param bool $ndp Enable NDP.
+         * @param bool $ndp Enable NDP (Neighbor Discovery Protocol).
          * @param bool $nf_conntrack_allow_invalid Allow invalid packets on connection tracking.
          * @param int $nf_conntrack_max Maximum number of tracked connections.
          * @param int $nf_conntrack_tcp_timeout_established Conntrack established timeout.
+         * @param int $nf_conntrack_tcp_timeout_syn_recv Conntrack syn recv timeout.
          * @param bool $nosmurfs Enable SMURFS filter.
+         * @param bool $protection_synflood Enable synflood protection
+         * @param int $protection_synflood_burst Synflood protection rate burst by ip src.
+         * @param int $protection_synflood_rate Synflood protection rate syn/sec by ip src.
          * @param string $smurf_log_level Log level for SMURFS filter.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $tcp_flags_log_level Log level for illegal tcp flags filter.
@@ -19077,7 +19486,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $tcpflags Filter illegal combinations of TCP flags.
          * @return Result
          */
-        public function setRest($delete = null, $digest = null, $enable = null, $log_level_in = null, $log_level_out = null, $log_nf_conntrack = null, $ndp = null, $nf_conntrack_allow_invalid = null, $nf_conntrack_max = null, $nf_conntrack_tcp_timeout_established = null, $nosmurfs = null, $smurf_log_level = null, $tcp_flags_log_level = null, $tcpflags = null) {
+        public function setRest($delete = null, $digest = null, $enable = null, $log_level_in = null, $log_level_out = null, $log_nf_conntrack = null, $ndp = null, $nf_conntrack_allow_invalid = null, $nf_conntrack_max = null, $nf_conntrack_tcp_timeout_established = null, $nf_conntrack_tcp_timeout_syn_recv = null, $nosmurfs = null, $protection_synflood = null, $protection_synflood_burst = null, $protection_synflood_rate = null, $smurf_log_level = null, $tcp_flags_log_level = null, $tcpflags = null) {
             $params = ['delete' => $delete,
                 'digest' => $digest,
                 'enable' => $enable,
@@ -19088,7 +19497,11 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'nf_conntrack_allow_invalid' => $nf_conntrack_allow_invalid,
                 'nf_conntrack_max' => $nf_conntrack_max,
                 'nf_conntrack_tcp_timeout_established' => $nf_conntrack_tcp_timeout_established,
+                'nf_conntrack_tcp_timeout_syn_recv' => $nf_conntrack_tcp_timeout_syn_recv,
                 'nosmurfs' => $nosmurfs,
+                'protection_synflood' => $protection_synflood,
+                'protection_synflood_burst' => $protection_synflood_burst,
+                'protection_synflood_rate' => $protection_synflood_rate,
                 'smurf_log_level' => $smurf_log_level,
                 'tcp_flags_log_level' => $tcp_flags_log_level,
                 'tcpflags' => $tcpflags];
@@ -19105,11 +19518,15 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $log_level_out Log level for outgoing traffic.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param bool $log_nf_conntrack Enable logging of conntrack information.
-         * @param bool $ndp Enable NDP.
+         * @param bool $ndp Enable NDP (Neighbor Discovery Protocol).
          * @param bool $nf_conntrack_allow_invalid Allow invalid packets on connection tracking.
          * @param int $nf_conntrack_max Maximum number of tracked connections.
          * @param int $nf_conntrack_tcp_timeout_established Conntrack established timeout.
+         * @param int $nf_conntrack_tcp_timeout_syn_recv Conntrack syn recv timeout.
          * @param bool $nosmurfs Enable SMURFS filter.
+         * @param bool $protection_synflood Enable synflood protection
+         * @param int $protection_synflood_burst Synflood protection rate burst by ip src.
+         * @param int $protection_synflood_rate Synflood protection rate syn/sec by ip src.
          * @param string $smurf_log_level Log level for SMURFS filter.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $tcp_flags_log_level Log level for illegal tcp flags filter.
@@ -19117,8 +19534,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $tcpflags Filter illegal combinations of TCP flags.
          * @return Result
          */
-        public function setOptions($delete = null, $digest = null, $enable = null, $log_level_in = null, $log_level_out = null, $log_nf_conntrack = null, $ndp = null, $nf_conntrack_allow_invalid = null, $nf_conntrack_max = null, $nf_conntrack_tcp_timeout_established = null, $nosmurfs = null, $smurf_log_level = null, $tcp_flags_log_level = null, $tcpflags = null) {
-            return $this->setRest($delete, $digest, $enable, $log_level_in, $log_level_out, $log_nf_conntrack, $ndp, $nf_conntrack_allow_invalid, $nf_conntrack_max, $nf_conntrack_tcp_timeout_established, $nosmurfs, $smurf_log_level, $tcp_flags_log_level, $tcpflags);
+        public function setOptions($delete = null, $digest = null, $enable = null, $log_level_in = null, $log_level_out = null, $log_nf_conntrack = null, $ndp = null, $nf_conntrack_allow_invalid = null, $nf_conntrack_max = null, $nf_conntrack_tcp_timeout_established = null, $nf_conntrack_tcp_timeout_syn_recv = null, $nosmurfs = null, $protection_synflood = null, $protection_synflood_burst = null, $protection_synflood_rate = null, $smurf_log_level = null, $tcp_flags_log_level = null, $tcpflags = null) {
+            return $this->setRest($delete, $digest, $enable, $log_level_in, $log_level_out, $log_nf_conntrack, $ndp, $nf_conntrack_allow_invalid, $nf_conntrack_max, $nf_conntrack_tcp_timeout_established, $nf_conntrack_tcp_timeout_syn_recv, $nosmurfs, $protection_synflood, $protection_synflood_burst, $protection_synflood_rate, $smurf_log_level, $tcp_flags_log_level, $tcpflags);
         }
 
     }
@@ -19819,18 +20236,23 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Get node configuration options.
+         * @param string $property Return only a specific property from the node configuration.
+         *   Enum: acme,description,startall-onboot-delay,wakeonlan
          * @return Result
          */
-        public function getRest() {
-            return $this->client->get("/nodes/{$this->node}/config");
+        public function getRest($property = null) {
+            $params = ['property' => $property];
+            return $this->client->get("/nodes/{$this->node}/config", $params);
         }
 
         /**
          * Get node configuration options.
+         * @param string $property Return only a specific property from the node configuration.
+         *   Enum: acme,description,startall-onboot-delay,wakeonlan
          * @return Result
          */
-        public function getConfig() {
-            return $this->getRest();
+        public function getConfig($property = null) {
+            return $this->getRest($property);
         }
 
         /**
@@ -19839,14 +20261,16 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $delete A list of settings you want to delete.
          * @param string $description Node description/comment.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
+         * @param int $startall_onboot_delay Initial delay in seconds, before starting all the Virtual Guests with on-boot enabled.
          * @param string $wakeonlan MAC address for wake on LAN
          * @return Result
          */
-        public function setRest($acme = null, $delete = null, $description = null, $digest = null, $wakeonlan = null) {
+        public function setRest($acme = null, $delete = null, $description = null, $digest = null, $startall_onboot_delay = null, $wakeonlan = null) {
             $params = ['acme' => $acme,
                 'delete' => $delete,
                 'description' => $description,
                 'digest' => $digest,
+                'startall-onboot-delay' => $startall_onboot_delay,
                 'wakeonlan' => $wakeonlan];
             return $this->client->set("/nodes/{$this->node}/config", $params);
         }
@@ -19857,11 +20281,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $delete A list of settings you want to delete.
          * @param string $description Node description/comment.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
+         * @param int $startall_onboot_delay Initial delay in seconds, before starting all the Virtual Guests with on-boot enabled.
          * @param string $wakeonlan MAC address for wake on LAN
          * @return Result
          */
-        public function setOptions($acme = null, $delete = null, $description = null, $digest = null, $wakeonlan = null) {
-            return $this->setRest($acme, $delete, $description, $digest, $wakeonlan);
+        public function setOptions($acme = null, $delete = null, $description = null, $digest = null, $startall_onboot_delay = null, $wakeonlan = null) {
+            return $this->setRest($acme, $delete, $description, $digest, $startall_onboot_delay, $wakeonlan);
         }
 
     }
@@ -20348,7 +20773,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Creates a VNC Shell proxy.
          * @param string $cmd Run specific command or default to login.
-         *   Enum: upgrade,ceph_install,login
+         *   Enum: login,ceph_install,upgrade
          * @param int $height sets the height of the console in pixels.
          * @param bool $upgrade Deprecated, use the 'cmd' property instead! Run 'apt-get dist-upgrade' instead of normal shell.
          * @param bool $websocket use websocket instead of standard vnc.
@@ -20367,7 +20792,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Creates a VNC Shell proxy.
          * @param string $cmd Run specific command or default to login.
-         *   Enum: upgrade,ceph_install,login
+         *   Enum: login,ceph_install,upgrade
          * @param int $height sets the height of the console in pixels.
          * @param bool $upgrade Deprecated, use the 'cmd' property instead! Run 'apt-get dist-upgrade' instead of normal shell.
          * @param bool $websocket use websocket instead of standard vnc.
@@ -20407,7 +20832,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Creates a VNC Shell proxy.
          * @param string $cmd Run specific command or default to login.
-         *   Enum: upgrade,ceph_install,login
+         *   Enum: login,ceph_install,upgrade
          * @param bool $upgrade Deprecated, use the 'cmd' property instead! Run 'apt-get dist-upgrade' instead of normal shell.
          * @return Result
          */
@@ -20420,7 +20845,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Creates a VNC Shell proxy.
          * @param string $cmd Run specific command or default to login.
-         *   Enum: upgrade,ceph_install,login
+         *   Enum: login,ceph_install,upgrade
          * @param bool $upgrade Deprecated, use the 'cmd' property instead! Run 'apt-get dist-upgrade' instead of normal shell.
          * @return Result
          */
@@ -20505,7 +20930,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Creates a SPICE shell.
          * @param string $cmd Run specific command or default to login.
-         *   Enum: upgrade,ceph_install,login
+         *   Enum: login,ceph_install,upgrade
          * @param string $proxy SPICE proxy server. This can be used by the client to specify the proxy server. All nodes in a cluster runs 'spiceproxy', so it is up to the client to choose one. By default, we return the node where the VM is currently running. As reasonable setting is to use same node you use to connect to the API (This is window.location.hostname for the JS GUI).
          * @param bool $upgrade Deprecated, use the 'cmd' property instead! Run 'apt-get dist-upgrade' instead of normal shell.
          * @return Result
@@ -20520,7 +20945,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Creates a SPICE shell.
          * @param string $cmd Run specific command or default to login.
-         *   Enum: upgrade,ceph_install,login
+         *   Enum: login,ceph_install,upgrade
          * @param string $proxy SPICE proxy server. This can be used by the client to specify the proxy server. All nodes in a cluster runs 'spiceproxy', so it is up to the client to choose one. By default, we return the node where the VM is currently running. As reasonable setting is to use same node you use to connect to the API (This is window.location.hostname for the JS GUI).
          * @param bool $upgrade Deprecated, use the 'cmd' property instead! Run 'apt-get dist-upgrade' instead of normal shell.
          * @return Result
@@ -20793,9 +21218,9 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
-         * Start all VMs and containers (when onboot=1).
-         * @param bool $force force if onboot=0.
-         * @param string $vms Only consider Guests with these IDs.
+         * Start all VMs and containers located on this node (by default only those with onboot=1).
+         * @param bool $force Issue start command even if virtual guest have 'onboot' not set or set to off.
+         * @param string $vms Only consider guests from this comma separated list of VMIDs.
          * @return Result
          */
         public function createRest($force = null, $vms = null) {
@@ -20805,9 +21230,9 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
-         * Start all VMs and containers (when onboot=1).
-         * @param bool $force force if onboot=0.
-         * @param string $vms Only consider Guests with these IDs.
+         * Start all VMs and containers located on this node (by default only those with onboot=1).
+         * @param bool $force Issue start command even if virtual guest have 'onboot' not set or set to off.
+         * @param string $vms Only consider guests from this comma separated list of VMIDs.
          * @return Result
          */
         public function startall($force = null, $vms = null) {
@@ -21048,6 +21473,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $maxfiles Maximal number of backup files per VM. Use '0' for unlimted.
          * @param bool $mkdir Create the directory if it doesn't exist.
          * @param string $monhost IP addresses of monitors (for external clusters).
+         * @param string $mountpoint mount point
          * @param string $nodes List of cluster node names.
          * @param bool $nowritecache disable write caching on the target
          * @param string $options NFS mount options (see 'man nfs')
@@ -21076,7 +21502,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $volume Glusterfs Volume.
          * @return Result
          */
-        public function createRest($storage, $type, $authsupported = null, $base = null, $blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $disable = null, $domain = null, $export = null, $format = null, $fuse = null, $is_mountpoint = null, $iscsiprovider = null, $krbd = null, $lio_tpg = null, $maxfiles = null, $mkdir = null, $monhost = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $path = null, $pool = null, $portal = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $share = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $target = null, $thinpool = null, $transport = null, $username = null, $vgname = null, $volume = null) {
+        public function createRest($storage, $type, $authsupported = null, $base = null, $blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $disable = null, $domain = null, $export = null, $format = null, $fuse = null, $is_mountpoint = null, $iscsiprovider = null, $krbd = null, $lio_tpg = null, $maxfiles = null, $mkdir = null, $monhost = null, $mountpoint = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $path = null, $pool = null, $portal = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $share = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $target = null, $thinpool = null, $transport = null, $username = null, $vgname = null, $volume = null) {
             $params = ['storage' => $storage,
                 'type' => $type,
                 'authsupported' => $authsupported,
@@ -21098,6 +21524,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'maxfiles' => $maxfiles,
                 'mkdir' => $mkdir,
                 'monhost' => $monhost,
+                'mountpoint' => $mountpoint,
                 'nodes' => $nodes,
                 'nowritecache' => $nowritecache,
                 'options' => $options,
@@ -21149,6 +21576,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $maxfiles Maximal number of backup files per VM. Use '0' for unlimted.
          * @param bool $mkdir Create the directory if it doesn't exist.
          * @param string $monhost IP addresses of monitors (for external clusters).
+         * @param string $mountpoint mount point
          * @param string $nodes List of cluster node names.
          * @param bool $nowritecache disable write caching on the target
          * @param string $options NFS mount options (see 'man nfs')
@@ -21177,8 +21605,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $volume Glusterfs Volume.
          * @return Result
          */
-        public function create($storage, $type, $authsupported = null, $base = null, $blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $disable = null, $domain = null, $export = null, $format = null, $fuse = null, $is_mountpoint = null, $iscsiprovider = null, $krbd = null, $lio_tpg = null, $maxfiles = null, $mkdir = null, $monhost = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $path = null, $pool = null, $portal = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $share = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $target = null, $thinpool = null, $transport = null, $username = null, $vgname = null, $volume = null) {
-            return $this->createRest($storage, $type, $authsupported, $base, $blocksize, $bwlimit, $comstar_hg, $comstar_tg, $content, $disable, $domain, $export, $format, $fuse, $is_mountpoint, $iscsiprovider, $krbd, $lio_tpg, $maxfiles, $mkdir, $monhost, $nodes, $nowritecache, $options, $password, $path, $pool, $portal, $redundancy, $saferemove, $saferemove_throughput, $server, $server2, $share, $shared, $smbversion, $sparse, $subdir, $tagged_only, $target, $thinpool, $transport, $username, $vgname, $volume);
+        public function create($storage, $type, $authsupported = null, $base = null, $blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $disable = null, $domain = null, $export = null, $format = null, $fuse = null, $is_mountpoint = null, $iscsiprovider = null, $krbd = null, $lio_tpg = null, $maxfiles = null, $mkdir = null, $monhost = null, $mountpoint = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $path = null, $pool = null, $portal = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $share = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $target = null, $thinpool = null, $transport = null, $username = null, $vgname = null, $volume = null) {
+            return $this->createRest($storage, $type, $authsupported, $base, $blocksize, $bwlimit, $comstar_hg, $comstar_tg, $content, $disable, $domain, $export, $format, $fuse, $is_mountpoint, $iscsiprovider, $krbd, $lio_tpg, $maxfiles, $mkdir, $monhost, $mountpoint, $nodes, $nowritecache, $options, $password, $path, $pool, $portal, $redundancy, $saferemove, $saferemove_throughput, $server, $server2, $share, $shared, $smbversion, $sparse, $subdir, $tagged_only, $target, $thinpool, $transport, $username, $vgname, $volume);
         }
 
     }
@@ -21258,6 +21686,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $maxfiles Maximal number of backup files per VM. Use '0' for unlimted.
          * @param bool $mkdir Create the directory if it doesn't exist.
          * @param string $monhost IP addresses of monitors (for external clusters).
+         * @param string $mountpoint mount point
          * @param string $nodes List of cluster node names.
          * @param bool $nowritecache disable write caching on the target
          * @param string $options NFS mount options (see 'man nfs')
@@ -21279,7 +21708,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $username RBD Id.
          * @return Result
          */
-        public function setRest($blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $delete = null, $digest = null, $disable = null, $domain = null, $format = null, $fuse = null, $is_mountpoint = null, $krbd = null, $lio_tpg = null, $maxfiles = null, $mkdir = null, $monhost = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $pool = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $transport = null, $username = null) {
+        public function setRest($blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $delete = null, $digest = null, $disable = null, $domain = null, $format = null, $fuse = null, $is_mountpoint = null, $krbd = null, $lio_tpg = null, $maxfiles = null, $mkdir = null, $monhost = null, $mountpoint = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $pool = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $transport = null, $username = null) {
             $params = ['blocksize' => $blocksize,
                 'bwlimit' => $bwlimit,
                 'comstar_hg' => $comstar_hg,
@@ -21297,6 +21726,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'maxfiles' => $maxfiles,
                 'mkdir' => $mkdir,
                 'monhost' => $monhost,
+                'mountpoint' => $mountpoint,
                 'nodes' => $nodes,
                 'nowritecache' => $nowritecache,
                 'options' => $options,
@@ -21336,6 +21766,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $maxfiles Maximal number of backup files per VM. Use '0' for unlimted.
          * @param bool $mkdir Create the directory if it doesn't exist.
          * @param string $monhost IP addresses of monitors (for external clusters).
+         * @param string $mountpoint mount point
          * @param string $nodes List of cluster node names.
          * @param bool $nowritecache disable write caching on the target
          * @param string $options NFS mount options (see 'man nfs')
@@ -21357,8 +21788,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $username RBD Id.
          * @return Result
          */
-        public function update($blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $delete = null, $digest = null, $disable = null, $domain = null, $format = null, $fuse = null, $is_mountpoint = null, $krbd = null, $lio_tpg = null, $maxfiles = null, $mkdir = null, $monhost = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $pool = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $transport = null, $username = null) {
-            return $this->setRest($blocksize, $bwlimit, $comstar_hg, $comstar_tg, $content, $delete, $digest, $disable, $domain, $format, $fuse, $is_mountpoint, $krbd, $lio_tpg, $maxfiles, $mkdir, $monhost, $nodes, $nowritecache, $options, $password, $pool, $redundancy, $saferemove, $saferemove_throughput, $server, $server2, $shared, $smbversion, $sparse, $subdir, $tagged_only, $transport, $username);
+        public function update($blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $delete = null, $digest = null, $disable = null, $domain = null, $format = null, $fuse = null, $is_mountpoint = null, $krbd = null, $lio_tpg = null, $maxfiles = null, $mkdir = null, $monhost = null, $mountpoint = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $pool = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $transport = null, $username = null) {
+            return $this->setRest($blocksize, $bwlimit, $comstar_hg, $comstar_tg, $content, $delete, $digest, $disable, $domain, $format, $fuse, $is_mountpoint, $krbd, $lio_tpg, $maxfiles, $mkdir, $monhost, $mountpoint, $nodes, $nowritecache, $options, $password, $pool, $redundancy, $saferemove, $saferemove_throughput, $server, $server2, $shared, $smbversion, $sparse, $subdir, $tagged_only, $transport, $username);
         }
 
     }
@@ -22174,12 +22605,14 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $secure Use secure LDAPS protocol.
          * @param string $server1 Server IP address (or DNS name)
          * @param string $server2 Fallback Server IP address (or DNS name)
+         * @param string $sslversion LDAPS TLS/SSL version. It's not recommended to use version older than 1.2!
+         *   Enum: tlsv1,tlsv1_1,tlsv1_2,tlsv1_3
          * @param string $tfa Use Two-factor authentication.
          * @param string $user_attr LDAP user attribute name
          * @param bool $verify Verify the server's SSL certificate
          * @return Result
          */
-        public function createRest($realm, $type, $base_dn = null, $bind_dn = null, $capath = null, $cert = null, $certkey = null, $comment = null, $default = null, $domain = null, $port = null, $secure = null, $server1 = null, $server2 = null, $tfa = null, $user_attr = null, $verify = null) {
+        public function createRest($realm, $type, $base_dn = null, $bind_dn = null, $capath = null, $cert = null, $certkey = null, $comment = null, $default = null, $domain = null, $port = null, $secure = null, $server1 = null, $server2 = null, $sslversion = null, $tfa = null, $user_attr = null, $verify = null) {
             $params = ['realm' => $realm,
                 'type' => $type,
                 'base_dn' => $base_dn,
@@ -22194,6 +22627,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'secure' => $secure,
                 'server1' => $server1,
                 'server2' => $server2,
+                'sslversion' => $sslversion,
                 'tfa' => $tfa,
                 'user_attr' => $user_attr,
                 'verify' => $verify];
@@ -22217,13 +22651,15 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $secure Use secure LDAPS protocol.
          * @param string $server1 Server IP address (or DNS name)
          * @param string $server2 Fallback Server IP address (or DNS name)
+         * @param string $sslversion LDAPS TLS/SSL version. It's not recommended to use version older than 1.2!
+         *   Enum: tlsv1,tlsv1_1,tlsv1_2,tlsv1_3
          * @param string $tfa Use Two-factor authentication.
          * @param string $user_attr LDAP user attribute name
          * @param bool $verify Verify the server's SSL certificate
          * @return Result
          */
-        public function create($realm, $type, $base_dn = null, $bind_dn = null, $capath = null, $cert = null, $certkey = null, $comment = null, $default = null, $domain = null, $port = null, $secure = null, $server1 = null, $server2 = null, $tfa = null, $user_attr = null, $verify = null) {
-            return $this->createRest($realm, $type, $base_dn, $bind_dn, $capath, $cert, $certkey, $comment, $default, $domain, $port, $secure, $server1, $server2, $tfa, $user_attr, $verify);
+        public function create($realm, $type, $base_dn = null, $bind_dn = null, $capath = null, $cert = null, $certkey = null, $comment = null, $default = null, $domain = null, $port = null, $secure = null, $server1 = null, $server2 = null, $sslversion = null, $tfa = null, $user_attr = null, $verify = null) {
+            return $this->createRest($realm, $type, $base_dn, $bind_dn, $capath, $cert, $certkey, $comment, $default, $domain, $port, $secure, $server1, $server2, $sslversion, $tfa, $user_attr, $verify);
         }
 
     }
@@ -22300,12 +22736,14 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $secure Use secure LDAPS protocol.
          * @param string $server1 Server IP address (or DNS name)
          * @param string $server2 Fallback Server IP address (or DNS name)
+         * @param string $sslversion LDAPS TLS/SSL version. It's not recommended to use version older than 1.2!
+         *   Enum: tlsv1,tlsv1_1,tlsv1_2,tlsv1_3
          * @param string $tfa Use Two-factor authentication.
          * @param string $user_attr LDAP user attribute name
          * @param bool $verify Verify the server's SSL certificate
          * @return Result
          */
-        public function setRest($base_dn = null, $bind_dn = null, $capath = null, $cert = null, $certkey = null, $comment = null, $default = null, $delete = null, $digest = null, $domain = null, $port = null, $secure = null, $server1 = null, $server2 = null, $tfa = null, $user_attr = null, $verify = null) {
+        public function setRest($base_dn = null, $bind_dn = null, $capath = null, $cert = null, $certkey = null, $comment = null, $default = null, $delete = null, $digest = null, $domain = null, $port = null, $secure = null, $server1 = null, $server2 = null, $sslversion = null, $tfa = null, $user_attr = null, $verify = null) {
             $params = ['base_dn' => $base_dn,
                 'bind_dn' => $bind_dn,
                 'capath' => $capath,
@@ -22320,6 +22758,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'secure' => $secure,
                 'server1' => $server1,
                 'server2' => $server2,
+                'sslversion' => $sslversion,
                 'tfa' => $tfa,
                 'user_attr' => $user_attr,
                 'verify' => $verify];
@@ -22342,13 +22781,15 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $secure Use secure LDAPS protocol.
          * @param string $server1 Server IP address (or DNS name)
          * @param string $server2 Fallback Server IP address (or DNS name)
+         * @param string $sslversion LDAPS TLS/SSL version. It's not recommended to use version older than 1.2!
+         *   Enum: tlsv1,tlsv1_1,tlsv1_2,tlsv1_3
          * @param string $tfa Use Two-factor authentication.
          * @param string $user_attr LDAP user attribute name
          * @param bool $verify Verify the server's SSL certificate
          * @return Result
          */
-        public function update($base_dn = null, $bind_dn = null, $capath = null, $cert = null, $certkey = null, $comment = null, $default = null, $delete = null, $digest = null, $domain = null, $port = null, $secure = null, $server1 = null, $server2 = null, $tfa = null, $user_attr = null, $verify = null) {
-            return $this->setRest($base_dn, $bind_dn, $capath, $cert, $certkey, $comment, $default, $delete, $digest, $domain, $port, $secure, $server1, $server2, $tfa, $user_attr, $verify);
+        public function update($base_dn = null, $bind_dn = null, $capath = null, $cert = null, $certkey = null, $comment = null, $default = null, $delete = null, $digest = null, $domain = null, $port = null, $secure = null, $server1 = null, $server2 = null, $sslversion = null, $tfa = null, $user_attr = null, $verify = null) {
+            return $this->setRest($base_dn, $bind_dn, $capath, $cert, $certkey, $comment, $default, $delete, $digest, $domain, $port, $secure, $server1, $server2, $sslversion, $tfa, $user_attr, $verify);
         }
 
     }
