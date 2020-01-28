@@ -291,6 +291,7 @@ class PveClientBase {
         curl_setopt($prox_ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($prox_ch, CURLOPT_COOKIE, "PVEAuthCookie=" . $this->ticketPVEAuthCookie);
         curl_setopt($prox_ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($prox_ch, CURLOPT_SSL_VERIFYHOST, false);
 
         $response = curl_exec($prox_ch);
         $curlInfo = curl_getinfo($prox_ch);
