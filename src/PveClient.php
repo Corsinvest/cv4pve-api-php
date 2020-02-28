@@ -4776,7 +4776,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $protection Sets the protection flag of the VM. This will disable the remove VM and remove disk operations.
          * @param bool $reboot Allow reboot. If set to '0' the VM exit on reboot.
          * @param array $sataN Use volume as SATA hard disk or CD-ROM (n is 0 to 5).
-         * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 13).
+         * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 30).
          * @param string $scsihw SCSI controller model
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
          * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
@@ -4952,7 +4952,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $protection Sets the protection flag of the VM. This will disable the remove VM and remove disk operations.
          * @param bool $reboot Allow reboot. If set to '0' the VM exit on reboot.
          * @param array $sataN Use volume as SATA hard disk or CD-ROM (n is 0 to 5).
-         * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 13).
+         * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 30).
          * @param string $scsihw SCSI controller model
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
          * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
@@ -8186,7 +8186,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
-         * Get current virtual machine configuration. This does not include pending configuration changes (see 'pending' API).
+         * Get the virtual machine configuration with pending configuration changes applied. Set the 'current' parameter to get the current configuration instead.
          * @param bool $current Get current values (instead of pending values).
          * @param string $snapshot Fetch config values from given snapshot.
          * @return Result
@@ -8198,7 +8198,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
-         * Get current virtual machine configuration. This does not include pending configuration changes (see 'pending' API).
+         * Get the virtual machine configuration with pending configuration changes applied. Set the 'current' parameter to get the current configuration instead.
          * @param bool $current Get current values (instead of pending values).
          * @param string $snapshot Fetch config values from given snapshot.
          * @return Result
@@ -8269,7 +8269,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $reboot Allow reboot. If set to '0' the VM exit on reboot.
          * @param string $revert Revert a pending change.
          * @param array $sataN Use volume as SATA hard disk or CD-ROM (n is 0 to 5).
-         * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 13).
+         * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 30).
          * @param string $scsihw SCSI controller model
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
          * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
@@ -8441,7 +8441,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $reboot Allow reboot. If set to '0' the VM exit on reboot.
          * @param string $revert Revert a pending change.
          * @param array $sataN Use volume as SATA hard disk or CD-ROM (n is 0 to 5).
-         * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 13).
+         * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 30).
          * @param string $scsihw SCSI controller model
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
          * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
@@ -8534,7 +8534,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $reboot Allow reboot. If set to '0' the VM exit on reboot.
          * @param string $revert Revert a pending change.
          * @param array $sataN Use volume as SATA hard disk or CD-ROM (n is 0 to 5).
-         * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 13).
+         * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 30).
          * @param string $scsihw SCSI controller model
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
          * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
@@ -8704,7 +8704,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $reboot Allow reboot. If set to '0' the VM exit on reboot.
          * @param string $revert Revert a pending change.
          * @param array $sataN Use volume as SATA hard disk or CD-ROM (n is 0 to 5).
-         * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 13).
+         * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 30).
          * @param string $scsihw SCSI controller model
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
          * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
@@ -8769,7 +8769,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
-         * Get virtual machine configuration, including pending changes.
+         * Get the virtual machine configuration with both current and pending values.
          * @return Result
          */
         public function getRest() {
@@ -8777,7 +8777,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
-         * Get virtual machine configuration, including pending changes.
+         * Get the virtual machine configuration with both current and pending values.
          * @return Result
          */
         public function vmPending() {
@@ -9289,16 +9289,18 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
          * @param string $stateuri Some command save/restore state from this location.
          * @param string $targetstorage Target storage for the migration. (Can be '1' to use the same storage id as on the source node.)
+         * @param int $timeout Wait maximal timeout seconds.
          * @return Result
          */
-        public function createRest($machine = null, $migratedfrom = null, $migration_network = null, $migration_type = null, $skiplock = null, $stateuri = null, $targetstorage = null) {
+        public function createRest($machine = null, $migratedfrom = null, $migration_network = null, $migration_type = null, $skiplock = null, $stateuri = null, $targetstorage = null, $timeout = null) {
             $params = ['machine' => $machine,
                 'migratedfrom' => $migratedfrom,
                 'migration_network' => $migration_network,
                 'migration_type' => $migration_type,
                 'skiplock' => $skiplock,
                 'stateuri' => $stateuri,
-                'targetstorage' => $targetstorage];
+                'targetstorage' => $targetstorage,
+                'timeout' => $timeout];
             return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/status/start", $params);
         }
 
@@ -9312,10 +9314,11 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
          * @param string $stateuri Some command save/restore state from this location.
          * @param string $targetstorage Target storage for the migration. (Can be '1' to use the same storage id as on the source node.)
+         * @param int $timeout Wait maximal timeout seconds.
          * @return Result
          */
-        public function vmStart($machine = null, $migratedfrom = null, $migration_network = null, $migration_type = null, $skiplock = null, $stateuri = null, $targetstorage = null) {
-            return $this->createRest($machine, $migratedfrom, $migration_network, $migration_type, $skiplock, $stateuri, $targetstorage);
+        public function vmStart($machine = null, $migratedfrom = null, $migration_network = null, $migration_type = null, $skiplock = null, $stateuri = null, $targetstorage = null, $timeout = null) {
+            return $this->createRest($machine, $migratedfrom, $migration_network, $migration_type, $skiplock, $stateuri, $targetstorage, $timeout);
         }
 
     }
@@ -9876,7 +9879,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Move volume to different storage.
          * @param string $disk The disk you want to move.
-         *   Enum: ide0,ide1,ide2,ide3,scsi0,scsi1,scsi2,scsi3,scsi4,scsi5,scsi6,scsi7,scsi8,scsi9,scsi10,scsi11,scsi12,scsi13,virtio0,virtio1,virtio2,virtio3,virtio4,virtio5,virtio6,virtio7,virtio8,virtio9,virtio10,virtio11,virtio12,virtio13,virtio14,virtio15,sata0,sata1,sata2,sata3,sata4,sata5,efidisk0
+         *   Enum: ide0,ide1,ide2,ide3,scsi0,scsi1,scsi2,scsi3,scsi4,scsi5,scsi6,scsi7,scsi8,scsi9,scsi10,scsi11,scsi12,scsi13,scsi14,scsi15,scsi16,scsi17,scsi18,scsi19,scsi20,scsi21,scsi22,scsi23,scsi24,scsi25,scsi26,scsi27,scsi28,scsi29,scsi30,virtio0,virtio1,virtio2,virtio3,virtio4,virtio5,virtio6,virtio7,virtio8,virtio9,virtio10,virtio11,virtio12,virtio13,virtio14,virtio15,sata0,sata1,sata2,sata3,sata4,sata5,efidisk0
          * @param string $storage Target storage.
          * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param bool $delete Delete the original disk after successful copy. By default the original disk is kept as unused disk.
@@ -9898,7 +9901,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Move volume to different storage.
          * @param string $disk The disk you want to move.
-         *   Enum: ide0,ide1,ide2,ide3,scsi0,scsi1,scsi2,scsi3,scsi4,scsi5,scsi6,scsi7,scsi8,scsi9,scsi10,scsi11,scsi12,scsi13,virtio0,virtio1,virtio2,virtio3,virtio4,virtio5,virtio6,virtio7,virtio8,virtio9,virtio10,virtio11,virtio12,virtio13,virtio14,virtio15,sata0,sata1,sata2,sata3,sata4,sata5,efidisk0
+         *   Enum: ide0,ide1,ide2,ide3,scsi0,scsi1,scsi2,scsi3,scsi4,scsi5,scsi6,scsi7,scsi8,scsi9,scsi10,scsi11,scsi12,scsi13,scsi14,scsi15,scsi16,scsi17,scsi18,scsi19,scsi20,scsi21,scsi22,scsi23,scsi24,scsi25,scsi26,scsi27,scsi28,scsi29,scsi30,virtio0,virtio1,virtio2,virtio3,virtio4,virtio5,virtio6,virtio7,virtio8,virtio9,virtio10,virtio11,virtio12,virtio13,virtio14,virtio15,sata0,sata1,sata2,sata3,sata4,sata5,efidisk0
          * @param string $storage Target storage.
          * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param bool $delete Delete the original disk after successful copy. By default the original disk is kept as unused disk.
@@ -10090,7 +10093,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Extend volume size.
          * @param string $disk The disk you want to resize.
-         *   Enum: ide0,ide1,ide2,ide3,scsi0,scsi1,scsi2,scsi3,scsi4,scsi5,scsi6,scsi7,scsi8,scsi9,scsi10,scsi11,scsi12,scsi13,virtio0,virtio1,virtio2,virtio3,virtio4,virtio5,virtio6,virtio7,virtio8,virtio9,virtio10,virtio11,virtio12,virtio13,virtio14,virtio15,sata0,sata1,sata2,sata3,sata4,sata5,efidisk0
+         *   Enum: ide0,ide1,ide2,ide3,scsi0,scsi1,scsi2,scsi3,scsi4,scsi5,scsi6,scsi7,scsi8,scsi9,scsi10,scsi11,scsi12,scsi13,scsi14,scsi15,scsi16,scsi17,scsi18,scsi19,scsi20,scsi21,scsi22,scsi23,scsi24,scsi25,scsi26,scsi27,scsi28,scsi29,scsi30,virtio0,virtio1,virtio2,virtio3,virtio4,virtio5,virtio6,virtio7,virtio8,virtio9,virtio10,virtio11,virtio12,virtio13,virtio14,virtio15,sata0,sata1,sata2,sata3,sata4,sata5,efidisk0
          * @param string $size The new size. With the `+` sign the value is added to the actual size of the volume and without it, the value is taken as an absolute one. Shrinking disk size is not supported.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
@@ -10107,7 +10110,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Extend volume size.
          * @param string $disk The disk you want to resize.
-         *   Enum: ide0,ide1,ide2,ide3,scsi0,scsi1,scsi2,scsi3,scsi4,scsi5,scsi6,scsi7,scsi8,scsi9,scsi10,scsi11,scsi12,scsi13,virtio0,virtio1,virtio2,virtio3,virtio4,virtio5,virtio6,virtio7,virtio8,virtio9,virtio10,virtio11,virtio12,virtio13,virtio14,virtio15,sata0,sata1,sata2,sata3,sata4,sata5,efidisk0
+         *   Enum: ide0,ide1,ide2,ide3,scsi0,scsi1,scsi2,scsi3,scsi4,scsi5,scsi6,scsi7,scsi8,scsi9,scsi10,scsi11,scsi12,scsi13,scsi14,scsi15,scsi16,scsi17,scsi18,scsi19,scsi20,scsi21,scsi22,scsi23,scsi24,scsi25,scsi26,scsi27,scsi28,scsi29,scsi30,virtio0,virtio1,virtio2,virtio3,virtio4,virtio5,virtio6,virtio7,virtio8,virtio9,virtio10,virtio11,virtio12,virtio13,virtio14,virtio15,sata0,sata1,sata2,sata3,sata4,sata5,efidisk0
          * @param string $size The new size. With the `+` sign the value is added to the actual size of the volume and without it, the value is taken as an absolute one. Shrinking disk size is not supported.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
@@ -10460,7 +10463,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Create a Template.
          * @param string $disk If you want to convert only 1 disk to base image.
-         *   Enum: ide0,ide1,ide2,ide3,scsi0,scsi1,scsi2,scsi3,scsi4,scsi5,scsi6,scsi7,scsi8,scsi9,scsi10,scsi11,scsi12,scsi13,virtio0,virtio1,virtio2,virtio3,virtio4,virtio5,virtio6,virtio7,virtio8,virtio9,virtio10,virtio11,virtio12,virtio13,virtio14,virtio15,sata0,sata1,sata2,sata3,sata4,sata5,efidisk0
+         *   Enum: ide0,ide1,ide2,ide3,scsi0,scsi1,scsi2,scsi3,scsi4,scsi5,scsi6,scsi7,scsi8,scsi9,scsi10,scsi11,scsi12,scsi13,scsi14,scsi15,scsi16,scsi17,scsi18,scsi19,scsi20,scsi21,scsi22,scsi23,scsi24,scsi25,scsi26,scsi27,scsi28,scsi29,scsi30,virtio0,virtio1,virtio2,virtio3,virtio4,virtio5,virtio6,virtio7,virtio8,virtio9,virtio10,virtio11,virtio12,virtio13,virtio14,virtio15,sata0,sata1,sata2,sata3,sata4,sata5,efidisk0
          * @return Result
          */
         public function createRest($disk = null) {
@@ -10471,7 +10474,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Create a Template.
          * @param string $disk If you want to convert only 1 disk to base image.
-         *   Enum: ide0,ide1,ide2,ide3,scsi0,scsi1,scsi2,scsi3,scsi4,scsi5,scsi6,scsi7,scsi8,scsi9,scsi10,scsi11,scsi12,scsi13,virtio0,virtio1,virtio2,virtio3,virtio4,virtio5,virtio6,virtio7,virtio8,virtio9,virtio10,virtio11,virtio12,virtio13,virtio14,virtio15,sata0,sata1,sata2,sata3,sata4,sata5,efidisk0
+         *   Enum: ide0,ide1,ide2,ide3,scsi0,scsi1,scsi2,scsi3,scsi4,scsi5,scsi6,scsi7,scsi8,scsi9,scsi10,scsi11,scsi12,scsi13,scsi14,scsi15,scsi16,scsi17,scsi18,scsi19,scsi20,scsi21,scsi22,scsi23,scsi24,scsi25,scsi26,scsi27,scsi28,scsi29,scsi30,virtio0,virtio1,virtio2,virtio3,virtio4,virtio5,virtio6,virtio7,virtio8,virtio9,virtio10,virtio11,virtio12,virtio13,virtio14,virtio15,sata0,sata1,sata2,sata3,sata4,sata5,efidisk0
          * @return Result
          */
         public function template($disk = null) {
@@ -16397,6 +16400,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $address IP address.
          * @param string $address6 IP address.
          * @param bool $autostart Automatically start interface on boot.
+         * @param string $bond_primary Specify the primary interface for active-backup bond.
          * @param string $bond_mode Bonding mode.
          *   Enum: balance-rr,active-backup,balance-xor,broadcast,802.3ad,balance-tlb,balance-alb,balance-slb,lacp-balance-slb,lacp-balance-tcp
          * @param string $bond_xmit_hash_policy Selects the transmit hash policy to use for slave selection in balance-xor and 802.3ad modes.
@@ -16409,6 +16413,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $comments6 Comments
          * @param string $gateway Default gateway address.
          * @param string $gateway6 Default ipv6 gateway address.
+         * @param int $mtu MTU.
          * @param string $netmask Network mask.
          * @param int $netmask6 Network mask.
          * @param string $ovs_bonds Specify the interfaces used by the bonding device.
@@ -16417,14 +16422,17 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $ovs_ports Specify the interfaces you want to add to your bridge.
          * @param int $ovs_tag Specify a VLan tag (used by OVSPort, OVSIntPort, OVSBond)
          * @param string $slaves Specify the interfaces used by the bonding device.
+         * @param int $vlan_id vlan-id for a custom named vlan interface (ifupdown2 only).
+         * @param string $vlan_raw_device Specify the raw interface for the vlan interface.
          * @return Result
          */
-        public function createRest($iface, $type, $address = null, $address6 = null, $autostart = null, $bond_mode = null, $bond_xmit_hash_policy = null, $bridge_ports = null, $bridge_vlan_aware = null, $cidr = null, $cidr6 = null, $comments = null, $comments6 = null, $gateway = null, $gateway6 = null, $netmask = null, $netmask6 = null, $ovs_bonds = null, $ovs_bridge = null, $ovs_options = null, $ovs_ports = null, $ovs_tag = null, $slaves = null) {
+        public function createRest($iface, $type, $address = null, $address6 = null, $autostart = null, $bond_primary = null, $bond_mode = null, $bond_xmit_hash_policy = null, $bridge_ports = null, $bridge_vlan_aware = null, $cidr = null, $cidr6 = null, $comments = null, $comments6 = null, $gateway = null, $gateway6 = null, $mtu = null, $netmask = null, $netmask6 = null, $ovs_bonds = null, $ovs_bridge = null, $ovs_options = null, $ovs_ports = null, $ovs_tag = null, $slaves = null, $vlan_id = null, $vlan_raw_device = null) {
             $params = ['iface' => $iface,
                 'type' => $type,
                 'address' => $address,
                 'address6' => $address6,
                 'autostart' => $autostart,
+                'bond-primary' => $bond_primary,
                 'bond_mode' => $bond_mode,
                 'bond_xmit_hash_policy' => $bond_xmit_hash_policy,
                 'bridge_ports' => $bridge_ports,
@@ -16435,6 +16443,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'comments6' => $comments6,
                 'gateway' => $gateway,
                 'gateway6' => $gateway6,
+                'mtu' => $mtu,
                 'netmask' => $netmask,
                 'netmask6' => $netmask6,
                 'ovs_bonds' => $ovs_bonds,
@@ -16442,7 +16451,9 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'ovs_options' => $ovs_options,
                 'ovs_ports' => $ovs_ports,
                 'ovs_tag' => $ovs_tag,
-                'slaves' => $slaves];
+                'slaves' => $slaves,
+                'vlan-id' => $vlan_id,
+                'vlan-raw-device' => $vlan_raw_device];
             return $this->client->create("/nodes/{$this->node}/network", $params);
         }
 
@@ -16454,6 +16465,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $address IP address.
          * @param string $address6 IP address.
          * @param bool $autostart Automatically start interface on boot.
+         * @param string $bond_primary Specify the primary interface for active-backup bond.
          * @param string $bond_mode Bonding mode.
          *   Enum: balance-rr,active-backup,balance-xor,broadcast,802.3ad,balance-tlb,balance-alb,balance-slb,lacp-balance-slb,lacp-balance-tcp
          * @param string $bond_xmit_hash_policy Selects the transmit hash policy to use for slave selection in balance-xor and 802.3ad modes.
@@ -16466,6 +16478,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $comments6 Comments
          * @param string $gateway Default gateway address.
          * @param string $gateway6 Default ipv6 gateway address.
+         * @param int $mtu MTU.
          * @param string $netmask Network mask.
          * @param int $netmask6 Network mask.
          * @param string $ovs_bonds Specify the interfaces used by the bonding device.
@@ -16474,10 +16487,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $ovs_ports Specify the interfaces you want to add to your bridge.
          * @param int $ovs_tag Specify a VLan tag (used by OVSPort, OVSIntPort, OVSBond)
          * @param string $slaves Specify the interfaces used by the bonding device.
+         * @param int $vlan_id vlan-id for a custom named vlan interface (ifupdown2 only).
+         * @param string $vlan_raw_device Specify the raw interface for the vlan interface.
          * @return Result
          */
-        public function createNetwork($iface, $type, $address = null, $address6 = null, $autostart = null, $bond_mode = null, $bond_xmit_hash_policy = null, $bridge_ports = null, $bridge_vlan_aware = null, $cidr = null, $cidr6 = null, $comments = null, $comments6 = null, $gateway = null, $gateway6 = null, $netmask = null, $netmask6 = null, $ovs_bonds = null, $ovs_bridge = null, $ovs_options = null, $ovs_ports = null, $ovs_tag = null, $slaves = null) {
-            return $this->createRest($iface, $type, $address, $address6, $autostart, $bond_mode, $bond_xmit_hash_policy, $bridge_ports, $bridge_vlan_aware, $cidr, $cidr6, $comments, $comments6, $gateway, $gateway6, $netmask, $netmask6, $ovs_bonds, $ovs_bridge, $ovs_options, $ovs_ports, $ovs_tag, $slaves);
+        public function createNetwork($iface, $type, $address = null, $address6 = null, $autostart = null, $bond_primary = null, $bond_mode = null, $bond_xmit_hash_policy = null, $bridge_ports = null, $bridge_vlan_aware = null, $cidr = null, $cidr6 = null, $comments = null, $comments6 = null, $gateway = null, $gateway6 = null, $mtu = null, $netmask = null, $netmask6 = null, $ovs_bonds = null, $ovs_bridge = null, $ovs_options = null, $ovs_ports = null, $ovs_tag = null, $slaves = null, $vlan_id = null, $vlan_raw_device = null) {
+            return $this->createRest($iface, $type, $address, $address6, $autostart, $bond_primary, $bond_mode, $bond_xmit_hash_policy, $bridge_ports, $bridge_vlan_aware, $cidr, $cidr6, $comments, $comments6, $gateway, $gateway6, $mtu, $netmask, $netmask6, $ovs_bonds, $ovs_bridge, $ovs_options, $ovs_ports, $ovs_tag, $slaves, $vlan_id, $vlan_raw_device);
         }
 
         /**
@@ -16567,6 +16582,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $address IP address.
          * @param string $address6 IP address.
          * @param bool $autostart Automatically start interface on boot.
+         * @param string $bond_primary Specify the primary interface for active-backup bond.
          * @param string $bond_mode Bonding mode.
          *   Enum: balance-rr,active-backup,balance-xor,broadcast,802.3ad,balance-tlb,balance-alb,balance-slb,lacp-balance-slb,lacp-balance-tcp
          * @param string $bond_xmit_hash_policy Selects the transmit hash policy to use for slave selection in balance-xor and 802.3ad modes.
@@ -16580,6 +16596,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $delete A list of settings you want to delete.
          * @param string $gateway Default gateway address.
          * @param string $gateway6 Default ipv6 gateway address.
+         * @param int $mtu MTU.
          * @param string $netmask Network mask.
          * @param int $netmask6 Network mask.
          * @param string $ovs_bonds Specify the interfaces used by the bonding device.
@@ -16588,13 +16605,16 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $ovs_ports Specify the interfaces you want to add to your bridge.
          * @param int $ovs_tag Specify a VLan tag (used by OVSPort, OVSIntPort, OVSBond)
          * @param string $slaves Specify the interfaces used by the bonding device.
+         * @param int $vlan_id vlan-id for a custom named vlan interface (ifupdown2 only).
+         * @param string $vlan_raw_device Specify the raw interface for the vlan interface.
          * @return Result
          */
-        public function setRest($type, $address = null, $address6 = null, $autostart = null, $bond_mode = null, $bond_xmit_hash_policy = null, $bridge_ports = null, $bridge_vlan_aware = null, $cidr = null, $cidr6 = null, $comments = null, $comments6 = null, $delete = null, $gateway = null, $gateway6 = null, $netmask = null, $netmask6 = null, $ovs_bonds = null, $ovs_bridge = null, $ovs_options = null, $ovs_ports = null, $ovs_tag = null, $slaves = null) {
+        public function setRest($type, $address = null, $address6 = null, $autostart = null, $bond_primary = null, $bond_mode = null, $bond_xmit_hash_policy = null, $bridge_ports = null, $bridge_vlan_aware = null, $cidr = null, $cidr6 = null, $comments = null, $comments6 = null, $delete = null, $gateway = null, $gateway6 = null, $mtu = null, $netmask = null, $netmask6 = null, $ovs_bonds = null, $ovs_bridge = null, $ovs_options = null, $ovs_ports = null, $ovs_tag = null, $slaves = null, $vlan_id = null, $vlan_raw_device = null) {
             $params = ['type' => $type,
                 'address' => $address,
                 'address6' => $address6,
                 'autostart' => $autostart,
+                'bond-primary' => $bond_primary,
                 'bond_mode' => $bond_mode,
                 'bond_xmit_hash_policy' => $bond_xmit_hash_policy,
                 'bridge_ports' => $bridge_ports,
@@ -16606,6 +16626,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'delete' => $delete,
                 'gateway' => $gateway,
                 'gateway6' => $gateway6,
+                'mtu' => $mtu,
                 'netmask' => $netmask,
                 'netmask6' => $netmask6,
                 'ovs_bonds' => $ovs_bonds,
@@ -16613,7 +16634,9 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'ovs_options' => $ovs_options,
                 'ovs_ports' => $ovs_ports,
                 'ovs_tag' => $ovs_tag,
-                'slaves' => $slaves];
+                'slaves' => $slaves,
+                'vlan-id' => $vlan_id,
+                'vlan-raw-device' => $vlan_raw_device];
             return $this->client->set("/nodes/{$this->node}/network/{$this->iface}", $params);
         }
 
@@ -16624,6 +16647,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $address IP address.
          * @param string $address6 IP address.
          * @param bool $autostart Automatically start interface on boot.
+         * @param string $bond_primary Specify the primary interface for active-backup bond.
          * @param string $bond_mode Bonding mode.
          *   Enum: balance-rr,active-backup,balance-xor,broadcast,802.3ad,balance-tlb,balance-alb,balance-slb,lacp-balance-slb,lacp-balance-tcp
          * @param string $bond_xmit_hash_policy Selects the transmit hash policy to use for slave selection in balance-xor and 802.3ad modes.
@@ -16637,6 +16661,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $delete A list of settings you want to delete.
          * @param string $gateway Default gateway address.
          * @param string $gateway6 Default ipv6 gateway address.
+         * @param int $mtu MTU.
          * @param string $netmask Network mask.
          * @param int $netmask6 Network mask.
          * @param string $ovs_bonds Specify the interfaces used by the bonding device.
@@ -16645,10 +16670,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $ovs_ports Specify the interfaces you want to add to your bridge.
          * @param int $ovs_tag Specify a VLan tag (used by OVSPort, OVSIntPort, OVSBond)
          * @param string $slaves Specify the interfaces used by the bonding device.
+         * @param int $vlan_id vlan-id for a custom named vlan interface (ifupdown2 only).
+         * @param string $vlan_raw_device Specify the raw interface for the vlan interface.
          * @return Result
          */
-        public function updateNetwork($type, $address = null, $address6 = null, $autostart = null, $bond_mode = null, $bond_xmit_hash_policy = null, $bridge_ports = null, $bridge_vlan_aware = null, $cidr = null, $cidr6 = null, $comments = null, $comments6 = null, $delete = null, $gateway = null, $gateway6 = null, $netmask = null, $netmask6 = null, $ovs_bonds = null, $ovs_bridge = null, $ovs_options = null, $ovs_ports = null, $ovs_tag = null, $slaves = null) {
-            return $this->setRest($type, $address, $address6, $autostart, $bond_mode, $bond_xmit_hash_policy, $bridge_ports, $bridge_vlan_aware, $cidr, $cidr6, $comments, $comments6, $delete, $gateway, $gateway6, $netmask, $netmask6, $ovs_bonds, $ovs_bridge, $ovs_options, $ovs_ports, $ovs_tag, $slaves);
+        public function updateNetwork($type, $address = null, $address6 = null, $autostart = null, $bond_primary = null, $bond_mode = null, $bond_xmit_hash_policy = null, $bridge_ports = null, $bridge_vlan_aware = null, $cidr = null, $cidr6 = null, $comments = null, $comments6 = null, $delete = null, $gateway = null, $gateway6 = null, $mtu = null, $netmask = null, $netmask6 = null, $ovs_bonds = null, $ovs_bridge = null, $ovs_options = null, $ovs_ports = null, $ovs_tag = null, $slaves = null, $vlan_id = null, $vlan_raw_device = null) {
+            return $this->setRest($type, $address, $address6, $autostart, $bond_primary, $bond_mode, $bond_xmit_hash_policy, $bridge_ports, $bridge_vlan_aware, $cidr, $cidr6, $comments, $comments6, $delete, $gateway, $gateway6, $mtu, $netmask, $netmask6, $ovs_bonds, $ovs_bridge, $ovs_options, $ovs_ports, $ovs_tag, $slaves, $vlan_id, $vlan_raw_device);
         }
 
     }
@@ -20773,7 +20800,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Creates a VNC Shell proxy.
          * @param string $cmd Run specific command or default to login.
-         *   Enum: login,ceph_install,upgrade
+         *   Enum: upgrade,login,ceph_install
          * @param int $height sets the height of the console in pixels.
          * @param bool $upgrade Deprecated, use the 'cmd' property instead! Run 'apt-get dist-upgrade' instead of normal shell.
          * @param bool $websocket use websocket instead of standard vnc.
@@ -20792,7 +20819,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Creates a VNC Shell proxy.
          * @param string $cmd Run specific command or default to login.
-         *   Enum: login,ceph_install,upgrade
+         *   Enum: upgrade,login,ceph_install
          * @param int $height sets the height of the console in pixels.
          * @param bool $upgrade Deprecated, use the 'cmd' property instead! Run 'apt-get dist-upgrade' instead of normal shell.
          * @param bool $websocket use websocket instead of standard vnc.
@@ -20832,7 +20859,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Creates a VNC Shell proxy.
          * @param string $cmd Run specific command or default to login.
-         *   Enum: login,ceph_install,upgrade
+         *   Enum: upgrade,login,ceph_install
          * @param bool $upgrade Deprecated, use the 'cmd' property instead! Run 'apt-get dist-upgrade' instead of normal shell.
          * @return Result
          */
@@ -20845,7 +20872,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Creates a VNC Shell proxy.
          * @param string $cmd Run specific command or default to login.
-         *   Enum: login,ceph_install,upgrade
+         *   Enum: upgrade,login,ceph_install
          * @param bool $upgrade Deprecated, use the 'cmd' property instead! Run 'apt-get dist-upgrade' instead of normal shell.
          * @return Result
          */
@@ -20930,7 +20957,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Creates a SPICE shell.
          * @param string $cmd Run specific command or default to login.
-         *   Enum: login,ceph_install,upgrade
+         *   Enum: upgrade,login,ceph_install
          * @param string $proxy SPICE proxy server. This can be used by the client to specify the proxy server. All nodes in a cluster runs 'spiceproxy', so it is up to the client to choose one. By default, we return the node where the VM is currently running. As reasonable setting is to use same node you use to connect to the API (This is window.location.hostname for the JS GUI).
          * @param bool $upgrade Deprecated, use the 'cmd' property instead! Run 'apt-get dist-upgrade' instead of normal shell.
          * @return Result
@@ -20945,7 +20972,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Creates a SPICE shell.
          * @param string $cmd Run specific command or default to login.
-         *   Enum: login,ceph_install,upgrade
+         *   Enum: upgrade,login,ceph_install
          * @param string $proxy SPICE proxy server. This can be used by the client to specify the proxy server. All nodes in a cluster runs 'spiceproxy', so it is up to the client to choose one. By default, we return the node where the VM is currently running. As reasonable setting is to use same node you use to connect to the API (This is window.location.hostname for the JS GUI).
          * @param bool $upgrade Deprecated, use the 'cmd' property instead! Run 'apt-get dist-upgrade' instead of normal shell.
          * @return Result
@@ -21315,12 +21342,14 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $target Target node.
          * @param int $maxworkers Maximal number of parallel migration job. If not set use 'max_workers' from datacenter.cfg, one of both must be set!
          * @param string $vms Only consider Guests with these IDs.
+         * @param bool $with_local_disks Enable live storage migration for local disk
          * @return Result
          */
-        public function createRest($target, $maxworkers = null, $vms = null) {
+        public function createRest($target, $maxworkers = null, $vms = null, $with_local_disks = null) {
             $params = ['target' => $target,
                 'maxworkers' => $maxworkers,
-                'vms' => $vms];
+                'vms' => $vms,
+                'with-local-disks' => $with_local_disks];
             return $this->client->create("/nodes/{$this->node}/migrateall", $params);
         }
 
@@ -21329,10 +21358,11 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $target Target node.
          * @param int $maxworkers Maximal number of parallel migration job. If not set use 'max_workers' from datacenter.cfg, one of both must be set!
          * @param string $vms Only consider Guests with these IDs.
+         * @param bool $with_local_disks Enable live storage migration for local disk
          * @return Result
          */
-        public function migrateall($target, $maxworkers = null, $vms = null) {
-            return $this->createRest($target, $maxworkers, $vms);
+        public function migrateall($target, $maxworkers = null, $vms = null, $with_local_disks = null) {
+            return $this->createRest($target, $maxworkers, $vms, $with_local_disks);
         }
 
     }
@@ -21917,6 +21947,19 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
+         * @ignore
+         */
+        private $permissions;
+
+        /**
+         * Get AccessPermissions
+         * @return PVEAccessPermissions
+         */
+        public function getPermissions() {
+            return $this->permissions ?: ($this->permissions = new PVEAccessPermissions($this->client));
+        }
+
+        /**
          * Directory index.
          * @return Result
          */
@@ -21964,20 +22007,23 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * User index.
          * @param bool $enabled Optional filter for enable property.
+         * @param bool $full Include group and token information.
          * @return Result
          */
-        public function getRest($enabled = null) {
-            $params = ['enabled' => $enabled];
+        public function getRest($enabled = null, $full = null) {
+            $params = ['enabled' => $enabled,
+                'full' => $full];
             return $this->client->get("/access/users", $params);
         }
 
         /**
          * User index.
          * @param bool $enabled Optional filter for enable property.
+         * @param bool $full Include group and token information.
          * @return Result
          */
-        public function index($enabled = null) {
-            return $this->getRest($enabled);
+        public function index($enabled = null, $full = null) {
+            return $this->getRest($enabled, $full);
         }
 
         /**
@@ -22063,6 +22109,19 @@ namespace Corsinvest\ProxmoxVE\Api {
          */
         public function getTfa() {
             return $this->tfa ?: ($this->tfa = new PVEUseridUsersAccessTfa($this->client, $this->userid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $token;
+
+        /**
+         * Get UseridUsersAccessToken
+         * @return PVEUseridUsersAccessToken
+         */
+        public function getToken() {
+            return $this->token ?: ($this->token = new PVEUseridUsersAccessToken($this->client, $this->userid));
         }
 
         /**
@@ -22180,6 +22239,171 @@ namespace Corsinvest\ProxmoxVE\Api {
          */
         public function readUserTfaType() {
             return $this->getRest();
+        }
+
+    }
+
+    /**
+     * Class PVEUseridUsersAccessToken
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVEUseridUsersAccessToken {
+
+        /**
+         * @ignore
+         */
+        private $userid;
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $userid) {
+            $this->client = $client;
+            $this->userid = $userid;
+        }
+
+        /**
+         * Get ItemTokenUseridUsersAccessTokenid
+         * @param tokenid
+         * @return PVEItemTokenUseridUsersAccessTokenid
+         */
+        public function get($tokenid) {
+            return new PVEItemTokenUseridUsersAccessTokenid($this->client, $this->userid, $tokenid);
+        }
+
+        /**
+         * Get user API tokens.
+         * @return Result
+         */
+        public function getRest() {
+            return $this->client->get("/access/users/{$this->userid}/token");
+        }
+
+        /**
+         * Get user API tokens.
+         * @return Result
+         */
+        public function tokenIndex() {
+            return $this->getRest();
+        }
+
+    }
+
+    /**
+     * Class PVEItemTokenUseridUsersAccessTokenid
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVEItemTokenUseridUsersAccessTokenid {
+
+        /**
+         * @ignore
+         */
+        private $userid;
+
+        /**
+         * @ignore
+         */
+        private $tokenid;
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $userid, $tokenid) {
+            $this->client = $client;
+            $this->userid = $userid;
+            $this->tokenid = $tokenid;
+        }
+
+        /**
+         * Remove API token for a specific user.
+         * @return Result
+         */
+        public function deleteRest() {
+            return $this->client->delete("/access/users/{$this->userid}/token/{$this->tokenid}");
+        }
+
+        /**
+         * Remove API token for a specific user.
+         * @return Result
+         */
+        public function removeToken() {
+            return $this->deleteRest();
+        }
+
+        /**
+         * Get specific API token information.
+         * @return Result
+         */
+        public function getRest() {
+            return $this->client->get("/access/users/{$this->userid}/token/{$this->tokenid}");
+        }
+
+        /**
+         * Get specific API token information.
+         * @return Result
+         */
+        public function readToken() {
+            return $this->getRest();
+        }
+
+        /**
+         * Generate a new API token for a specific user. NOTE: returns API token value, which needs to be stored as it cannot be retrieved afterwards!
+         * @param string $comment 
+         * @param int $expire API token expiration date (seconds since epoch). '0' means no expiration date.
+         * @param bool $privsep Restrict API token privileges with separate ACLs (default), or give full privileges of corresponding user.
+         * @return Result
+         */
+        public function createRest($comment = null, $expire = null, $privsep = null) {
+            $params = ['comment' => $comment,
+                'expire' => $expire,
+                'privsep' => $privsep];
+            return $this->client->create("/access/users/{$this->userid}/token/{$this->tokenid}", $params);
+        }
+
+        /**
+         * Generate a new API token for a specific user. NOTE: returns API token value, which needs to be stored as it cannot be retrieved afterwards!
+         * @param string $comment 
+         * @param int $expire API token expiration date (seconds since epoch). '0' means no expiration date.
+         * @param bool $privsep Restrict API token privileges with separate ACLs (default), or give full privileges of corresponding user.
+         * @return Result
+         */
+        public function generateToken($comment = null, $expire = null, $privsep = null) {
+            return $this->createRest($comment, $expire, $privsep);
+        }
+
+        /**
+         * Update API token for a specific user.
+         * @param string $comment 
+         * @param int $expire API token expiration date (seconds since epoch). '0' means no expiration date.
+         * @param bool $privsep Restrict API token privileges with separate ACLs (default), or give full privileges of corresponding user.
+         * @return Result
+         */
+        public function setRest($comment = null, $expire = null, $privsep = null) {
+            $params = ['comment' => $comment,
+                'expire' => $expire,
+                'privsep' => $privsep];
+            return $this->client->set("/access/users/{$this->userid}/token/{$this->tokenid}", $params);
+        }
+
+        /**
+         * Update API token for a specific user.
+         * @param string $comment 
+         * @param int $expire API token expiration date (seconds since epoch). '0' means no expiration date.
+         * @param bool $privsep Restrict API token privileges with separate ACLs (default), or give full privileges of corresponding user.
+         * @return Result
+         */
+        public function updateTokenInfo($comment = null, $expire = null, $privsep = null) {
+            return $this->setRest($comment, $expire, $privsep);
         }
 
     }
@@ -22516,15 +22740,17 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $delete Remove permissions (instead of adding it).
          * @param string $groups List of groups.
          * @param bool $propagate Allow to propagate (inherit) permissions.
+         * @param string $tokens List of API tokens.
          * @param string $users List of users.
          * @return Result
          */
-        public function setRest($path, $roles, $delete = null, $groups = null, $propagate = null, $users = null) {
+        public function setRest($path, $roles, $delete = null, $groups = null, $propagate = null, $tokens = null, $users = null) {
             $params = ['path' => $path,
                 'roles' => $roles,
                 'delete' => $delete,
                 'groups' => $groups,
                 'propagate' => $propagate,
+                'tokens' => $tokens,
                 'users' => $users];
             return $this->client->set("/access/acl", $params);
         }
@@ -22536,11 +22762,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $delete Remove permissions (instead of adding it).
          * @param string $groups List of groups.
          * @param bool $propagate Allow to propagate (inherit) permissions.
+         * @param string $tokens List of API tokens.
          * @param string $users List of users.
          * @return Result
          */
-        public function updateAcl($path, $roles, $delete = null, $groups = null, $propagate = null, $users = null) {
-            return $this->setRest($path, $roles, $delete, $groups, $propagate, $users);
+        public function updateAcl($path, $roles, $delete = null, $groups = null, $propagate = null, $tokens = null, $users = null) {
+            return $this->setRest($path, $roles, $delete, $groups, $propagate, $tokens, $users);
         }
 
     }
@@ -22977,6 +23204,48 @@ namespace Corsinvest\ProxmoxVE\Api {
          */
         public function changeTfa($action, $userid, $config = null, $key = null, $password = null, $response = null) {
             return $this->setRest($action, $userid, $config, $key, $password, $response);
+        }
+
+    }
+
+    /**
+     * Class PVEAccessPermissions
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVEAccessPermissions {
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        function __construct($client) {
+            $this->client = $client;
+        }
+
+        /**
+         * Retrieve effective permissions of given user/token.
+         * @param string $path Only dump this specific path, not the whole tree.
+         * @param string $userid User ID or full API token ID
+         * @return Result
+         */
+        public function getRest($path = null, $userid = null) {
+            $params = ['path' => $path,
+                'userid' => $userid];
+            return $this->client->get("/access/permissions", $params);
+        }
+
+        /**
+         * Retrieve effective permissions of given user/token.
+         * @param string $path Only dump this specific path, not the whole tree.
+         * @param string $userid User ID or full API token ID
+         * @return Result
+         */
+        public function permissions($path = null, $userid = null) {
+            return $this->getRest($path, $userid);
         }
 
     }
