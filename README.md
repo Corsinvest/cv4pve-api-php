@@ -88,18 +88,10 @@ Recommended installation is using [Composer], if you do not have [Composer] what
 In the root of your project execute the following:
 
 ```sh
-composer require Corsinvest/cv4pve-api-php ~1.0
+composer require Corsinvest/cv4pve-api-php
 ```
 
-Or add this to your `composer.json` file:
-
-```json
-{
-    "require": {
-        "Corsinvest/cv4pve-api-php": "~1.0"
-    }
-}
-```
+Or add this to your `composer.json`
 
 ## Usage
 
