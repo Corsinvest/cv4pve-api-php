@@ -11,7 +11,7 @@
  *
  * Copyright (C) 2016 Corsinvest Srl	GPLv3 and CEL
  */
- 
+
 namespace Corsinvest\ProxmoxVE\Api;
 
 /**
@@ -36,6 +36,11 @@ class PveClientBase {
      * @ignore
      */
     private $hostname;
+
+    /**
+     * @ignore
+     */
+    private $apiToken;
 
     /**
      * @ignore
@@ -127,7 +132,7 @@ class PveClientBase {
     /**
      * Sets the debug level value 0 - nothing 1 - Url and method 2 - Url and method and result
      *
-     * @param string One of json, png.
+     * @param string $debugLevel One of json, png.
      */
     public function setDebugLevel($debugLevel) {
         $this->debugLevel = $debugLevel;
@@ -140,6 +145,24 @@ class PveClientBase {
      */
     public function getDebugLevel() {
         return $this->debugLevel;
+    }
+
+    /**
+     * Return Api Token
+     *
+     * @return type string
+     */
+    public function getApiToken() {
+        return $this->apiToken;
+    }
+
+    /**
+     * Set Api Token format USER@REALM!TOKENID=UUID
+     *
+     * @param type string $apiToken
+     */
+    public function setApiToken($apiToken) {
+        $this->apiToken = $apiToken;
     }
 
     /**
@@ -176,13 +199,13 @@ class PveClientBase {
 
         $result = $this->create("/access/ticket", $params);
         $this->setResultIsObject($oldResultIsObject);
-        
+
         if ($result->isSuccessStatusCode()) {
             $this->ticketCSRFPreventionToken = $result->getResponse()->data->CSRFPreventionToken;
             $this->ticketPVEAuthCookie = $result->getResponse()->data->ticket;
             return true;
         }
-        
+
         return false;
     }
 
@@ -232,11 +255,6 @@ class PveClientBase {
     private function executeAction($resource, $method, $parameters = []) {
         //url resource
         $url = "{$this->getApiUrl()}{$resource}";
-        //$cookies = [];
-        $headers = [];
-        if (null != $this->ticketPVEAuthCookie) {
-            $headers[] = "CSRFPreventionToken: {$this->ticketCSRFPreventionToken}";
-        }
 
         //remove null params
         $params = array_filter($parameters, function ($value) {
@@ -266,7 +284,6 @@ class PveClientBase {
                 $action_postfields = http_build_query($params);
                 curl_setopt($prox_ch, CURLOPT_POSTFIELDS, $action_postfields);
                 unset($action_postfields);
-                curl_setopt($prox_ch, CURLOPT_HTTPHEADER, $headers);
                 $methodType = "SET";
                 break;
 
@@ -275,13 +292,11 @@ class PveClientBase {
                 $action_postfields = http_build_query($params);
                 curl_setopt($prox_ch, CURLOPT_POSTFIELDS, $action_postfields);
                 unset($action_postfields);
-                curl_setopt($prox_ch, CURLOPT_HTTPHEADER, $headers);
                 $methodType = "CREATE";
                 break;
 
             case "DELETE":
                 curl_setopt($prox_ch, CURLOPT_CUSTOMREQUEST, "DELETE");
-                curl_setopt($prox_ch, CURLOPT_HTTPHEADER, $headers);
                 $methodType = "DELETE";
                 break;
         }
@@ -292,6 +307,17 @@ class PveClientBase {
         curl_setopt($prox_ch, CURLOPT_COOKIE, "PVEAuthCookie=" . $this->ticketPVEAuthCookie);
         curl_setopt($prox_ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($prox_ch, CURLOPT_SSL_VERIFYHOST, false);
+
+        $headers = [];
+        if (isSet($this->ticketPVEAuthCookie)) {
+            array_push($headers, "CSRFPreventionToken: {$this->ticketCSRFPreventionToken}");
+        }
+
+        if (isSet($this->apiToken)) {
+            array_push($headers, "Authorization: PVEAPIToken {$this->apiToken}");
+        }
+
+        curl_setopt($prox_ch, CURLOPT_HTTPHEADER, $headers);
 
         $response = curl_exec($prox_ch);
         $curlInfo = curl_getinfo($prox_ch);

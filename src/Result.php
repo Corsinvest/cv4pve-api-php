@@ -107,7 +107,7 @@ class Result {
 
     /**
      * Request parameter
-     * @return 
+     * @return
      */
     function getRequestParameters() {
         return $this->requestParameters;

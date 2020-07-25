@@ -80,6 +80,14 @@ The result is class **Result** and contain methods:
 * Return object/array data
   * default object disable from client.setResultIsObject(false)
 * ClientBase lite function
+* Form Proxmox VE 6.2 support Api Token for user
+
+## Api token
+
+From version 6.2 of Proxmox VE is possible to use [Api token](https://pve.proxmox.com/pve-docs/pveum-plain.html).
+This feature permit execute Api without using user and password.
+If using **Privilege Separation** when create api token remember specify in permission.
+Format USER@REALM!TOKENID=UUID
 
 ## Installation
 
