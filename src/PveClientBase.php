@@ -378,7 +378,7 @@ class PveClientBase {
      * @param string $task Task identifier
      * @param int $wait Millisecond wait next check
      * @param int $timeOut Millisecond timeout
-     * @return int 0 Success
+     * @return bool 
      */
     public function waitForTaskToFinish($node, $task, $wait = 500, $timeOut = 10000) {
         $isRunning = true;
@@ -390,14 +390,14 @@ class PveClientBase {
         }
         $timeStart = time();
         $waitTime = time();
-        while ($isRunning && ($timeStart - time()) < $timeOut) {
+        while ($isRunning && (time() - $timeStart) < $timeOut) {
             if ((time() - $waitTime) >= $wait) {
                 $waitTime = time();
                 $isRunning = taskIsRunning($node, $task);
             }
         }
 
-        return $timeStart - time() < $timeOut ? 0 : 1;
+        return (time() - $timeStart ) < $timeOut;
     }
 
     /**
@@ -405,7 +405,7 @@ class PveClientBase {
      * @param string $task Task identifier
      * @param int $wait Millisecond wait next check
      * @param int $timeOut Millisecond timeout
-     * @return int 0 Success
+     * @return bool 
      */
     function waitForTaskToFinish1($task, $wait = 500, $timeOut = 10000) {
         return waitForTaskToFinish(split(':', $task)[1], $task, $wait, $timeOut);
