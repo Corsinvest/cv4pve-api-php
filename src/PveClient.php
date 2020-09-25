@@ -2329,6 +2329,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $node Only run if executed on this node.
          * @param int $pigz Use pigz instead of gzip when N&amp;gt;0. N=1 uses half of cores, N&amp;gt;1 uses N as thread count.
          * @param string $pool Backup all known guest systems included in the specified pool.
+         * @param string $prune_backups Use these retention options instead of those from the storage configuration.
          * @param bool $quiet Be quiet.
          * @param bool $remove Remove old backup files if there are more than 'maxfiles' backup files.
          * @param string $script Use specified hook script.
@@ -2342,7 +2343,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $zstd Zstd threads. N=0 uses half of the available cores, N&amp;gt;0 uses N as thread count.
          * @return Result
          */
-        public function createRest($starttime, $all = null, $bwlimit = null, $compress = null, $dow = null, $dumpdir = null, $enabled = null, $exclude = null, $exclude_path = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $node = null, $pigz = null, $pool = null, $quiet = null, $remove = null, $script = null, $size = null, $stdexcludes = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
+        public function createRest($starttime, $all = null, $bwlimit = null, $compress = null, $dow = null, $dumpdir = null, $enabled = null, $exclude = null, $exclude_path = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $node = null, $pigz = null, $pool = null, $prune_backups = null, $quiet = null, $remove = null, $script = null, $size = null, $stdexcludes = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
             $params = ['starttime' => $starttime,
                 'all' => $all,
                 'bwlimit' => $bwlimit,
@@ -2361,6 +2362,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'node' => $node,
                 'pigz' => $pigz,
                 'pool' => $pool,
+                'prune-backups' => $prune_backups,
                 'quiet' => $quiet,
                 'remove' => $remove,
                 'script' => $script,
@@ -2398,6 +2400,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $node Only run if executed on this node.
          * @param int $pigz Use pigz instead of gzip when N&amp;gt;0. N=1 uses half of cores, N&amp;gt;1 uses N as thread count.
          * @param string $pool Backup all known guest systems included in the specified pool.
+         * @param string $prune_backups Use these retention options instead of those from the storage configuration.
          * @param bool $quiet Be quiet.
          * @param bool $remove Remove old backup files if there are more than 'maxfiles' backup files.
          * @param string $script Use specified hook script.
@@ -2411,8 +2414,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $zstd Zstd threads. N=0 uses half of the available cores, N&amp;gt;0 uses N as thread count.
          * @return Result
          */
-        public function createJob($starttime, $all = null, $bwlimit = null, $compress = null, $dow = null, $dumpdir = null, $enabled = null, $exclude = null, $exclude_path = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $node = null, $pigz = null, $pool = null, $quiet = null, $remove = null, $script = null, $size = null, $stdexcludes = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
-            return $this->createRest($starttime, $all, $bwlimit, $compress, $dow, $dumpdir, $enabled, $exclude, $exclude_path, $ionice, $lockwait, $mailnotification, $mailto, $maxfiles, $mode, $node, $pigz, $pool, $quiet, $remove, $script, $size, $stdexcludes, $stop, $stopwait, $storage, $tmpdir, $vmid, $zstd);
+        public function createJob($starttime, $all = null, $bwlimit = null, $compress = null, $dow = null, $dumpdir = null, $enabled = null, $exclude = null, $exclude_path = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $node = null, $pigz = null, $pool = null, $prune_backups = null, $quiet = null, $remove = null, $script = null, $size = null, $stdexcludes = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
+            return $this->createRest($starttime, $all, $bwlimit, $compress, $dow, $dumpdir, $enabled, $exclude, $exclude_path, $ionice, $lockwait, $mailnotification, $mailto, $maxfiles, $mode, $node, $pigz, $pool, $prune_backups, $quiet, $remove, $script, $size, $stdexcludes, $stop, $stopwait, $storage, $tmpdir, $vmid, $zstd);
         }
 
     }
@@ -2510,6 +2513,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $node Only run if executed on this node.
          * @param int $pigz Use pigz instead of gzip when N&amp;gt;0. N=1 uses half of cores, N&amp;gt;1 uses N as thread count.
          * @param string $pool Backup all known guest systems included in the specified pool.
+         * @param string $prune_backups Use these retention options instead of those from the storage configuration.
          * @param bool $quiet Be quiet.
          * @param bool $remove Remove old backup files if there are more than 'maxfiles' backup files.
          * @param string $script Use specified hook script.
@@ -2523,7 +2527,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $zstd Zstd threads. N=0 uses half of the available cores, N&amp;gt;0 uses N as thread count.
          * @return Result
          */
-        public function setRest($starttime, $all = null, $bwlimit = null, $compress = null, $delete = null, $dow = null, $dumpdir = null, $enabled = null, $exclude = null, $exclude_path = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $node = null, $pigz = null, $pool = null, $quiet = null, $remove = null, $script = null, $size = null, $stdexcludes = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
+        public function setRest($starttime, $all = null, $bwlimit = null, $compress = null, $delete = null, $dow = null, $dumpdir = null, $enabled = null, $exclude = null, $exclude_path = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $node = null, $pigz = null, $pool = null, $prune_backups = null, $quiet = null, $remove = null, $script = null, $size = null, $stdexcludes = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
             $params = ['starttime' => $starttime,
                 'all' => $all,
                 'bwlimit' => $bwlimit,
@@ -2543,6 +2547,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'node' => $node,
                 'pigz' => $pigz,
                 'pool' => $pool,
+                'prune-backups' => $prune_backups,
                 'quiet' => $quiet,
                 'remove' => $remove,
                 'script' => $script,
@@ -2581,6 +2586,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $node Only run if executed on this node.
          * @param int $pigz Use pigz instead of gzip when N&amp;gt;0. N=1 uses half of cores, N&amp;gt;1 uses N as thread count.
          * @param string $pool Backup all known guest systems included in the specified pool.
+         * @param string $prune_backups Use these retention options instead of those from the storage configuration.
          * @param bool $quiet Be quiet.
          * @param bool $remove Remove old backup files if there are more than 'maxfiles' backup files.
          * @param string $script Use specified hook script.
@@ -2594,8 +2600,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $zstd Zstd threads. N=0 uses half of the available cores, N&amp;gt;0 uses N as thread count.
          * @return Result
          */
-        public function updateJob($starttime, $all = null, $bwlimit = null, $compress = null, $delete = null, $dow = null, $dumpdir = null, $enabled = null, $exclude = null, $exclude_path = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $node = null, $pigz = null, $pool = null, $quiet = null, $remove = null, $script = null, $size = null, $stdexcludes = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
-            return $this->setRest($starttime, $all, $bwlimit, $compress, $delete, $dow, $dumpdir, $enabled, $exclude, $exclude_path, $ionice, $lockwait, $mailnotification, $mailto, $maxfiles, $mode, $node, $pigz, $pool, $quiet, $remove, $script, $size, $stdexcludes, $stop, $stopwait, $storage, $tmpdir, $vmid, $zstd);
+        public function updateJob($starttime, $all = null, $bwlimit = null, $compress = null, $delete = null, $dow = null, $dumpdir = null, $enabled = null, $exclude = null, $exclude_path = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $node = null, $pigz = null, $pool = null, $prune_backups = null, $quiet = null, $remove = null, $script = null, $size = null, $stdexcludes = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
+            return $this->setRest($starttime, $all, $bwlimit, $compress, $delete, $dow, $dumpdir, $enabled, $exclude, $exclude_path, $ionice, $lockwait, $mailnotification, $mailto, $maxfiles, $mode, $node, $pigz, $pool, $prune_backups, $quiet, $remove, $script, $size, $stdexcludes, $stop, $stopwait, $storage, $tmpdir, $vmid, $zstd);
         }
 
     }
@@ -11883,6 +11889,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $cores The number of cores assigned to the container. A container can use all available cores by default.
          * @param int $cpulimit Limit of CPU usage.  NOTE: If the computer has 2 CPUs, it has a total of '2' CPU time. Value '0' indicates no CPU limit.
          * @param int $cpuunits CPU weight for a VM. Argument is used in the kernel fair scheduler. The larger the number is, the more CPU time this VM gets. Number is relative to the weights of all the other running VMs.  NOTE: You can disable fair-scheduler configuration by setting this to 0.
+         * @param bool $debug Try to be more verbose. For now this only enables debug log-level on start.
          * @param string $description Container description. Only used on the configuration web interface.
          * @param string $features Allow containers access to advanced features.
          * @param bool $force Allow to overwrite existing container.
@@ -11918,7 +11925,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
          * @return Result
          */
-        public function createRest($ostemplate, $vmid, $arch = null, $bwlimit = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $description = null, $features = null, $force = null, $hookscript = null, $hostname = null, $ignore_unpack_errors = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $password = null, $pool = null, $protection = null, $restore = null, $rootfs = null, $searchdomain = null, $ssh_public_keys = null, $start = null, $startup = null, $storage = null, $swap = null, $tags = null, $template = null, $timezone = null, $tty = null, $unique = null, $unprivileged = null, $unusedN = null) {
+        public function createRest($ostemplate, $vmid, $arch = null, $bwlimit = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $debug = null, $description = null, $features = null, $force = null, $hookscript = null, $hostname = null, $ignore_unpack_errors = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $password = null, $pool = null, $protection = null, $restore = null, $rootfs = null, $searchdomain = null, $ssh_public_keys = null, $start = null, $startup = null, $storage = null, $swap = null, $tags = null, $template = null, $timezone = null, $tty = null, $unique = null, $unprivileged = null, $unusedN = null) {
             $params = ['ostemplate' => $ostemplate,
                 'vmid' => $vmid,
                 'arch' => $arch,
@@ -11928,6 +11935,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'cores' => $cores,
                 'cpulimit' => $cpulimit,
                 'cpuunits' => $cpuunits,
+                'debug' => $debug,
                 'description' => $description,
                 'features' => $features,
                 'force' => $force,
@@ -11975,6 +11983,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $cores The number of cores assigned to the container. A container can use all available cores by default.
          * @param int $cpulimit Limit of CPU usage.  NOTE: If the computer has 2 CPUs, it has a total of '2' CPU time. Value '0' indicates no CPU limit.
          * @param int $cpuunits CPU weight for a VM. Argument is used in the kernel fair scheduler. The larger the number is, the more CPU time this VM gets. Number is relative to the weights of all the other running VMs.  NOTE: You can disable fair-scheduler configuration by setting this to 0.
+         * @param bool $debug Try to be more verbose. For now this only enables debug log-level on start.
          * @param string $description Container description. Only used on the configuration web interface.
          * @param string $features Allow containers access to advanced features.
          * @param bool $force Allow to overwrite existing container.
@@ -12010,8 +12019,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
          * @return Result
          */
-        public function createVm($ostemplate, $vmid, $arch = null, $bwlimit = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $description = null, $features = null, $force = null, $hookscript = null, $hostname = null, $ignore_unpack_errors = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $password = null, $pool = null, $protection = null, $restore = null, $rootfs = null, $searchdomain = null, $ssh_public_keys = null, $start = null, $startup = null, $storage = null, $swap = null, $tags = null, $template = null, $timezone = null, $tty = null, $unique = null, $unprivileged = null, $unusedN = null) {
-            return $this->createRest($ostemplate, $vmid, $arch, $bwlimit, $cmode, $console, $cores, $cpulimit, $cpuunits, $description, $features, $force, $hookscript, $hostname, $ignore_unpack_errors, $lock, $memory, $mpN, $nameserver, $netN, $onboot, $ostype, $password, $pool, $protection, $restore, $rootfs, $searchdomain, $ssh_public_keys, $start, $startup, $storage, $swap, $tags, $template, $timezone, $tty, $unique, $unprivileged, $unusedN);
+        public function createVm($ostemplate, $vmid, $arch = null, $bwlimit = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $debug = null, $description = null, $features = null, $force = null, $hookscript = null, $hostname = null, $ignore_unpack_errors = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $password = null, $pool = null, $protection = null, $restore = null, $rootfs = null, $searchdomain = null, $ssh_public_keys = null, $start = null, $startup = null, $storage = null, $swap = null, $tags = null, $template = null, $timezone = null, $tty = null, $unique = null, $unprivileged = null, $unusedN = null) {
+            return $this->createRest($ostemplate, $vmid, $arch, $bwlimit, $cmode, $console, $cores, $cpulimit, $cpuunits, $debug, $description, $features, $force, $hookscript, $hostname, $ignore_unpack_errors, $lock, $memory, $mpN, $nameserver, $netN, $onboot, $ostype, $password, $pool, $protection, $restore, $rootfs, $searchdomain, $ssh_public_keys, $start, $startup, $storage, $swap, $tags, $template, $timezone, $tty, $unique, $unprivileged, $unusedN);
         }
 
     }
@@ -12369,6 +12378,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $cores The number of cores assigned to the container. A container can use all available cores by default.
          * @param int $cpulimit Limit of CPU usage.  NOTE: If the computer has 2 CPUs, it has a total of '2' CPU time. Value '0' indicates no CPU limit.
          * @param int $cpuunits CPU weight for a VM. Argument is used in the kernel fair scheduler. The larger the number is, the more CPU time this VM gets. Number is relative to the weights of all the other running VMs.  NOTE: You can disable fair-scheduler configuration by setting this to 0.
+         * @param bool $debug Try to be more verbose. For now this only enables debug log-level on start.
          * @param string $delete A list of settings you want to delete.
          * @param string $description Container description. Only used on the configuration web interface.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -12398,13 +12408,14 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
          * @return Result
          */
-        public function setRest($arch = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $features = null, $hookscript = null, $hostname = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $protection = null, $revert = null, $rootfs = null, $searchdomain = null, $startup = null, $swap = null, $tags = null, $template = null, $timezone = null, $tty = null, $unprivileged = null, $unusedN = null) {
+        public function setRest($arch = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $debug = null, $delete = null, $description = null, $digest = null, $features = null, $hookscript = null, $hostname = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $protection = null, $revert = null, $rootfs = null, $searchdomain = null, $startup = null, $swap = null, $tags = null, $template = null, $timezone = null, $tty = null, $unprivileged = null, $unusedN = null) {
             $params = ['arch' => $arch,
                 'cmode' => $cmode,
                 'console' => $console,
                 'cores' => $cores,
                 'cpulimit' => $cpulimit,
                 'cpuunits' => $cpuunits,
+                'debug' => $debug,
                 'delete' => $delete,
                 'description' => $description,
                 'digest' => $digest,
@@ -12443,6 +12454,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $cores The number of cores assigned to the container. A container can use all available cores by default.
          * @param int $cpulimit Limit of CPU usage.  NOTE: If the computer has 2 CPUs, it has a total of '2' CPU time. Value '0' indicates no CPU limit.
          * @param int $cpuunits CPU weight for a VM. Argument is used in the kernel fair scheduler. The larger the number is, the more CPU time this VM gets. Number is relative to the weights of all the other running VMs.  NOTE: You can disable fair-scheduler configuration by setting this to 0.
+         * @param bool $debug Try to be more verbose. For now this only enables debug log-level on start.
          * @param string $delete A list of settings you want to delete.
          * @param string $description Container description. Only used on the configuration web interface.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -12472,8 +12484,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
          * @return Result
          */
-        public function updateVm($arch = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $features = null, $hookscript = null, $hostname = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $protection = null, $revert = null, $rootfs = null, $searchdomain = null, $startup = null, $swap = null, $tags = null, $template = null, $timezone = null, $tty = null, $unprivileged = null, $unusedN = null) {
-            return $this->setRest($arch, $cmode, $console, $cores, $cpulimit, $cpuunits, $delete, $description, $digest, $features, $hookscript, $hostname, $lock, $memory, $mpN, $nameserver, $netN, $onboot, $ostype, $protection, $revert, $rootfs, $searchdomain, $startup, $swap, $tags, $template, $timezone, $tty, $unprivileged, $unusedN);
+        public function updateVm($arch = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $debug = null, $delete = null, $description = null, $digest = null, $features = null, $hookscript = null, $hostname = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $protection = null, $revert = null, $rootfs = null, $searchdomain = null, $startup = null, $swap = null, $tags = null, $template = null, $timezone = null, $tty = null, $unprivileged = null, $unusedN = null) {
+            return $this->setRest($arch, $cmode, $console, $cores, $cpulimit, $cpuunits, $debug, $delete, $description, $digest, $features, $hookscript, $hostname, $lock, $memory, $mpN, $nameserver, $netN, $onboot, $ostype, $protection, $revert, $rootfs, $searchdomain, $startup, $swap, $tags, $template, $timezone, $tty, $unprivileged, $unusedN);
         }
 
     }
@@ -12697,21 +12709,24 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Start the container.
+         * @param bool $debug If set, enables very verbose debug log-level on start.
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
          * @return Result
          */
-        public function createRest($skiplock = null) {
-            $params = ['skiplock' => $skiplock];
+        public function createRest($debug = null, $skiplock = null) {
+            $params = ['debug' => $debug,
+                'skiplock' => $skiplock];
             return $this->client->create("/nodes/{$this->node}/lxc/{$this->vmid}/status/start", $params);
         }
 
         /**
          * Start the container.
+         * @param bool $debug If set, enables very verbose debug log-level on start.
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
          * @return Result
          */
-        public function vmStart($skiplock = null) {
-            return $this->createRest($skiplock);
+        public function vmStart($debug = null, $skiplock = null) {
+            return $this->createRest($debug, $skiplock);
         }
 
     }
@@ -15421,6 +15436,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Create OSD
          * @param string $dev Block device name.
+         * @param string $crush_device_class Set the device class of the OSD in crush.
          * @param string $db_dev Block device name for block.db.
          * @param int $db_size Size in GiB for block.db.
          * @param bool $encrypted Enables encryption of the OSD.
@@ -15428,8 +15444,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $wal_size Size in GiB for block.wal.
          * @return Result
          */
-        public function createRest($dev, $db_dev = null, $db_size = null, $encrypted = null, $wal_dev = null, $wal_size = null) {
+        public function createRest($dev, $crush_device_class = null, $db_dev = null, $db_size = null, $encrypted = null, $wal_dev = null, $wal_size = null) {
             $params = ['dev' => $dev,
+                'crush-device-class' => $crush_device_class,
                 'db_dev' => $db_dev,
                 'db_size' => $db_size,
                 'encrypted' => $encrypted,
@@ -15441,6 +15458,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Create OSD
          * @param string $dev Block device name.
+         * @param string $crush_device_class Set the device class of the OSD in crush.
          * @param string $db_dev Block device name for block.db.
          * @param int $db_size Size in GiB for block.db.
          * @param bool $encrypted Enables encryption of the OSD.
@@ -15448,8 +15466,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $wal_size Size in GiB for block.wal.
          * @return Result
          */
-        public function createosd($dev, $db_dev = null, $db_size = null, $encrypted = null, $wal_dev = null, $wal_size = null) {
-            return $this->createRest($dev, $db_dev, $db_size, $encrypted, $wal_dev, $wal_size);
+        public function createosd($dev, $crush_device_class = null, $db_dev = null, $db_size = null, $encrypted = null, $wal_dev = null, $wal_size = null) {
+            return $this->createRest($dev, $crush_device_class, $db_dev, $db_size, $encrypted, $wal_dev, $wal_size);
         }
 
     }
@@ -16962,6 +16980,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: snapshot,suspend,stop
          * @param int $pigz Use pigz instead of gzip when N&amp;gt;0. N=1 uses half of cores, N&amp;gt;1 uses N as thread count.
          * @param string $pool Backup all known guest systems included in the specified pool.
+         * @param string $prune_backups Use these retention options instead of those from the storage configuration.
          * @param bool $quiet Be quiet.
          * @param bool $remove Remove old backup files if there are more than 'maxfiles' backup files.
          * @param string $script Use specified hook script.
@@ -16976,7 +16995,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $zstd Zstd threads. N=0 uses half of the available cores, N&amp;gt;0 uses N as thread count.
          * @return Result
          */
-        public function createRest($all = null, $bwlimit = null, $compress = null, $dumpdir = null, $exclude = null, $exclude_path = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $pigz = null, $pool = null, $quiet = null, $remove = null, $script = null, $size = null, $stdexcludes = null, $stdout = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
+        public function createRest($all = null, $bwlimit = null, $compress = null, $dumpdir = null, $exclude = null, $exclude_path = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $pigz = null, $pool = null, $prune_backups = null, $quiet = null, $remove = null, $script = null, $size = null, $stdexcludes = null, $stdout = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
             $params = ['all' => $all,
                 'bwlimit' => $bwlimit,
                 'compress' => $compress,
@@ -16991,6 +17010,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'mode' => $mode,
                 'pigz' => $pigz,
                 'pool' => $pool,
+                'prune-backups' => $prune_backups,
                 'quiet' => $quiet,
                 'remove' => $remove,
                 'script' => $script,
@@ -17025,6 +17045,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: snapshot,suspend,stop
          * @param int $pigz Use pigz instead of gzip when N&amp;gt;0. N=1 uses half of cores, N&amp;gt;1 uses N as thread count.
          * @param string $pool Backup all known guest systems included in the specified pool.
+         * @param string $prune_backups Use these retention options instead of those from the storage configuration.
          * @param bool $quiet Be quiet.
          * @param bool $remove Remove old backup files if there are more than 'maxfiles' backup files.
          * @param string $script Use specified hook script.
@@ -17039,8 +17060,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $zstd Zstd threads. N=0 uses half of the available cores, N&amp;gt;0 uses N as thread count.
          * @return Result
          */
-        public function vzdump($all = null, $bwlimit = null, $compress = null, $dumpdir = null, $exclude = null, $exclude_path = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $pigz = null, $pool = null, $quiet = null, $remove = null, $script = null, $size = null, $stdexcludes = null, $stdout = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
-            return $this->createRest($all, $bwlimit, $compress, $dumpdir, $exclude, $exclude_path, $ionice, $lockwait, $mailnotification, $mailto, $maxfiles, $mode, $pigz, $pool, $quiet, $remove, $script, $size, $stdexcludes, $stdout, $stop, $stopwait, $storage, $tmpdir, $vmid, $zstd);
+        public function vzdump($all = null, $bwlimit = null, $compress = null, $dumpdir = null, $exclude = null, $exclude_path = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $pigz = null, $pool = null, $prune_backups = null, $quiet = null, $remove = null, $script = null, $size = null, $stdexcludes = null, $stdout = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
+            return $this->createRest($all, $bwlimit, $compress, $dumpdir, $exclude, $exclude_path, $ionice, $lockwait, $mailnotification, $mailto, $maxfiles, $mode, $pigz, $pool, $prune_backups, $quiet, $remove, $script, $size, $stdexcludes, $stdout, $stop, $stopwait, $storage, $tmpdir, $vmid, $zstd);
         }
 
     }
@@ -17429,7 +17450,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
-         * Restart service.
+         * Hard restart service. Use reload if you want to reduce interruptions.
          * @return Result
          */
         public function createRest() {
@@ -17437,7 +17458,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
-         * Restart service.
+         * Hard restart service. Use reload if you want to reduce interruptions.
          * @return Result
          */
         public function serviceRestart() {
@@ -17477,7 +17498,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
-         * Reload service.
+         * Reload service. Falls back to restart if service cannot be reloaded.
          * @return Result
          */
         public function createRest() {
@@ -17485,7 +17506,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
-         * Reload service.
+         * Reload service. Falls back to restart if service cannot be reloaded.
          * @return Result
          */
         public function serviceReload() {
@@ -19040,6 +19061,19 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * @ignore
          */
+        private $prunebackups;
+
+        /**
+         * Get StorageStorageNodeNodesPrunebackups
+         * @return PVEStorageStorageNodeNodesPrunebackups
+         */
+        public function getPrunebackups() {
+            return $this->prunebackups ?: ($this->prunebackups = new PVEStorageStorageNodeNodesPrunebackups($this->client, $this->node, $this->storage));
+        }
+
+        /**
+         * @ignore
+         */
         private $content;
 
         /**
@@ -19116,6 +19150,92 @@ namespace Corsinvest\ProxmoxVE\Api {
          */
         public function diridx() {
             return $this->getRest();
+        }
+
+    }
+
+    /**
+     * Class PVEStorageStorageNodeNodesPrunebackups
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEStorageStorageNodeNodesPrunebackups {
+
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        private $storage;
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $storage) {
+            $this->client = $client;
+            $this->node = $node;
+            $this->storage = $storage;
+        }
+
+        /**
+         * Prune backups. Only those using the standard naming scheme are considered.
+         * @param string $prune_backups Use these retention options instead of those from the storage configuration.
+         * @param string $type Either 'qemu' or 'lxc'. Only consider backups for guests of this type.
+         *   Enum: qemu,lxc
+         * @param int $vmid Only prune backups for this VM.
+         * @return Result
+         */
+        public function deleteRest($prune_backups = null, $type = null, $vmid = null) {
+            $params = ['prune-backups' => $prune_backups,
+                'type' => $type,
+                'vmid' => $vmid];
+            return $this->client->delete("/nodes/{$this->node}/storage/{$this->storage}/prunebackups", $params);
+        }
+
+        /**
+         * Prune backups. Only those using the standard naming scheme are considered.
+         * @param string $prune_backups Use these retention options instead of those from the storage configuration.
+         * @param string $type Either 'qemu' or 'lxc'. Only consider backups for guests of this type.
+         *   Enum: qemu,lxc
+         * @param int $vmid Only prune backups for this VM.
+         * @return Result
+         */
+        public function delete($prune_backups = null, $type = null, $vmid = null) {
+            return $this->deleteRest($prune_backups, $type, $vmid);
+        }
+
+        /**
+         * Get prune information for backups. NOTE: this is only a preview and might not be exactly what a subsequent prune call does, if the hour changes or if backups are removed/added in the meantime.
+         * @param string $prune_backups Use these retention options instead of those from the storage configuration.
+         * @param string $type Either 'qemu' or 'lxc'. Only consider backups for guests of this type.
+         *   Enum: qemu,lxc
+         * @param int $vmid Only consider backups for this guest.
+         * @return Result
+         */
+        public function getRest($prune_backups = null, $type = null, $vmid = null) {
+            $params = ['prune-backups' => $prune_backups,
+                'type' => $type,
+                'vmid' => $vmid];
+            return $this->client->get("/nodes/{$this->node}/storage/{$this->storage}/prunebackups", $params);
+        }
+
+        /**
+         * Get prune information for backups. NOTE: this is only a preview and might not be exactly what a subsequent prune call does, if the hour changes or if backups are removed/added in the meantime.
+         * @param string $prune_backups Use these retention options instead of those from the storage configuration.
+         * @param string $type Either 'qemu' or 'lxc'. Only consider backups for guests of this type.
+         *   Enum: qemu,lxc
+         * @param int $vmid Only consider backups for this guest.
+         * @return Result
+         */
+        public function dryrun($prune_backups = null, $type = null, $vmid = null) {
+            return $this->getRest($prune_backups, $type, $vmid);
         }
 
     }
@@ -23000,6 +23120,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $path File system path.
          * @param string $pool Pool.
          * @param string $portal iSCSI portal (IP or DNS name with optional port).
+         * @param string $prune_backups The retention options with shorter intervals are processed first with --keep-last being the very first one. Each option covers a specific period of time. We say that backups within this period are covered by this option. The next option does not take care of already covered backups and only considers older backups.
          * @param int $redundancy The redundancy count specifies the number of nodes to which the resource should be deployed. It must be at least 1 and at most the number of nodes in the cluster.
          * @param bool $saferemove Zero-out data when removing LVs.
          * @param string $saferemove_throughput Wipe throughput (cstream -t parameter value).
@@ -23021,7 +23142,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $volume Glusterfs Volume.
          * @return Result
          */
-        public function createRest($storage, $type, $authsupported = null, $base = null, $blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $datastore = null, $disable = null, $domain = null, $encryption_key = null, $export = null, $fingerprint = null, $format = null, $fuse = null, $is_mountpoint = null, $iscsiprovider = null, $krbd = null, $lio_tpg = null, $maxfiles = null, $mkdir = null, $monhost = null, $mountpoint = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $path = null, $pool = null, $portal = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $share = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $target = null, $thinpool = null, $transport = null, $username = null, $vgname = null, $volume = null) {
+        public function createRest($storage, $type, $authsupported = null, $base = null, $blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $datastore = null, $disable = null, $domain = null, $encryption_key = null, $export = null, $fingerprint = null, $format = null, $fuse = null, $is_mountpoint = null, $iscsiprovider = null, $krbd = null, $lio_tpg = null, $maxfiles = null, $mkdir = null, $monhost = null, $mountpoint = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $path = null, $pool = null, $portal = null, $prune_backups = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $share = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $target = null, $thinpool = null, $transport = null, $username = null, $vgname = null, $volume = null) {
             $params = ['storage' => $storage,
                 'type' => $type,
                 'authsupported' => $authsupported,
@@ -23054,6 +23175,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'path' => $path,
                 'pool' => $pool,
                 'portal' => $portal,
+                'prune-backups' => $prune_backups,
                 'redundancy' => $redundancy,
                 'saferemove' => $saferemove,
                 'saferemove_throughput' => $saferemove_throughput,
@@ -23109,6 +23231,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $path File system path.
          * @param string $pool Pool.
          * @param string $portal iSCSI portal (IP or DNS name with optional port).
+         * @param string $prune_backups The retention options with shorter intervals are processed first with --keep-last being the very first one. Each option covers a specific period of time. We say that backups within this period are covered by this option. The next option does not take care of already covered backups and only considers older backups.
          * @param int $redundancy The redundancy count specifies the number of nodes to which the resource should be deployed. It must be at least 1 and at most the number of nodes in the cluster.
          * @param bool $saferemove Zero-out data when removing LVs.
          * @param string $saferemove_throughput Wipe throughput (cstream -t parameter value).
@@ -23130,8 +23253,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $volume Glusterfs Volume.
          * @return Result
          */
-        public function create($storage, $type, $authsupported = null, $base = null, $blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $datastore = null, $disable = null, $domain = null, $encryption_key = null, $export = null, $fingerprint = null, $format = null, $fuse = null, $is_mountpoint = null, $iscsiprovider = null, $krbd = null, $lio_tpg = null, $maxfiles = null, $mkdir = null, $monhost = null, $mountpoint = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $path = null, $pool = null, $portal = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $share = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $target = null, $thinpool = null, $transport = null, $username = null, $vgname = null, $volume = null) {
-            return $this->createRest($storage, $type, $authsupported, $base, $blocksize, $bwlimit, $comstar_hg, $comstar_tg, $content, $datastore, $disable, $domain, $encryption_key, $export, $fingerprint, $format, $fuse, $is_mountpoint, $iscsiprovider, $krbd, $lio_tpg, $maxfiles, $mkdir, $monhost, $mountpoint, $nodes, $nowritecache, $options, $password, $path, $pool, $portal, $redundancy, $saferemove, $saferemove_throughput, $server, $server2, $share, $shared, $smbversion, $sparse, $subdir, $tagged_only, $target, $thinpool, $transport, $username, $vgname, $volume);
+        public function create($storage, $type, $authsupported = null, $base = null, $blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $datastore = null, $disable = null, $domain = null, $encryption_key = null, $export = null, $fingerprint = null, $format = null, $fuse = null, $is_mountpoint = null, $iscsiprovider = null, $krbd = null, $lio_tpg = null, $maxfiles = null, $mkdir = null, $monhost = null, $mountpoint = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $path = null, $pool = null, $portal = null, $prune_backups = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $share = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $target = null, $thinpool = null, $transport = null, $username = null, $vgname = null, $volume = null) {
+            return $this->createRest($storage, $type, $authsupported, $base, $blocksize, $bwlimit, $comstar_hg, $comstar_tg, $content, $datastore, $disable, $domain, $encryption_key, $export, $fingerprint, $format, $fuse, $is_mountpoint, $iscsiprovider, $krbd, $lio_tpg, $maxfiles, $mkdir, $monhost, $mountpoint, $nodes, $nowritecache, $options, $password, $path, $pool, $portal, $prune_backups, $redundancy, $saferemove, $saferemove_throughput, $server, $server2, $share, $shared, $smbversion, $sparse, $subdir, $tagged_only, $target, $thinpool, $transport, $username, $vgname, $volume);
         }
 
     }
@@ -23219,6 +23342,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $options NFS mount options (see 'man nfs')
          * @param string $password Password for accessing the share/datastore.
          * @param string $pool Pool.
+         * @param string $prune_backups The retention options with shorter intervals are processed first with --keep-last being the very first one. Each option covers a specific period of time. We say that backups within this period are covered by this option. The next option does not take care of already covered backups and only considers older backups.
          * @param int $redundancy The redundancy count specifies the number of nodes to which the resource should be deployed. It must be at least 1 and at most the number of nodes in the cluster.
          * @param bool $saferemove Zero-out data when removing LVs.
          * @param string $saferemove_throughput Wipe throughput (cstream -t parameter value).
@@ -23235,7 +23359,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $username RBD Id.
          * @return Result
          */
-        public function setRest($blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $delete = null, $digest = null, $disable = null, $domain = null, $encryption_key = null, $fingerprint = null, $format = null, $fuse = null, $is_mountpoint = null, $krbd = null, $lio_tpg = null, $maxfiles = null, $mkdir = null, $monhost = null, $mountpoint = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $pool = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $transport = null, $username = null) {
+        public function setRest($blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $delete = null, $digest = null, $disable = null, $domain = null, $encryption_key = null, $fingerprint = null, $format = null, $fuse = null, $is_mountpoint = null, $krbd = null, $lio_tpg = null, $maxfiles = null, $mkdir = null, $monhost = null, $mountpoint = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $pool = null, $prune_backups = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $transport = null, $username = null) {
             $params = ['blocksize' => $blocksize,
                 'bwlimit' => $bwlimit,
                 'comstar_hg' => $comstar_hg,
@@ -23261,6 +23385,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'options' => $options,
                 'password' => $password,
                 'pool' => $pool,
+                'prune-backups' => $prune_backups,
                 'redundancy' => $redundancy,
                 'saferemove' => $saferemove,
                 'saferemove_throughput' => $saferemove_throughput,
@@ -23303,6 +23428,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $options NFS mount options (see 'man nfs')
          * @param string $password Password for accessing the share/datastore.
          * @param string $pool Pool.
+         * @param string $prune_backups The retention options with shorter intervals are processed first with --keep-last being the very first one. Each option covers a specific period of time. We say that backups within this period are covered by this option. The next option does not take care of already covered backups and only considers older backups.
          * @param int $redundancy The redundancy count specifies the number of nodes to which the resource should be deployed. It must be at least 1 and at most the number of nodes in the cluster.
          * @param bool $saferemove Zero-out data when removing LVs.
          * @param string $saferemove_throughput Wipe throughput (cstream -t parameter value).
@@ -23319,8 +23445,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $username RBD Id.
          * @return Result
          */
-        public function update($blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $delete = null, $digest = null, $disable = null, $domain = null, $encryption_key = null, $fingerprint = null, $format = null, $fuse = null, $is_mountpoint = null, $krbd = null, $lio_tpg = null, $maxfiles = null, $mkdir = null, $monhost = null, $mountpoint = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $pool = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $transport = null, $username = null) {
-            return $this->setRest($blocksize, $bwlimit, $comstar_hg, $comstar_tg, $content, $delete, $digest, $disable, $domain, $encryption_key, $fingerprint, $format, $fuse, $is_mountpoint, $krbd, $lio_tpg, $maxfiles, $mkdir, $monhost, $mountpoint, $nodes, $nowritecache, $options, $password, $pool, $redundancy, $saferemove, $saferemove_throughput, $server, $server2, $shared, $smbversion, $sparse, $subdir, $tagged_only, $transport, $username);
+        public function update($blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $delete = null, $digest = null, $disable = null, $domain = null, $encryption_key = null, $fingerprint = null, $format = null, $fuse = null, $is_mountpoint = null, $krbd = null, $lio_tpg = null, $maxfiles = null, $mkdir = null, $monhost = null, $mountpoint = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $pool = null, $prune_backups = null, $redundancy = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $transport = null, $username = null) {
+            return $this->setRest($blocksize, $bwlimit, $comstar_hg, $comstar_tg, $content, $delete, $digest, $disable, $domain, $encryption_key, $fingerprint, $format, $fuse, $is_mountpoint, $krbd, $lio_tpg, $maxfiles, $mkdir, $monhost, $mountpoint, $nodes, $nowritecache, $options, $password, $pool, $prune_backups, $redundancy, $saferemove, $saferemove_throughput, $server, $server2, $shared, $smbversion, $sparse, $subdir, $tagged_only, $transport, $username);
         }
 
     }
