@@ -262,8 +262,8 @@ class PveClientBase {
         });
 
         if ($this->getDebugLevel() >= 1) {
-            echo "Method: " . method . " , Url: " . $url . "\n";
-            if (method != 'GET') {
+            echo "Method: " . $method . " , Url: " . $url . "\n";
+            if ($method != 'GET') {
                 echo "Parameters:\n";
                 var_dump($params);
             }
@@ -350,12 +350,18 @@ class PveClientBase {
                 $parameters,
                 $methodType,
                 $this->responseType);
-
+        
         if ($this->getDebugLevel() >= 2) {
-            echo $obj . "\n";
-            echo "StatusCode:          " . $lastResult->getStatusCode() . "\n";
-            echo "ReasonPhrase:        " . $lastResult->getReasonPhrase() . "\n";
-            echo "IsSuccessStatusCode: " . $lastResult->isSuccessStatusCode() . "\n";
+            if(is_array($obj)){
+                echo '<pre>';
+                print_r($obj);
+                echo '</pre>';
+            }else{
+                echo $obj . PHP_EOL;
+            }
+            echo "StatusCode:          " . $lastResult->getStatusCode() . PHP_EOL;
+            echo "ReasonPhrase:        " . $lastResult->getReasonPhrase() . PHP_EOL;
+            echo "IsSuccessStatusCode: " . $lastResult->isSuccessStatusCode() . PHP_EOL;
         }
 
         if ($this->getDebugLevel() > 0) {
@@ -408,7 +414,7 @@ class PveClientBase {
      * @return bool 
      */
     function waitForTaskToFinish1($task, $wait = 500, $timeOut = 10000) {
-        return waitForTaskToFinish(split(':', $task)[1], $task, $wait, $timeOut);
+        return waitForTaskToFinish(preg_split(':', $task)[1], $task, $wait, $timeOut);
     }
 
     /**
