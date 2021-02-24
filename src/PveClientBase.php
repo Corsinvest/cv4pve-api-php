@@ -396,10 +396,10 @@ class PveClientBase {
         }
         $timeStart = time();
         $waitTime = time();
-        while ($isRunning && (time() - $timeStart) < $timeOut) {
+        while (($isRunning && (time() - $timeStart)) < $timeOut) {
             if ((time() - $waitTime) >= $wait) {
                 $waitTime = time();
-                $isRunning = taskIsRunning($node, $task);
+                $isRunning = $this->taskIsRunning($node, $task);
             }
         }
 
@@ -414,7 +414,10 @@ class PveClientBase {
      * @return bool 
      */
     function waitForTaskToFinish1($task, $wait = 500, $timeOut = 10000) {
-        return waitForTaskToFinish(preg_split(':', $task)[1], $task, $wait, $timeOut);
+        if(!empty($task)){
+            return $this->waitForTaskToFinish(explode( ":", $task)[1], $task, $wait, $timeOut);
+        }
+        return false;
     }
 
     /**
