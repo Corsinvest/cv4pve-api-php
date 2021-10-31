@@ -431,7 +431,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: local
          * @param string $comment Description.
          * @param bool $disable Flag to disable/deactivate the entry.
-         * @param int $rate Rate limit in mbps (megabytes per second) as floating point number.
+         * @param float $rate Rate limit in mbps (megabytes per second) as floating point number.
          * @param string $remove_job Mark the replication job for removal. The job will remove all local replication snapshots. When set to 'full', it also tries to remove replicated volumes on the target. The job then removes itself from the configuration file.
          *   Enum: local,full
          * @param string $schedule Storage replication schedule. The format is a subset of `systemd` calendar events.
@@ -459,7 +459,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: local
          * @param string $comment Description.
          * @param bool $disable Flag to disable/deactivate the entry.
-         * @param int $rate Rate limit in mbps (megabytes per second) as floating point number.
+         * @param float $rate Rate limit in mbps (megabytes per second) as floating point number.
          * @param string $remove_job Mark the replication job for removal. The job will remove all local replication snapshots. When set to 'full', it also tries to remove replicated volumes on the target. The job then removes itself from the configuration file.
          *   Enum: local,full
          * @param string $schedule Storage replication schedule. The format is a subset of `systemd` calendar events.
@@ -540,7 +540,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param bool $disable Flag to disable/deactivate the entry.
-         * @param int $rate Rate limit in mbps (megabytes per second) as floating point number.
+         * @param float $rate Rate limit in mbps (megabytes per second) as floating point number.
          * @param string $remove_job Mark the replication job for removal. The job will remove all local replication snapshots. When set to 'full', it also tries to remove replicated volumes on the target. The job then removes itself from the configuration file.
          *   Enum: local,full
          * @param string $schedule Storage replication schedule. The format is a subset of `systemd` calendar events.
@@ -565,7 +565,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param bool $disable Flag to disable/deactivate the entry.
-         * @param int $rate Rate limit in mbps (megabytes per second) as floating point number.
+         * @param float $rate Rate limit in mbps (megabytes per second) as floating point number.
          * @param string $remove_job Mark the replication job for removal. The job will remove all local replication snapshots. When set to 'full', it also tries to remove replicated volumes on the target. The job then removes itself from the configuration file.
          *   Enum: local,full
          * @param string $schedule Storage replication schedule. The format is a subset of `systemd` calendar events.
@@ -6874,7 +6874,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $ciuser cloud-init: User name to change ssh keys and password for instead of the image's configured default user.
          * @param int $cores The number of cores per socket.
          * @param string $cpu Emulated CPU type.
-         * @param int $cpulimit Limit of CPU usage.
+         * @param float $cpulimit Limit of CPU usage.
          * @param int $cpuunits CPU weight for a VM.
          * @param string $description Description for the VM. Shown in the web-interface VM's summary. This is saved as comment inside the configuration file.
          * @param string $efidisk0 Configure a Disk for storing EFI vars. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Note that SIZE_IN_GiB is ignored here and that the default EFI vars are copied to the volume instead.
@@ -6898,7 +6898,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: backup,clone,create,migrate,rollback,snapshot,snapshot-delete,suspending,suspended
          * @param string $machine Specifies the Qemu machine type.
          * @param int $memory Amount of RAM for the VM in MB. This is the maximum available memory when you use the balloon device.
-         * @param int $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
+         * @param float $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
          * @param int $migrate_speed Set maximum speed (in MB/s) for migrations. Value 0 is no limit.
          * @param string $name Set a name for the VM. Only used on the configuration web interface.
          * @param string $nameserver cloud-init: Sets DNS server IP address for a container. Create will' 	    .' automatically use the setting from the host if neither searchdomain nor nameserver' 	    .' are set.
@@ -7056,7 +7056,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $ciuser cloud-init: User name to change ssh keys and password for instead of the image's configured default user.
          * @param int $cores The number of cores per socket.
          * @param string $cpu Emulated CPU type.
-         * @param int $cpulimit Limit of CPU usage.
+         * @param float $cpulimit Limit of CPU usage.
          * @param int $cpuunits CPU weight for a VM.
          * @param string $description Description for the VM. Shown in the web-interface VM's summary. This is saved as comment inside the configuration file.
          * @param string $efidisk0 Configure a Disk for storing EFI vars. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Note that SIZE_IN_GiB is ignored here and that the default EFI vars are copied to the volume instead.
@@ -7080,7 +7080,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: backup,clone,create,migrate,rollback,snapshot,snapshot-delete,suspending,suspended
          * @param string $machine Specifies the Qemu machine type.
          * @param int $memory Amount of RAM for the VM in MB. This is the maximum available memory when you use the balloon device.
-         * @param int $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
+         * @param float $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
          * @param int $migrate_speed Set maximum speed (in MB/s) for migrations. Value 0 is no limit.
          * @param string $name Set a name for the VM. Only used on the configuration web interface.
          * @param string $nameserver cloud-init: Sets DNS server IP address for a container. Create will' 	    .' automatically use the setting from the host if neither searchdomain nor nameserver' 	    .' are set.
@@ -10386,7 +10386,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $ciuser cloud-init: User name to change ssh keys and password for instead of the image's configured default user.
          * @param int $cores The number of cores per socket.
          * @param string $cpu Emulated CPU type.
-         * @param int $cpulimit Limit of CPU usage.
+         * @param float $cpulimit Limit of CPU usage.
          * @param int $cpuunits CPU weight for a VM.
          * @param string $delete A list of settings you want to delete.
          * @param string $description Description for the VM. Shown in the web-interface VM's summary. This is saved as comment inside the configuration file.
@@ -10411,7 +10411,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: backup,clone,create,migrate,rollback,snapshot,snapshot-delete,suspending,suspended
          * @param string $machine Specifies the Qemu machine type.
          * @param int $memory Amount of RAM for the VM in MB. This is the maximum available memory when you use the balloon device.
-         * @param int $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
+         * @param float $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
          * @param int $migrate_speed Set maximum speed (in MB/s) for migrations. Value 0 is no limit.
          * @param string $name Set a name for the VM. Only used on the configuration web interface.
          * @param string $nameserver cloud-init: Sets DNS server IP address for a container. Create will' 	    .' automatically use the setting from the host if neither searchdomain nor nameserver' 	    .' are set.
@@ -10562,7 +10562,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $ciuser cloud-init: User name to change ssh keys and password for instead of the image's configured default user.
          * @param int $cores The number of cores per socket.
          * @param string $cpu Emulated CPU type.
-         * @param int $cpulimit Limit of CPU usage.
+         * @param float $cpulimit Limit of CPU usage.
          * @param int $cpuunits CPU weight for a VM.
          * @param string $delete A list of settings you want to delete.
          * @param string $description Description for the VM. Shown in the web-interface VM's summary. This is saved as comment inside the configuration file.
@@ -10587,7 +10587,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: backup,clone,create,migrate,rollback,snapshot,snapshot-delete,suspending,suspended
          * @param string $machine Specifies the Qemu machine type.
          * @param int $memory Amount of RAM for the VM in MB. This is the maximum available memory when you use the balloon device.
-         * @param int $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
+         * @param float $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
          * @param int $migrate_speed Set maximum speed (in MB/s) for migrations. Value 0 is no limit.
          * @param string $name Set a name for the VM. Only used on the configuration web interface.
          * @param string $nameserver cloud-init: Sets DNS server IP address for a container. Create will' 	    .' automatically use the setting from the host if neither searchdomain nor nameserver' 	    .' are set.
@@ -10657,7 +10657,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $ciuser cloud-init: User name to change ssh keys and password for instead of the image's configured default user.
          * @param int $cores The number of cores per socket.
          * @param string $cpu Emulated CPU type.
-         * @param int $cpulimit Limit of CPU usage.
+         * @param float $cpulimit Limit of CPU usage.
          * @param int $cpuunits CPU weight for a VM.
          * @param string $delete A list of settings you want to delete.
          * @param string $description Description for the VM. Shown in the web-interface VM's summary. This is saved as comment inside the configuration file.
@@ -10682,7 +10682,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: backup,clone,create,migrate,rollback,snapshot,snapshot-delete,suspending,suspended
          * @param string $machine Specifies the Qemu machine type.
          * @param int $memory Amount of RAM for the VM in MB. This is the maximum available memory when you use the balloon device.
-         * @param int $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
+         * @param float $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
          * @param int $migrate_speed Set maximum speed (in MB/s) for migrations. Value 0 is no limit.
          * @param string $name Set a name for the VM. Only used on the configuration web interface.
          * @param string $nameserver cloud-init: Sets DNS server IP address for a container. Create will' 	    .' automatically use the setting from the host if neither searchdomain nor nameserver' 	    .' are set.
@@ -10831,7 +10831,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $ciuser cloud-init: User name to change ssh keys and password for instead of the image's configured default user.
          * @param int $cores The number of cores per socket.
          * @param string $cpu Emulated CPU type.
-         * @param int $cpulimit Limit of CPU usage.
+         * @param float $cpulimit Limit of CPU usage.
          * @param int $cpuunits CPU weight for a VM.
          * @param string $delete A list of settings you want to delete.
          * @param string $description Description for the VM. Shown in the web-interface VM's summary. This is saved as comment inside the configuration file.
@@ -10856,7 +10856,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: backup,clone,create,migrate,rollback,snapshot,snapshot-delete,suspending,suspended
          * @param string $machine Specifies the Qemu machine type.
          * @param int $memory Amount of RAM for the VM in MB. This is the maximum available memory when you use the balloon device.
-         * @param int $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
+         * @param float $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
          * @param int $migrate_speed Set maximum speed (in MB/s) for migrations. Value 0 is no limit.
          * @param string $name Set a name for the VM. Only used on the configuration web interface.
          * @param string $nameserver cloud-init: Sets DNS server IP address for a container. Create will' 	    .' automatically use the setting from the host if neither searchdomain nor nameserver' 	    .' are set.
@@ -12810,12 +12810,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $vmid The (unique) ID of the VM.
          * @param string $arch OS architecture type.
          *   Enum: amd64,i386,arm64,armhf
-         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
+         * @param float $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param string $cmode Console mode. By default, the console command tries to open a connection to one of the available tty devices. By setting cmode to 'console' it tries to attach to /dev/console instead. If you set cmode to 'shell', it simply invokes a shell inside the container (no login).
          *   Enum: shell,console,tty
          * @param bool $console Attach a console device (/dev/console) to the container.
          * @param int $cores The number of cores assigned to the container. A container can use all available cores by default.
-         * @param int $cpulimit Limit of CPU usage.  NOTE: If the computer has 2 CPUs, it has a total of '2' CPU time. Value '0' indicates no CPU limit.
+         * @param float $cpulimit Limit of CPU usage.  NOTE: If the computer has 2 CPUs, it has a total of '2' CPU time. Value '0' indicates no CPU limit.
          * @param int $cpuunits CPU weight for a VM. Argument is used in the kernel fair scheduler. The larger the number is, the more CPU time this VM gets. Number is relative to the weights of all the other running VMs.  NOTE: You can disable fair-scheduler configuration by setting this to 0.
          * @param bool $debug Try to be more verbose. For now this only enables debug log-level on start.
          * @param string $description Description for the Container. Shown in the web-interface CT's summary. This is saved as comment inside the configuration file.
@@ -12904,12 +12904,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $vmid The (unique) ID of the VM.
          * @param string $arch OS architecture type.
          *   Enum: amd64,i386,arm64,armhf
-         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
+         * @param float $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param string $cmode Console mode. By default, the console command tries to open a connection to one of the available tty devices. By setting cmode to 'console' it tries to attach to /dev/console instead. If you set cmode to 'shell', it simply invokes a shell inside the container (no login).
          *   Enum: shell,console,tty
          * @param bool $console Attach a console device (/dev/console) to the container.
          * @param int $cores The number of cores assigned to the container. A container can use all available cores by default.
-         * @param int $cpulimit Limit of CPU usage.  NOTE: If the computer has 2 CPUs, it has a total of '2' CPU time. Value '0' indicates no CPU limit.
+         * @param float $cpulimit Limit of CPU usage.  NOTE: If the computer has 2 CPUs, it has a total of '2' CPU time. Value '0' indicates no CPU limit.
          * @param int $cpuunits CPU weight for a VM. Argument is used in the kernel fair scheduler. The larger the number is, the more CPU time this VM gets. Number is relative to the weights of all the other running VMs.  NOTE: You can disable fair-scheduler configuration by setting this to 0.
          * @param bool $debug Try to be more verbose. For now this only enables debug log-level on start.
          * @param string $description Description for the Container. Shown in the web-interface CT's summary. This is saved as comment inside the configuration file.
@@ -13307,7 +13307,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: shell,console,tty
          * @param bool $console Attach a console device (/dev/console) to the container.
          * @param int $cores The number of cores assigned to the container. A container can use all available cores by default.
-         * @param int $cpulimit Limit of CPU usage.  NOTE: If the computer has 2 CPUs, it has a total of '2' CPU time. Value '0' indicates no CPU limit.
+         * @param float $cpulimit Limit of CPU usage.  NOTE: If the computer has 2 CPUs, it has a total of '2' CPU time. Value '0' indicates no CPU limit.
          * @param int $cpuunits CPU weight for a VM. Argument is used in the kernel fair scheduler. The larger the number is, the more CPU time this VM gets. Number is relative to the weights of all the other running VMs.  NOTE: You can disable fair-scheduler configuration by setting this to 0.
          * @param bool $debug Try to be more verbose. For now this only enables debug log-level on start.
          * @param string $delete A list of settings you want to delete.
@@ -13383,7 +13383,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: shell,console,tty
          * @param bool $console Attach a console device (/dev/console) to the container.
          * @param int $cores The number of cores assigned to the container. A container can use all available cores by default.
-         * @param int $cpulimit Limit of CPU usage.  NOTE: If the computer has 2 CPUs, it has a total of '2' CPU time. Value '0' indicates no CPU limit.
+         * @param float $cpulimit Limit of CPU usage.  NOTE: If the computer has 2 CPUs, it has a total of '2' CPU time. Value '0' indicates no CPU limit.
          * @param int $cpuunits CPU weight for a VM. Argument is used in the kernel fair scheduler. The larger the number is, the more CPU time this VM gets. Number is relative to the weights of all the other running VMs.  NOTE: You can disable fair-scheduler configuration by setting this to 0.
          * @param bool $debug Try to be more verbose. For now this only enables debug log-level on start.
          * @param string $delete A list of settings you want to delete.
@@ -15661,7 +15661,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Migrate the container to another node. Creates a new migration task.
          * @param string $target Target node.
-         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
+         * @param float $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param bool $online Use online/live migration.
          * @param bool $restart Use restart migration
          * @param int $timeout Timeout in seconds for shutdown for restart migration
@@ -15679,7 +15679,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Migrate the container to another node. Creates a new migration task.
          * @param string $target Target node.
-         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
+         * @param float $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param bool $online Use online/live migration.
          * @param bool $restart Use restart migration
          * @param int $timeout Timeout in seconds for shutdown for restart migration
@@ -15828,7 +15828,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Create a container clone/copy
          * @param int $newid VMID for the clone.
-         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
+         * @param float $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param string $description Description for the new CT.
          * @param bool $full Create a full copy of all disks. This is always done when you clone a normal CT. For CT templates, we try to create a linked clone by default.
          * @param string $hostname Set a hostname for the new CT.
@@ -15854,7 +15854,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Create a container clone/copy
          * @param int $newid VMID for the clone.
-         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
+         * @param float $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param string $description Description for the new CT.
          * @param bool $full Create a full copy of all disks. This is always done when you clone a normal CT. For CT templates, we try to create a linked clone by default.
          * @param string $hostname Set a hostname for the new CT.
@@ -15964,7 +15964,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $storage Target Storage.
          * @param string $volume Volume which will be moved.
          *   Enum: rootfs,mp0,mp1,mp2,mp3,mp4,mp5,mp6,mp7,mp8,mp9,mp10,mp11,mp12,mp13,mp14,mp15,mp16,mp17,mp18,mp19,mp20,mp21,mp22,mp23,mp24,mp25,mp26,mp27,mp28,mp29,mp30,mp31,mp32,mp33,mp34,mp35,mp36,mp37,mp38,mp39,mp40,mp41,mp42,mp43,mp44,mp45,mp46,mp47,mp48,mp49,mp50,mp51,mp52,mp53,mp54,mp55,mp56,mp57,mp58,mp59,mp60,mp61,mp62,mp63,mp64,mp65,mp66,mp67,mp68,mp69,mp70,mp71,mp72,mp73,mp74,mp75,mp76,mp77,mp78,mp79,mp80,mp81,mp82,mp83,mp84,mp85,mp86,mp87,mp88,mp89,mp90,mp91,mp92,mp93,mp94,mp95,mp96,mp97,mp98,mp99,mp100,mp101,mp102,mp103,mp104,mp105,mp106,mp107,mp108,mp109,mp110,mp111,mp112,mp113,mp114,mp115,mp116,mp117,mp118,mp119,mp120,mp121,mp122,mp123,mp124,mp125,mp126,mp127,mp128,mp129,mp130,mp131,mp132,mp133,mp134,mp135,mp136,mp137,mp138,mp139,mp140,mp141,mp142,mp143,mp144,mp145,mp146,mp147,mp148,mp149,mp150,mp151,mp152,mp153,mp154,mp155,mp156,mp157,mp158,mp159,mp160,mp161,mp162,mp163,mp164,mp165,mp166,mp167,mp168,mp169,mp170,mp171,mp172,mp173,mp174,mp175,mp176,mp177,mp178,mp179,mp180,mp181,mp182,mp183,mp184,mp185,mp186,mp187,mp188,mp189,mp190,mp191,mp192,mp193,mp194,mp195,mp196,mp197,mp198,mp199,mp200,mp201,mp202,mp203,mp204,mp205,mp206,mp207,mp208,mp209,mp210,mp211,mp212,mp213,mp214,mp215,mp216,mp217,mp218,mp219,mp220,mp221,mp222,mp223,mp224,mp225,mp226,mp227,mp228,mp229,mp230,mp231,mp232,mp233,mp234,mp235,mp236,mp237,mp238,mp239,mp240,mp241,mp242,mp243,mp244,mp245,mp246,mp247,mp248,mp249,mp250,mp251,mp252,mp253,mp254,mp255
-         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
+         * @param float $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param bool $delete Delete the original volume after successful copy. By default the original is kept as an unused volume entry.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @return Result
@@ -15983,7 +15983,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $storage Target Storage.
          * @param string $volume Volume which will be moved.
          *   Enum: rootfs,mp0,mp1,mp2,mp3,mp4,mp5,mp6,mp7,mp8,mp9,mp10,mp11,mp12,mp13,mp14,mp15,mp16,mp17,mp18,mp19,mp20,mp21,mp22,mp23,mp24,mp25,mp26,mp27,mp28,mp29,mp30,mp31,mp32,mp33,mp34,mp35,mp36,mp37,mp38,mp39,mp40,mp41,mp42,mp43,mp44,mp45,mp46,mp47,mp48,mp49,mp50,mp51,mp52,mp53,mp54,mp55,mp56,mp57,mp58,mp59,mp60,mp61,mp62,mp63,mp64,mp65,mp66,mp67,mp68,mp69,mp70,mp71,mp72,mp73,mp74,mp75,mp76,mp77,mp78,mp79,mp80,mp81,mp82,mp83,mp84,mp85,mp86,mp87,mp88,mp89,mp90,mp91,mp92,mp93,mp94,mp95,mp96,mp97,mp98,mp99,mp100,mp101,mp102,mp103,mp104,mp105,mp106,mp107,mp108,mp109,mp110,mp111,mp112,mp113,mp114,mp115,mp116,mp117,mp118,mp119,mp120,mp121,mp122,mp123,mp124,mp125,mp126,mp127,mp128,mp129,mp130,mp131,mp132,mp133,mp134,mp135,mp136,mp137,mp138,mp139,mp140,mp141,mp142,mp143,mp144,mp145,mp146,mp147,mp148,mp149,mp150,mp151,mp152,mp153,mp154,mp155,mp156,mp157,mp158,mp159,mp160,mp161,mp162,mp163,mp164,mp165,mp166,mp167,mp168,mp169,mp170,mp171,mp172,mp173,mp174,mp175,mp176,mp177,mp178,mp179,mp180,mp181,mp182,mp183,mp184,mp185,mp186,mp187,mp188,mp189,mp190,mp191,mp192,mp193,mp194,mp195,mp196,mp197,mp198,mp199,mp200,mp201,mp202,mp203,mp204,mp205,mp206,mp207,mp208,mp209,mp210,mp211,mp212,mp213,mp214,mp215,mp216,mp217,mp218,mp219,mp220,mp221,mp222,mp223,mp224,mp225,mp226,mp227,mp228,mp229,mp230,mp231,mp232,mp233,mp234,mp235,mp236,mp237,mp238,mp239,mp240,mp241,mp242,mp243,mp244,mp245,mp246,mp247,mp248,mp249,mp250,mp251,mp252,mp253,mp254,mp255
-         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
+         * @param float $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param bool $delete Delete the original volume after successful copy. By default the original is kept as an unused volume entry.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @return Result
@@ -16346,10 +16346,10 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $dev Block device name.
          * @param string $crush_device_class Set the device class of the OSD in crush.
          * @param string $db_dev Block device name for block.db.
-         * @param int $db_dev_size Size in GiB for block.db.
+         * @param float $db_dev_size Size in GiB for block.db.
          * @param bool $encrypted Enables encryption of the OSD.
          * @param string $wal_dev Block device name for block.wal.
-         * @param int $wal_dev_size Size in GiB for block.wal.
+         * @param float $wal_dev_size Size in GiB for block.wal.
          * @return Result
          */
         public function createRest($dev, $crush_device_class = null, $db_dev = null, $db_dev_size = null, $encrypted = null, $wal_dev = null, $wal_dev_size = null) {
@@ -16368,10 +16368,10 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $dev Block device name.
          * @param string $crush_device_class Set the device class of the OSD in crush.
          * @param string $db_dev Block device name for block.db.
-         * @param int $db_dev_size Size in GiB for block.db.
+         * @param float $db_dev_size Size in GiB for block.db.
          * @param bool $encrypted Enables encryption of the OSD.
          * @param string $wal_dev Block device name for block.wal.
-         * @param int $wal_dev_size Size in GiB for block.wal.
+         * @param float $wal_dev_size Size in GiB for block.wal.
          * @return Result
          */
         public function createosd($dev, $crush_device_class = null, $db_dev = null, $db_dev_size = null, $encrypted = null, $wal_dev = null, $wal_dev_size = null) {
@@ -17136,7 +17136,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $pg_num_min Minimal number of placement groups.
          * @param int $size Number of replicas per object
          * @param string $target_size The estimated target size of the pool for the PG autoscaler.
-         * @param int $target_size_ratio The estimated target ratio of the pool for the PG autoscaler.
+         * @param float $target_size_ratio The estimated target ratio of the pool for the PG autoscaler.
          * @return Result
          */
         public function createRest($name, $add_storages = null, $application = null, $crush_rule = null, $min_size = null, $pg_autoscale_mode = null, $pg_num = null, $pg_num_min = null, $size = null, $target_size = null, $target_size_ratio = null) {
@@ -17168,7 +17168,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $pg_num_min Minimal number of placement groups.
          * @param int $size Number of replicas per object
          * @param string $target_size The estimated target size of the pool for the PG autoscaler.
-         * @param int $target_size_ratio The estimated target ratio of the pool for the PG autoscaler.
+         * @param float $target_size_ratio The estimated target ratio of the pool for the PG autoscaler.
          * @return Result
          */
         public function createpool($name, $add_storages = null, $application = null, $crush_rule = null, $min_size = null, $pg_autoscale_mode = null, $pg_num = null, $pg_num_min = null, $size = null, $target_size = null, $target_size_ratio = null) {
@@ -17260,7 +17260,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $pg_num_min Minimal number of placement groups.
          * @param int $size Number of replicas per object
          * @param string $target_size The estimated target size of the pool for the PG autoscaler.
-         * @param int $target_size_ratio The estimated target ratio of the pool for the PG autoscaler.
+         * @param float $target_size_ratio The estimated target ratio of the pool for the PG autoscaler.
          * @return Result
          */
         public function setRest($application = null, $crush_rule = null, $min_size = null, $pg_autoscale_mode = null, $pg_num = null, $pg_num_min = null, $size = null, $target_size = null, $target_size_ratio = null) {
@@ -17288,7 +17288,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $pg_num_min Minimal number of placement groups.
          * @param int $size Number of replicas per object
          * @param string $target_size The estimated target size of the pool for the PG autoscaler.
-         * @param int $target_size_ratio The estimated target ratio of the pool for the PG autoscaler.
+         * @param float $target_size_ratio The estimated target ratio of the pool for the PG autoscaler.
          * @return Result
          */
         public function setpool($application = null, $crush_rule = null, $min_size = null, $pg_autoscale_mode = null, $pg_num = null, $pg_num_min = null, $size = null, $target_size = null, $target_size_ratio = null) {
