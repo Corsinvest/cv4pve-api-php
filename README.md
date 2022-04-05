@@ -50,11 +50,6 @@ The result is class **Result** and contain methods:
 * Easy to learn
 * No dependency external library only native curl
 * Method named
-* Method no named rest (same parameters)
-  * getRest
-  * setRest
-  * createRest
-  * deleteRest
 * Set ResponseType json, png
 * Full method generated from documentation
 * Comment any method and parameters

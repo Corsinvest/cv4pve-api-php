@@ -1,14 +1,9 @@
 <?php
+
 /*
- * This file is part of the cv4pve-api-php https://github.com/Corsinvest/cv4pve-api-php,
- *
- * This source file is available under two different licenses:
- * - GNU General Public License version 3 (GPLv3)
- * - Corsinvest Enterprise License (CEL)
- * Full copyright and license information is available in
- * LICENSE.md which is distributed with this source code.
- *
- * Copyright (C) 2016 Corsinvest Srl	GPLv3 and CEL
+ * SPDX-FileCopyrightText: 2022 Daniele Corsini <daniele.corsini@corsinvest.it>
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: GPL-3.0-only
  */
 
 require_once '../vendor/autoload.php';
@@ -28,12 +23,12 @@ if ($client->login($argv[2], $argv[3])) {
         echo "\n" . $node->id;
     }
 
-    foreach ($client->getNodes()->get("pve1")->getQemu()->vmlist()->getResponse()->data as $vm) {
+    foreach ($client->getNodes()->get("cv-pve01")->getQemu()->vmlist()->getResponse()->data as $vm) {
         echo "\n" . $vm->vmid . " - " . $vm->name;
     }
 
     //loop snapshots
-    foreach ($client->getNodes()->get("pve1")->getQemu()->get(100)->getSnapshot()->snapshotList()->getResponse()->data as $snap) {
+    foreach ($client->getNodes()->get("cv-pve02")->getQemu()->get(100)->getSnapshot()->snapshotList()->getResponse()->data as $snap) {
         echo "\n" . $snap->name;
     }
 

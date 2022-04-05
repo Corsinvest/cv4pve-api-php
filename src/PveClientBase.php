@@ -1,15 +1,9 @@
 <?php
 
 /*
- * This file is part of the cv4pve-api-php https://github.com/Corsinvest/cv4pve-api-php,
- *
- * This source file is available under two different licenses:
- * - GNU General Public License version 3 (GPLv3)
- * - Corsinvest Enterprise License (CEL)
- * Full copyright and license information is available in
- * LICENSE.md which is distributed with this source code.
- *
- * Copyright (C) 2016 Corsinvest Srl	GPLv3 and CEL
+ * SPDX-FileCopyrightText: 2022 Daniele Corsini <daniele.corsini@corsinvest.it>
+ * SPDX-FileCopyrightText: Copyright Corsinvest Srl
+ * SPDX-License-Identifier: GPL-3.0-only
  */
 
 namespace Corsinvest\ProxmoxVE\Api;
@@ -20,7 +14,8 @@ namespace Corsinvest\ProxmoxVE\Api;
  *
  * Proxmox VE Client Base
  */
-class PveClientBase {
+class PveClientBase
+{
 
     /**
      * @ignore
@@ -72,7 +67,8 @@ class PveClientBase {
      * @param string $hostname Host Proxmox VE
      * @param int $port Port connection default 8006
      */
-    function __construct($hostname, $port = 8006) {
+    function __construct($hostname, $port = 8006)
+    {
         $this->hostname = $hostname;
         $this->port = $port;
     }
@@ -81,7 +77,8 @@ class PveClientBase {
      * Return if result is object
      * @return bool
      */
-    function isResultObject() {
+    function isResultObject()
+    {
         return $this->resultIsObject;
     }
 
@@ -89,7 +86,8 @@ class PveClientBase {
      * Set result is object
      * @param bool $resultIsObject
      */
-    function setResultIsObject($resultIsObject) {
+    function setResultIsObject($resultIsObject)
+    {
         $this->resultIsObject = $resultIsObject;
     }
 
@@ -98,7 +96,8 @@ class PveClientBase {
      *
      * @return string The hostname.
      */
-    public function getHostname() {
+    public function getHostname()
+    {
         return $this->hostname;
     }
 
@@ -107,7 +106,8 @@ class PveClientBase {
      *
      * @return int The port.
      */
-    public function getPort() {
+    public function getPort()
+    {
         return $this->port;
     }
 
@@ -116,7 +116,8 @@ class PveClientBase {
      *
      * @param string One of json, png.
      */
-    public function setResponseType($type = 'json') {
+    public function setResponseType($type = 'json')
+    {
         $this->responseType = $type;
     }
 
@@ -125,7 +126,8 @@ class PveClientBase {
      *
      * @return string Response type being used.
      */
-    public function getResponseType() {
+    public function getResponseType()
+    {
         return $this->responseType;
     }
 
@@ -134,7 +136,8 @@ class PveClientBase {
      *
      * @param string $debugLevel One of json, png.
      */
-    public function setDebugLevel($debugLevel) {
+    public function setDebugLevel($debugLevel)
+    {
         $this->debugLevel = $debugLevel;
     }
 
@@ -143,7 +146,8 @@ class PveClientBase {
      *
      * @return string Response type being used.
      */
-    public function getDebugLevel() {
+    public function getDebugLevel()
+    {
         return $this->debugLevel;
     }
 
@@ -152,7 +156,8 @@ class PveClientBase {
      *
      * @return type string
      */
-    public function getApiToken() {
+    public function getApiToken()
+    {
         return $this->apiToken;
     }
 
@@ -161,7 +166,8 @@ class PveClientBase {
      *
      * @param type string $apiToken
      */
-    public function setApiToken($apiToken) {
+    public function setApiToken($apiToken)
+    {
         $this->apiToken = $apiToken;
     }
 
@@ -170,7 +176,8 @@ class PveClientBase {
      *
      * @return string The proxmox API URL.
      */
-    public function getApiUrl() {
+    public function getApiUrl()
+    {
         return "https://{$this->getHostname()}:{$this->getPort()}/api2/{$this->responseType}";
     }
 
@@ -181,7 +188,8 @@ class PveClientBase {
      * @param string $realm pam/pve or custom
      * @return bool logged
      */
-    function login($userName, $password, $realm = "pam") {
+    function login($userName, $password, $realm = "pam")
+    {
         $uData = explode("@", $userName);
         if (count($uData) > 1) {
             $userName = $uData[0];
@@ -215,7 +223,8 @@ class PveClientBase {
      * @param array $parameters Additional parameters
      * @return Result
      */
-    public function get($resource, $parameters = []) {
+    public function get($resource, $parameters = [])
+    {
         return $this->executeAction($resource, 'GET', $parameters);
     }
 
@@ -225,7 +234,8 @@ class PveClientBase {
      * @param array $parameters Additional parameters
      * @return Result
      */
-    public function set($resource, $parameters = []) {
+    public function set($resource, $parameters = [])
+    {
         return $this->executeAction($resource, 'PUT', $parameters);
     }
 
@@ -235,7 +245,8 @@ class PveClientBase {
      * @param array $parameters Additional parameters
      * @return Result
      */
-    public function create($resource, $parameters = []) {
+    public function create($resource, $parameters = [])
+    {
         return $this->executeAction($resource, 'POST', $parameters);
     }
 
@@ -245,14 +256,16 @@ class PveClientBase {
      * @param array $parameters Additional parameters
      * @return Result
      */
-    public function delete($resource, $parameters = []) {
+    public function delete($resource, $parameters = [])
+    {
         return $this->executeAction($resource, 'DELETE', $parameters);
     }
 
     /**
      * @ignore
      */
-    private function executeAction($resource, $method, $parameters = []) {
+    private function executeAction($resource, $method, $parameters = [])
+    {
         //url resource
         $url = "{$this->getApiUrl()}{$resource}";
 
@@ -299,6 +312,9 @@ class PveClientBase {
                 curl_setopt($prox_ch, CURLOPT_CUSTOMREQUEST, "DELETE");
                 $methodType = "DELETE";
                 break;
+
+            default:
+                break;
         }
 
         curl_setopt($prox_ch, CURLOPT_URL, $url);
@@ -309,11 +325,11 @@ class PveClientBase {
         curl_setopt($prox_ch, CURLOPT_SSL_VERIFYHOST, false);
 
         $headers = [];
-        if (isSet($this->ticketPVEAuthCookie)) {
+        if (isset($this->ticketPVEAuthCookie)) {
             array_push($headers, "CSRFPreventionToken: {$this->ticketCSRFPreventionToken}");
         }
 
-        if (isSet($this->apiToken)) {
+        if (isset($this->apiToken)) {
             array_push($headers, "Authorization: PVEAPIToken {$this->apiToken}");
         }
 
@@ -339,54 +355,60 @@ class PveClientBase {
             case 'png':
                 $obj = 'data:image/png;base64,' . base64_encode($body);
                 break;
+
+            default:
+                break;
         }
         unset($body);
 
-        $lastResult = new Result($obj,
-                $reasonCode,
-                $reasonPhrase,
-                $this->resultIsObject,
-                $resource,
-                $parameters,
-                $methodType,
-                $this->responseType);
-        
+        $this->lastResult = new Result(
+            $obj,
+            $reasonCode,
+            $reasonPhrase,
+            $this->resultIsObject,
+            $resource,
+            $parameters,
+            $methodType,
+            $this->responseType
+        );
+
         if ($this->getDebugLevel() >= 2) {
-            if(is_array($obj)){
+            if (is_array($obj)) {
                 echo '<pre>';
                 print_r($obj);
                 echo '</pre>';
-            }else{
+            } else {
                 echo $obj . PHP_EOL;
             }
-            echo "StatusCode:          " . $lastResult->getStatusCode() . PHP_EOL;
-            echo "ReasonPhrase:        " . $lastResult->getReasonPhrase() . PHP_EOL;
-            echo "IsSuccessStatusCode: " . $lastResult->isSuccessStatusCode() . PHP_EOL;
+            echo "StatusCode:          " . $this->lastResult->getStatusCode() . PHP_EOL;
+            echo "ReasonPhrase:        " . $this->lastResult->getReasonPhrase() . PHP_EOL;
+            echo "IsSuccessStatusCode: " . $this->lastResult->isSuccessStatusCode() . PHP_EOL;
         }
 
         if ($this->getDebugLevel() > 0) {
             echo "=============================";
         }
-        return $lastResult;
+        return $this->lastResult;
     }
 
     /**
      * Gets the last result action
      * @return Result
      */
-    public function getLastResult() {
+    public function getLastResult()
+    {
         return $this->lastResult;
     }
 
     /**
      * Wait for task to finish
-     * @param string $node Node identifier
      * @param string $task Task identifier
      * @param int $wait Millisecond wait next check
      * @param int $timeOut Millisecond timeout
-     * @return bool 
+     * @return bool
      */
-    public function waitForTaskToFinish($node, $task, $wait = 500, $timeOut = 10000) {
+    public function waitForTaskToFinish($task, $wait = 500, $timeOut = 10000)
+    {
         $isRunning = true;
         if ($wait <= 0) {
             $wait = 500;
@@ -399,55 +421,51 @@ class PveClientBase {
         while (($isRunning && (time() - $timeStart)) < $timeOut) {
             if ((time() - $waitTime) >= $wait) {
                 $waitTime = time();
-                $isRunning = $this->taskIsRunning($node, $task);
+                $isRunning = $this->taskIsRunning($task);
             }
         }
 
-        return (time() - $timeStart ) < $timeOut;
-    }
-
-    /**
-     * Wait for task to finish
-     * @param string $task Task identifier
-     * @param int $wait Millisecond wait next check
-     * @param int $timeOut Millisecond timeout
-     * @return bool 
-     */
-    function waitForTaskToFinish1($task, $wait = 500, $timeOut = 10000) {
-        if(!empty($task)){
-            return $this->waitForTaskToFinish(explode( ":", $task)[1], $task, $wait, $timeOut);
-        }
-        return false;
+        return (time() - $timeStart) < $timeOut;
     }
 
     /**
      * Check task is running
      *
-     * @param string $node Node identifier
      * @param string $task Task identifier
      * @return bool Is running
      */
-    function taskIsRunning($node, $task) {
-        return $this->readTaskStatus($node, $task)->getResponse()->data == "running";
+    function taskIsRunning($task)
+    {
+        return $this->readTaskStatus($task)->getResponse()->data == "running";
     }
 
     /**
      * Return exit status code task
      *
-     * @param string $node Node identifier
      * @param string $task Task identifier
      * @return string Message status
      */
-    function getExitStatusTask($node, $task) {
-        return $this->readTaskStatus($node, $task)->getResponse()->data->exitstatus;
+    function getExitStatusTask($task)
+    {
+        return $this->readTaskStatus($task)->getResponse()->data->exitstatus;
+    }
+
+    /**
+     * Get node from task
+     * @param string $task
+     * @return type
+     */
+    function getNodeFromTask($task)
+    {
+        return explode(":", $task)[1];
     }
 
     /**
      * Read task status.
      * @return Result
      */
-    private function readTaskStatus($node, $task) {
-        return $this->get("/nodes/{$node}/tasks/{$task}/status");
+    private function readTaskStatus($task)
+    {
+        return $this->get("/nodes/{$this->getNodeFromTask($task)}/tasks/{$task}/status");
     }
-
 }
