@@ -1,12 +1,10 @@
 # cv4pve-api-php
 
-[![License](https://img.shields.io/github/license/Corsinvest/cv4pve-api-php.svg)](LICENSE.md) ![Packagist Version](https://img.shields.io/packagist/v/corsinvest/cv4pve-api-php.svg)
+[![License](https://img.shields.io/github/license/Corsinvest/cv4pve-api-php.svg)](LICENSE.md) [![Packagist Version](https://img.shields.io/packagist/v/corsinvest/cv4pve-api-php.svg)](https://packagist.org/packages/Corsinvest/cv4pve-api-php)
 
 Proxmox VE Client API PHP
 
 [Proxmox VE Api](https://pve.proxmox.com/pve-docs/api-viewer/)
-
-[Packagist](https://packagist.org/packages/Corsinvest/cv4pve-api-php)
 
 ```text
    ______                _                      __

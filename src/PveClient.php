@@ -2071,8 +2071,10 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $mode Backup mode.
          *   Enum: snapshot,suspend,stop
          * @param string $node Only run if executed on this node.
+         * @param string $notes_template Template string for generating notes for the backup(s). It can contain variables which will be replaced by their values. Currently supported are {{cluster}}, {{guestname}}, {{node}}, and {{vmid}}, but more might be added in the future.
          * @param int $pigz Use pigz instead of gzip when N&amp;gt;0. N=1 uses half of cores, N&amp;gt;1 uses N as thread count.
          * @param string $pool Backup all known guest systems included in the specified pool.
+         * @param bool $protected If true, mark backup(s) as protected.
          * @param string $prune_backups Use these retention options instead of those from the storage configuration.
          * @param bool $quiet Be quiet.
          * @param bool $remove Prune older backups according to 'prune-backups'.
@@ -2088,7 +2090,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $zstd Zstd threads. N=0 uses half of the available cores, N&amp;gt;0 uses N as thread count.
          * @return Result
          */
-        public function createJob($all = null, $bwlimit = null, $comment = null, $compress = null, $dow = null, $dumpdir = null, $enabled = null, $exclude = null, $exclude_path = null, $id = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $node = null, $pigz = null, $pool = null, $prune_backups = null, $quiet = null, $remove = null, $schedule = null, $script = null, $starttime = null, $stdexcludes = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
+        public function createJob($all = null, $bwlimit = null, $comment = null, $compress = null, $dow = null, $dumpdir = null, $enabled = null, $exclude = null, $exclude_path = null, $id = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $node = null, $notes_template = null, $pigz = null, $pool = null, $protected = null, $prune_backups = null, $quiet = null, $remove = null, $schedule = null, $script = null, $starttime = null, $stdexcludes = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
             $params = [
                 'all' => $all,
                 'bwlimit' => $bwlimit,
@@ -2107,8 +2109,10 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'maxfiles' => $maxfiles,
                 'mode' => $mode,
                 'node' => $node,
+                'notes-template' => $notes_template,
                 'pigz' => $pigz,
                 'pool' => $pool,
+                'protected' => $protected,
                 'prune-backups' => $prune_backups,
                 'quiet' => $quiet,
                 'remove' => $remove,
@@ -2203,8 +2207,10 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $mode Backup mode.
          *   Enum: snapshot,suspend,stop
          * @param string $node Only run if executed on this node.
+         * @param string $notes_template Template string for generating notes for the backup(s). It can contain variables which will be replaced by their values. Currently supported are {{cluster}}, {{guestname}}, {{node}}, and {{vmid}}, but more might be added in the future.
          * @param int $pigz Use pigz instead of gzip when N&amp;gt;0. N=1 uses half of cores, N&amp;gt;1 uses N as thread count.
          * @param string $pool Backup all known guest systems included in the specified pool.
+         * @param bool $protected If true, mark backup(s) as protected.
          * @param string $prune_backups Use these retention options instead of those from the storage configuration.
          * @param bool $quiet Be quiet.
          * @param bool $remove Prune older backups according to 'prune-backups'.
@@ -2220,7 +2226,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $zstd Zstd threads. N=0 uses half of the available cores, N&amp;gt;0 uses N as thread count.
          * @return Result
          */
-        public function updateJob($all = null, $bwlimit = null, $comment = null, $compress = null, $delete = null, $dow = null, $dumpdir = null, $enabled = null, $exclude = null, $exclude_path = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $node = null, $pigz = null, $pool = null, $prune_backups = null, $quiet = null, $remove = null, $schedule = null, $script = null, $starttime = null, $stdexcludes = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
+        public function updateJob($all = null, $bwlimit = null, $comment = null, $compress = null, $delete = null, $dow = null, $dumpdir = null, $enabled = null, $exclude = null, $exclude_path = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $node = null, $notes_template = null, $pigz = null, $pool = null, $protected = null, $prune_backups = null, $quiet = null, $remove = null, $schedule = null, $script = null, $starttime = null, $stdexcludes = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
             $params = [
                 'all' => $all,
                 'bwlimit' => $bwlimit,
@@ -2239,8 +2245,10 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'maxfiles' => $maxfiles,
                 'mode' => $mode,
                 'node' => $node,
+                'notes-template' => $notes_template,
                 'pigz' => $pigz,
                 'pool' => $pool,
+                'protected' => $protected,
                 'prune-backups' => $prune_backups,
                 'quiet' => $quiet,
                 'remove' => $remove,
@@ -4075,6 +4083,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $zone The SDN zone object identifier.
          * @param bool $advertise_subnets Advertise evpn subnets if you have silent hosts
          * @param string $bridge
+         * @param bool $bridge_disable_mac_learning Disable auto mac learning.
          * @param string $controller Frr router name
          * @param bool $disable_arp_nd_suppression Disable ipv4 arp &amp;&amp; ipv6 neighbour discovery suppression
          * @param string $dns dns api server
@@ -4082,24 +4091,27 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $dp_id Faucet dataplane id
          * @param string $exitnodes List of cluster node names.
          * @param bool $exitnodes_local_routing Allow exitnodes to connect to evpn guests
+         * @param string $exitnodes_primary Force traffic to this exitnode first.
          * @param string $ipam use a specific ipam
          * @param string $mac Anycast logical router mac address
          * @param int $mtu MTU
          * @param string $nodes List of cluster node names.
          * @param string $peers peers address list.
          * @param string $reversedns reverse dns api server
+         * @param string $rt_import Route-Target import
          * @param int $tag Service-VLAN Tag
          * @param string $vlan_protocol
          *   Enum: 802.1q,802.1ad
          * @param int $vrf_vxlan l3vni.
          * @return Result
          */
-        public function create($type, $zone, $advertise_subnets = null, $bridge = null, $controller = null, $disable_arp_nd_suppression = null, $dns = null, $dnszone = null, $dp_id = null, $exitnodes = null, $exitnodes_local_routing = null, $ipam = null, $mac = null, $mtu = null, $nodes = null, $peers = null, $reversedns = null, $tag = null, $vlan_protocol = null, $vrf_vxlan = null) {
+        public function create($type, $zone, $advertise_subnets = null, $bridge = null, $bridge_disable_mac_learning = null, $controller = null, $disable_arp_nd_suppression = null, $dns = null, $dnszone = null, $dp_id = null, $exitnodes = null, $exitnodes_local_routing = null, $exitnodes_primary = null, $ipam = null, $mac = null, $mtu = null, $nodes = null, $peers = null, $reversedns = null, $rt_import = null, $tag = null, $vlan_protocol = null, $vrf_vxlan = null) {
             $params = [
                 'type' => $type,
                 'zone' => $zone,
                 'advertise-subnets' => $advertise_subnets,
                 'bridge' => $bridge,
+                'bridge-disable-mac-learning' => $bridge_disable_mac_learning,
                 'controller' => $controller,
                 'disable-arp-nd-suppression' => $disable_arp_nd_suppression,
                 'dns' => $dns,
@@ -4107,12 +4119,14 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'dp-id' => $dp_id,
                 'exitnodes' => $exitnodes,
                 'exitnodes-local-routing' => $exitnodes_local_routing,
+                'exitnodes-primary' => $exitnodes_primary,
                 'ipam' => $ipam,
                 'mac' => $mac,
                 'mtu' => $mtu,
                 'nodes' => $nodes,
                 'peers' => $peers,
                 'reversedns' => $reversedns,
+                'rt-import' => $rt_import,
                 'tag' => $tag,
                 'vlan-protocol' => $vlan_protocol,
                 'vrf-vxlan' => $vrf_vxlan
@@ -4172,6 +4186,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * Update sdn zone object configuration.
          * @param bool $advertise_subnets Advertise evpn subnets if you have silent hosts
          * @param string $bridge
+         * @param bool $bridge_disable_mac_learning Disable auto mac learning.
          * @param string $controller Frr router name
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -4181,22 +4196,25 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $dp_id Faucet dataplane id
          * @param string $exitnodes List of cluster node names.
          * @param bool $exitnodes_local_routing Allow exitnodes to connect to evpn guests
+         * @param string $exitnodes_primary Force traffic to this exitnode first.
          * @param string $ipam use a specific ipam
          * @param string $mac Anycast logical router mac address
          * @param int $mtu MTU
          * @param string $nodes List of cluster node names.
          * @param string $peers peers address list.
          * @param string $reversedns reverse dns api server
+         * @param string $rt_import Route-Target import
          * @param int $tag Service-VLAN Tag
          * @param string $vlan_protocol
          *   Enum: 802.1q,802.1ad
          * @param int $vrf_vxlan l3vni.
          * @return Result
          */
-        public function update($advertise_subnets = null, $bridge = null, $controller = null, $delete = null, $digest = null, $disable_arp_nd_suppression = null, $dns = null, $dnszone = null, $dp_id = null, $exitnodes = null, $exitnodes_local_routing = null, $ipam = null, $mac = null, $mtu = null, $nodes = null, $peers = null, $reversedns = null, $tag = null, $vlan_protocol = null, $vrf_vxlan = null) {
+        public function update($advertise_subnets = null, $bridge = null, $bridge_disable_mac_learning = null, $controller = null, $delete = null, $digest = null, $disable_arp_nd_suppression = null, $dns = null, $dnszone = null, $dp_id = null, $exitnodes = null, $exitnodes_local_routing = null, $exitnodes_primary = null, $ipam = null, $mac = null, $mtu = null, $nodes = null, $peers = null, $reversedns = null, $rt_import = null, $tag = null, $vlan_protocol = null, $vrf_vxlan = null) {
             $params = [
                 'advertise-subnets' => $advertise_subnets,
                 'bridge' => $bridge,
+                'bridge-disable-mac-learning' => $bridge_disable_mac_learning,
                 'controller' => $controller,
                 'delete' => $delete,
                 'digest' => $digest,
@@ -4206,12 +4224,14 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'dp-id' => $dp_id,
                 'exitnodes' => $exitnodes,
                 'exitnodes-local-routing' => $exitnodes_local_routing,
+                'exitnodes-primary' => $exitnodes_primary,
                 'ipam' => $ipam,
                 'mac' => $mac,
                 'mtu' => $mtu,
                 'nodes' => $nodes,
                 'peers' => $peers,
                 'reversedns' => $reversedns,
+                'rt-import' => $rt_import,
                 'tag' => $tag,
                 'vlan-protocol' => $vlan_protocol,
                 'vrf-vxlan' => $vrf_vxlan
@@ -4271,6 +4291,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $type Plugin type.
          *   Enum: bgp,evpn,faucet
          * @param int $asn autonomous system number
+         * @param bool $bgp_multipath_as_path_relax
          * @param bool $ebgp Enable ebgp. (remote-as external)
          * @param int $ebgp_multihop
          * @param string $loopback source loopback interface.
@@ -4278,11 +4299,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $peers peers address list.
          * @return Result
          */
-        public function create($controller, $type, $asn = null, $ebgp = null, $ebgp_multihop = null, $loopback = null, $node = null, $peers = null) {
+        public function create($controller, $type, $asn = null, $bgp_multipath_as_path_relax = null, $ebgp = null, $ebgp_multihop = null, $loopback = null, $node = null, $peers = null) {
             $params = [
                 'controller' => $controller,
                 'type' => $type,
                 'asn' => $asn,
+                'bgp-multipath-as-path-relax' => $bgp_multipath_as_path_relax,
                 'ebgp' => $ebgp,
                 'ebgp-multihop' => $ebgp_multihop,
                 'loopback' => $loopback,
@@ -4343,6 +4365,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Update sdn controller object configuration.
          * @param int $asn autonomous system number
+         * @param bool $bgp_multipath_as_path_relax
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param bool $ebgp Enable ebgp. (remote-as external)
@@ -4352,9 +4375,10 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $peers peers address list.
          * @return Result
          */
-        public function update($asn = null, $delete = null, $digest = null, $ebgp = null, $ebgp_multihop = null, $loopback = null, $node = null, $peers = null) {
+        public function update($asn = null, $bgp_multipath_as_path_relax = null, $delete = null, $digest = null, $ebgp = null, $ebgp_multihop = null, $loopback = null, $node = null, $peers = null) {
             $params = [
                 'asn' => $asn,
+                'bgp-multipath-as-path-relax' => $bgp_multipath_as_path_relax,
                 'delete' => $delete,
                 'digest' => $digest,
                 'ebgp' => $ebgp,
@@ -4755,11 +4779,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $max_workers Defines how many workers (per node) are maximal started  on actions like 'stopall VMs' or task from the ha-manager.
          * @param string $migration For cluster wide migration settings.
          * @param bool $migration_unsecure Migration is secure using SSH tunnel by default. For secure private networks you can disable it to speed up migration. Deprecated, use the 'migration' property instead!
+         * @param string $next_id Control the range for the free VMID auto-selection pool.
          * @param string $u2f u2f
          * @param string $webauthn webauthn configuration
          * @return Result
          */
-        public function setOptions($bwlimit = null, $console = null, $delete = null, $description = null, $email_from = null, $fencing = null, $ha = null, $http_proxy = null, $keyboard = null, $language = null, $mac_prefix = null, $max_workers = null, $migration = null, $migration_unsecure = null, $u2f = null, $webauthn = null) {
+        public function setOptions($bwlimit = null, $console = null, $delete = null, $description = null, $email_from = null, $fencing = null, $ha = null, $http_proxy = null, $keyboard = null, $language = null, $mac_prefix = null, $max_workers = null, $migration = null, $migration_unsecure = null, $next_id = null, $u2f = null, $webauthn = null) {
             $params = [
                 'bwlimit' => $bwlimit,
                 'console' => $console,
@@ -4775,6 +4800,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'max_workers' => $max_workers,
                 'migration' => $migration,
                 'migration_unsecure' => $migration_unsecure,
+                'next-id' => $next_id,
                 'u2f' => $u2f,
                 'webauthn' => $webauthn
             ];
@@ -4830,7 +4856,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
-         * Get next free VMID. If you pass an VMID it will raise an error if the ID is already used.
+         * Get next free VMID. Pass a VMID to assert that its free (at time of check).
          * @param int $vmid The (unique) ID of the VM.
          * @return Result
          */
@@ -5516,7 +5542,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param float $cpulimit Limit of CPU usage.
          * @param int $cpuunits CPU weight for a VM, will be clamped to [1, 10000] in cgroup v2.
          * @param string $description Description for the VM. Shown in the web-interface VM's summary. This is saved as comment inside the configuration file.
-         * @param string $efidisk0 Configure a Disk for storing EFI vars. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Note that SIZE_IN_GiB is ignored here and that the default EFI vars are copied to the volume instead.
+         * @param string $efidisk0 Configure a Disk for storing EFI vars. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Note that SIZE_IN_GiB is ignored here and that the default EFI vars are copied to the volume instead. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param bool $force Allow to overwrite existing VM.
          * @param bool $freeze Freeze CPU at startup (use 'c' monitor command to start execution).
          * @param string $hookscript Script that will be executed during various steps in the vms lifetime.
@@ -5524,11 +5550,11 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory' and 'usb'. Use '0' to disable hotplug completely. Using '1' as value is an alias for the default `network,disk,usb`.
          * @param string $hugepages Enable/disable hugepages memory.
          *   Enum: any,2,1024
-         * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume.
+         * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration. This requires cloud-init 19.4 or newer.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
          * @param string $ivshmem Inter-VM shared memory. Useful for direct communication between VMs, or to the host.
          * @param bool $keephugepages Use together with hugepages. If enabled, hugepages will not not be deleted after VM shutdown and can be used for subsequent starts.
-         * @param string $keyboard Keyboard layout for VNC server. The default is read from the'/etc/pve/datacenter.cfg' configuration file. It should not be necessary to set it.
+         * @param string $keyboard Keyboard layout for VNC server. This option is generally not required and is often better handled from within the guest OS.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param bool $kvm Enable/disable KVM hardware virtualization.
          * @param bool $live_restore Start the VM immediately from the backup and restore in background. PBS only.
@@ -5552,8 +5578,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $protection Sets the protection flag of the VM. This will disable the remove VM and remove disk operations.
          * @param bool $reboot Allow reboot. If set to '0' the VM exit on reboot.
          * @param string $rng0 Configure a VirtIO-based Random Number Generator.
-         * @param array $sataN Use volume as SATA hard disk or CD-ROM (n is 0 to 5). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume.
-         * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 30). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume.
+         * @param array $sataN Use volume as SATA hard disk or CD-ROM (n is 0 to 5). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
+         * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 30). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param string $scsihw SCSI controller model
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
          * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will' 	    .' automatically use the setting from the host if neither searchdomain nor nameserver' 	    .' are set.
@@ -5572,13 +5598,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $tags Tags of the VM. This is only meta information.
          * @param bool $tdf Enable/disable time drift fix.
          * @param bool $template Enable/disable Template.
-         * @param string $tpmstate0 Configure a Disk for storing TPM state. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Note that SIZE_IN_GiB is ignored here and that the default size of 4 MiB will always be used instead. The format is also fixed to 'raw'.
+         * @param string $tpmstate0 Configure a Disk for storing TPM state. The format is fixed to 'raw'. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Note that SIZE_IN_GiB is ignored here and 4 MiB will be used instead. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param bool $unique Assign a unique random ethernet address.
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
          * @param array $usbN Configure an USB device (n is 0 to 4).
          * @param int $vcpus Number of hotplugged vcpus.
          * @param string $vga Configure the VGA hardware.
-         * @param array $virtioN Use volume as VIRTIO hard disk (n is 0 to 15). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume.
+         * @param array $virtioN Use volume as VIRTIO hard disk (n is 0 to 15). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param string $vmgenid Set VM Generation ID. Use '1' to autogenerate on create or update, pass '0' to disable explicitly.
          * @param string $vmstatestorage Default storage for VM state volumes/files.
          * @param string $watchdog Create a virtual hardware watchdog device.
@@ -8245,12 +8271,14 @@ namespace Corsinvest\ProxmoxVE\Api {
          * Writes the given file via guest agent.
          * @param string $content The content to write into the file.
          * @param string $file The path to the file.
+         * @param bool $encode If set, the content will be encoded as base64 (required by QEMU).Otherwise the content needs to be encoded beforehand - defaults to true.
          * @return Result
          */
-        public function fileWrite($content, $file) {
+        public function fileWrite($content, $file, $encode = null) {
             $params = [
                 'content' => $content,
-                'file' => $file
+                'file' => $file,
+                'encode' => $encode
             ];
             return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/file-write", $params);
         }
@@ -8427,7 +8455,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $delete A list of settings you want to delete.
          * @param string $description Description for the VM. Shown in the web-interface VM's summary. This is saved as comment inside the configuration file.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
-         * @param string $efidisk0 Configure a Disk for storing EFI vars. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Note that SIZE_IN_GiB is ignored here and that the default EFI vars are copied to the volume instead.
+         * @param string $efidisk0 Configure a Disk for storing EFI vars. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Note that SIZE_IN_GiB is ignored here and that the default EFI vars are copied to the volume instead. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param bool $force Force physical removal. Without this, we simple remove the disk from the config file and create an additional configuration entry called 'unused[n]', which contains the volume ID. Unlink of unused[n] always cause physical removal.
          * @param bool $freeze Freeze CPU at startup (use 'c' monitor command to start execution).
          * @param string $hookscript Script that will be executed during various steps in the vms lifetime.
@@ -8435,11 +8463,11 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory' and 'usb'. Use '0' to disable hotplug completely. Using '1' as value is an alias for the default `network,disk,usb`.
          * @param string $hugepages Enable/disable hugepages memory.
          *   Enum: any,2,1024
-         * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume.
+         * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration. This requires cloud-init 19.4 or newer.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
          * @param string $ivshmem Inter-VM shared memory. Useful for direct communication between VMs, or to the host.
          * @param bool $keephugepages Use together with hugepages. If enabled, hugepages will not not be deleted after VM shutdown and can be used for subsequent starts.
-         * @param string $keyboard Keyboard layout for VNC server. The default is read from the'/etc/pve/datacenter.cfg' configuration file. It should not be necessary to set it.
+         * @param string $keyboard Keyboard layout for VNC server. This option is generally not required and is often better handled from within the guest OS.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param bool $kvm Enable/disable KVM hardware virtualization.
          * @param bool $localtime Set the real time clock (RTC) to local time. This is enabled by default if the `ostype` indicates a Microsoft Windows OS.
@@ -8462,8 +8490,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $reboot Allow reboot. If set to '0' the VM exit on reboot.
          * @param string $revert Revert a pending change.
          * @param string $rng0 Configure a VirtIO-based Random Number Generator.
-         * @param array $sataN Use volume as SATA hard disk or CD-ROM (n is 0 to 5). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume.
-         * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 30). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume.
+         * @param array $sataN Use volume as SATA hard disk or CD-ROM (n is 0 to 5). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
+         * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 30). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param string $scsihw SCSI controller model
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
          * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will' 	    .' automatically use the setting from the host if neither searchdomain nor nameserver' 	    .' are set.
@@ -8481,12 +8509,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $tags Tags of the VM. This is only meta information.
          * @param bool $tdf Enable/disable time drift fix.
          * @param bool $template Enable/disable Template.
-         * @param string $tpmstate0 Configure a Disk for storing TPM state. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Note that SIZE_IN_GiB is ignored here and that the default size of 4 MiB will always be used instead. The format is also fixed to 'raw'.
+         * @param string $tpmstate0 Configure a Disk for storing TPM state. The format is fixed to 'raw'. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Note that SIZE_IN_GiB is ignored here and 4 MiB will be used instead. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
          * @param array $usbN Configure an USB device (n is 0 to 4).
          * @param int $vcpus Number of hotplugged vcpus.
          * @param string $vga Configure the VGA hardware.
-         * @param array $virtioN Use volume as VIRTIO hard disk (n is 0 to 15). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume.
+         * @param array $virtioN Use volume as VIRTIO hard disk (n is 0 to 15). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param string $vmgenid Set VM Generation ID. Use '1' to autogenerate on create or update, pass '0' to disable explicitly.
          * @param string $vmstatestorage Default storage for VM state volumes/files.
          * @param string $watchdog Create a virtual hardware watchdog device.
@@ -8606,7 +8634,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $delete A list of settings you want to delete.
          * @param string $description Description for the VM. Shown in the web-interface VM's summary. This is saved as comment inside the configuration file.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
-         * @param string $efidisk0 Configure a Disk for storing EFI vars. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Note that SIZE_IN_GiB is ignored here and that the default EFI vars are copied to the volume instead.
+         * @param string $efidisk0 Configure a Disk for storing EFI vars. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Note that SIZE_IN_GiB is ignored here and that the default EFI vars are copied to the volume instead. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param bool $force Force physical removal. Without this, we simple remove the disk from the config file and create an additional configuration entry called 'unused[n]', which contains the volume ID. Unlink of unused[n] always cause physical removal.
          * @param bool $freeze Freeze CPU at startup (use 'c' monitor command to start execution).
          * @param string $hookscript Script that will be executed during various steps in the vms lifetime.
@@ -8614,11 +8642,11 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory' and 'usb'. Use '0' to disable hotplug completely. Using '1' as value is an alias for the default `network,disk,usb`.
          * @param string $hugepages Enable/disable hugepages memory.
          *   Enum: any,2,1024
-         * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume.
+         * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration. This requires cloud-init 19.4 or newer.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
          * @param string $ivshmem Inter-VM shared memory. Useful for direct communication between VMs, or to the host.
          * @param bool $keephugepages Use together with hugepages. If enabled, hugepages will not not be deleted after VM shutdown and can be used for subsequent starts.
-         * @param string $keyboard Keyboard layout for VNC server. The default is read from the'/etc/pve/datacenter.cfg' configuration file. It should not be necessary to set it.
+         * @param string $keyboard Keyboard layout for VNC server. This option is generally not required and is often better handled from within the guest OS.
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param bool $kvm Enable/disable KVM hardware virtualization.
          * @param bool $localtime Set the real time clock (RTC) to local time. This is enabled by default if the `ostype` indicates a Microsoft Windows OS.
@@ -8641,8 +8669,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $reboot Allow reboot. If set to '0' the VM exit on reboot.
          * @param string $revert Revert a pending change.
          * @param string $rng0 Configure a VirtIO-based Random Number Generator.
-         * @param array $sataN Use volume as SATA hard disk or CD-ROM (n is 0 to 5). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume.
-         * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 30). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume.
+         * @param array $sataN Use volume as SATA hard disk or CD-ROM (n is 0 to 5). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
+         * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 30). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param string $scsihw SCSI controller model
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
          * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will' 	    .' automatically use the setting from the host if neither searchdomain nor nameserver' 	    .' are set.
@@ -8660,12 +8688,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $tags Tags of the VM. This is only meta information.
          * @param bool $tdf Enable/disable time drift fix.
          * @param bool $template Enable/disable Template.
-         * @param string $tpmstate0 Configure a Disk for storing TPM state. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Note that SIZE_IN_GiB is ignored here and that the default size of 4 MiB will always be used instead. The format is also fixed to 'raw'.
+         * @param string $tpmstate0 Configure a Disk for storing TPM state. The format is fixed to 'raw'. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Note that SIZE_IN_GiB is ignored here and 4 MiB will be used instead. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
          * @param array $usbN Configure an USB device (n is 0 to 4).
          * @param int $vcpus Number of hotplugged vcpus.
          * @param string $vga Configure the VGA hardware.
-         * @param array $virtioN Use volume as VIRTIO hard disk (n is 0 to 15). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume.
+         * @param array $virtioN Use volume as VIRTIO hard disk (n is 0 to 15). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param string $vmgenid Set VM Generation ID. Use '1' to autogenerate on create or update, pass '0' to disable explicitly.
          * @param string $vmstatestorage Default storage for VM state volumes/files.
          * @param string $watchdog Create a virtual hardware watchdog device.
@@ -10375,7 +10403,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param array $netN Specifies network interfaces for the container.
          * @param bool $onboot Specifies whether a VM will be started during system bootup.
          * @param string $ostype OS type. This is used to setup configuration inside the container, and corresponds to lxc setup scripts in /usr/share/lxc/config/&amp;lt;ostype&amp;gt;.common.conf. Value 'unmanaged' can be used to skip and OS specific setup.
-         *   Enum: debian,devuan,ubuntu,centos,fedora,opensuse,archlinux,alpine,gentoo,unmanaged
+         *   Enum: debian,devuan,ubuntu,centos,fedora,opensuse,archlinux,alpine,gentoo,nixos,unmanaged
          * @param string $password Sets root password inside container.
          * @param string $pool Add the VM to the specified pool.
          * @param bool $protection Sets the protection flag of the container. This will prevent the CT or CT's disk remove/update operation.
@@ -10791,7 +10819,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param array $netN Specifies network interfaces for the container.
          * @param bool $onboot Specifies whether a VM will be started during system bootup.
          * @param string $ostype OS type. This is used to setup configuration inside the container, and corresponds to lxc setup scripts in /usr/share/lxc/config/&amp;lt;ostype&amp;gt;.common.conf. Value 'unmanaged' can be used to skip and OS specific setup.
-         *   Enum: debian,devuan,ubuntu,centos,fedora,opensuse,archlinux,alpine,gentoo,unmanaged
+         *   Enum: debian,devuan,ubuntu,centos,fedora,opensuse,archlinux,alpine,gentoo,nixos,unmanaged
          * @param bool $protection Sets the protection flag of the container. This will prevent the CT or CT's disk remove/update operation.
          * @param string $revert Revert a pending change.
          * @param string $rootfs Use volume as container root.
@@ -12669,15 +12697,17 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param float $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param bool $online Use online/live migration.
          * @param bool $restart Use restart migration
+         * @param string $target_storage Mapping from source to target storages. Providing only a single storage ID maps all source storages to that storage. Providing the special value '1' will map each source storage to itself.
          * @param int $timeout Timeout in seconds for shutdown for restart migration
          * @return Result
          */
-        public function migrateVm($target, $bwlimit = null, $online = null, $restart = null, $timeout = null) {
+        public function migrateVm($target, $bwlimit = null, $online = null, $restart = null, $target_storage = null, $timeout = null) {
             $params = [
                 'target' => $target,
                 'bwlimit' => $bwlimit,
                 'online' => $online,
                 'restart' => $restart,
+                'target-storage' => $target_storage,
                 'timeout' => $timeout
             ];
             return $this->client->create("/nodes/{$this->node}/lxc/{$this->vmid}/migrate", $params);
@@ -13901,12 +13931,13 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
-         * Create POOL
+         * Create Ceph pool
          * @param string $name The name of the pool. It must be unique.
          * @param bool $add_storages Configure VM and CT storage using the new pool.
          * @param string $application The application of the pool.
          *   Enum: rbd,cephfs,rgw
          * @param string $crush_rule The rule to use for mapping object placement in the cluster.
+         * @param string $erasure_coding Create an erasure coded pool for RBD with an accompaning replicated pool for metadata storage. With EC, the common ceph options 'size', 'min_size' and 'crush_rule' parameters will be applied to the metadata pool.
          * @param int $min_size Minimum number of replicas per object
          * @param string $pg_autoscale_mode The automatic PG scaling mode of the pool.
          *   Enum: on,off,warn
@@ -13917,12 +13948,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param float $target_size_ratio The estimated target ratio of the pool for the PG autoscaler.
          * @return Result
          */
-        public function createpool($name, $add_storages = null, $application = null, $crush_rule = null, $min_size = null, $pg_autoscale_mode = null, $pg_num = null, $pg_num_min = null, $size = null, $target_size = null, $target_size_ratio = null) {
+        public function createpool($name, $add_storages = null, $application = null, $crush_rule = null, $erasure_coding = null, $min_size = null, $pg_autoscale_mode = null, $pg_num = null, $pg_num_min = null, $size = null, $target_size = null, $target_size_ratio = null) {
             $params = [
                 'name' => $name,
                 'add_storages' => $add_storages,
                 'application' => $application,
                 'crush_rule' => $crush_rule,
+                'erasure-coding' => $erasure_coding,
                 'min_size' => $min_size,
                 'pg_autoscale_mode' => $pg_autoscale_mode,
                 'pg_num' => $pg_num,
@@ -13969,12 +14001,14 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Destroy pool
          * @param bool $force If true, destroys pool even if in use
+         * @param bool $remove_ecprofile Remove the erasure code profile. Defaults to true, if applicable.
          * @param bool $remove_storages Remove all pveceph-managed storages configured for this pool
          * @return Result
          */
-        public function destroypool($force = null, $remove_storages = null) {
+        public function destroypool($force = null, $remove_ecprofile = null, $remove_storages = null) {
             $params = [
                 'force' => $force,
+                'remove_ecprofile' => $remove_ecprofile,
                 'remove_storages' => $remove_storages
             ];
             return $this->client->delete("/nodes/{$this->node}/ceph/pools/{$this->name}", $params);
@@ -14455,8 +14489,10 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $maxfiles Deprecated: use 'prune-backups' instead. Maximal number of backup files per guest system.
          * @param string $mode Backup mode.
          *   Enum: snapshot,suspend,stop
+         * @param string $notes_template Template string for generating notes for the backup(s). It can contain variables which will be replaced by their values. Currently supported are {{cluster}}, {{guestname}}, {{node}}, and {{vmid}}, but more might be added in the future.
          * @param int $pigz Use pigz instead of gzip when N&amp;gt;0. N=1 uses half of cores, N&amp;gt;1 uses N as thread count.
          * @param string $pool Backup all known guest systems included in the specified pool.
+         * @param bool $protected If true, mark backup(s) as protected.
          * @param string $prune_backups Use these retention options instead of those from the storage configuration.
          * @param bool $quiet Be quiet.
          * @param bool $remove Prune older backups according to 'prune-backups'.
@@ -14471,7 +14507,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $zstd Zstd threads. N=0 uses half of the available cores, N&amp;gt;0 uses N as thread count.
          * @return Result
          */
-        public function vzdump($all = null, $bwlimit = null, $compress = null, $dumpdir = null, $exclude = null, $exclude_path = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $pigz = null, $pool = null, $prune_backups = null, $quiet = null, $remove = null, $script = null, $stdexcludes = null, $stdout = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
+        public function vzdump($all = null, $bwlimit = null, $compress = null, $dumpdir = null, $exclude = null, $exclude_path = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $notes_template = null, $pigz = null, $pool = null, $protected = null, $prune_backups = null, $quiet = null, $remove = null, $script = null, $stdexcludes = null, $stdout = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
             $params = [
                 'all' => $all,
                 'bwlimit' => $bwlimit,
@@ -14485,8 +14521,10 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'mailto' => $mailto,
                 'maxfiles' => $maxfiles,
                 'mode' => $mode,
+                'notes-template' => $notes_template,
                 'pigz' => $pigz,
                 'pool' => $pool,
+                'protected' => $protected,
                 'prune-backups' => $prune_backups,
                 'quiet' => $quiet,
                 'remove' => $remove,
@@ -20241,6 +20279,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $comstar_hg host group for comstar views
          * @param string $comstar_tg target group for comstar views
          * @param string $content Allowed content types.  NOTE: the value 'rootdir' is used for Containers, and value 'images' for VMs.
+         * @param string $data_pool Data Pool (for erasure coding only)
          * @param string $datastore Proxmox Backup Server datastore name.
          * @param bool $disable Flag to disable the storage.
          * @param string $domain CIFS domain.
@@ -20256,6 +20295,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $krbd Always access rbd through krbd kernel module.
          * @param string $lio_tpg target portal group for Linux LIO targets
          * @param string $master_pubkey Base64-encoded, PEM-formatted public RSA key. Used to encrypt a copy of the encryption-key which will be added to each encrypted backup.
+         * @param int $max_protected_backups Maximal number of protected backups per guest. Use '-1' for unlimited.
          * @param int $maxfiles Deprecated: use 'prune-backups' instead. Maximal number of backup files per VM. Use '0' for unlimited.
          * @param bool $mkdir Create the directory if it doesn't exist.
          * @param string $monhost IP addresses of monitors (for external clusters).
@@ -20293,7 +20333,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $volume Glusterfs Volume.
          * @return Result
          */
-        public function create($storage, $type, $authsupported = null, $base = null, $blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $datastore = null, $disable = null, $domain = null, $encryption_key = null, $export = null, $fingerprint = null, $format = null, $fs_name = null, $fuse = null, $is_mountpoint = null, $iscsiprovider = null, $keyring = null, $krbd = null, $lio_tpg = null, $master_pubkey = null, $maxfiles = null, $mkdir = null, $monhost = null, $mountpoint = null, $namespace = null, $nocow = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $path = null, $pool = null, $port = null, $portal = null, $preallocation = null, $prune_backups = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $share = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $target = null, $thinpool = null, $transport = null, $username = null, $vgname = null, $volume = null) {
+        public function create($storage, $type, $authsupported = null, $base = null, $blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $data_pool = null, $datastore = null, $disable = null, $domain = null, $encryption_key = null, $export = null, $fingerprint = null, $format = null, $fs_name = null, $fuse = null, $is_mountpoint = null, $iscsiprovider = null, $keyring = null, $krbd = null, $lio_tpg = null, $master_pubkey = null, $max_protected_backups = null, $maxfiles = null, $mkdir = null, $monhost = null, $mountpoint = null, $namespace = null, $nocow = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $path = null, $pool = null, $port = null, $portal = null, $preallocation = null, $prune_backups = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $share = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $target = null, $thinpool = null, $transport = null, $username = null, $vgname = null, $volume = null) {
             $params = [
                 'storage' => $storage,
                 'type' => $type,
@@ -20304,6 +20344,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'comstar_hg' => $comstar_hg,
                 'comstar_tg' => $comstar_tg,
                 'content' => $content,
+                'data-pool' => $data_pool,
                 'datastore' => $datastore,
                 'disable' => $disable,
                 'domain' => $domain,
@@ -20319,6 +20360,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'krbd' => $krbd,
                 'lio_tpg' => $lio_tpg,
                 'master-pubkey' => $master_pubkey,
+                'max-protected-backups' => $max_protected_backups,
                 'maxfiles' => $maxfiles,
                 'mkdir' => $mkdir,
                 'monhost' => $monhost,
@@ -20404,6 +20446,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $comstar_hg host group for comstar views
          * @param string $comstar_tg target group for comstar views
          * @param string $content Allowed content types.  NOTE: the value 'rootdir' is used for Containers, and value 'images' for VMs.
+         * @param string $data_pool Data Pool (for erasure coding only)
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param bool $disable Flag to disable the storage.
@@ -20418,6 +20461,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $krbd Always access rbd through krbd kernel module.
          * @param string $lio_tpg target portal group for Linux LIO targets
          * @param string $master_pubkey Base64-encoded, PEM-formatted public RSA key. Used to encrypt a copy of the encryption-key which will be added to each encrypted backup.
+         * @param int $max_protected_backups Maximal number of protected backups per guest. Use '-1' for unlimited.
          * @param int $maxfiles Deprecated: use 'prune-backups' instead. Maximal number of backup files per VM. Use '0' for unlimited.
          * @param bool $mkdir Create the directory if it doesn't exist.
          * @param string $monhost IP addresses of monitors (for external clusters).
@@ -20448,13 +20492,14 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $username RBD Id.
          * @return Result
          */
-        public function update($blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $delete = null, $digest = null, $disable = null, $domain = null, $encryption_key = null, $fingerprint = null, $format = null, $fs_name = null, $fuse = null, $is_mountpoint = null, $keyring = null, $krbd = null, $lio_tpg = null, $master_pubkey = null, $maxfiles = null, $mkdir = null, $monhost = null, $mountpoint = null, $namespace = null, $nocow = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $pool = null, $port = null, $preallocation = null, $prune_backups = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $transport = null, $username = null) {
+        public function update($blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $data_pool = null, $delete = null, $digest = null, $disable = null, $domain = null, $encryption_key = null, $fingerprint = null, $format = null, $fs_name = null, $fuse = null, $is_mountpoint = null, $keyring = null, $krbd = null, $lio_tpg = null, $master_pubkey = null, $max_protected_backups = null, $maxfiles = null, $mkdir = null, $monhost = null, $mountpoint = null, $namespace = null, $nocow = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $pool = null, $port = null, $preallocation = null, $prune_backups = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $transport = null, $username = null) {
             $params = [
                 'blocksize' => $blocksize,
                 'bwlimit' => $bwlimit,
                 'comstar_hg' => $comstar_hg,
                 'comstar_tg' => $comstar_tg,
                 'content' => $content,
+                'data-pool' => $data_pool,
                 'delete' => $delete,
                 'digest' => $digest,
                 'disable' => $disable,
@@ -20469,6 +20514,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'krbd' => $krbd,
                 'lio_tpg' => $lio_tpg,
                 'master-pubkey' => $master_pubkey,
+                'max-protected-backups' => $max_protected_backups,
                 'maxfiles' => $maxfiles,
                 'mkdir' => $mkdir,
                 'monhost' => $monhost,
@@ -21288,6 +21334,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $realm Authentication domain ID
          * @param string $type Realm type.
          *   Enum: ad,ldap,openid,pam,pve
+         * @param string $acr_values Specifies the Authentication Context Class Reference values that theAuthorization Server is being requested to use for the Auth Request.
          * @param bool $autocreate Automatically create users if they do not exist.
          * @param string $base_dn LDAP base domain name
          * @param string $bind_dn LDAP bind domain name
@@ -21310,6 +21357,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: ldap,ldaps,ldap+starttls
          * @param string $password LDAP bind password. Will be stored in '/etc/pve/priv/realm/&amp;lt;REALM&amp;gt;.pw'.
          * @param int $port Server port.
+         * @param string $prompt Specifies whether the Authorization Server prompts the End-User for reauthentication and consent.
+         * @param string $scopes Specifies the scopes (user details) that should be authorized and returned, for example 'email' or 'profile'.
          * @param bool $secure Use secure LDAPS protocol. DEPRECATED: use 'mode' instead.
          * @param string $server1 Server IP address (or DNS name)
          * @param string $server2 Fallback Server IP address (or DNS name)
@@ -21321,14 +21370,14 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $user_attr LDAP user attribute name
          * @param string $user_classes The objectclasses for users.
          * @param string $username_claim OpenID claim used to generate the unique username.
-         *   Enum: subject,username,email
          * @param bool $verify Verify the server's SSL certificate
          * @return Result
          */
-        public function create($realm, $type, $autocreate = null, $base_dn = null, $bind_dn = null, $capath = null, $case_sensitive = null, $cert = null, $certkey = null, $client_id = null, $client_key = null, $comment = null, $default = null, $domain = null, $filter = null, $group_classes = null, $group_dn = null, $group_filter = null, $group_name_attr = null, $issuer_url = null, $mode = null, $password = null, $port = null, $secure = null, $server1 = null, $server2 = null, $sslversion = null, $sync_defaults_options = null, $sync_attributes = null, $tfa = null, $user_attr = null, $user_classes = null, $username_claim = null, $verify = null) {
+        public function create($realm, $type, $acr_values = null, $autocreate = null, $base_dn = null, $bind_dn = null, $capath = null, $case_sensitive = null, $cert = null, $certkey = null, $client_id = null, $client_key = null, $comment = null, $default = null, $domain = null, $filter = null, $group_classes = null, $group_dn = null, $group_filter = null, $group_name_attr = null, $issuer_url = null, $mode = null, $password = null, $port = null, $prompt = null, $scopes = null, $secure = null, $server1 = null, $server2 = null, $sslversion = null, $sync_defaults_options = null, $sync_attributes = null, $tfa = null, $user_attr = null, $user_classes = null, $username_claim = null, $verify = null) {
             $params = [
                 'realm' => $realm,
                 'type' => $type,
+                'acr-values' => $acr_values,
                 'autocreate' => $autocreate,
                 'base_dn' => $base_dn,
                 'bind_dn' => $bind_dn,
@@ -21350,6 +21399,8 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'mode' => $mode,
                 'password' => $password,
                 'port' => $port,
+                'prompt' => $prompt,
+                'scopes' => $scopes,
                 'secure' => $secure,
                 'server1' => $server1,
                 'server2' => $server2,
@@ -21422,6 +21473,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Update authentication server settings.
+         * @param string $acr_values Specifies the Authentication Context Class Reference values that theAuthorization Server is being requested to use for the Auth Request.
          * @param bool $autocreate Automatically create users if they do not exist.
          * @param string $base_dn LDAP base domain name
          * @param string $bind_dn LDAP bind domain name
@@ -21446,6 +21498,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: ldap,ldaps,ldap+starttls
          * @param string $password LDAP bind password. Will be stored in '/etc/pve/priv/realm/&amp;lt;REALM&amp;gt;.pw'.
          * @param int $port Server port.
+         * @param string $prompt Specifies whether the Authorization Server prompts the End-User for reauthentication and consent.
+         * @param string $scopes Specifies the scopes (user details) that should be authorized and returned, for example 'email' or 'profile'.
          * @param bool $secure Use secure LDAPS protocol. DEPRECATED: use 'mode' instead.
          * @param string $server1 Server IP address (or DNS name)
          * @param string $server2 Fallback Server IP address (or DNS name)
@@ -21459,8 +21513,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $verify Verify the server's SSL certificate
          * @return Result
          */
-        public function update($autocreate = null, $base_dn = null, $bind_dn = null, $capath = null, $case_sensitive = null, $cert = null, $certkey = null, $client_id = null, $client_key = null, $comment = null, $default = null, $delete = null, $digest = null, $domain = null, $filter = null, $group_classes = null, $group_dn = null, $group_filter = null, $group_name_attr = null, $issuer_url = null, $mode = null, $password = null, $port = null, $secure = null, $server1 = null, $server2 = null, $sslversion = null, $sync_defaults_options = null, $sync_attributes = null, $tfa = null, $user_attr = null, $user_classes = null, $verify = null) {
+        public function update($acr_values = null, $autocreate = null, $base_dn = null, $bind_dn = null, $capath = null, $case_sensitive = null, $cert = null, $certkey = null, $client_id = null, $client_key = null, $comment = null, $default = null, $delete = null, $digest = null, $domain = null, $filter = null, $group_classes = null, $group_dn = null, $group_filter = null, $group_name_attr = null, $issuer_url = null, $mode = null, $password = null, $port = null, $prompt = null, $scopes = null, $secure = null, $server1 = null, $server2 = null, $sslversion = null, $sync_defaults_options = null, $sync_attributes = null, $tfa = null, $user_attr = null, $user_classes = null, $verify = null) {
             $params = [
+                'acr-values' => $acr_values,
                 'autocreate' => $autocreate,
                 'base_dn' => $base_dn,
                 'bind_dn' => $bind_dn,
@@ -21484,6 +21539,8 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'mode' => $mode,
                 'password' => $password,
                 'port' => $port,
+                'prompt' => $prompt,
+                'scopes' => $scopes,
                 'secure' => $secure,
                 'server1' => $server1,
                 'server2' => $server2,
@@ -21528,18 +21585,20 @@ namespace Corsinvest\ProxmoxVE\Api {
          * Syncs users and/or groups from the configured LDAP to user.cfg. NOTE: Synced groups will have the name 'name-$realm', so make sure those groups do not exist to prevent overwriting.
          * @param bool $dry_run If set, does not write anything.
          * @param bool $enable_new Enable newly synced users immediately.
-         * @param bool $full If set, uses the LDAP Directory as source of truth, deleting users or groups not returned from the sync. Otherwise only syncs information which is not already present, and does not deletes or modifies anything else.
-         * @param bool $purge Remove ACLs for users or groups which were removed from the config during a sync.
+         * @param bool $full DEPRECATED: use 'remove-vanished' instead. If set, uses the LDAP Directory as source of truth, deleting users or groups not returned from the sync and removing all locally modified properties of synced users. If not set, only syncs information which is present in the synced data, and does not delete or modify anything else.
+         * @param bool $purge DEPRECATED: use 'remove-vanished' instead. Remove ACLs for users or groups which were removed from the config during a sync.
+         * @param string $remove_vanished A semicolon-seperated list of things to remove when they or the user vanishes during a sync. The following values are possible: 'entry' removes the user/group when not returned from the sync. 'properties' removes the set properties on existing user/group that do not appear in the source (even custom ones). 'acl' removes acls when the user/group is not returned from the sync.
          * @param string $scope Select what to sync.
          *   Enum: users,groups,both
          * @return Result
          */
-        public function sync($dry_run = null, $enable_new = null, $full = null, $purge = null, $scope = null) {
+        public function sync($dry_run = null, $enable_new = null, $full = null, $purge = null, $remove_vanished = null, $scope = null) {
             $params = [
                 'dry-run' => $dry_run,
                 'enable-new' => $enable_new,
                 'full' => $full,
                 'purge' => $purge,
+                'remove-vanished' => $remove_vanished,
                 'scope' => $scope
             ];
             return $this->client->create("/access/domains/{$this->realm}/sync", $params);
@@ -22057,10 +22116,13 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Get pool configuration.
+         * @param string $type
+         *   Enum: qemu,lxc,storage
          * @return Result
          */
-        public function readPool() {
-            return $this->client->get("/pools/{$this->poolid}");
+        public function readPool($type = null) {
+            $params = ['type' => $type];
+            return $this->client->get("/pools/{$this->poolid}", $params);
         }
 
         /**
