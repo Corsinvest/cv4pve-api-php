@@ -47,6 +47,7 @@ The result is class **Result** and contain methods:
 
 * Easy to learn
 * No dependency external library only native curl
+* Implementation respect the [Api structure of Proxmox VE](https://pve.proxmox.com/pve-docs/api-viewer/)
 * Method named
 * Set ResponseType json, png
 * Full method generated from documentation
