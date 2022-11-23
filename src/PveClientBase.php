@@ -435,7 +435,7 @@ class PveClientBase
      */
     function taskIsRunning($task)
     {
-        return $this->readTaskStatus($task)->getResponse()->data == "running";
+        return $this->readTaskStatus($task)->getResponse()->data->status == "running";
     }
 
     /**
