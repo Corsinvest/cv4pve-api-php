@@ -404,27 +404,28 @@ class PveClientBase
      * @param string $task Task identifier
      * @param int $wait Millisecond wait next check
      * @param int $timeOut Millisecond timeout
-     * @return bool
+     * @return bool Function timed out
      */
     public function waitForTaskToFinish($task, $wait = 500, $timeOut = 10000)
     {
-        $isRunning = true;
+        $isRunning = $this->taskIsRunning($task);
         if ($wait <= 0) {
             $wait = 500;
         }
         if ($timeOut < $wait) {
             $timeOut = $wait + 5000;
         }
-        $timeStart = time();
-        $waitTime = time();
-        while (($isRunning && (time() - $timeStart)) < $timeOut) {
-            if ((time() - $waitTime) >= $wait) {
-                $waitTime = time();
+        $timeStart = floor(microtime(true) * 1000);
+        $waitTime = floor(microtime(true) * 1000);
+
+        while ($isRunning && ((floor(microtime(true) * 1000) - $timeStart) < $timeOut)) {
+            if ((floor(microtime(true) * 1000) - $waitTime) >= $wait) {
+                $waitTime = floor(microtime(true) * 1000);
                 $isRunning = $this->taskIsRunning($task);
             }
         }
 
-        return (time() - $timeStart) < $timeOut;
+        return $isRunning;
     }
 
     /**
