@@ -131,7 +131,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECluster
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECluster {
 
@@ -380,7 +380,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEClusterReplication
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterReplication {
 
@@ -429,8 +429,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function create($id, $target, $type, $comment = null, $disable = null, $rate = null, $remove_job = null, $schedule = null, $source = null) {
-            $params = [
-                'id' => $id,
+            $params = ['id' => $id,
                 'target' => $target,
                 'type' => $type,
                 'comment' => $comment,
@@ -438,8 +437,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'rate' => $rate,
                 'remove_job' => $remove_job,
                 'schedule' => $schedule,
-                'source' => $source
-            ];
+                'source' => $source];
             return $this->client->create("/cluster/replication", $params);
         }
 
@@ -447,7 +445,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemReplicationClusterId
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemReplicationClusterId {
 
@@ -476,10 +474,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function delete($force = null, $keep = null) {
-            $params = [
-                'force' => $force,
-                'keep' => $keep
-            ];
+            $params = ['force' => $force,
+                'keep' => $keep];
             return $this->client->delete("/cluster/replication/{$this->id}", $params);
         }
 
@@ -505,16 +501,14 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function update($comment = null, $delete = null, $digest = null, $disable = null, $rate = null, $remove_job = null, $schedule = null, $source = null) {
-            $params = [
-                'comment' => $comment,
+            $params = ['comment' => $comment,
                 'delete' => $delete,
                 'digest' => $digest,
                 'disable' => $disable,
                 'rate' => $rate,
                 'remove_job' => $remove_job,
                 'schedule' => $schedule,
-                'source' => $source
-            ];
+                'source' => $source];
             return $this->client->set("/cluster/replication/{$this->id}", $params);
         }
 
@@ -522,7 +516,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEClusterMetrics
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterMetrics {
 
@@ -563,7 +557,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEMetricsClusterServer
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEMetricsClusterServer {
 
@@ -600,7 +594,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemServerMetricsClusterId
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemServerMetricsClusterId {
 
@@ -647,7 +641,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $api_path_prefix An API path prefix inserted between '&amp;lt;host&amp;gt;:&amp;lt;port&amp;gt;/' and '/api2/'. Can be useful if the InfluxDB service runs behind a reverse proxy.
          * @param string $bucket The InfluxDB bucket/db. Only necessary when using the http v2 api.
          * @param bool $disable Flag to disable the plugin.
-         * @param string $influxdbproto
+         * @param string $influxdbproto 
          *   Enum: udp,http,https
          * @param int $max_body_size InfluxDB max-body-size in bytes. Requests are batched up to this size.
          * @param int $mtu MTU for metrics transmission over UDP
@@ -661,8 +655,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function create($port, $server, $type, $api_path_prefix = null, $bucket = null, $disable = null, $influxdbproto = null, $max_body_size = null, $mtu = null, $organization = null, $path = null, $proto = null, $timeout = null, $token = null, $verify_certificate = null) {
-            $params = [
-                'port' => $port,
+            $params = ['port' => $port,
                 'server' => $server,
                 'type' => $type,
                 'api-path-prefix' => $api_path_prefix,
@@ -676,8 +669,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'proto' => $proto,
                 'timeout' => $timeout,
                 'token' => $token,
-                'verify-certificate' => $verify_certificate
-            ];
+                'verify-certificate' => $verify_certificate];
             return $this->client->create("/cluster/metrics/server/{$this->id}", $params);
         }
 
@@ -690,7 +682,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param bool $disable Flag to disable the plugin.
-         * @param string $influxdbproto
+         * @param string $influxdbproto 
          *   Enum: udp,http,https
          * @param int $max_body_size InfluxDB max-body-size in bytes. Requests are batched up to this size.
          * @param int $mtu MTU for metrics transmission over UDP
@@ -704,8 +696,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function update($port, $server, $api_path_prefix = null, $bucket = null, $delete = null, $digest = null, $disable = null, $influxdbproto = null, $max_body_size = null, $mtu = null, $organization = null, $path = null, $proto = null, $timeout = null, $token = null, $verify_certificate = null) {
-            $params = [
-                'port' => $port,
+            $params = ['port' => $port,
                 'server' => $server,
                 'api-path-prefix' => $api_path_prefix,
                 'bucket' => $bucket,
@@ -720,8 +711,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'proto' => $proto,
                 'timeout' => $timeout,
                 'token' => $token,
-                'verify-certificate' => $verify_certificate
-            ];
+                'verify-certificate' => $verify_certificate];
             return $this->client->set("/cluster/metrics/server/{$this->id}", $params);
         }
 
@@ -729,7 +719,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEClusterConfig
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterConfig {
 
@@ -827,11 +817,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function create($clustername, $linkN = null, $nodeid = null, $votes = null) {
-            $params = [
-                'clustername' => $clustername,
+            $params = ['clustername' => $clustername,
                 'nodeid' => $nodeid,
-                'votes' => $votes
-            ];
+                'votes' => $votes];
             $this->client->addIndexedParameter($params, 'link', $linkN);
             return $this->client->create("/cluster/config", $params);
         }
@@ -840,7 +828,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEConfigClusterApiversion
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEConfigClusterApiversion {
 
@@ -868,7 +856,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEConfigClusterNodes
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEConfigClusterNodes {
 
@@ -905,7 +893,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemNodesConfigClusterNode
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemNodesConfigClusterNode {
 
@@ -946,13 +934,11 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function addnode($apiversion = null, $force = null, $linkN = null, $new_node_ip = null, $nodeid = null, $votes = null) {
-            $params = [
-                'apiversion' => $apiversion,
+            $params = ['apiversion' => $apiversion,
                 'force' => $force,
                 'new_node_ip' => $new_node_ip,
                 'nodeid' => $nodeid,
-                'votes' => $votes
-            ];
+                'votes' => $votes];
             $this->client->addIndexedParameter($params, 'link', $linkN);
             return $this->client->create("/cluster/config/nodes/{$this->node}", $params);
         }
@@ -961,7 +947,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEConfigClusterJoin
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEConfigClusterJoin {
 
@@ -979,7 +965,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Get information needed to join this cluster over the connected node.
-         * @param string $node The node for which the joinee gets the nodeinfo.
+         * @param string $node The node for which the joinee gets the nodeinfo. 
          * @return Result
          */
         public function joinInfo($node = null) {
@@ -999,14 +985,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function join($fingerprint, $hostname, $password, $force = null, $linkN = null, $nodeid = null, $votes = null) {
-            $params = [
-                'fingerprint' => $fingerprint,
+            $params = ['fingerprint' => $fingerprint,
                 'hostname' => $hostname,
                 'password' => $password,
                 'force' => $force,
                 'nodeid' => $nodeid,
-                'votes' => $votes
-            ];
+                'votes' => $votes];
             $this->client->addIndexedParameter($params, 'link', $linkN);
             return $this->client->create("/cluster/config/join", $params);
         }
@@ -1015,7 +999,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEConfigClusterTotem
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEConfigClusterTotem {
 
@@ -1043,7 +1027,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEConfigClusterQdevice
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEConfigClusterQdevice {
 
@@ -1071,7 +1055,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEClusterFirewall
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterFirewall {
 
@@ -1190,7 +1174,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFirewallClusterGroups
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallClusterGroups {
 
@@ -1226,18 +1210,16 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Create new security group.
          * @param string $group Security Group name.
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $rename Rename/update an existing security group. You can set 'rename' to the same value as 'name' to update the 'comment' of an existing group.
          * @return Result
          */
         public function createSecurityGroup($group, $comment = null, $digest = null, $rename = null) {
-            $params = [
-                'group' => $group,
+            $params = ['group' => $group,
                 'comment' => $comment,
                 'digest' => $digest,
-                'rename' => $rename
-            ];
+                'rename' => $rename];
             return $this->client->create("/cluster/firewall/groups", $params);
         }
 
@@ -1245,7 +1227,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemGroupsFirewallClusterGroup
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemGroupsFirewallClusterGroup {
 
@@ -1314,8 +1296,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function createRule($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $icmp_type = null, $iface = null, $log = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null) {
-            $params = [
-                'action' => $action,
+            $params = ['action' => $action,
                 'type' => $type,
                 'comment' => $comment,
                 'dest' => $dest,
@@ -1329,8 +1310,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'pos' => $pos,
                 'proto' => $proto,
                 'source' => $source,
-                'sport' => $sport
-            ];
+                'sport' => $sport];
             return $this->client->create("/cluster/firewall/groups/{$this->group}", $params);
         }
 
@@ -1338,7 +1318,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemGroupGroupsFirewallClusterPos
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemGroupGroupsFirewallClusterPos {
 
@@ -1407,8 +1387,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function updateRule($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $icmp_type = null, $iface = null, $log = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null) {
-            $params = [
-                'action' => $action,
+            $params = ['action' => $action,
                 'comment' => $comment,
                 'delete' => $delete,
                 'dest' => $dest,
@@ -1423,8 +1402,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'proto' => $proto,
                 'source' => $source,
                 'sport' => $sport,
-                'type' => $type
-            ];
+                'type' => $type];
             return $this->client->set("/cluster/firewall/groups/{$this->group}/{$this->pos}", $params);
         }
 
@@ -1432,7 +1410,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFirewallClusterRules
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallClusterRules {
 
@@ -1487,8 +1465,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function createRule($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $icmp_type = null, $iface = null, $log = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null) {
-            $params = [
-                'action' => $action,
+            $params = ['action' => $action,
                 'type' => $type,
                 'comment' => $comment,
                 'dest' => $dest,
@@ -1502,8 +1479,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'pos' => $pos,
                 'proto' => $proto,
                 'source' => $source,
-                'sport' => $sport
-            ];
+                'sport' => $sport];
             return $this->client->create("/cluster/firewall/rules", $params);
         }
 
@@ -1511,7 +1487,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemRulesFirewallClusterPos
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemRulesFirewallClusterPos {
 
@@ -1574,8 +1550,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function updateRule($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $icmp_type = null, $iface = null, $log = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null) {
-            $params = [
-                'action' => $action,
+            $params = ['action' => $action,
                 'comment' => $comment,
                 'delete' => $delete,
                 'dest' => $dest,
@@ -1590,8 +1565,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'proto' => $proto,
                 'source' => $source,
                 'sport' => $sport,
-                'type' => $type
-            ];
+                'type' => $type];
             return $this->client->set("/cluster/firewall/rules/{$this->pos}", $params);
         }
 
@@ -1599,7 +1573,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFirewallClusterIpset
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallClusterIpset {
 
@@ -1635,18 +1609,16 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Create new IPSet
          * @param string $name IP set name.
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $rename Rename an existing IPSet. You can set 'rename' to the same value as 'name' to update the 'comment' of an existing IPSet.
          * @return Result
          */
         public function createIpset($name, $comment = null, $digest = null, $rename = null) {
-            $params = [
-                'name' => $name,
+            $params = ['name' => $name,
                 'comment' => $comment,
                 'digest' => $digest,
-                'rename' => $rename
-            ];
+                'rename' => $rename];
             return $this->client->create("/cluster/firewall/ipset", $params);
         }
 
@@ -1654,7 +1626,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemIpsetFirewallClusterName
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemIpsetFirewallClusterName {
 
@@ -1687,10 +1659,12 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Delete IPSet
+         * @param bool $force Delete all members of the IPSet, if there are any.
          * @return Result
          */
-        public function deleteIpset() {
-            return $this->client->delete("/cluster/firewall/ipset/{$this->name}");
+        public function deleteIpset($force = null) {
+            $params = ['force' => $force];
+            return $this->client->delete("/cluster/firewall/ipset/{$this->name}", $params);
         }
 
         /**
@@ -1704,16 +1678,14 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Add IP or Network to IPSet.
          * @param string $cidr Network/IP specification in CIDR format.
-         * @param string $comment
-         * @param bool $nomatch
+         * @param string $comment 
+         * @param bool $nomatch 
          * @return Result
          */
         public function createIp($cidr, $comment = null, $nomatch = null) {
-            $params = [
-                'cidr' => $cidr,
+            $params = ['cidr' => $cidr,
                 'comment' => $comment,
-                'nomatch' => $nomatch
-            ];
+                'nomatch' => $nomatch];
             return $this->client->create("/cluster/firewall/ipset/{$this->name}", $params);
         }
 
@@ -1721,7 +1693,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemNameIpsetFirewallClusterCidr
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemNameIpsetFirewallClusterCidr {
 
@@ -1769,17 +1741,15 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Update IP or Network settings
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
-         * @param bool $nomatch
+         * @param bool $nomatch 
          * @return Result
          */
         public function updateIp($comment = null, $digest = null, $nomatch = null) {
-            $params = [
-                'comment' => $comment,
+            $params = ['comment' => $comment,
                 'digest' => $digest,
-                'nomatch' => $nomatch
-            ];
+                'nomatch' => $nomatch];
             return $this->client->set("/cluster/firewall/ipset/{$this->name}/{$this->cidr}", $params);
         }
 
@@ -1787,7 +1757,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFirewallClusterAliases
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallClusterAliases {
 
@@ -1824,15 +1794,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * Create IP or Network Alias.
          * @param string $cidr Network/IP specification in CIDR format.
          * @param string $name Alias name.
-         * @param string $comment
+         * @param string $comment 
          * @return Result
          */
         public function createAlias($cidr, $name, $comment = null) {
-            $params = [
-                'cidr' => $cidr,
+            $params = ['cidr' => $cidr,
                 'name' => $name,
-                'comment' => $comment
-            ];
+                'comment' => $comment];
             return $this->client->create("/cluster/firewall/aliases", $params);
         }
 
@@ -1840,7 +1808,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemAliasesFirewallClusterName
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemAliasesFirewallClusterName {
 
@@ -1883,18 +1851,16 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Update IP or Network alias.
          * @param string $cidr Network/IP specification in CIDR format.
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $rename Rename an existing alias.
          * @return Result
          */
         public function updateAlias($cidr, $comment = null, $digest = null, $rename = null) {
-            $params = [
-                'cidr' => $cidr,
+            $params = ['cidr' => $cidr,
                 'comment' => $comment,
                 'digest' => $digest,
-                'rename' => $rename
-            ];
+                'rename' => $rename];
             return $this->client->set("/cluster/firewall/aliases/{$this->name}", $params);
         }
 
@@ -1902,7 +1868,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFirewallClusterOptions
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallClusterOptions {
 
@@ -1940,15 +1906,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function setOptions($delete = null, $digest = null, $ebtables = null, $enable = null, $log_ratelimit = null, $policy_in = null, $policy_out = null) {
-            $params = [
-                'delete' => $delete,
+            $params = ['delete' => $delete,
                 'digest' => $digest,
                 'ebtables' => $ebtables,
                 'enable' => $enable,
                 'log_ratelimit' => $log_ratelimit,
                 'policy_in' => $policy_in,
-                'policy_out' => $policy_out
-            ];
+                'policy_out' => $policy_out];
             return $this->client->set("/cluster/firewall/options", $params);
         }
 
@@ -1956,7 +1920,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFirewallClusterMacros
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallClusterMacros {
 
@@ -1984,7 +1948,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFirewallClusterRefs
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallClusterRefs {
 
@@ -2015,7 +1979,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEClusterBackup
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterBackup {
 
@@ -2070,13 +2034,15 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $mode Backup mode.
          *   Enum: snapshot,suspend,stop
          * @param string $node Only run if executed on this node.
-         * @param string $notes_template Template string for generating notes for the backup(s). It can contain variables which will be replaced by their values. Currently supported are {{cluster}}, {{guestname}}, {{node}}, and {{vmid}}, but more might be added in the future.
+         * @param string $notes_template Template string for generating notes for the backup(s). It can contain variables which will be replaced by their values. Currently supported are {{cluster}}, {{guestname}}, {{node}}, and {{vmid}}, but more might be added in the future. Needs to be a single line, newline and backslash need to be escaped as '\n' and '\\' respectively.
+         * @param string $performance Other performance-related settings.
          * @param int $pigz Use pigz instead of gzip when N&amp;gt;0. N=1 uses half of cores, N&amp;gt;1 uses N as thread count.
          * @param string $pool Backup all known guest systems included in the specified pool.
          * @param bool $protected If true, mark backup(s) as protected.
          * @param string $prune_backups Use these retention options instead of those from the storage configuration.
          * @param bool $quiet Be quiet.
          * @param bool $remove Prune older backups according to 'prune-backups'.
+         * @param bool $repeat_missed If true, the job will be run as soon as possible if it was missed while the scheduler was not running.
          * @param string $schedule Backup schedule. The format is a subset of `systemd` calendar events.
          * @param string $script Use specified hook script.
          * @param string $starttime Job Start time.
@@ -2089,9 +2055,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $zstd Zstd threads. N=0 uses half of the available cores, N&amp;gt;0 uses N as thread count.
          * @return Result
          */
-        public function createJob($all = null, $bwlimit = null, $comment = null, $compress = null, $dow = null, $dumpdir = null, $enabled = null, $exclude = null, $exclude_path = null, $id = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $node = null, $notes_template = null, $pigz = null, $pool = null, $protected = null, $prune_backups = null, $quiet = null, $remove = null, $schedule = null, $script = null, $starttime = null, $stdexcludes = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
-            $params = [
-                'all' => $all,
+        public function createJob($all = null, $bwlimit = null, $comment = null, $compress = null, $dow = null, $dumpdir = null, $enabled = null, $exclude = null, $exclude_path = null, $id = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $node = null, $notes_template = null, $performance = null, $pigz = null, $pool = null, $protected = null, $prune_backups = null, $quiet = null, $remove = null, $repeat_missed = null, $schedule = null, $script = null, $starttime = null, $stdexcludes = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
+            $params = ['all' => $all,
                 'bwlimit' => $bwlimit,
                 'comment' => $comment,
                 'compress' => $compress,
@@ -2109,12 +2074,14 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'mode' => $mode,
                 'node' => $node,
                 'notes-template' => $notes_template,
+                'performance' => $performance,
                 'pigz' => $pigz,
                 'pool' => $pool,
                 'protected' => $protected,
                 'prune-backups' => $prune_backups,
                 'quiet' => $quiet,
                 'remove' => $remove,
+                'repeat-missed' => $repeat_missed,
                 'schedule' => $schedule,
                 'script' => $script,
                 'starttime' => $starttime,
@@ -2124,8 +2091,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'storage' => $storage,
                 'tmpdir' => $tmpdir,
                 'vmid' => $vmid,
-                'zstd' => $zstd
-            ];
+                'zstd' => $zstd];
             return $this->client->create("/cluster/backup", $params);
         }
 
@@ -2133,7 +2099,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemBackupClusterId
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemBackupClusterId {
 
@@ -2206,13 +2172,15 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $mode Backup mode.
          *   Enum: snapshot,suspend,stop
          * @param string $node Only run if executed on this node.
-         * @param string $notes_template Template string for generating notes for the backup(s). It can contain variables which will be replaced by their values. Currently supported are {{cluster}}, {{guestname}}, {{node}}, and {{vmid}}, but more might be added in the future.
+         * @param string $notes_template Template string for generating notes for the backup(s). It can contain variables which will be replaced by their values. Currently supported are {{cluster}}, {{guestname}}, {{node}}, and {{vmid}}, but more might be added in the future. Needs to be a single line, newline and backslash need to be escaped as '\n' and '\\' respectively.
+         * @param string $performance Other performance-related settings.
          * @param int $pigz Use pigz instead of gzip when N&amp;gt;0. N=1 uses half of cores, N&amp;gt;1 uses N as thread count.
          * @param string $pool Backup all known guest systems included in the specified pool.
          * @param bool $protected If true, mark backup(s) as protected.
          * @param string $prune_backups Use these retention options instead of those from the storage configuration.
          * @param bool $quiet Be quiet.
          * @param bool $remove Prune older backups according to 'prune-backups'.
+         * @param bool $repeat_missed If true, the job will be run as soon as possible if it was missed while the scheduler was not running.
          * @param string $schedule Backup schedule. The format is a subset of `systemd` calendar events.
          * @param string $script Use specified hook script.
          * @param string $starttime Job Start time.
@@ -2225,9 +2193,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $zstd Zstd threads. N=0 uses half of the available cores, N&amp;gt;0 uses N as thread count.
          * @return Result
          */
-        public function updateJob($all = null, $bwlimit = null, $comment = null, $compress = null, $delete = null, $dow = null, $dumpdir = null, $enabled = null, $exclude = null, $exclude_path = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $node = null, $notes_template = null, $pigz = null, $pool = null, $protected = null, $prune_backups = null, $quiet = null, $remove = null, $schedule = null, $script = null, $starttime = null, $stdexcludes = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
-            $params = [
-                'all' => $all,
+        public function updateJob($all = null, $bwlimit = null, $comment = null, $compress = null, $delete = null, $dow = null, $dumpdir = null, $enabled = null, $exclude = null, $exclude_path = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $node = null, $notes_template = null, $performance = null, $pigz = null, $pool = null, $protected = null, $prune_backups = null, $quiet = null, $remove = null, $repeat_missed = null, $schedule = null, $script = null, $starttime = null, $stdexcludes = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
+            $params = ['all' => $all,
                 'bwlimit' => $bwlimit,
                 'comment' => $comment,
                 'compress' => $compress,
@@ -2245,12 +2212,14 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'mode' => $mode,
                 'node' => $node,
                 'notes-template' => $notes_template,
+                'performance' => $performance,
                 'pigz' => $pigz,
                 'pool' => $pool,
                 'protected' => $protected,
                 'prune-backups' => $prune_backups,
                 'quiet' => $quiet,
                 'remove' => $remove,
+                'repeat-missed' => $repeat_missed,
                 'schedule' => $schedule,
                 'script' => $script,
                 'starttime' => $starttime,
@@ -2260,8 +2229,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'storage' => $storage,
                 'tmpdir' => $tmpdir,
                 'vmid' => $vmid,
-                'zstd' => $zstd
-            ];
+                'zstd' => $zstd];
             return $this->client->set("/cluster/backup/{$this->id}", $params);
         }
 
@@ -2269,7 +2237,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEIdBackupClusterIncludedVolumes
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEIdBackupClusterIncludedVolumes {
 
@@ -2303,7 +2271,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEClusterBackupInfo
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterBackupInfo {
 
@@ -2344,7 +2312,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEBackupInfoClusterNotBackedUp
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEBackupInfoClusterNotBackedUp {
 
@@ -2372,7 +2340,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEClusterHa
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterHa {
 
@@ -2439,7 +2407,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEHaClusterResources
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEHaClusterResources {
 
@@ -2489,15 +2457,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function create($sid, $comment = null, $group = null, $max_relocate = null, $max_restart = null, $state = null, $type = null) {
-            $params = [
-                'sid' => $sid,
+            $params = ['sid' => $sid,
                 'comment' => $comment,
                 'group' => $group,
                 'max_relocate' => $max_relocate,
                 'max_restart' => $max_restart,
                 'state' => $state,
-                'type' => $type
-            ];
+                'type' => $type];
             return $this->client->create("/cluster/ha/resources", $params);
         }
 
@@ -2505,7 +2471,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemResourcesHaClusterSid
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemResourcesHaClusterSid {
 
@@ -2582,15 +2548,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function update($comment = null, $delete = null, $digest = null, $group = null, $max_relocate = null, $max_restart = null, $state = null) {
-            $params = [
-                'comment' => $comment,
+            $params = ['comment' => $comment,
                 'delete' => $delete,
                 'digest' => $digest,
                 'group' => $group,
                 'max_relocate' => $max_relocate,
                 'max_restart' => $max_restart,
-                'state' => $state
-            ];
+                'state' => $state];
             return $this->client->set("/cluster/ha/resources/{$this->sid}", $params);
         }
 
@@ -2598,7 +2562,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVESidResourcesHaClusterMigrate
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVESidResourcesHaClusterMigrate {
 
@@ -2634,7 +2598,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVESidResourcesHaClusterRelocate
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVESidResourcesHaClusterRelocate {
 
@@ -2670,7 +2634,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEHaClusterGroups
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEHaClusterGroups {
 
@@ -2715,14 +2679,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function create($group, $nodes, $comment = null, $nofailback = null, $restricted = null, $type = null) {
-            $params = [
-                'group' => $group,
+            $params = ['group' => $group,
                 'nodes' => $nodes,
                 'comment' => $comment,
                 'nofailback' => $nofailback,
                 'restricted' => $restricted,
-                'type' => $type
-            ];
+                'type' => $type];
             return $this->client->create("/cluster/ha/groups", $params);
         }
 
@@ -2730,7 +2692,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemGroupsHaClusterGroup
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemGroupsHaClusterGroup {
 
@@ -2779,14 +2741,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function update($comment = null, $delete = null, $digest = null, $nodes = null, $nofailback = null, $restricted = null) {
-            $params = [
-                'comment' => $comment,
+            $params = ['comment' => $comment,
                 'delete' => $delete,
                 'digest' => $digest,
                 'nodes' => $nodes,
                 'nofailback' => $nofailback,
-                'restricted' => $restricted
-            ];
+                'restricted' => $restricted];
             return $this->client->set("/cluster/ha/groups/{$this->group}", $params);
         }
 
@@ -2794,7 +2754,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEHaClusterStatus
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEHaClusterStatus {
 
@@ -2848,7 +2808,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStatusHaClusterCurrent
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusHaClusterCurrent {
 
@@ -2876,7 +2836,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStatusHaClusterManagerStatus
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusHaClusterManagerStatus {
 
@@ -2904,7 +2864,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEClusterAcme
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterAcme {
 
@@ -2997,7 +2957,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAcmeClusterPlugins
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAcmeClusterPlugins {
 
@@ -3047,15 +3007,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function addPlugin($id, $type, $api = null, $data = null, $disable = null, $nodes = null, $validation_delay = null) {
-            $params = [
-                'id' => $id,
+            $params = ['id' => $id,
                 'type' => $type,
                 'api' => $api,
                 'data' => $data,
                 'disable' => $disable,
                 'nodes' => $nodes,
-                'validation-delay' => $validation_delay
-            ];
+                'validation-delay' => $validation_delay];
             return $this->client->create("/cluster/acme/plugins", $params);
         }
 
@@ -3063,7 +3021,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemPluginsAcmeClusterId
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemPluginsAcmeClusterId {
 
@@ -3114,15 +3072,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function updatePlugin($api = null, $data = null, $delete = null, $digest = null, $disable = null, $nodes = null, $validation_delay = null) {
-            $params = [
-                'api' => $api,
+            $params = ['api' => $api,
                 'data' => $data,
                 'delete' => $delete,
                 'digest' => $digest,
                 'disable' => $disable,
                 'nodes' => $nodes,
-                'validation-delay' => $validation_delay
-            ];
+                'validation-delay' => $validation_delay];
             return $this->client->set("/cluster/acme/plugins/{$this->id}", $params);
         }
 
@@ -3130,7 +3086,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAcmeClusterAccount
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAcmeClusterAccount {
 
@@ -3172,12 +3128,10 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function registerAccount($contact, $directory = null, $name = null, $tos_url = null) {
-            $params = [
-                'contact' => $contact,
+            $params = ['contact' => $contact,
                 'directory' => $directory,
                 'name' => $name,
-                'tos_url' => $tos_url
-            ];
+                'tos_url' => $tos_url];
             return $this->client->create("/cluster/acme/account", $params);
         }
 
@@ -3185,7 +3139,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemAccountAcmeClusterName
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemAccountAcmeClusterName {
 
@@ -3237,7 +3191,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAcmeClusterTos
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAcmeClusterTos {
 
@@ -3267,7 +3221,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAcmeClusterDirectories
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAcmeClusterDirectories {
 
@@ -3295,7 +3249,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAcmeClusterChallengeSchema
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAcmeClusterChallengeSchema {
 
@@ -3323,7 +3277,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEClusterCeph
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterCeph {
 
@@ -3390,7 +3344,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECephClusterMetadata
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephClusterMetadata {
 
@@ -3408,7 +3362,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Get ceph metadata.
-         * @param string $scope
+         * @param string $scope 
          *   Enum: all,versions
          * @return Result
          */
@@ -3421,7 +3375,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECephClusterStatus
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephClusterStatus {
 
@@ -3449,7 +3403,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECephClusterFlags
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephClusterFlags {
 
@@ -3498,8 +3452,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function setFlags($nobackfill = null, $nodeep_scrub = null, $nodown = null, $noin = null, $noout = null, $norebalance = null, $norecover = null, $noscrub = null, $notieragent = null, $noup = null, $pause = null) {
-            $params = [
-                'nobackfill' => $nobackfill,
+            $params = ['nobackfill' => $nobackfill,
                 'nodeep-scrub' => $nodeep_scrub,
                 'nodown' => $nodown,
                 'noin' => $noin,
@@ -3509,8 +3462,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'noscrub' => $noscrub,
                 'notieragent' => $notieragent,
                 'noup' => $noup,
-                'pause' => $pause
-            ];
+                'pause' => $pause];
             return $this->client->set("/cluster/ceph/flags", $params);
         }
 
@@ -3518,7 +3470,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemFlagsCephClusterFlag
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemFlagsCephClusterFlag {
 
@@ -3562,7 +3514,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEClusterJobs
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterJobs {
 
@@ -3603,7 +3555,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEJobsClusterScheduleAnalyze
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEJobsClusterScheduleAnalyze {
 
@@ -3627,11 +3579,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function scheduleAnalyze($schedule, $iterations = null, $starttime = null) {
-            $params = [
-                'schedule' => $schedule,
+            $params = ['schedule' => $schedule,
                 'iterations' => $iterations,
-                'starttime' => $starttime
-            ];
+                'starttime' => $starttime];
             return $this->client->get("/cluster/jobs/schedule-analyze", $params);
         }
 
@@ -3639,7 +3589,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEClusterSdn
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterSdn {
 
@@ -3740,7 +3690,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVESdnClusterVnets
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVESdnClusterVnets {
 
@@ -3772,10 +3722,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function index($pending = null, $running = null) {
-            $params = [
-                'pending' => $pending,
-                'running' => $running
-            ];
+            $params = ['pending' => $pending,
+                'running' => $running];
             return $this->client->get("/cluster/sdn/vnets", $params);
         }
 
@@ -3791,14 +3739,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function create($vnet, $zone, $alias = null, $tag = null, $type = null, $vlanaware = null) {
-            $params = [
-                'vnet' => $vnet,
+            $params = ['vnet' => $vnet,
                 'zone' => $zone,
                 'alias' => $alias,
                 'tag' => $tag,
                 'type' => $type,
-                'vlanaware' => $vlanaware
-            ];
+                'vlanaware' => $vlanaware];
             return $this->client->create("/cluster/sdn/vnets", $params);
         }
 
@@ -3806,7 +3752,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemVnetsSdnClusterVnet
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemVnetsSdnClusterVnet {
 
@@ -3856,10 +3802,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function read($pending = null, $running = null) {
-            $params = [
-                'pending' => $pending,
-                'running' => $running
-            ];
+            $params = ['pending' => $pending,
+                'running' => $running];
             return $this->client->get("/cluster/sdn/vnets/{$this->vnet}", $params);
         }
 
@@ -3874,14 +3818,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function update($alias = null, $delete = null, $digest = null, $tag = null, $vlanaware = null, $zone = null) {
-            $params = [
-                'alias' => $alias,
+            $params = ['alias' => $alias,
                 'delete' => $delete,
                 'digest' => $digest,
                 'tag' => $tag,
                 'vlanaware' => $vlanaware,
-                'zone' => $zone
-            ];
+                'zone' => $zone];
             return $this->client->set("/cluster/sdn/vnets/{$this->vnet}", $params);
         }
 
@@ -3889,7 +3831,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVnetVnetsSdnClusterSubnets
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVnetVnetsSdnClusterSubnets {
 
@@ -3927,17 +3869,15 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function index($pending = null, $running = null) {
-            $params = [
-                'pending' => $pending,
-                'running' => $running
-            ];
+            $params = ['pending' => $pending,
+                'running' => $running];
             return $this->client->get("/cluster/sdn/vnets/{$this->vnet}/subnets", $params);
         }
 
         /**
          * Create a new sdn subnet object.
          * @param string $subnet The SDN subnet object identifier.
-         * @param string $type
+         * @param string $type 
          *   Enum: subnet
          * @param string $dnszoneprefix dns domain zone prefix  ex: 'adm' -&amp;gt; &amp;lt;hostname&amp;gt;.adm.mydomain.com
          * @param string $gateway Subnet Gateway: Will be assign on vnet for layer3 zones
@@ -3945,13 +3885,11 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function create($subnet, $type, $dnszoneprefix = null, $gateway = null, $snat = null) {
-            $params = [
-                'subnet' => $subnet,
+            $params = ['subnet' => $subnet,
                 'type' => $type,
                 'dnszoneprefix' => $dnszoneprefix,
                 'gateway' => $gateway,
-                'snat' => $snat
-            ];
+                'snat' => $snat];
             return $this->client->create("/cluster/sdn/vnets/{$this->vnet}/subnets", $params);
         }
 
@@ -3959,7 +3897,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemSubnetsVnetVnetsSdnClusterSubnet
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemSubnetsVnetVnetsSdnClusterSubnet {
 
@@ -4002,10 +3940,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function read($pending = null, $running = null) {
-            $params = [
-                'pending' => $pending,
-                'running' => $running
-            ];
+            $params = ['pending' => $pending,
+                'running' => $running];
             return $this->client->get("/cluster/sdn/vnets/{$this->vnet}/subnets/{$this->subnet}", $params);
         }
 
@@ -4019,13 +3955,11 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function update($delete = null, $digest = null, $dnszoneprefix = null, $gateway = null, $snat = null) {
-            $params = [
-                'delete' => $delete,
+            $params = ['delete' => $delete,
                 'digest' => $digest,
                 'dnszoneprefix' => $dnszoneprefix,
                 'gateway' => $gateway,
-                'snat' => $snat
-            ];
+                'snat' => $snat];
             return $this->client->set("/cluster/sdn/vnets/{$this->vnet}/subnets/{$this->subnet}", $params);
         }
 
@@ -4033,7 +3967,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVESdnClusterZones
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVESdnClusterZones {
 
@@ -4067,11 +4001,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function index($pending = null, $running = null, $type = null) {
-            $params = [
-                'pending' => $pending,
+            $params = ['pending' => $pending,
                 'running' => $running,
-                'type' => $type
-            ];
+                'type' => $type];
             return $this->client->get("/cluster/sdn/zones", $params);
         }
 
@@ -4081,7 +4013,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: evpn,faucet,qinq,simple,vlan,vxlan
          * @param string $zone The SDN zone object identifier.
          * @param bool $advertise_subnets Advertise evpn subnets if you have silent hosts
-         * @param string $bridge
+         * @param string $bridge 
          * @param bool $bridge_disable_mac_learning Disable auto mac learning.
          * @param string $controller Frr router name
          * @param bool $disable_arp_nd_suppression Disable ipv4 arp &amp;&amp; ipv6 neighbour discovery suppression
@@ -4099,14 +4031,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $reversedns reverse dns api server
          * @param string $rt_import Route-Target import
          * @param int $tag Service-VLAN Tag
-         * @param string $vlan_protocol
+         * @param string $vlan_protocol 
          *   Enum: 802.1q,802.1ad
          * @param int $vrf_vxlan l3vni.
          * @return Result
          */
         public function create($type, $zone, $advertise_subnets = null, $bridge = null, $bridge_disable_mac_learning = null, $controller = null, $disable_arp_nd_suppression = null, $dns = null, $dnszone = null, $dp_id = null, $exitnodes = null, $exitnodes_local_routing = null, $exitnodes_primary = null, $ipam = null, $mac = null, $mtu = null, $nodes = null, $peers = null, $reversedns = null, $rt_import = null, $tag = null, $vlan_protocol = null, $vrf_vxlan = null) {
-            $params = [
-                'type' => $type,
+            $params = ['type' => $type,
                 'zone' => $zone,
                 'advertise-subnets' => $advertise_subnets,
                 'bridge' => $bridge,
@@ -4128,8 +4059,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'rt-import' => $rt_import,
                 'tag' => $tag,
                 'vlan-protocol' => $vlan_protocol,
-                'vrf-vxlan' => $vrf_vxlan
-            ];
+                'vrf-vxlan' => $vrf_vxlan];
             return $this->client->create("/cluster/sdn/zones", $params);
         }
 
@@ -4137,7 +4067,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemZonesSdnClusterZone
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemZonesSdnClusterZone {
 
@@ -4174,17 +4104,15 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function read($pending = null, $running = null) {
-            $params = [
-                'pending' => $pending,
-                'running' => $running
-            ];
+            $params = ['pending' => $pending,
+                'running' => $running];
             return $this->client->get("/cluster/sdn/zones/{$this->zone}", $params);
         }
 
         /**
          * Update sdn zone object configuration.
          * @param bool $advertise_subnets Advertise evpn subnets if you have silent hosts
-         * @param string $bridge
+         * @param string $bridge 
          * @param bool $bridge_disable_mac_learning Disable auto mac learning.
          * @param string $controller Frr router name
          * @param string $delete A list of settings you want to delete.
@@ -4204,14 +4132,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $reversedns reverse dns api server
          * @param string $rt_import Route-Target import
          * @param int $tag Service-VLAN Tag
-         * @param string $vlan_protocol
+         * @param string $vlan_protocol 
          *   Enum: 802.1q,802.1ad
          * @param int $vrf_vxlan l3vni.
          * @return Result
          */
         public function update($advertise_subnets = null, $bridge = null, $bridge_disable_mac_learning = null, $controller = null, $delete = null, $digest = null, $disable_arp_nd_suppression = null, $dns = null, $dnszone = null, $dp_id = null, $exitnodes = null, $exitnodes_local_routing = null, $exitnodes_primary = null, $ipam = null, $mac = null, $mtu = null, $nodes = null, $peers = null, $reversedns = null, $rt_import = null, $tag = null, $vlan_protocol = null, $vrf_vxlan = null) {
-            $params = [
-                'advertise-subnets' => $advertise_subnets,
+            $params = ['advertise-subnets' => $advertise_subnets,
                 'bridge' => $bridge,
                 'bridge-disable-mac-learning' => $bridge_disable_mac_learning,
                 'controller' => $controller,
@@ -4233,8 +4160,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'rt-import' => $rt_import,
                 'tag' => $tag,
                 'vlan-protocol' => $vlan_protocol,
-                'vrf-vxlan' => $vrf_vxlan
-            ];
+                'vrf-vxlan' => $vrf_vxlan];
             return $this->client->set("/cluster/sdn/zones/{$this->zone}", $params);
         }
 
@@ -4242,7 +4168,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVESdnClusterControllers
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVESdnClusterControllers {
 
@@ -4276,11 +4202,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function index($pending = null, $running = null, $type = null) {
-            $params = [
-                'pending' => $pending,
+            $params = ['pending' => $pending,
                 'running' => $running,
-                'type' => $type
-            ];
+                'type' => $type];
             return $this->client->get("/cluster/sdn/controllers", $params);
         }
 
@@ -4290,17 +4214,16 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $type Plugin type.
          *   Enum: bgp,evpn,faucet
          * @param int $asn autonomous system number
-         * @param bool $bgp_multipath_as_path_relax
+         * @param bool $bgp_multipath_as_path_relax 
          * @param bool $ebgp Enable ebgp. (remote-as external)
-         * @param int $ebgp_multihop
+         * @param int $ebgp_multihop 
          * @param string $loopback source loopback interface.
          * @param string $node The cluster node name.
          * @param string $peers peers address list.
          * @return Result
          */
         public function create($controller, $type, $asn = null, $bgp_multipath_as_path_relax = null, $ebgp = null, $ebgp_multihop = null, $loopback = null, $node = null, $peers = null) {
-            $params = [
-                'controller' => $controller,
+            $params = ['controller' => $controller,
                 'type' => $type,
                 'asn' => $asn,
                 'bgp-multipath-as-path-relax' => $bgp_multipath_as_path_relax,
@@ -4308,8 +4231,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'ebgp-multihop' => $ebgp_multihop,
                 'loopback' => $loopback,
                 'node' => $node,
-                'peers' => $peers
-            ];
+                'peers' => $peers];
             return $this->client->create("/cluster/sdn/controllers", $params);
         }
 
@@ -4317,7 +4239,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemControllersSdnClusterController
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemControllersSdnClusterController {
 
@@ -4354,29 +4276,26 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function read($pending = null, $running = null) {
-            $params = [
-                'pending' => $pending,
-                'running' => $running
-            ];
+            $params = ['pending' => $pending,
+                'running' => $running];
             return $this->client->get("/cluster/sdn/controllers/{$this->controller}", $params);
         }
 
         /**
          * Update sdn controller object configuration.
          * @param int $asn autonomous system number
-         * @param bool $bgp_multipath_as_path_relax
+         * @param bool $bgp_multipath_as_path_relax 
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param bool $ebgp Enable ebgp. (remote-as external)
-         * @param int $ebgp_multihop
+         * @param int $ebgp_multihop 
          * @param string $loopback source loopback interface.
          * @param string $node The cluster node name.
          * @param string $peers peers address list.
          * @return Result
          */
         public function update($asn = null, $bgp_multipath_as_path_relax = null, $delete = null, $digest = null, $ebgp = null, $ebgp_multihop = null, $loopback = null, $node = null, $peers = null) {
-            $params = [
-                'asn' => $asn,
+            $params = ['asn' => $asn,
                 'bgp-multipath-as-path-relax' => $bgp_multipath_as_path_relax,
                 'delete' => $delete,
                 'digest' => $digest,
@@ -4384,8 +4303,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'ebgp-multihop' => $ebgp_multihop,
                 'loopback' => $loopback,
                 'node' => $node,
-                'peers' => $peers
-            ];
+                'peers' => $peers];
             return $this->client->set("/cluster/sdn/controllers/{$this->controller}", $params);
         }
 
@@ -4393,7 +4311,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVESdnClusterIpams
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVESdnClusterIpams {
 
@@ -4434,19 +4352,17 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $ipam The SDN ipam object identifier.
          * @param string $type Plugin type.
          *   Enum: netbox,phpipam,pve
-         * @param int $section
-         * @param string $token
-         * @param string $url
+         * @param int $section 
+         * @param string $token 
+         * @param string $url 
          * @return Result
          */
         public function create($ipam, $type, $section = null, $token = null, $url = null) {
-            $params = [
-                'ipam' => $ipam,
+            $params = ['ipam' => $ipam,
                 'type' => $type,
                 'section' => $section,
                 'token' => $token,
-                'url' => $url
-            ];
+                'url' => $url];
             return $this->client->create("/cluster/sdn/ipams", $params);
         }
 
@@ -4454,7 +4370,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemIpamsSdnClusterIpam
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemIpamsSdnClusterIpam {
 
@@ -4496,19 +4412,17 @@ namespace Corsinvest\ProxmoxVE\Api {
          * Update sdn ipam object configuration.
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
-         * @param int $section
-         * @param string $token
-         * @param string $url
+         * @param int $section 
+         * @param string $token 
+         * @param string $url 
          * @return Result
          */
         public function update($delete = null, $digest = null, $section = null, $token = null, $url = null) {
-            $params = [
-                'delete' => $delete,
+            $params = ['delete' => $delete,
                 'digest' => $digest,
                 'section' => $section,
                 'token' => $token,
-                'url' => $url
-            ];
+                'url' => $url];
             return $this->client->set("/cluster/sdn/ipams/{$this->ipam}", $params);
         }
 
@@ -4516,7 +4430,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVESdnClusterDns
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVESdnClusterDns {
 
@@ -4555,25 +4469,23 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Create a new sdn dns object.
          * @param string $dns The SDN dns object identifier.
-         * @param string $key
+         * @param string $key 
          * @param string $type Plugin type.
          *   Enum: powerdns
-         * @param string $url
-         * @param int $reversemaskv6
-         * @param int $reversev6mask
-         * @param int $ttl
+         * @param string $url 
+         * @param int $reversemaskv6 
+         * @param int $reversev6mask 
+         * @param int $ttl 
          * @return Result
          */
         public function create($dns, $key, $type, $url, $reversemaskv6 = null, $reversev6mask = null, $ttl = null) {
-            $params = [
-                'dns' => $dns,
+            $params = ['dns' => $dns,
                 'key' => $key,
                 'type' => $type,
                 'url' => $url,
                 'reversemaskv6' => $reversemaskv6,
                 'reversev6mask' => $reversev6mask,
-                'ttl' => $ttl
-            ];
+                'ttl' => $ttl];
             return $this->client->create("/cluster/sdn/dns", $params);
         }
 
@@ -4581,7 +4493,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemDnsSdnClusterDns
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemDnsSdnClusterDns {
 
@@ -4623,21 +4535,19 @@ namespace Corsinvest\ProxmoxVE\Api {
          * Update sdn dns object configuration.
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
-         * @param string $key
-         * @param int $reversemaskv6
-         * @param int $ttl
-         * @param string $url
+         * @param string $key 
+         * @param int $reversemaskv6 
+         * @param int $ttl 
+         * @param string $url 
          * @return Result
          */
         public function update($delete = null, $digest = null, $key = null, $reversemaskv6 = null, $ttl = null, $url = null) {
-            $params = [
-                'delete' => $delete,
+            $params = ['delete' => $delete,
                 'digest' => $digest,
                 'key' => $key,
                 'reversemaskv6' => $reversemaskv6,
                 'ttl' => $ttl,
-                'url' => $url
-            ];
+                'url' => $url];
             return $this->client->set("/cluster/sdn/dns/{$this->dns}", $params);
         }
 
@@ -4645,7 +4555,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEClusterLog
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterLog {
 
@@ -4675,7 +4585,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEClusterResources
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterResources {
 
@@ -4693,7 +4603,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Resources index (cluster wide).
-         * @param string $type
+         * @param string $type 
          *   Enum: vm,storage,node,sdn
          * @return Result
          */
@@ -4706,7 +4616,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEClusterTasks
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterTasks {
 
@@ -4734,7 +4644,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEClusterOptions
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterOptions {
 
@@ -4751,7 +4661,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
-         * Get datacenter options.
+         * Get datacenter options. Without 'Sys.Audit' on '/' not all options are returned.
          * @return Result
          */
         public function getOptions() {
@@ -4763,6 +4673,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $bwlimit Set bandwidth/io limits various operations.
          * @param string $console Select the default Console viewer. You can either use the builtin java applet (VNC; deprecated and maps to html5), an external virt-viewer comtatible application (SPICE), an HTML5 based vnc viewer (noVNC), or an HTML5 based console client (xtermjs). If the selected viewer is not available (e.g. SPICE not activated for the VM), the fallback is noVNC.
          *   Enum: applet,vv,html5,xtermjs
+         * @param string $crs Cluster resource scheduling settings.
          * @param string $delete A list of settings you want to delete.
          * @param string $description Datacenter description. Shown in the web-interface datacenter notes panel. This is saved as comment inside the configuration file.
          * @param string $email_from Specify email address to send notification from (default is root@$hostname)
@@ -4779,14 +4690,17 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $migration For cluster wide migration settings.
          * @param bool $migration_unsecure Migration is secure using SSH tunnel by default. For secure private networks you can disable it to speed up migration. Deprecated, use the 'migration' property instead!
          * @param string $next_id Control the range for the free VMID auto-selection pool.
+         * @param string $registered_tags A list of tags that require a `Sys.Modify` on '/' to set and delete. Tags set here that are also in 'user-tag-access' also require `Sys.Modify`.
+         * @param string $tag_style Tag style options.
          * @param string $u2f u2f
+         * @param string $user_tag_access Privilege options for user-settable tags
          * @param string $webauthn webauthn configuration
          * @return Result
          */
-        public function setOptions($bwlimit = null, $console = null, $delete = null, $description = null, $email_from = null, $fencing = null, $ha = null, $http_proxy = null, $keyboard = null, $language = null, $mac_prefix = null, $max_workers = null, $migration = null, $migration_unsecure = null, $next_id = null, $u2f = null, $webauthn = null) {
-            $params = [
-                'bwlimit' => $bwlimit,
+        public function setOptions($bwlimit = null, $console = null, $crs = null, $delete = null, $description = null, $email_from = null, $fencing = null, $ha = null, $http_proxy = null, $keyboard = null, $language = null, $mac_prefix = null, $max_workers = null, $migration = null, $migration_unsecure = null, $next_id = null, $registered_tags = null, $tag_style = null, $u2f = null, $user_tag_access = null, $webauthn = null) {
+            $params = ['bwlimit' => $bwlimit,
                 'console' => $console,
+                'crs' => $crs,
                 'delete' => $delete,
                 'description' => $description,
                 'email_from' => $email_from,
@@ -4800,9 +4714,11 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'migration' => $migration,
                 'migration_unsecure' => $migration_unsecure,
                 'next-id' => $next_id,
+                'registered-tags' => $registered_tags,
+                'tag-style' => $tag_style,
                 'u2f' => $u2f,
-                'webauthn' => $webauthn
-            ];
+                'user-tag-access' => $user_tag_access,
+                'webauthn' => $webauthn];
             return $this->client->set("/cluster/options", $params);
         }
 
@@ -4810,7 +4726,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEClusterStatus
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterStatus {
 
@@ -4838,7 +4754,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEClusterNextid
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEClusterNextid {
 
@@ -4868,7 +4784,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodes
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodes {
 
@@ -4905,7 +4821,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemNodesNode
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemNodesNode {
 
@@ -5472,7 +5388,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesQemu
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesQemu {
 
@@ -5517,6 +5433,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * Create or restore a virtual machine.
          * @param int $vmid The (unique) ID of the VM.
          * @param bool $acpi Enable/disable ACPI.
+         * @param string $affinity List of host cores used to execute guest processes, for example: 0,5,8-11
          * @param string $agent Enable/disable communication with the Qemu Guest Agent and its properties.
          * @param string $arch Virtual processor architecture. Defaults to the host.
          *   Enum: x86_64,aarch64
@@ -5546,11 +5463,11 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $freeze Freeze CPU at startup (use 'c' monitor command to start execution).
          * @param string $hookscript Script that will be executed during various steps in the vms lifetime.
          * @param array $hostpciN Map host PCI devices into guest.
-         * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory' and 'usb'. Use '0' to disable hotplug completely. Using '1' as value is an alias for the default `network,disk,usb`.
+         * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory', 'usb' and 'cloudinit'. Use '0' to disable hotplug completely. Using '1' as value is an alias for the default `network,disk,usb`. USB hotplugging is possible for guests with machine version &amp;gt;= 7.1 and ostype l26 or windows &amp;gt; 7.
          * @param string $hugepages Enable/disable hugepages memory.
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
-         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration. This requires cloud-init 19.4 or newer.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
+         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration. This requires cloud-init 19.4 or newer.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4. 
          * @param string $ivshmem Inter-VM shared memory. Useful for direct communication between VMs, or to the host.
          * @param bool $keephugepages Use together with hugepages. If enabled, hugepages will not not be deleted after VM shutdown and can be used for subsequent starts.
          * @param string $keyboard Keyboard layout for VNC server. This option is generally not required and is often better handled from within the guest OS.
@@ -5565,7 +5482,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param float $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
          * @param int $migrate_speed Set maximum speed (in MB/s) for migrations. Value 0 is no limit.
          * @param string $name Set a name for the VM. Only used on the configuration web interface.
-         * @param string $nameserver cloud-init: Sets DNS server IP address for a container. Create will' 	    .' automatically use the setting from the host if neither searchdomain nor nameserver' 	    .' are set.
+         * @param string $nameserver cloud-init: Sets DNS server IP address for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $netN Specify network devices.
          * @param bool $numa Enable/disable NUMA.
          * @param array $numaN NUMA topology.
@@ -5581,7 +5498,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 30). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param string $scsihw SCSI controller model
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
-         * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will' 	    .' automatically use the setting from the host if neither searchdomain nor nameserver' 	    .' are set.
+         * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $serialN Create a serial device inside the VM (n is 0 to 3)
          * @param int $shares Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning. Auto-ballooning is done by pvestatd.
          * @param string $smbios1 Specify SMBIOS type 1 fields.
@@ -5600,7 +5517,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $tpmstate0 Configure a Disk for storing TPM state. The format is fixed to 'raw'. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Note that SIZE_IN_GiB is ignored here and 4 MiB will be used instead. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param bool $unique Assign a unique random ethernet address.
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
-         * @param array $usbN Configure an USB device (n is 0 to 4).
+         * @param array $usbN Configure an USB device (n is 0 to 4, for machine version &amp;gt;= 7.1 and ostype l26 or windows &amp;gt; 7, n can be up to 14).
          * @param int $vcpus Number of hotplugged vcpus.
          * @param string $vga Configure the VGA hardware.
          * @param array $virtioN Use volume as VIRTIO hard disk (n is 0 to 15). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
@@ -5609,10 +5526,10 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $watchdog Create a virtual hardware watchdog device.
          * @return Result
          */
-        public function createVm($vmid, $acpi = null, $agent = null, $arch = null, $archive = null, $args = null, $audio0 = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $bwlimit = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $description = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keephugepages = null, $keyboard = null, $kvm = null, $live_restore = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $pool = null, $protection = null, $reboot = null, $rng0 = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $smbios1 = null, $smp = null, $sockets = null, $spice_enhancements = null, $sshkeys = null, $start = null, $startdate = null, $startup = null, $storage = null, $tablet = null, $tags = null, $tdf = null, $template = null, $tpmstate0 = null, $unique = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null) {
-            $params = [
-                'vmid' => $vmid,
+        public function createVm($vmid, $acpi = null, $affinity = null, $agent = null, $arch = null, $archive = null, $args = null, $audio0 = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $bwlimit = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $description = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keephugepages = null, $keyboard = null, $kvm = null, $live_restore = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $pool = null, $protection = null, $reboot = null, $rng0 = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $smbios1 = null, $smp = null, $sockets = null, $spice_enhancements = null, $sshkeys = null, $start = null, $startdate = null, $startup = null, $storage = null, $tablet = null, $tags = null, $tdf = null, $template = null, $tpmstate0 = null, $unique = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null) {
+            $params = ['vmid' => $vmid,
                 'acpi' => $acpi,
+                'affinity' => $affinity,
                 'agent' => $agent,
                 'arch' => $arch,
                 'archive' => $archive,
@@ -5682,8 +5599,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'vga' => $vga,
                 'vmgenid' => $vmgenid,
                 'vmstatestorage' => $vmstatestorage,
-                'watchdog' => $watchdog
-            ];
+                'watchdog' => $watchdog];
             $this->client->addIndexedParameter($params, 'hostpci', $hostpciN);
             $this->client->addIndexedParameter($params, 'ide', $ideN);
             $this->client->addIndexedParameter($params, 'ipconfig', $ipconfigN);
@@ -5703,7 +5619,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemQemuNodeNodesVmid
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemQemuNodeNodesVmid {
 
@@ -5807,6 +5723,19 @@ namespace Corsinvest\ProxmoxVE\Api {
          */
         public function getPending() {
             return $this->pending ?: ($this->pending = new PVEVmidQemuNodeNodesPending($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $cloudinit;
+
+        /**
+         * Get VmidQemuNodeNodesCloudinit
+         * @return PVEVmidQemuNodeNodesCloudinit
+         */
+        public function getCloudinit() {
+            return $this->cloudinit ?: ($this->cloudinit = new PVEVmidQemuNodeNodesCloudinit($this->client, $this->node, $this->vmid));
         }
 
         /**
@@ -5955,6 +5884,19 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * @ignore
          */
+        private $remoteMigrate;
+
+        /**
+         * Get VmidQemuNodeNodesRemoteMigrate
+         * @return PVEVmidQemuNodeNodesRemoteMigrate
+         */
+        public function getRemoteMigrate() {
+            return $this->remoteMigrate ?: ($this->remoteMigrate = new PVEVmidQemuNodeNodesRemoteMigrate($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
         private $monitor;
 
         /**
@@ -6007,14 +5949,27 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * @ignore
          */
-        private $cloudinit;
+        private $mtunnel;
 
         /**
-         * Get VmidQemuNodeNodesCloudinit
-         * @return PVEVmidQemuNodeNodesCloudinit
+         * Get VmidQemuNodeNodesMtunnel
+         * @return PVEVmidQemuNodeNodesMtunnel
          */
-        public function getCloudinit() {
-            return $this->cloudinit ?: ($this->cloudinit = new PVEVmidQemuNodeNodesCloudinit($this->client, $this->node, $this->vmid));
+        public function getMtunnel() {
+            return $this->mtunnel ?: ($this->mtunnel = new PVEVmidQemuNodeNodesMtunnel($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $mtunnelwebsocket;
+
+        /**
+         * Get VmidQemuNodeNodesMtunnelwebsocket
+         * @return PVEVmidQemuNodeNodesMtunnelwebsocket
+         */
+        public function getMtunnelwebsocket() {
+            return $this->mtunnelwebsocket ?: ($this->mtunnelwebsocket = new PVEVmidQemuNodeNodesMtunnelwebsocket($this->client, $this->node, $this->vmid));
         }
 
         /**
@@ -6025,11 +5980,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function destroyVm($destroy_unreferenced_disks = null, $purge = null, $skiplock = null) {
-            $params = [
-                'destroy-unreferenced-disks' => $destroy_unreferenced_disks,
+            $params = ['destroy-unreferenced-disks' => $destroy_unreferenced_disks,
                 'purge' => $purge,
-                'skiplock' => $skiplock
-            ];
+                'skiplock' => $skiplock];
             return $this->client->delete("/nodes/{$this->node}/qemu/{$this->vmid}", $params);
         }
 
@@ -6045,7 +5998,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidQemuNodeNodesFirewall
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesFirewall {
 
@@ -6163,7 +6116,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFirewallVmidQemuNodeNodesRules
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidQemuNodeNodesRules {
 
@@ -6230,8 +6183,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function createRule($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $icmp_type = null, $iface = null, $log = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null) {
-            $params = [
-                'action' => $action,
+            $params = ['action' => $action,
                 'type' => $type,
                 'comment' => $comment,
                 'dest' => $dest,
@@ -6245,8 +6197,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'pos' => $pos,
                 'proto' => $proto,
                 'source' => $source,
-                'sport' => $sport
-            ];
+                'sport' => $sport];
             return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/rules", $params);
         }
 
@@ -6254,7 +6205,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemRulesFirewallVmidQemuNodeNodesPos
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemRulesFirewallVmidQemuNodeNodesPos {
 
@@ -6329,8 +6280,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function updateRule($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $icmp_type = null, $iface = null, $log = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null) {
-            $params = [
-                'action' => $action,
+            $params = ['action' => $action,
                 'comment' => $comment,
                 'delete' => $delete,
                 'dest' => $dest,
@@ -6345,8 +6295,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'proto' => $proto,
                 'source' => $source,
                 'sport' => $sport,
-                'type' => $type
-            ];
+                'type' => $type];
             return $this->client->set("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/rules/{$this->pos}", $params);
         }
 
@@ -6354,7 +6303,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFirewallVmidQemuNodeNodesAliases
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidQemuNodeNodesAliases {
 
@@ -6403,15 +6352,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * Create IP or Network Alias.
          * @param string $cidr Network/IP specification in CIDR format.
          * @param string $name Alias name.
-         * @param string $comment
+         * @param string $comment 
          * @return Result
          */
         public function createAlias($cidr, $name, $comment = null) {
-            $params = [
-                'cidr' => $cidr,
+            $params = ['cidr' => $cidr,
                 'name' => $name,
-                'comment' => $comment
-            ];
+                'comment' => $comment];
             return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/aliases", $params);
         }
 
@@ -6419,7 +6366,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemAliasesFirewallVmidQemuNodeNodesName
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemAliasesFirewallVmidQemuNodeNodesName {
 
@@ -6474,18 +6421,16 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Update IP or Network alias.
          * @param string $cidr Network/IP specification in CIDR format.
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $rename Rename an existing alias.
          * @return Result
          */
         public function updateAlias($cidr, $comment = null, $digest = null, $rename = null) {
-            $params = [
-                'cidr' => $cidr,
+            $params = ['cidr' => $cidr,
                 'comment' => $comment,
                 'digest' => $digest,
-                'rename' => $rename
-            ];
+                'rename' => $rename];
             return $this->client->set("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/aliases/{$this->name}", $params);
         }
 
@@ -6493,7 +6438,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFirewallVmidQemuNodeNodesIpset
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidQemuNodeNodesIpset {
 
@@ -6541,18 +6486,16 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Create new IPSet
          * @param string $name IP set name.
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $rename Rename an existing IPSet. You can set 'rename' to the same value as 'name' to update the 'comment' of an existing IPSet.
          * @return Result
          */
         public function createIpset($name, $comment = null, $digest = null, $rename = null) {
-            $params = [
-                'name' => $name,
+            $params = ['name' => $name,
                 'comment' => $comment,
                 'digest' => $digest,
-                'rename' => $rename
-            ];
+                'rename' => $rename];
             return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset", $params);
         }
 
@@ -6560,7 +6503,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemIpsetFirewallVmidQemuNodeNodesName
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemIpsetFirewallVmidQemuNodeNodesName {
 
@@ -6605,10 +6548,12 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Delete IPSet
+         * @param bool $force Delete all members of the IPSet, if there are any.
          * @return Result
          */
-        public function deleteIpset() {
-            return $this->client->delete("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset/{$this->name}");
+        public function deleteIpset($force = null) {
+            $params = ['force' => $force];
+            return $this->client->delete("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset/{$this->name}", $params);
         }
 
         /**
@@ -6622,16 +6567,14 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Add IP or Network to IPSet.
          * @param string $cidr Network/IP specification in CIDR format.
-         * @param string $comment
-         * @param bool $nomatch
+         * @param string $comment 
+         * @param bool $nomatch 
          * @return Result
          */
         public function createIp($cidr, $comment = null, $nomatch = null) {
-            $params = [
-                'cidr' => $cidr,
+            $params = ['cidr' => $cidr,
                 'comment' => $comment,
-                'nomatch' => $nomatch
-            ];
+                'nomatch' => $nomatch];
             return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset/{$this->name}", $params);
         }
 
@@ -6639,7 +6582,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemNameIpsetFirewallVmidQemuNodeNodesCidr
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemNameIpsetFirewallVmidQemuNodeNodesCidr {
 
@@ -6699,17 +6642,15 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Update IP or Network settings
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
-         * @param bool $nomatch
+         * @param bool $nomatch 
          * @return Result
          */
         public function updateIp($comment = null, $digest = null, $nomatch = null) {
-            $params = [
-                'comment' => $comment,
+            $params = ['comment' => $comment,
                 'digest' => $digest,
-                'nomatch' => $nomatch
-            ];
+                'nomatch' => $nomatch];
             return $this->client->set("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/ipset/{$this->name}/{$this->cidr}", $params);
         }
 
@@ -6717,7 +6658,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFirewallVmidQemuNodeNodesOptions
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidQemuNodeNodesOptions {
 
@@ -6774,8 +6715,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function setOptions($delete = null, $dhcp = null, $digest = null, $enable = null, $ipfilter = null, $log_level_in = null, $log_level_out = null, $macfilter = null, $ndp = null, $policy_in = null, $policy_out = null, $radv = null) {
-            $params = [
-                'delete' => $delete,
+            $params = ['delete' => $delete,
                 'dhcp' => $dhcp,
                 'digest' => $digest,
                 'enable' => $enable,
@@ -6786,8 +6726,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'ndp' => $ndp,
                 'policy_in' => $policy_in,
                 'policy_out' => $policy_out,
-                'radv' => $radv
-            ];
+                'radv' => $radv];
             return $this->client->set("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/options", $params);
         }
 
@@ -6795,7 +6734,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFirewallVmidQemuNodeNodesLog
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidQemuNodeNodesLog {
 
@@ -6825,15 +6764,13 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Read firewall log
-         * @param int $limit
-         * @param int $start
+         * @param int $limit 
+         * @param int $start 
          * @return Result
          */
         public function log($limit = null, $start = null) {
-            $params = [
-                'limit' => $limit,
-                'start' => $start
-            ];
+            $params = ['limit' => $limit,
+                'start' => $start];
             return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/firewall/log", $params);
         }
 
@@ -6841,7 +6778,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFirewallVmidQemuNodeNodesRefs
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidQemuNodeNodesRefs {
 
@@ -6884,7 +6821,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidQemuNodeNodesAgent
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesAgent {
 
@@ -7260,7 +7197,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesFsfreezeFreeze
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesFsfreezeFreeze {
 
@@ -7300,7 +7237,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesFsfreezeStatus
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesFsfreezeStatus {
 
@@ -7340,7 +7277,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesFsfreezeThaw
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesFsfreezeThaw {
 
@@ -7380,7 +7317,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesFstrim
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesFstrim {
 
@@ -7420,7 +7357,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesGetFsinfo
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesGetFsinfo {
 
@@ -7460,7 +7397,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesGetHostName
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesGetHostName {
 
@@ -7500,7 +7437,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesGetMemoryBlockInfo
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesGetMemoryBlockInfo {
 
@@ -7540,7 +7477,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesGetMemoryBlocks
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesGetMemoryBlocks {
 
@@ -7580,7 +7517,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesGetOsinfo
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesGetOsinfo {
 
@@ -7620,7 +7557,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesGetTime
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesGetTime {
 
@@ -7660,7 +7597,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesGetTimezone
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesGetTimezone {
 
@@ -7700,7 +7637,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesGetUsers
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesGetUsers {
 
@@ -7740,7 +7677,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesGetVcpus
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesGetVcpus {
 
@@ -7780,7 +7717,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesInfo
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesInfo {
 
@@ -7820,7 +7757,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesNetworkGetInterfaces
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesNetworkGetInterfaces {
 
@@ -7860,7 +7797,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesPing
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesPing {
 
@@ -7900,7 +7837,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesShutdown
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesShutdown {
 
@@ -7940,7 +7877,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesSuspendDisk
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesSuspendDisk {
 
@@ -7980,7 +7917,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesSuspendHybrid
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesSuspendHybrid {
 
@@ -8020,7 +7957,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesSuspendRam
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesSuspendRam {
 
@@ -8060,7 +7997,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesSetUserPassword
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesSetUserPassword {
 
@@ -8096,11 +8033,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function setUserPassword($password, $username, $crypted = null) {
-            $params = [
-                'password' => $password,
+            $params = ['password' => $password,
                 'username' => $username,
-                'crypted' => $crypted
-            ];
+                'crypted' => $crypted];
             return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/set-user-password", $params);
         }
 
@@ -8108,7 +8043,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesExec
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesExec {
 
@@ -8143,10 +8078,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function exec($command = null, $input_data = null) {
-            $params = [
-                'command' => $command,
-                'input-data' => $input_data
-            ];
+            $params = ['command' => $command,
+                'input-data' => $input_data];
             return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/exec", $params);
         }
 
@@ -8154,7 +8087,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesExecStatus
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesExecStatus {
 
@@ -8196,7 +8129,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesFileRead
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesFileRead {
 
@@ -8238,7 +8171,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAgentVmidQemuNodeNodesFileWrite
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAgentVmidQemuNodeNodesFileWrite {
 
@@ -8274,11 +8207,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function fileWrite($content, $file, $encode = null) {
-            $params = [
-                'content' => $content,
+            $params = ['content' => $content,
                 'file' => $file,
-                'encode' => $encode
-            ];
+                'encode' => $encode];
             return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/agent/file-write", $params);
         }
 
@@ -8286,7 +8217,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidQemuNodeNodesRrd
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesRrd {
 
@@ -8324,11 +8255,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function rrd($ds, $timeframe, $cf = null) {
-            $params = [
-                'ds' => $ds,
+            $params = ['ds' => $ds,
                 'timeframe' => $timeframe,
-                'cf' => $cf
-            ];
+                'cf' => $cf];
             return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/rrd", $params);
         }
 
@@ -8336,7 +8265,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidQemuNodeNodesRrddata
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesRrddata {
 
@@ -8373,10 +8302,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function rrddata($timeframe, $cf = null) {
-            $params = [
-                'timeframe' => $timeframe,
-                'cf' => $cf
-            ];
+            $params = ['timeframe' => $timeframe,
+                'cf' => $cf];
             return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/rrddata", $params);
         }
 
@@ -8384,7 +8311,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidQemuNodeNodesConfig
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesConfig {
 
@@ -8419,16 +8346,15 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function vmConfig($current = null, $snapshot = null) {
-            $params = [
-                'current' => $current,
-                'snapshot' => $snapshot
-            ];
+            $params = ['current' => $current,
+                'snapshot' => $snapshot];
             return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/config", $params);
         }
 
         /**
          * Set virtual machine options (asynchrounous API).
          * @param bool $acpi Enable/disable ACPI.
+         * @param string $affinity List of host cores used to execute guest processes, for example: 0,5,8-11
          * @param string $agent Enable/disable communication with the Qemu Guest Agent and its properties.
          * @param string $arch Virtual processor architecture. Defaults to the host.
          *   Enum: x86_64,aarch64
@@ -8459,11 +8385,11 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $freeze Freeze CPU at startup (use 'c' monitor command to start execution).
          * @param string $hookscript Script that will be executed during various steps in the vms lifetime.
          * @param array $hostpciN Map host PCI devices into guest.
-         * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory' and 'usb'. Use '0' to disable hotplug completely. Using '1' as value is an alias for the default `network,disk,usb`.
+         * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory', 'usb' and 'cloudinit'. Use '0' to disable hotplug completely. Using '1' as value is an alias for the default `network,disk,usb`. USB hotplugging is possible for guests with machine version &amp;gt;= 7.1 and ostype l26 or windows &amp;gt; 7.
          * @param string $hugepages Enable/disable hugepages memory.
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
-         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration. This requires cloud-init 19.4 or newer.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
+         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration. This requires cloud-init 19.4 or newer.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4. 
          * @param string $ivshmem Inter-VM shared memory. Useful for direct communication between VMs, or to the host.
          * @param bool $keephugepages Use together with hugepages. If enabled, hugepages will not not be deleted after VM shutdown and can be used for subsequent starts.
          * @param string $keyboard Keyboard layout for VNC server. This option is generally not required and is often better handled from within the guest OS.
@@ -8477,7 +8403,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param float $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
          * @param int $migrate_speed Set maximum speed (in MB/s) for migrations. Value 0 is no limit.
          * @param string $name Set a name for the VM. Only used on the configuration web interface.
-         * @param string $nameserver cloud-init: Sets DNS server IP address for a container. Create will' 	    .' automatically use the setting from the host if neither searchdomain nor nameserver' 	    .' are set.
+         * @param string $nameserver cloud-init: Sets DNS server IP address for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $netN Specify network devices.
          * @param bool $numa Enable/disable NUMA.
          * @param array $numaN NUMA topology.
@@ -8493,7 +8419,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 30). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param string $scsihw SCSI controller model
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
-         * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will' 	    .' automatically use the setting from the host if neither searchdomain nor nameserver' 	    .' are set.
+         * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $serialN Create a serial device inside the VM (n is 0 to 3)
          * @param int $shares Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning. Auto-ballooning is done by pvestatd.
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
@@ -8510,7 +8436,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $template Enable/disable Template.
          * @param string $tpmstate0 Configure a Disk for storing TPM state. The format is fixed to 'raw'. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Note that SIZE_IN_GiB is ignored here and 4 MiB will be used instead. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
-         * @param array $usbN Configure an USB device (n is 0 to 4).
+         * @param array $usbN Configure an USB device (n is 0 to 4, for machine version &amp;gt;= 7.1 and ostype l26 or windows &amp;gt; 7, n can be up to 14).
          * @param int $vcpus Number of hotplugged vcpus.
          * @param string $vga Configure the VGA hardware.
          * @param array $virtioN Use volume as VIRTIO hard disk (n is 0 to 15). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
@@ -8519,9 +8445,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $watchdog Create a virtual hardware watchdog device.
          * @return Result
          */
-        public function updateVmAsync($acpi = null, $agent = null, $arch = null, $args = null, $audio0 = null, $autostart = null, $background_delay = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keephugepages = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $rng0 = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $spice_enhancements = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tags = null, $tdf = null, $template = null, $tpmstate0 = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null) {
-            $params = [
-                'acpi' => $acpi,
+        public function updateVmAsync($acpi = null, $affinity = null, $agent = null, $arch = null, $args = null, $audio0 = null, $autostart = null, $background_delay = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keephugepages = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $rng0 = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $spice_enhancements = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tags = null, $tdf = null, $template = null, $tpmstate0 = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null) {
+            $params = ['acpi' => $acpi,
+                'affinity' => $affinity,
                 'agent' => $agent,
                 'arch' => $arch,
                 'args' => $args,
@@ -8589,8 +8515,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'vga' => $vga,
                 'vmgenid' => $vmgenid,
                 'vmstatestorage' => $vmstatestorage,
-                'watchdog' => $watchdog
-            ];
+                'watchdog' => $watchdog];
             $this->client->addIndexedParameter($params, 'hostpci', $hostpciN);
             $this->client->addIndexedParameter($params, 'ide', $ideN);
             $this->client->addIndexedParameter($params, 'ipconfig', $ipconfigN);
@@ -8609,6 +8534,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Set virtual machine options (synchrounous API) - You should consider using the POST method instead for any actions involving hotplug or storage allocation.
          * @param bool $acpi Enable/disable ACPI.
+         * @param string $affinity List of host cores used to execute guest processes, for example: 0,5,8-11
          * @param string $agent Enable/disable communication with the Qemu Guest Agent and its properties.
          * @param string $arch Virtual processor architecture. Defaults to the host.
          *   Enum: x86_64,aarch64
@@ -8638,11 +8564,11 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $freeze Freeze CPU at startup (use 'c' monitor command to start execution).
          * @param string $hookscript Script that will be executed during various steps in the vms lifetime.
          * @param array $hostpciN Map host PCI devices into guest.
-         * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory' and 'usb'. Use '0' to disable hotplug completely. Using '1' as value is an alias for the default `network,disk,usb`.
+         * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory', 'usb' and 'cloudinit'. Use '0' to disable hotplug completely. Using '1' as value is an alias for the default `network,disk,usb`. USB hotplugging is possible for guests with machine version &amp;gt;= 7.1 and ostype l26 or windows &amp;gt; 7.
          * @param string $hugepages Enable/disable hugepages memory.
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
-         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration. This requires cloud-init 19.4 or newer.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
+         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration. This requires cloud-init 19.4 or newer.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4. 
          * @param string $ivshmem Inter-VM shared memory. Useful for direct communication between VMs, or to the host.
          * @param bool $keephugepages Use together with hugepages. If enabled, hugepages will not not be deleted after VM shutdown and can be used for subsequent starts.
          * @param string $keyboard Keyboard layout for VNC server. This option is generally not required and is often better handled from within the guest OS.
@@ -8656,7 +8582,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param float $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations.
          * @param int $migrate_speed Set maximum speed (in MB/s) for migrations. Value 0 is no limit.
          * @param string $name Set a name for the VM. Only used on the configuration web interface.
-         * @param string $nameserver cloud-init: Sets DNS server IP address for a container. Create will' 	    .' automatically use the setting from the host if neither searchdomain nor nameserver' 	    .' are set.
+         * @param string $nameserver cloud-init: Sets DNS server IP address for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $netN Specify network devices.
          * @param bool $numa Enable/disable NUMA.
          * @param array $numaN NUMA topology.
@@ -8672,7 +8598,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param array $scsiN Use volume as SCSI hard disk or CD-ROM (n is 0 to 30). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param string $scsihw SCSI controller model
          *   Enum: lsi,lsi53c810,virtio-scsi-pci,virtio-scsi-single,megasas,pvscsi
-         * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will' 	    .' automatically use the setting from the host if neither searchdomain nor nameserver' 	    .' are set.
+         * @param string $searchdomain cloud-init: Sets DNS search domains for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
          * @param array $serialN Create a serial device inside the VM (n is 0 to 3)
          * @param int $shares Amount of memory shares for auto-ballooning. The larger the number is, the more memory this VM gets. Number is relative to weights of all other running VMs. Using zero disables auto-ballooning. Auto-ballooning is done by pvestatd.
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
@@ -8689,7 +8615,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $template Enable/disable Template.
          * @param string $tpmstate0 Configure a Disk for storing TPM state. The format is fixed to 'raw'. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Note that SIZE_IN_GiB is ignored here and 4 MiB will be used instead. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
-         * @param array $usbN Configure an USB device (n is 0 to 4).
+         * @param array $usbN Configure an USB device (n is 0 to 4, for machine version &amp;gt;= 7.1 and ostype l26 or windows &amp;gt; 7, n can be up to 14).
          * @param int $vcpus Number of hotplugged vcpus.
          * @param string $vga Configure the VGA hardware.
          * @param array $virtioN Use volume as VIRTIO hard disk (n is 0 to 15). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
@@ -8698,9 +8624,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $watchdog Create a virtual hardware watchdog device.
          * @return Result
          */
-        public function updateVm($acpi = null, $agent = null, $arch = null, $args = null, $audio0 = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keephugepages = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $rng0 = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $spice_enhancements = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tags = null, $tdf = null, $template = null, $tpmstate0 = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null) {
-            $params = [
-                'acpi' => $acpi,
+        public function updateVm($acpi = null, $affinity = null, $agent = null, $arch = null, $args = null, $audio0 = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keephugepages = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $rng0 = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $spice_enhancements = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tags = null, $tdf = null, $template = null, $tpmstate0 = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null) {
+            $params = ['acpi' => $acpi,
+                'affinity' => $affinity,
                 'agent' => $agent,
                 'arch' => $arch,
                 'args' => $args,
@@ -8767,8 +8693,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'vga' => $vga,
                 'vmgenid' => $vmgenid,
                 'vmstatestorage' => $vmstatestorage,
-                'watchdog' => $watchdog
-            ];
+                'watchdog' => $watchdog];
             $this->client->addIndexedParameter($params, 'hostpci', $hostpciN);
             $this->client->addIndexedParameter($params, 'ide', $ideN);
             $this->client->addIndexedParameter($params, 'ipconfig', $ipconfigN);
@@ -8788,7 +8713,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidQemuNodeNodesPending
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesPending {
 
@@ -8827,8 +8752,112 @@ namespace Corsinvest\ProxmoxVE\Api {
     }
 
     /**
+     * Class PVEVmidQemuNodeNodesCloudinit
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVEVmidQemuNodeNodesCloudinit {
+
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid) {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * @ignore
+         */
+        private $dump;
+
+        /**
+         * Get CloudinitVmidQemuNodeNodesDump
+         * @return PVECloudinitVmidQemuNodeNodesDump
+         */
+        public function getDump() {
+            return $this->dump ?: ($this->dump = new PVECloudinitVmidQemuNodeNodesDump($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * Get the cloudinit configuration with both current and pending values.
+         * @return Result
+         */
+        public function cloudinitPending() {
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/cloudinit");
+        }
+
+        /**
+         * Regenerate and change cloudinit config drive.
+         * @return Result
+         */
+        public function cloudinitUpdate() {
+            return $this->client->set("/nodes/{$this->node}/qemu/{$this->vmid}/cloudinit");
+        }
+
+    }
+
+    /**
+     * Class PVECloudinitVmidQemuNodeNodesDump
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVECloudinitVmidQemuNodeNodesDump {
+
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid) {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Get automatically generated cloudinit config.
+         * @param string $type Config type.
+         *   Enum: user,network,meta
+         * @return Result
+         */
+        public function cloudinitGeneratedConfigDump($type) {
+            $params = ['type' => $type];
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/cloudinit/dump", $params);
+        }
+
+    }
+
+    /**
      * Class PVEVmidQemuNodeNodesUnlink
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesUnlink {
 
@@ -8863,10 +8892,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function unlink($idlist, $force = null) {
-            $params = [
-                'idlist' => $idlist,
-                'force' => $force
-            ];
+            $params = ['idlist' => $idlist,
+                'force' => $force];
             return $this->client->set("/nodes/{$this->node}/qemu/{$this->vmid}/unlink", $params);
         }
 
@@ -8874,7 +8901,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidQemuNodeNodesVncproxy
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesVncproxy {
 
@@ -8909,10 +8936,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function vncproxy($generate_password = null, $websocket = null) {
-            $params = [
-                'generate-password' => $generate_password,
-                'websocket' => $websocket
-            ];
+            $params = ['generate-password' => $generate_password,
+                'websocket' => $websocket];
             return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/vncproxy", $params);
         }
 
@@ -8920,7 +8945,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidQemuNodeNodesTermproxy
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesTermproxy {
 
@@ -8963,7 +8988,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidQemuNodeNodesVncwebsocket
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesVncwebsocket {
 
@@ -8998,10 +9023,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function vncwebsocket($port, $vncticket) {
-            $params = [
-                'port' => $port,
-                'vncticket' => $vncticket
-            ];
+            $params = ['port' => $port,
+                'vncticket' => $vncticket];
             return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/vncwebsocket", $params);
         }
 
@@ -9009,7 +9032,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidQemuNodeNodesSpiceproxy
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesSpiceproxy {
 
@@ -9051,7 +9074,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidQemuNodeNodesStatus
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesStatus {
 
@@ -9195,7 +9218,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStatusVmidQemuNodeNodesCurrent
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidQemuNodeNodesCurrent {
 
@@ -9235,7 +9258,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStatusVmidQemuNodeNodesStart
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidQemuNodeNodesStart {
 
@@ -9278,8 +9301,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function vmStart($force_cpu = null, $machine = null, $migratedfrom = null, $migration_network = null, $migration_type = null, $skiplock = null, $stateuri = null, $targetstorage = null, $timeout = null) {
-            $params = [
-                'force-cpu' => $force_cpu,
+            $params = ['force-cpu' => $force_cpu,
                 'machine' => $machine,
                 'migratedfrom' => $migratedfrom,
                 'migration_network' => $migration_network,
@@ -9287,8 +9309,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'skiplock' => $skiplock,
                 'stateuri' => $stateuri,
                 'targetstorage' => $targetstorage,
-                'timeout' => $timeout
-            ];
+                'timeout' => $timeout];
             return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/status/start", $params);
         }
 
@@ -9296,7 +9317,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStatusVmidQemuNodeNodesStop
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidQemuNodeNodesStop {
 
@@ -9333,12 +9354,10 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function vmStop($keepActive = null, $migratedfrom = null, $skiplock = null, $timeout = null) {
-            $params = [
-                'keepActive' => $keepActive,
+            $params = ['keepActive' => $keepActive,
                 'migratedfrom' => $migratedfrom,
                 'skiplock' => $skiplock,
-                'timeout' => $timeout
-            ];
+                'timeout' => $timeout];
             return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/status/stop", $params);
         }
 
@@ -9346,7 +9365,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStatusVmidQemuNodeNodesReset
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidQemuNodeNodesReset {
 
@@ -9388,7 +9407,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStatusVmidQemuNodeNodesShutdown
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidQemuNodeNodesShutdown {
 
@@ -9425,12 +9444,10 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function vmShutdown($forceStop = null, $keepActive = null, $skiplock = null, $timeout = null) {
-            $params = [
-                'forceStop' => $forceStop,
+            $params = ['forceStop' => $forceStop,
                 'keepActive' => $keepActive,
                 'skiplock' => $skiplock,
-                'timeout' => $timeout
-            ];
+                'timeout' => $timeout];
             return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/status/shutdown", $params);
         }
 
@@ -9438,7 +9455,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStatusVmidQemuNodeNodesReboot
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidQemuNodeNodesReboot {
 
@@ -9480,7 +9497,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStatusVmidQemuNodeNodesSuspend
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidQemuNodeNodesSuspend {
 
@@ -9516,11 +9533,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function vmSuspend($skiplock = null, $statestorage = null, $todisk = null) {
-            $params = [
-                'skiplock' => $skiplock,
+            $params = ['skiplock' => $skiplock,
                 'statestorage' => $statestorage,
-                'todisk' => $todisk
-            ];
+                'todisk' => $todisk];
             return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/status/suspend", $params);
         }
 
@@ -9528,7 +9543,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStatusVmidQemuNodeNodesResume
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidQemuNodeNodesResume {
 
@@ -9558,15 +9573,13 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Resume virtual machine.
-         * @param bool $nocheck
+         * @param bool $nocheck 
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
          * @return Result
          */
         public function vmResume($nocheck = null, $skiplock = null) {
-            $params = [
-                'nocheck' => $nocheck,
-                'skiplock' => $skiplock
-            ];
+            $params = ['nocheck' => $nocheck,
+                'skiplock' => $skiplock];
             return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/status/resume", $params);
         }
 
@@ -9574,7 +9587,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidQemuNodeNodesSendkey
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesSendkey {
 
@@ -9609,10 +9622,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function vmSendkey($key, $skiplock = null) {
-            $params = [
-                'key' => $key,
-                'skiplock' => $skiplock
-            ];
+            $params = ['key' => $key,
+                'skiplock' => $skiplock];
             return $this->client->set("/nodes/{$this->node}/qemu/{$this->vmid}/sendkey", $params);
         }
 
@@ -9620,7 +9631,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidQemuNodeNodesFeature
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesFeature {
 
@@ -9656,10 +9667,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function vmFeature($feature, $snapname = null) {
-            $params = [
-                'feature' => $feature,
-                'snapname' => $snapname
-            ];
+            $params = ['feature' => $feature,
+                'snapname' => $snapname];
             return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/feature", $params);
         }
 
@@ -9667,7 +9676,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidQemuNodeNodesClone
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesClone {
 
@@ -9711,8 +9720,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function cloneVm($newid, $bwlimit = null, $description = null, $format = null, $full = null, $name = null, $pool = null, $snapname = null, $storage = null, $target = null) {
-            $params = [
-                'newid' => $newid,
+            $params = ['newid' => $newid,
                 'bwlimit' => $bwlimit,
                 'description' => $description,
                 'format' => $format,
@@ -9721,8 +9729,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'pool' => $pool,
                 'snapname' => $snapname,
                 'storage' => $storage,
-                'target' => $target
-            ];
+                'target' => $target];
             return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/clone", $params);
         }
 
@@ -9730,7 +9737,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidQemuNodeNodesMoveDisk
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesMoveDisk {
 
@@ -9775,8 +9782,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function moveVmDisk($disk, $bwlimit = null, $delete = null, $digest = null, $format = null, $storage = null, $target_digest = null, $target_disk = null, $target_vmid = null) {
-            $params = [
-                'disk' => $disk,
+            $params = ['disk' => $disk,
                 'bwlimit' => $bwlimit,
                 'delete' => $delete,
                 'digest' => $digest,
@@ -9784,8 +9790,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'storage' => $storage,
                 'target-digest' => $target_digest,
                 'target-disk' => $target_disk,
-                'target-vmid' => $target_vmid
-            ];
+                'target-vmid' => $target_vmid];
             return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/move_disk", $params);
         }
 
@@ -9793,7 +9798,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidQemuNodeNodesMigrate
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesMigrate {
 
@@ -9845,24 +9850,76 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function migrateVm($target, $bwlimit = null, $force = null, $migration_network = null, $migration_type = null, $online = null, $targetstorage = null, $with_local_disks = null) {
-            $params = [
-                'target' => $target,
+            $params = ['target' => $target,
                 'bwlimit' => $bwlimit,
                 'force' => $force,
                 'migration_network' => $migration_network,
                 'migration_type' => $migration_type,
                 'online' => $online,
                 'targetstorage' => $targetstorage,
-                'with-local-disks' => $with_local_disks
-            ];
+                'with-local-disks' => $with_local_disks];
             return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/migrate", $params);
         }
 
     }
 
     /**
+     * Class PVEVmidQemuNodeNodesRemoteMigrate
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVEVmidQemuNodeNodesRemoteMigrate {
+
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid) {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Migrate virtual machine to a remote cluster. Creates a new migration task. EXPERIMENTAL feature!
+         * @param string $target_bridge Mapping from source to target bridges. Providing only a single bridge ID maps all source bridges to that bridge. Providing the special value '1' will map each source bridge to itself.
+         * @param string $target_endpoint Remote target endpoint
+         * @param string $target_storage Mapping from source to target storages. Providing only a single storage ID maps all source storages to that storage. Providing the special value '1' will map each source storage to itself.
+         * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
+         * @param bool $delete Delete the original VM and related data after successful migration. By default the original VM is kept on the source cluster in a stopped state.
+         * @param bool $online Use online/live migration if VM is running. Ignored if VM is stopped.
+         * @param int $target_vmid The (unique) ID of the VM.
+         * @return Result
+         */
+        public function remoteMigrateVm($target_bridge, $target_endpoint, $target_storage, $bwlimit = null, $delete = null, $online = null, $target_vmid = null) {
+            $params = ['target-bridge' => $target_bridge,
+                'target-endpoint' => $target_endpoint,
+                'target-storage' => $target_storage,
+                'bwlimit' => $bwlimit,
+                'delete' => $delete,
+                'online' => $online,
+                'target-vmid' => $target_vmid];
+            return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/remote_migrate", $params);
+        }
+
+    }
+
+    /**
      * Class PVEVmidQemuNodeNodesMonitor
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesMonitor {
 
@@ -9904,7 +9961,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidQemuNodeNodesResize
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesResize {
 
@@ -9942,12 +9999,10 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function resizeVm($disk, $size, $digest = null, $skiplock = null) {
-            $params = [
-                'disk' => $disk,
+            $params = ['disk' => $disk,
                 'size' => $size,
                 'digest' => $digest,
-                'skiplock' => $skiplock
-            ];
+                'skiplock' => $skiplock];
             return $this->client->set("/nodes/{$this->node}/qemu/{$this->vmid}/resize", $params);
         }
 
@@ -9955,7 +10010,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidQemuNodeNodesSnapshot
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesSnapshot {
 
@@ -10008,11 +10063,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function snapshot($snapname, $description = null, $vmstate = null) {
-            $params = [
-                'snapname' => $snapname,
+            $params = ['snapname' => $snapname,
                 'description' => $description,
-                'vmstate' => $vmstate
-            ];
+                'vmstate' => $vmstate];
             return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot", $params);
         }
 
@@ -10020,7 +10073,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemSnapshotVmidQemuNodeNodesSnapname
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemSnapshotVmidQemuNodeNodesSnapname {
 
@@ -10091,7 +10144,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
-         *
+         * 
          * @return Result
          */
         public function snapshotCmdIdx() {
@@ -10102,7 +10155,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVESnapnameSnapshotVmidQemuNodeNodesConfig
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVESnapnameSnapshotVmidQemuNodeNodesConfig {
 
@@ -10158,7 +10211,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVESnapnameSnapshotVmidQemuNodeNodesRollback
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVESnapnameSnapshotVmidQemuNodeNodesRollback {
 
@@ -10194,17 +10247,19 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Rollback VM state to specified snapshot.
+         * @param bool $start Whether the VM should get started after rolling back successfully
          * @return Result
          */
-        public function rollback() {
-            return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot/{$this->snapname}/rollback");
+        public function rollback($start = null) {
+            $params = ['start' => $start];
+            return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/snapshot/{$this->snapname}/rollback", $params);
         }
 
     }
 
     /**
      * Class PVEVmidQemuNodeNodesTemplate
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidQemuNodeNodesTemplate {
 
@@ -10246,10 +10301,10 @@ namespace Corsinvest\ProxmoxVE\Api {
     }
 
     /**
-     * Class PVEVmidQemuNodeNodesCloudinit
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * Class PVEVmidQemuNodeNodesMtunnel
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
-    class PVEVmidQemuNodeNodesCloudinit {
+    class PVEVmidQemuNodeNodesMtunnel {
 
         /**
          * @ignore
@@ -10276,25 +10331,24 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
-         * @ignore
+         * Migration tunnel endpoint - only for internal use by VM migration.
+         * @param string $bridges List of network bridges to check availability. Will be checked again for actually used bridges during migration.
+         * @param string $storages List of storages to check permission and availability. Will be checked again for all actually used storages during migration.
+         * @return Result
          */
-        private $dump;
-
-        /**
-         * Get CloudinitVmidQemuNodeNodesDump
-         * @return PVECloudinitVmidQemuNodeNodesDump
-         */
-        public function getDump() {
-            return $this->dump ?: ($this->dump = new PVECloudinitVmidQemuNodeNodesDump($this->client, $this->node, $this->vmid));
+        public function mtunnel($bridges = null, $storages = null) {
+            $params = ['bridges' => $bridges,
+                'storages' => $storages];
+            return $this->client->create("/nodes/{$this->node}/qemu/{$this->vmid}/mtunnel", $params);
         }
 
     }
 
     /**
-     * Class PVECloudinitVmidQemuNodeNodesDump
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * Class PVEVmidQemuNodeNodesMtunnelwebsocket
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
-    class PVECloudinitVmidQemuNodeNodesDump {
+    class PVEVmidQemuNodeNodesMtunnelwebsocket {
 
         /**
          * @ignore
@@ -10321,21 +10375,22 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
-         * Get automatically generated cloudinit config.
-         * @param string $type Config type.
-         *   Enum: user,network,meta
+         * Migration tunnel endpoint for websocket upgrade - only for internal use by VM migration.
+         * @param string $socket unix socket to forward to
+         * @param string $ticket ticket return by initial 'mtunnel' API call, or retrieved via 'ticket' tunnel command
          * @return Result
          */
-        public function cloudinitGeneratedConfigDump($type) {
-            $params = ['type' => $type];
-            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/cloudinit/dump", $params);
+        public function mtunnelwebsocket($socket, $ticket) {
+            $params = ['socket' => $socket,
+                'ticket' => $ticket];
+            return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/mtunnelwebsocket", $params);
         }
 
     }
 
     /**
      * Class PVENodeNodesLxc
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesLxc {
 
@@ -10386,7 +10441,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $console Attach a console device (/dev/console) to the container.
          * @param int $cores The number of cores assigned to the container. A container can use all available cores by default.
          * @param float $cpulimit Limit of CPU usage.  NOTE: If the computer has 2 CPUs, it has a total of '2' CPU time. Value '0' indicates no CPU limit.
-         * @param int $cpuunits CPU weight for a VM. Argument is used in the kernel fair scheduler. The larger the number is, the more CPU time this VM gets. Number is relative to the weights of all the other running VMs.  NOTE: You can disable fair-scheduler configuration by setting this to 0.
+         * @param int $cpuunits CPU weight for a container, will be clamped to [1, 10000] in cgroup v2.
          * @param bool $debug Try to be more verbose. For now this only enables debug log-level on start.
          * @param string $description Description for the Container. Shown in the web-interface CT's summary. This is saved as comment inside the configuration file.
          * @param string $features Allow containers access to advanced features.
@@ -10394,13 +10449,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $hookscript Script that will be exectued during various steps in the containers lifetime.
          * @param string $hostname Set a host name for the container.
          * @param bool $ignore_unpack_errors Ignore errors when extracting the template.
-         * @param string $lock Lock/unlock the VM.
+         * @param string $lock Lock/unlock the container.
          *   Enum: backup,create,destroyed,disk,fstrim,migrate,mounted,rollback,snapshot,snapshot-delete
-         * @param int $memory Amount of RAM for the VM in MB.
+         * @param int $memory Amount of RAM for the container in MB.
          * @param array $mpN Use volume as container mount point. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume.
          * @param string $nameserver Sets DNS server IP address for a container. Create will automatically use the setting from the host if you neither set searchdomain nor nameserver.
          * @param array $netN Specifies network interfaces for the container.
-         * @param bool $onboot Specifies whether a VM will be started during system bootup.
+         * @param bool $onboot Specifies whether a container will be started during system bootup.
          * @param string $ostype OS type. This is used to setup configuration inside the container, and corresponds to lxc setup scripts in /usr/share/lxc/config/&amp;lt;ostype&amp;gt;.common.conf. Value 'unmanaged' can be used to skip and OS specific setup.
          *   Enum: debian,devuan,ubuntu,centos,fedora,opensuse,archlinux,alpine,gentoo,nixos,unmanaged
          * @param string $password Sets root password inside container.
@@ -10413,7 +10468,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $start Start the CT after its creation finished successfully.
          * @param string $startup Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
          * @param string $storage Default Storage.
-         * @param int $swap Amount of SWAP for the VM in MB.
+         * @param int $swap Amount of SWAP for the container in MB.
          * @param string $tags Tags of the Container. This is only meta information.
          * @param bool $template Enable/disable Template.
          * @param string $timezone Time zone to use in the container. If option isn't set, then nothing will be done. Can be set to 'host' to match the host time zone, or an arbitrary time zone option from /usr/share/zoneinfo/zone.tab
@@ -10424,8 +10479,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function createVm($ostemplate, $vmid, $arch = null, $bwlimit = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $debug = null, $description = null, $features = null, $force = null, $hookscript = null, $hostname = null, $ignore_unpack_errors = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $password = null, $pool = null, $protection = null, $restore = null, $rootfs = null, $searchdomain = null, $ssh_public_keys = null, $start = null, $startup = null, $storage = null, $swap = null, $tags = null, $template = null, $timezone = null, $tty = null, $unique = null, $unprivileged = null, $unusedN = null) {
-            $params = [
-                'ostemplate' => $ostemplate,
+            $params = ['ostemplate' => $ostemplate,
                 'vmid' => $vmid,
                 'arch' => $arch,
                 'bwlimit' => $bwlimit,
@@ -10462,8 +10516,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'timezone' => $timezone,
                 'tty' => $tty,
                 'unique' => $unique,
-                'unprivileged' => $unprivileged
-            ];
+                'unprivileged' => $unprivileged];
             $this->client->addIndexedParameter($params, 'mp', $mpN);
             $this->client->addIndexedParameter($params, 'net', $netN);
             $this->client->addIndexedParameter($params, 'unused', $unusedN);
@@ -10474,7 +10527,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemLxcNodeNodesVmid
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemLxcNodeNodesVmid {
 
@@ -10635,6 +10688,19 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * @ignore
          */
+        private $remoteMigrate;
+
+        /**
+         * Get VmidLxcNodeNodesRemoteMigrate
+         * @return PVEVmidLxcNodeNodesRemoteMigrate
+         */
+        public function getRemoteMigrate() {
+            return $this->remoteMigrate ?: ($this->remoteMigrate = new PVEVmidLxcNodeNodesRemoteMigrate($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
         private $migrate;
 
         /**
@@ -10724,6 +10790,32 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
+         * @ignore
+         */
+        private $mtunnel;
+
+        /**
+         * Get VmidLxcNodeNodesMtunnel
+         * @return PVEVmidLxcNodeNodesMtunnel
+         */
+        public function getMtunnel() {
+            return $this->mtunnel ?: ($this->mtunnel = new PVEVmidLxcNodeNodesMtunnel($this->client, $this->node, $this->vmid));
+        }
+
+        /**
+         * @ignore
+         */
+        private $mtunnelwebsocket;
+
+        /**
+         * Get VmidLxcNodeNodesMtunnelwebsocket
+         * @return PVEVmidLxcNodeNodesMtunnelwebsocket
+         */
+        public function getMtunnelwebsocket() {
+            return $this->mtunnelwebsocket ?: ($this->mtunnelwebsocket = new PVEVmidLxcNodeNodesMtunnelwebsocket($this->client, $this->node, $this->vmid));
+        }
+
+        /**
          * Destroy the container (also delete all uses files).
          * @param bool $destroy_unreferenced_disks If set, destroy additionally all disks with the VMID from all enabled storages which are not referenced in the config.
          * @param bool $force Force destroy, even if running.
@@ -10731,11 +10823,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function destroyVm($destroy_unreferenced_disks = null, $force = null, $purge = null) {
-            $params = [
-                'destroy-unreferenced-disks' => $destroy_unreferenced_disks,
+            $params = ['destroy-unreferenced-disks' => $destroy_unreferenced_disks,
                 'force' => $force,
-                'purge' => $purge
-            ];
+                'purge' => $purge];
             return $this->client->delete("/nodes/{$this->node}/lxc/{$this->vmid}", $params);
         }
 
@@ -10751,7 +10841,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidLxcNodeNodesConfig
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesConfig {
 
@@ -10786,10 +10876,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function vmConfig($current = null, $snapshot = null) {
-            $params = [
-                'current' => $current,
-                'snapshot' => $snapshot
-            ];
+            $params = ['current' => $current,
+                'snapshot' => $snapshot];
             return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/config", $params);
         }
 
@@ -10802,7 +10890,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $console Attach a console device (/dev/console) to the container.
          * @param int $cores The number of cores assigned to the container. A container can use all available cores by default.
          * @param float $cpulimit Limit of CPU usage.  NOTE: If the computer has 2 CPUs, it has a total of '2' CPU time. Value '0' indicates no CPU limit.
-         * @param int $cpuunits CPU weight for a VM. Argument is used in the kernel fair scheduler. The larger the number is, the more CPU time this VM gets. Number is relative to the weights of all the other running VMs.  NOTE: You can disable fair-scheduler configuration by setting this to 0.
+         * @param int $cpuunits CPU weight for a container, will be clamped to [1, 10000] in cgroup v2.
          * @param bool $debug Try to be more verbose. For now this only enables debug log-level on start.
          * @param string $delete A list of settings you want to delete.
          * @param string $description Description for the Container. Shown in the web-interface CT's summary. This is saved as comment inside the configuration file.
@@ -10810,13 +10898,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $features Allow containers access to advanced features.
          * @param string $hookscript Script that will be exectued during various steps in the containers lifetime.
          * @param string $hostname Set a host name for the container.
-         * @param string $lock Lock/unlock the VM.
+         * @param string $lock Lock/unlock the container.
          *   Enum: backup,create,destroyed,disk,fstrim,migrate,mounted,rollback,snapshot,snapshot-delete
-         * @param int $memory Amount of RAM for the VM in MB.
+         * @param int $memory Amount of RAM for the container in MB.
          * @param array $mpN Use volume as container mount point. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume.
          * @param string $nameserver Sets DNS server IP address for a container. Create will automatically use the setting from the host if you neither set searchdomain nor nameserver.
          * @param array $netN Specifies network interfaces for the container.
-         * @param bool $onboot Specifies whether a VM will be started during system bootup.
+         * @param bool $onboot Specifies whether a container will be started during system bootup.
          * @param string $ostype OS type. This is used to setup configuration inside the container, and corresponds to lxc setup scripts in /usr/share/lxc/config/&amp;lt;ostype&amp;gt;.common.conf. Value 'unmanaged' can be used to skip and OS specific setup.
          *   Enum: debian,devuan,ubuntu,centos,fedora,opensuse,archlinux,alpine,gentoo,nixos,unmanaged
          * @param bool $protection Sets the protection flag of the container. This will prevent the CT or CT's disk remove/update operation.
@@ -10824,7 +10912,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $rootfs Use volume as container root.
          * @param string $searchdomain Sets DNS search domains for a container. Create will automatically use the setting from the host if you neither set searchdomain nor nameserver.
          * @param string $startup Startup and shutdown behavior. Order is a non-negative number defining the general startup order. Shutdown in done with reverse ordering. Additionally you can set the 'up' or 'down' delay in seconds, which specifies a delay to wait before the next VM is started or stopped.
-         * @param int $swap Amount of SWAP for the VM in MB.
+         * @param int $swap Amount of SWAP for the container in MB.
          * @param string $tags Tags of the Container. This is only meta information.
          * @param bool $template Enable/disable Template.
          * @param string $timezone Time zone to use in the container. If option isn't set, then nothing will be done. Can be set to 'host' to match the host time zone, or an arbitrary time zone option from /usr/share/zoneinfo/zone.tab
@@ -10834,8 +10922,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function updateVm($arch = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $debug = null, $delete = null, $description = null, $digest = null, $features = null, $hookscript = null, $hostname = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $protection = null, $revert = null, $rootfs = null, $searchdomain = null, $startup = null, $swap = null, $tags = null, $template = null, $timezone = null, $tty = null, $unprivileged = null, $unusedN = null) {
-            $params = [
-                'arch' => $arch,
+            $params = ['arch' => $arch,
                 'cmode' => $cmode,
                 'console' => $console,
                 'cores' => $cores,
@@ -10863,8 +10950,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'template' => $template,
                 'timezone' => $timezone,
                 'tty' => $tty,
-                'unprivileged' => $unprivileged
-            ];
+                'unprivileged' => $unprivileged];
             $this->client->addIndexedParameter($params, 'mp', $mpN);
             $this->client->addIndexedParameter($params, 'net', $netN);
             $this->client->addIndexedParameter($params, 'unused', $unusedN);
@@ -10875,7 +10961,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidLxcNodeNodesStatus
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesStatus {
 
@@ -11006,7 +11092,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStatusVmidLxcNodeNodesCurrent
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidLxcNodeNodesCurrent {
 
@@ -11046,7 +11132,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStatusVmidLxcNodeNodesStart
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidLxcNodeNodesStart {
 
@@ -11081,10 +11167,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function vmStart($debug = null, $skiplock = null) {
-            $params = [
-                'debug' => $debug,
-                'skiplock' => $skiplock
-            ];
+            $params = ['debug' => $debug,
+                'skiplock' => $skiplock];
             return $this->client->create("/nodes/{$this->node}/lxc/{$this->vmid}/status/start", $params);
         }
 
@@ -11092,7 +11176,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStatusVmidLxcNodeNodesStop
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidLxcNodeNodesStop {
 
@@ -11134,7 +11218,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStatusVmidLxcNodeNodesShutdown
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidLxcNodeNodesShutdown {
 
@@ -11169,10 +11253,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function vmShutdown($forceStop = null, $timeout = null) {
-            $params = [
-                'forceStop' => $forceStop,
-                'timeout' => $timeout
-            ];
+            $params = ['forceStop' => $forceStop,
+                'timeout' => $timeout];
             return $this->client->create("/nodes/{$this->node}/lxc/{$this->vmid}/status/shutdown", $params);
         }
 
@@ -11180,7 +11262,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStatusVmidLxcNodeNodesSuspend
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidLxcNodeNodesSuspend {
 
@@ -11220,7 +11302,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStatusVmidLxcNodeNodesResume
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidLxcNodeNodesResume {
 
@@ -11260,7 +11342,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStatusVmidLxcNodeNodesReboot
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStatusVmidLxcNodeNodesReboot {
 
@@ -11302,7 +11384,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidLxcNodeNodesSnapshot
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesSnapshot {
 
@@ -11354,10 +11436,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function snapshot($snapname, $description = null) {
-            $params = [
-                'snapname' => $snapname,
-                'description' => $description
-            ];
+            $params = ['snapname' => $snapname,
+                'description' => $description];
             return $this->client->create("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot", $params);
         }
 
@@ -11365,7 +11445,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemSnapshotVmidLxcNodeNodesSnapname
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemSnapshotVmidLxcNodeNodesSnapname {
 
@@ -11436,7 +11516,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
-         *
+         * 
          * @return Result
          */
         public function snapshotCmdIdx() {
@@ -11447,7 +11527,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVESnapnameSnapshotVmidLxcNodeNodesRollback
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVESnapnameSnapshotVmidLxcNodeNodesRollback {
 
@@ -11483,17 +11563,19 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Rollback LXC state to specified snapshot.
+         * @param bool $start Whether the container should get started after rolling back successfully
          * @return Result
          */
-        public function rollback() {
-            return $this->client->create("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot/{$this->snapname}/rollback");
+        public function rollback($start = null) {
+            $params = ['start' => $start];
+            return $this->client->create("/nodes/{$this->node}/lxc/{$this->vmid}/snapshot/{$this->snapname}/rollback", $params);
         }
 
     }
 
     /**
      * Class PVESnapnameSnapshotVmidLxcNodeNodesConfig
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVESnapnameSnapshotVmidLxcNodeNodesConfig {
 
@@ -11549,7 +11631,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidLxcNodeNodesFirewall
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesFirewall {
 
@@ -11667,7 +11749,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFirewallVmidLxcNodeNodesRules
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidLxcNodeNodesRules {
 
@@ -11734,8 +11816,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function createRule($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $icmp_type = null, $iface = null, $log = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null) {
-            $params = [
-                'action' => $action,
+            $params = ['action' => $action,
                 'type' => $type,
                 'comment' => $comment,
                 'dest' => $dest,
@@ -11749,8 +11830,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'pos' => $pos,
                 'proto' => $proto,
                 'source' => $source,
-                'sport' => $sport
-            ];
+                'sport' => $sport];
             return $this->client->create("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/rules", $params);
         }
 
@@ -11758,7 +11838,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemRulesFirewallVmidLxcNodeNodesPos
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemRulesFirewallVmidLxcNodeNodesPos {
 
@@ -11833,8 +11913,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function updateRule($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $icmp_type = null, $iface = null, $log = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null) {
-            $params = [
-                'action' => $action,
+            $params = ['action' => $action,
                 'comment' => $comment,
                 'delete' => $delete,
                 'dest' => $dest,
@@ -11849,8 +11928,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'proto' => $proto,
                 'source' => $source,
                 'sport' => $sport,
-                'type' => $type
-            ];
+                'type' => $type];
             return $this->client->set("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/rules/{$this->pos}", $params);
         }
 
@@ -11858,7 +11936,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFirewallVmidLxcNodeNodesAliases
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidLxcNodeNodesAliases {
 
@@ -11907,15 +11985,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * Create IP or Network Alias.
          * @param string $cidr Network/IP specification in CIDR format.
          * @param string $name Alias name.
-         * @param string $comment
+         * @param string $comment 
          * @return Result
          */
         public function createAlias($cidr, $name, $comment = null) {
-            $params = [
-                'cidr' => $cidr,
+            $params = ['cidr' => $cidr,
                 'name' => $name,
-                'comment' => $comment
-            ];
+                'comment' => $comment];
             return $this->client->create("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/aliases", $params);
         }
 
@@ -11923,7 +11999,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemAliasesFirewallVmidLxcNodeNodesName
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemAliasesFirewallVmidLxcNodeNodesName {
 
@@ -11978,18 +12054,16 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Update IP or Network alias.
          * @param string $cidr Network/IP specification in CIDR format.
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $rename Rename an existing alias.
          * @return Result
          */
         public function updateAlias($cidr, $comment = null, $digest = null, $rename = null) {
-            $params = [
-                'cidr' => $cidr,
+            $params = ['cidr' => $cidr,
                 'comment' => $comment,
                 'digest' => $digest,
-                'rename' => $rename
-            ];
+                'rename' => $rename];
             return $this->client->set("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/aliases/{$this->name}", $params);
         }
 
@@ -11997,7 +12071,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFirewallVmidLxcNodeNodesIpset
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidLxcNodeNodesIpset {
 
@@ -12045,18 +12119,16 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Create new IPSet
          * @param string $name IP set name.
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $rename Rename an existing IPSet. You can set 'rename' to the same value as 'name' to update the 'comment' of an existing IPSet.
          * @return Result
          */
         public function createIpset($name, $comment = null, $digest = null, $rename = null) {
-            $params = [
-                'name' => $name,
+            $params = ['name' => $name,
                 'comment' => $comment,
                 'digest' => $digest,
-                'rename' => $rename
-            ];
+                'rename' => $rename];
             return $this->client->create("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset", $params);
         }
 
@@ -12064,7 +12136,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemIpsetFirewallVmidLxcNodeNodesName
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemIpsetFirewallVmidLxcNodeNodesName {
 
@@ -12109,10 +12181,12 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Delete IPSet
+         * @param bool $force Delete all members of the IPSet, if there are any.
          * @return Result
          */
-        public function deleteIpset() {
-            return $this->client->delete("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset/{$this->name}");
+        public function deleteIpset($force = null) {
+            $params = ['force' => $force];
+            return $this->client->delete("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset/{$this->name}", $params);
         }
 
         /**
@@ -12126,16 +12200,14 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Add IP or Network to IPSet.
          * @param string $cidr Network/IP specification in CIDR format.
-         * @param string $comment
-         * @param bool $nomatch
+         * @param string $comment 
+         * @param bool $nomatch 
          * @return Result
          */
         public function createIp($cidr, $comment = null, $nomatch = null) {
-            $params = [
-                'cidr' => $cidr,
+            $params = ['cidr' => $cidr,
                 'comment' => $comment,
-                'nomatch' => $nomatch
-            ];
+                'nomatch' => $nomatch];
             return $this->client->create("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset/{$this->name}", $params);
         }
 
@@ -12143,7 +12215,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemNameIpsetFirewallVmidLxcNodeNodesCidr
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemNameIpsetFirewallVmidLxcNodeNodesCidr {
 
@@ -12203,17 +12275,15 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Update IP or Network settings
-         * @param string $comment
+         * @param string $comment 
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
-         * @param bool $nomatch
+         * @param bool $nomatch 
          * @return Result
          */
         public function updateIp($comment = null, $digest = null, $nomatch = null) {
-            $params = [
-                'comment' => $comment,
+            $params = ['comment' => $comment,
                 'digest' => $digest,
-                'nomatch' => $nomatch
-            ];
+                'nomatch' => $nomatch];
             return $this->client->set("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/ipset/{$this->name}/{$this->cidr}", $params);
         }
 
@@ -12221,7 +12291,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFirewallVmidLxcNodeNodesOptions
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidLxcNodeNodesOptions {
 
@@ -12278,8 +12348,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function setOptions($delete = null, $dhcp = null, $digest = null, $enable = null, $ipfilter = null, $log_level_in = null, $log_level_out = null, $macfilter = null, $ndp = null, $policy_in = null, $policy_out = null, $radv = null) {
-            $params = [
-                'delete' => $delete,
+            $params = ['delete' => $delete,
                 'dhcp' => $dhcp,
                 'digest' => $digest,
                 'enable' => $enable,
@@ -12290,8 +12359,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'ndp' => $ndp,
                 'policy_in' => $policy_in,
                 'policy_out' => $policy_out,
-                'radv' => $radv
-            ];
+                'radv' => $radv];
             return $this->client->set("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/options", $params);
         }
 
@@ -12299,7 +12367,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFirewallVmidLxcNodeNodesLog
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidLxcNodeNodesLog {
 
@@ -12329,15 +12397,13 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Read firewall log
-         * @param int $limit
-         * @param int $start
+         * @param int $limit 
+         * @param int $start 
          * @return Result
          */
         public function log($limit = null, $start = null) {
-            $params = [
-                'limit' => $limit,
-                'start' => $start
-            ];
+            $params = ['limit' => $limit,
+                'start' => $start];
             return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/firewall/log", $params);
         }
 
@@ -12345,7 +12411,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFirewallVmidLxcNodeNodesRefs
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallVmidLxcNodeNodesRefs {
 
@@ -12388,7 +12454,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidLxcNodeNodesRrd
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesRrd {
 
@@ -12426,11 +12492,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function rrd($ds, $timeframe, $cf = null) {
-            $params = [
-                'ds' => $ds,
+            $params = ['ds' => $ds,
                 'timeframe' => $timeframe,
-                'cf' => $cf
-            ];
+                'cf' => $cf];
             return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/rrd", $params);
         }
 
@@ -12438,7 +12502,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidLxcNodeNodesRrddata
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesRrddata {
 
@@ -12475,10 +12539,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function rrddata($timeframe, $cf = null) {
-            $params = [
-                'timeframe' => $timeframe,
-                'cf' => $cf
-            ];
+            $params = ['timeframe' => $timeframe,
+                'cf' => $cf];
             return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/rrddata", $params);
         }
 
@@ -12486,7 +12548,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidLxcNodeNodesVncproxy
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesVncproxy {
 
@@ -12522,11 +12584,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function vncproxy($height = null, $websocket = null, $width = null) {
-            $params = [
-                'height' => $height,
+            $params = ['height' => $height,
                 'websocket' => $websocket,
-                'width' => $width
-            ];
+                'width' => $width];
             return $this->client->create("/nodes/{$this->node}/lxc/{$this->vmid}/vncproxy", $params);
         }
 
@@ -12534,7 +12594,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidLxcNodeNodesTermproxy
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesTermproxy {
 
@@ -12574,7 +12634,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidLxcNodeNodesVncwebsocket
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesVncwebsocket {
 
@@ -12609,10 +12669,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function vncwebsocket($port, $vncticket) {
-            $params = [
-                'port' => $port,
-                'vncticket' => $vncticket
-            ];
+            $params = ['port' => $port,
+                'vncticket' => $vncticket];
             return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/vncwebsocket", $params);
         }
 
@@ -12620,7 +12678,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidLxcNodeNodesSpiceproxy
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesSpiceproxy {
 
@@ -12661,8 +12719,66 @@ namespace Corsinvest\ProxmoxVE\Api {
     }
 
     /**
+     * Class PVEVmidLxcNodeNodesRemoteMigrate
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVEVmidLxcNodeNodesRemoteMigrate {
+
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid) {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Migrate the container to another cluster. Creates a new migration task. EXPERIMENTAL feature!
+         * @param string $target_bridge Mapping from source to target bridges. Providing only a single bridge ID maps all source bridges to that bridge. Providing the special value '1' will map each source bridge to itself.
+         * @param string $target_endpoint Remote target endpoint
+         * @param string $target_storage Mapping from source to target storages. Providing only a single storage ID maps all source storages to that storage. Providing the special value '1' will map each source storage to itself.
+         * @param float $bwlimit Override I/O bandwidth limit (in KiB/s).
+         * @param bool $delete Delete the original CT and related data after successful migration. By default the original CT is kept on the source cluster in a stopped state.
+         * @param bool $online Use online/live migration.
+         * @param bool $restart Use restart migration
+         * @param int $target_vmid The (unique) ID of the VM.
+         * @param int $timeout Timeout in seconds for shutdown for restart migration
+         * @return Result
+         */
+        public function remoteMigrateVm($target_bridge, $target_endpoint, $target_storage, $bwlimit = null, $delete = null, $online = null, $restart = null, $target_vmid = null, $timeout = null) {
+            $params = ['target-bridge' => $target_bridge,
+                'target-endpoint' => $target_endpoint,
+                'target-storage' => $target_storage,
+                'bwlimit' => $bwlimit,
+                'delete' => $delete,
+                'online' => $online,
+                'restart' => $restart,
+                'target-vmid' => $target_vmid,
+                'timeout' => $timeout];
+            return $this->client->create("/nodes/{$this->node}/lxc/{$this->vmid}/remote_migrate", $params);
+        }
+
+    }
+
+    /**
      * Class PVEVmidLxcNodeNodesMigrate
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesMigrate {
 
@@ -12701,14 +12817,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function migrateVm($target, $bwlimit = null, $online = null, $restart = null, $target_storage = null, $timeout = null) {
-            $params = [
-                'target' => $target,
+            $params = ['target' => $target,
                 'bwlimit' => $bwlimit,
                 'online' => $online,
                 'restart' => $restart,
                 'target-storage' => $target_storage,
-                'timeout' => $timeout
-            ];
+                'timeout' => $timeout];
             return $this->client->create("/nodes/{$this->node}/lxc/{$this->vmid}/migrate", $params);
         }
 
@@ -12716,7 +12830,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidLxcNodeNodesFeature
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesFeature {
 
@@ -12752,10 +12866,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function vmFeature($feature, $snapname = null) {
-            $params = [
-                'feature' => $feature,
-                'snapname' => $snapname
-            ];
+            $params = ['feature' => $feature,
+                'snapname' => $snapname];
             return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/feature", $params);
         }
 
@@ -12763,7 +12875,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidLxcNodeNodesTemplate
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesTemplate {
 
@@ -12803,7 +12915,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidLxcNodeNodesClone
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesClone {
 
@@ -12845,8 +12957,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function cloneVm($newid, $bwlimit = null, $description = null, $full = null, $hostname = null, $pool = null, $snapname = null, $storage = null, $target = null) {
-            $params = [
-                'newid' => $newid,
+            $params = ['newid' => $newid,
                 'bwlimit' => $bwlimit,
                 'description' => $description,
                 'full' => $full,
@@ -12854,8 +12965,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'pool' => $pool,
                 'snapname' => $snapname,
                 'storage' => $storage,
-                'target' => $target
-            ];
+                'target' => $target];
             return $this->client->create("/nodes/{$this->node}/lxc/{$this->vmid}/clone", $params);
         }
 
@@ -12863,7 +12973,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidLxcNodeNodesResize
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesResize {
 
@@ -12900,11 +13010,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function resizeVm($disk, $size, $digest = null) {
-            $params = [
-                'disk' => $disk,
+            $params = ['disk' => $disk,
                 'size' => $size,
-                'digest' => $digest
-            ];
+                'digest' => $digest];
             return $this->client->set("/nodes/{$this->node}/lxc/{$this->vmid}/resize", $params);
         }
 
@@ -12912,7 +13020,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidLxcNodeNodesMoveVolume
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesMoveVolume {
 
@@ -12955,16 +13063,14 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function moveVolume($volume, $bwlimit = null, $delete = null, $digest = null, $storage = null, $target_digest = null, $target_vmid = null, $target_volume = null) {
-            $params = [
-                'volume' => $volume,
+            $params = ['volume' => $volume,
                 'bwlimit' => $bwlimit,
                 'delete' => $delete,
                 'digest' => $digest,
                 'storage' => $storage,
                 'target-digest' => $target_digest,
                 'target-vmid' => $target_vmid,
-                'target-volume' => $target_volume
-            ];
+                'target-volume' => $target_volume];
             return $this->client->create("/nodes/{$this->node}/lxc/{$this->vmid}/move_volume", $params);
         }
 
@@ -12972,7 +13078,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVmidLxcNodeNodesPending
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVmidLxcNodeNodesPending {
 
@@ -13011,8 +13117,96 @@ namespace Corsinvest\ProxmoxVE\Api {
     }
 
     /**
+     * Class PVEVmidLxcNodeNodesMtunnel
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVEVmidLxcNodeNodesMtunnel {
+
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid) {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Migration tunnel endpoint - only for internal use by CT migration.
+         * @param string $bridges List of network bridges to check availability. Will be checked again for actually used bridges during migration.
+         * @param string $storages List of storages to check permission and availability. Will be checked again for all actually used storages during migration.
+         * @return Result
+         */
+        public function mtunnel($bridges = null, $storages = null) {
+            $params = ['bridges' => $bridges,
+                'storages' => $storages];
+            return $this->client->create("/nodes/{$this->node}/lxc/{$this->vmid}/mtunnel", $params);
+        }
+
+    }
+
+    /**
+     * Class PVEVmidLxcNodeNodesMtunnelwebsocket
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVEVmidLxcNodeNodesMtunnelwebsocket {
+
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        private $vmid;
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node, $vmid) {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vmid = $vmid;
+        }
+
+        /**
+         * Migration tunnel endpoint for websocket upgrade - only for internal use by VM migration.
+         * @param string $socket unix socket to forward to
+         * @param string $ticket ticket return by initial 'mtunnel' API call, or retrieved via 'ticket' tunnel command
+         * @return Result
+         */
+        public function mtunnelwebsocket($socket, $ticket) {
+            $params = ['socket' => $socket,
+                'ticket' => $ticket];
+            return $this->client->get("/nodes/{$this->node}/lxc/{$this->vmid}/mtunnelwebsocket", $params);
+        }
+
+    }
+
+    /**
      * Class PVENodeNodesCeph
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesCeph {
 
@@ -13243,6 +13437,19 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
+         * @ignore
+         */
+        private $cmdSafety;
+
+        /**
+         * Get CephNodeNodesCmdSafety
+         * @return PVECephNodeNodesCmdSafety
+         */
+        public function getCmdSafety() {
+            return $this->cmdSafety ?: ($this->cmdSafety = new PVECephNodeNodesCmdSafety($this->client, $this->node));
+        }
+
+        /**
          * Directory index.
          * @return Result
          */
@@ -13254,7 +13461,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECephNodeNodesOsd
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesOsd {
 
@@ -13305,15 +13512,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function createosd($dev, $crush_device_class = null, $db_dev = null, $db_dev_size = null, $encrypted = null, $wal_dev = null, $wal_dev_size = null) {
-            $params = [
-                'dev' => $dev,
+            $params = ['dev' => $dev,
                 'crush-device-class' => $crush_device_class,
                 'db_dev' => $db_dev,
                 'db_dev_size' => $db_dev_size,
                 'encrypted' => $encrypted,
                 'wal_dev' => $wal_dev,
-                'wal_dev_size' => $wal_dev_size
-            ];
+                'wal_dev_size' => $wal_dev_size];
             return $this->client->create("/nodes/{$this->node}/ceph/osd", $params);
         }
 
@@ -13321,7 +13526,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemOsdCephNodeNodesOsdid
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemOsdCephNodeNodesOsdid {
 
@@ -13402,7 +13607,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEOsdidOsdCephNodeNodesIn
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEOsdidOsdCephNodeNodesIn {
 
@@ -13442,7 +13647,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEOsdidOsdCephNodeNodesOut
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEOsdidOsdCephNodeNodesOut {
 
@@ -13482,7 +13687,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEOsdidOsdCephNodeNodesScrub
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEOsdidOsdCephNodeNodesScrub {
 
@@ -13524,7 +13729,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECephNodeNodesMds
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesMds {
 
@@ -13567,7 +13772,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemMdsCephNodeNodesName
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemMdsCephNodeNodesName {
 
@@ -13617,7 +13822,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECephNodeNodesMgr
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesMgr {
 
@@ -13660,7 +13865,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemMgrCephNodeNodesId
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemMgrCephNodeNodesId {
 
@@ -13708,7 +13913,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECephNodeNodesMon
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesMon {
 
@@ -13751,7 +13956,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemMonCephNodeNodesMonid
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemMonCephNodeNodesMonid {
 
@@ -13801,7 +14006,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECephNodeNodesFs
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesFs {
 
@@ -13844,7 +14049,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemFsCephNodeNodesName
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemFsCephNodeNodesName {
 
@@ -13879,10 +14084,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function createfs($add_storage = null, $pg_num = null) {
-            $params = [
-                'add-storage' => $add_storage,
-                'pg_num' => $pg_num
-            ];
+            $params = ['add-storage' => $add_storage,
+                'pg_num' => $pg_num];
             return $this->client->create("/nodes/{$this->node}/ceph/fs/{$this->name}", $params);
         }
 
@@ -13890,7 +14093,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECephNodeNodesPools
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesPools {
 
@@ -13948,8 +14151,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function createpool($name, $add_storages = null, $application = null, $crush_rule = null, $erasure_coding = null, $min_size = null, $pg_autoscale_mode = null, $pg_num = null, $pg_num_min = null, $size = null, $target_size = null, $target_size_ratio = null) {
-            $params = [
-                'name' => $name,
+            $params = ['name' => $name,
                 'add_storages' => $add_storages,
                 'application' => $application,
                 'crush_rule' => $crush_rule,
@@ -13960,8 +14162,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'pg_num_min' => $pg_num_min,
                 'size' => $size,
                 'target_size' => $target_size,
-                'target_size_ratio' => $target_size_ratio
-            ];
+                'target_size_ratio' => $target_size_ratio];
             return $this->client->create("/nodes/{$this->node}/ceph/pools", $params);
         }
 
@@ -13969,7 +14170,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemPoolsCephNodeNodesName
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemPoolsCephNodeNodesName {
 
@@ -14005,11 +14206,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function destroypool($force = null, $remove_ecprofile = null, $remove_storages = null) {
-            $params = [
-                'force' => $force,
+            $params = ['force' => $force,
                 'remove_ecprofile' => $remove_ecprofile,
-                'remove_storages' => $remove_storages
-            ];
+                'remove_storages' => $remove_storages];
             return $this->client->delete("/nodes/{$this->node}/ceph/pools/{$this->name}", $params);
         }
 
@@ -14039,8 +14238,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function setpool($application = null, $crush_rule = null, $min_size = null, $pg_autoscale_mode = null, $pg_num = null, $pg_num_min = null, $size = null, $target_size = null, $target_size_ratio = null) {
-            $params = [
-                'application' => $application,
+            $params = ['application' => $application,
                 'crush_rule' => $crush_rule,
                 'min_size' => $min_size,
                 'pg_autoscale_mode' => $pg_autoscale_mode,
@@ -14048,8 +14246,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'pg_num_min' => $pg_num_min,
                 'size' => $size,
                 'target_size' => $target_size,
-                'target_size_ratio' => $target_size_ratio
-            ];
+                'target_size_ratio' => $target_size_ratio];
             return $this->client->set("/nodes/{$this->node}/ceph/pools/{$this->name}", $params);
         }
 
@@ -14057,7 +14254,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECephNodeNodesConfig
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesConfig {
 
@@ -14091,7 +14288,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECephNodeNodesConfigdb
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesConfigdb {
 
@@ -14125,7 +14322,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECephNodeNodesInit
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesInit {
 
@@ -14158,14 +14355,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function init($cluster_network = null, $disable_cephx = null, $min_size = null, $network = null, $pg_bits = null, $size = null) {
-            $params = [
-                'cluster-network' => $cluster_network,
+            $params = ['cluster-network' => $cluster_network,
                 'disable_cephx' => $disable_cephx,
                 'min_size' => $min_size,
                 'network' => $network,
                 'pg_bits' => $pg_bits,
-                'size' => $size
-            ];
+                'size' => $size];
             return $this->client->create("/nodes/{$this->node}/ceph/init", $params);
         }
 
@@ -14173,7 +14368,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECephNodeNodesStop
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesStop {
 
@@ -14209,7 +14404,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECephNodeNodesStart
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesStart {
 
@@ -14245,7 +14440,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECephNodeNodesRestart
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesRestart {
 
@@ -14281,7 +14476,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECephNodeNodesStatus
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesStatus {
 
@@ -14315,7 +14510,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECephNodeNodesCrush
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesCrush {
 
@@ -14349,7 +14544,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECephNodeNodesLog
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesLog {
 
@@ -14373,15 +14568,13 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Read ceph log
-         * @param int $limit
-         * @param int $start
+         * @param int $limit 
+         * @param int $start 
          * @return Result
          */
         public function log($limit = null, $start = null) {
-            $params = [
-                'limit' => $limit,
-                'start' => $start
-            ];
+            $params = ['limit' => $limit,
+                'start' => $start];
             return $this->client->get("/nodes/{$this->node}/ceph/log", $params);
         }
 
@@ -14389,7 +14582,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECephNodeNodesRules
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECephNodeNodesRules {
 
@@ -14422,8 +14615,50 @@ namespace Corsinvest\ProxmoxVE\Api {
     }
 
     /**
+     * Class PVECephNodeNodesCmdSafety
+     * @package Corsinvest\VE\ProxmoxVE\Api 
+     */
+    class PVECephNodeNodesCmdSafety {
+
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        function __construct($client, $node) {
+            $this->client = $client;
+            $this->node = $node;
+        }
+
+        /**
+         * Heuristical check if it is safe to perform an action.
+         * @param string $action Action to check
+         *   Enum: stop,destroy
+         * @param string $id ID of the service
+         * @param string $service Service type
+         *   Enum: osd,mon,mds
+         * @return Result
+         */
+        public function cmdSafety($action, $id, $service) {
+            $params = ['action' => $action,
+                'id' => $id,
+                'service' => $service];
+            return $this->client->get("/nodes/{$this->node}/ceph/cmd-safety", $params);
+        }
+
+    }
+
+    /**
      * Class PVENodeNodesVzdump
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesVzdump {
 
@@ -14488,7 +14723,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $maxfiles Deprecated: use 'prune-backups' instead. Maximal number of backup files per guest system.
          * @param string $mode Backup mode.
          *   Enum: snapshot,suspend,stop
-         * @param string $notes_template Template string for generating notes for the backup(s). It can contain variables which will be replaced by their values. Currently supported are {{cluster}}, {{guestname}}, {{node}}, and {{vmid}}, but more might be added in the future.
+         * @param string $notes_template Template string for generating notes for the backup(s). It can contain variables which will be replaced by their values. Currently supported are {{cluster}}, {{guestname}}, {{node}}, and {{vmid}}, but more might be added in the future. Needs to be a single line, newline and backslash need to be escaped as '\n' and '\\' respectively.
+         * @param string $performance Other performance-related settings.
          * @param int $pigz Use pigz instead of gzip when N&amp;gt;0. N=1 uses half of cores, N&amp;gt;1 uses N as thread count.
          * @param string $pool Backup all known guest systems included in the specified pool.
          * @param bool $protected If true, mark backup(s) as protected.
@@ -14506,9 +14742,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $zstd Zstd threads. N=0 uses half of the available cores, N&amp;gt;0 uses N as thread count.
          * @return Result
          */
-        public function vzdump($all = null, $bwlimit = null, $compress = null, $dumpdir = null, $exclude = null, $exclude_path = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $notes_template = null, $pigz = null, $pool = null, $protected = null, $prune_backups = null, $quiet = null, $remove = null, $script = null, $stdexcludes = null, $stdout = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
-            $params = [
-                'all' => $all,
+        public function vzdump($all = null, $bwlimit = null, $compress = null, $dumpdir = null, $exclude = null, $exclude_path = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $notes_template = null, $performance = null, $pigz = null, $pool = null, $protected = null, $prune_backups = null, $quiet = null, $remove = null, $script = null, $stdexcludes = null, $stdout = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null) {
+            $params = ['all' => $all,
                 'bwlimit' => $bwlimit,
                 'compress' => $compress,
                 'dumpdir' => $dumpdir,
@@ -14521,6 +14756,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'maxfiles' => $maxfiles,
                 'mode' => $mode,
                 'notes-template' => $notes_template,
+                'performance' => $performance,
                 'pigz' => $pigz,
                 'pool' => $pool,
                 'protected' => $protected,
@@ -14535,8 +14771,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'storage' => $storage,
                 'tmpdir' => $tmpdir,
                 'vmid' => $vmid,
-                'zstd' => $zstd
-            ];
+                'zstd' => $zstd];
             return $this->client->create("/nodes/{$this->node}/vzdump", $params);
         }
 
@@ -14544,7 +14779,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVzdumpNodeNodesDefaults
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVzdumpNodeNodesDefaults {
 
@@ -14580,7 +14815,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVzdumpNodeNodesExtractconfig
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVzdumpNodeNodesExtractconfig {
 
@@ -14616,7 +14851,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesServices
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesServices {
 
@@ -14659,7 +14894,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemServicesNodeNodesService
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemServicesNodeNodesService {
 
@@ -14764,7 +14999,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEServiceServicesNodeNodesState
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEServiceServicesNodeNodesState {
 
@@ -14804,7 +15039,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEServiceServicesNodeNodesStart
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEServiceServicesNodeNodesStart {
 
@@ -14844,7 +15079,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEServiceServicesNodeNodesStop
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEServiceServicesNodeNodesStop {
 
@@ -14884,7 +15119,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEServiceServicesNodeNodesRestart
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEServiceServicesNodeNodesRestart {
 
@@ -14924,7 +15159,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEServiceServicesNodeNodesReload
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEServiceServicesNodeNodesReload {
 
@@ -14964,7 +15199,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesSubscription
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesSubscription {
 
@@ -15026,7 +15261,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesNetwork
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesNetwork {
 
@@ -15111,8 +15346,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function createNetwork($iface, $type, $address = null, $address6 = null, $autostart = null, $bond_primary = null, $bond_mode = null, $bond_xmit_hash_policy = null, $bridge_ports = null, $bridge_vlan_aware = null, $cidr = null, $cidr6 = null, $comments = null, $comments6 = null, $gateway = null, $gateway6 = null, $mtu = null, $netmask = null, $netmask6 = null, $ovs_bonds = null, $ovs_bridge = null, $ovs_options = null, $ovs_ports = null, $ovs_tag = null, $slaves = null, $vlan_id = null, $vlan_raw_device = null) {
-            $params = [
-                'iface' => $iface,
+            $params = ['iface' => $iface,
                 'type' => $type,
                 'address' => $address,
                 'address6' => $address6,
@@ -15138,8 +15372,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'ovs_tag' => $ovs_tag,
                 'slaves' => $slaves,
                 'vlan-id' => $vlan_id,
-                'vlan-raw-device' => $vlan_raw_device
-            ];
+                'vlan-raw-device' => $vlan_raw_device];
             return $this->client->create("/nodes/{$this->node}/network", $params);
         }
 
@@ -15155,7 +15388,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemNetworkNodeNodesIface
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemNetworkNodeNodesIface {
 
@@ -15234,8 +15467,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function updateNetwork($type, $address = null, $address6 = null, $autostart = null, $bond_primary = null, $bond_mode = null, $bond_xmit_hash_policy = null, $bridge_ports = null, $bridge_vlan_aware = null, $cidr = null, $cidr6 = null, $comments = null, $comments6 = null, $delete = null, $gateway = null, $gateway6 = null, $mtu = null, $netmask = null, $netmask6 = null, $ovs_bonds = null, $ovs_bridge = null, $ovs_options = null, $ovs_ports = null, $ovs_tag = null, $slaves = null, $vlan_id = null, $vlan_raw_device = null) {
-            $params = [
-                'type' => $type,
+            $params = ['type' => $type,
                 'address' => $address,
                 'address6' => $address6,
                 'autostart' => $autostart,
@@ -15261,8 +15493,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'ovs_tag' => $ovs_tag,
                 'slaves' => $slaves,
                 'vlan-id' => $vlan_id,
-                'vlan-raw-device' => $vlan_raw_device
-            ];
+                'vlan-raw-device' => $vlan_raw_device];
             return $this->client->set("/nodes/{$this->node}/network/{$this->iface}", $params);
         }
 
@@ -15270,7 +15501,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesTasks
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesTasks {
 
@@ -15317,8 +15548,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function nodeTasks($errors = null, $limit = null, $since = null, $source = null, $start = null, $statusfilter = null, $typefilter = null, $until = null, $userfilter = null, $vmid = null) {
-            $params = [
-                'errors' => $errors,
+            $params = ['errors' => $errors,
                 'limit' => $limit,
                 'since' => $since,
                 'source' => $source,
@@ -15327,8 +15557,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'typefilter' => $typefilter,
                 'until' => $until,
                 'userfilter' => $userfilter,
-                'vmid' => $vmid
-            ];
+                'vmid' => $vmid];
             return $this->client->get("/nodes/{$this->node}/tasks", $params);
         }
 
@@ -15336,7 +15565,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemTasksNodeNodesUpid
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemTasksNodeNodesUpid {
 
@@ -15399,7 +15628,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
-         *
+         * 
          * @return Result
          */
         public function upidIndex() {
@@ -15410,7 +15639,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEUpidTasksNodeNodesLog
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEUpidTasksNodeNodesLog {
 
@@ -15445,10 +15674,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function readTaskLog($limit = null, $start = null) {
-            $params = [
-                'limit' => $limit,
-                'start' => $start
-            ];
+            $params = ['limit' => $limit,
+                'start' => $start];
             return $this->client->get("/nodes/{$this->node}/tasks/{$this->upid}/log", $params);
         }
 
@@ -15456,7 +15683,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEUpidTasksNodeNodesStatus
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEUpidTasksNodeNodesStatus {
 
@@ -15496,7 +15723,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesScan
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesScan {
 
@@ -15634,7 +15861,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEScanNodeNodesNfs
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEScanNodeNodesNfs {
 
@@ -15670,7 +15897,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEScanNodeNodesCifs
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEScanNodeNodesCifs {
 
@@ -15701,12 +15928,10 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function cifsscan($server, $domain = null, $password = null, $username = null) {
-            $params = [
-                'server' => $server,
+            $params = ['server' => $server,
                 'domain' => $domain,
                 'password' => $password,
-                'username' => $username
-            ];
+                'username' => $username];
             return $this->client->get("/nodes/{$this->node}/scan/cifs", $params);
         }
 
@@ -15714,7 +15939,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEScanNodeNodesPbs
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEScanNodeNodesPbs {
 
@@ -15746,13 +15971,11 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function pbsscan($password, $server, $username, $fingerprint = null, $port = null) {
-            $params = [
-                'password' => $password,
+            $params = ['password' => $password,
                 'server' => $server,
                 'username' => $username,
                 'fingerprint' => $fingerprint,
-                'port' => $port
-            ];
+                'port' => $port];
             return $this->client->get("/nodes/{$this->node}/scan/pbs", $params);
         }
 
@@ -15760,7 +15983,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEScanNodeNodesGlusterfs
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEScanNodeNodesGlusterfs {
 
@@ -15796,7 +16019,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEScanNodeNodesIscsi
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEScanNodeNodesIscsi {
 
@@ -15832,7 +16055,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEScanNodeNodesLvm
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEScanNodeNodesLvm {
 
@@ -15866,7 +16089,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEScanNodeNodesLvmthin
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEScanNodeNodesLvmthin {
 
@@ -15890,7 +16113,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * List local LVM Thin Pools.
-         * @param string $vg
+         * @param string $vg 
          * @return Result
          */
         public function lvmthinscan($vg) {
@@ -15902,7 +16125,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEScanNodeNodesZfs
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEScanNodeNodesZfs {
 
@@ -15936,7 +16159,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesHardware
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesHardware {
 
@@ -15996,7 +16219,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEHardwareNodeNodesPci
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEHardwareNodeNodesPci {
 
@@ -16034,10 +16257,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function pciscan($pci_class_blacklist = null, $verbose = null) {
-            $params = [
-                'pci-class-blacklist' => $pci_class_blacklist,
-                'verbose' => $verbose
-            ];
+            $params = ['pci-class-blacklist' => $pci_class_blacklist,
+                'verbose' => $verbose];
             return $this->client->get("/nodes/{$this->node}/hardware/pci", $params);
         }
 
@@ -16045,7 +16266,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemPciHardwareNodeNodesPciid
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemPciHardwareNodeNodesPciid {
 
@@ -16098,7 +16319,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEPciidPciHardwareNodeNodesMdev
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEPciidPciHardwareNodeNodesMdev {
 
@@ -16138,7 +16359,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEHardwareNodeNodesUsb
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEHardwareNodeNodesUsb {
 
@@ -16172,7 +16393,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesCapabilities
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesCapabilities {
 
@@ -16219,7 +16440,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECapabilitiesNodeNodesQemu
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECapabilitiesNodeNodesQemu {
 
@@ -16279,7 +16500,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEQemuCapabilitiesNodeNodesCpu
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEQemuCapabilitiesNodeNodesCpu {
 
@@ -16313,7 +16534,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEQemuCapabilitiesNodeNodesMachines
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEQemuCapabilitiesNodeNodesMachines {
 
@@ -16347,7 +16568,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesStorage
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesStorage {
 
@@ -16388,13 +16609,11 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function index($content = null, $enabled = null, $format = null, $storage = null, $target = null) {
-            $params = [
-                'content' => $content,
+            $params = ['content' => $content,
                 'enabled' => $enabled,
                 'format' => $format,
                 'storage' => $storage,
-                'target' => $target
-            ];
+                'target' => $target];
             return $this->client->get("/nodes/{$this->node}/storage", $params);
         }
 
@@ -16402,7 +16621,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemStorageNodeNodesStorage
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemStorageNodeNodesStorage {
 
@@ -16535,7 +16754,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
-         *
+         * 
          * @return Result
          */
         public function diridx() {
@@ -16546,7 +16765,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStorageStorageNodeNodesPrunebackups
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStorageStorageNodeNodesPrunebackups {
 
@@ -16583,11 +16802,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function delete($prune_backups = null, $type = null, $vmid = null) {
-            $params = [
-                'prune-backups' => $prune_backups,
+            $params = ['prune-backups' => $prune_backups,
                 'type' => $type,
-                'vmid' => $vmid
-            ];
+                'vmid' => $vmid];
             return $this->client->delete("/nodes/{$this->node}/storage/{$this->storage}/prunebackups", $params);
         }
 
@@ -16600,11 +16817,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function dryrun($prune_backups = null, $type = null, $vmid = null) {
-            $params = [
-                'prune-backups' => $prune_backups,
+            $params = ['prune-backups' => $prune_backups,
                 'type' => $type,
-                'vmid' => $vmid
-            ];
+                'vmid' => $vmid];
             return $this->client->get("/nodes/{$this->node}/storage/{$this->storage}/prunebackups", $params);
         }
 
@@ -16612,7 +16827,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStorageStorageNodeNodesContent
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStorageStorageNodeNodesContent {
 
@@ -16656,10 +16871,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function index($content = null, $vmid = null) {
-            $params = [
-                'content' => $content,
-                'vmid' => $vmid
-            ];
+            $params = ['content' => $content,
+                'vmid' => $vmid];
             return $this->client->get("/nodes/{$this->node}/storage/{$this->storage}/content", $params);
         }
 
@@ -16668,17 +16881,15 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $filename The name of the file to create.
          * @param string $size Size in kilobyte (1024 bytes). Optional suffixes 'M' (megabyte, 1024K) and 'G' (gigabyte, 1024M)
          * @param int $vmid Specify owner VM
-         * @param string $format
+         * @param string $format 
          *   Enum: raw,qcow2,subvol
          * @return Result
          */
         public function create($filename, $size, $vmid, $format = null) {
-            $params = [
-                'filename' => $filename,
+            $params = ['filename' => $filename,
                 'size' => $size,
                 'vmid' => $vmid,
-                'format' => $format
-            ];
+                'format' => $format];
             return $this->client->create("/nodes/{$this->node}/storage/{$this->storage}/content", $params);
         }
 
@@ -16686,7 +16897,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemContentStorageStorageNodeNodesVolume
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemContentStorageStorageNodeNodesVolume {
 
@@ -16745,10 +16956,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function copy($target, $target_node = null) {
-            $params = [
-                'target' => $target,
-                'target_node' => $target_node
-            ];
+            $params = ['target' => $target,
+                'target_node' => $target_node];
             return $this->client->create("/nodes/{$this->node}/storage/{$this->storage}/content/{$this->volume}", $params);
         }
 
@@ -16759,10 +16968,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function updateattributes($notes = null, $protected = null) {
-            $params = [
-                'notes' => $notes,
-                'protected' => $protected
-            ];
+            $params = ['notes' => $notes,
+                'protected' => $protected];
             return $this->client->set("/nodes/{$this->node}/storage/{$this->storage}/content/{$this->volume}", $params);
         }
 
@@ -16770,7 +16977,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStorageStorageNodeNodesFileRestore
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStorageStorageNodeNodesFileRestore {
 
@@ -16828,7 +17035,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFileRestoreStorageStorageNodeNodesList
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFileRestoreStorageStorageNodeNodesList {
 
@@ -16863,10 +17070,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function list_($filepath, $volume) {
-            $params = [
-                'filepath' => $filepath,
-                'volume' => $volume
-            ];
+            $params = ['filepath' => $filepath,
+                'volume' => $volume];
             return $this->client->get("/nodes/{$this->node}/storage/{$this->storage}/file-restore/list", $params);
         }
 
@@ -16874,7 +17079,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFileRestoreStorageStorageNodeNodesDownload
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFileRestoreStorageStorageNodeNodesDownload {
 
@@ -16909,10 +17114,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function download($filepath, $volume) {
-            $params = [
-                'filepath' => $filepath,
-                'volume' => $volume
-            ];
+            $params = ['filepath' => $filepath,
+                'volume' => $volume];
             return $this->client->get("/nodes/{$this->node}/storage/{$this->storage}/file-restore/download", $params);
         }
 
@@ -16920,7 +17123,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStorageStorageNodeNodesStatus
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStorageStorageNodeNodesStatus {
 
@@ -16960,7 +17163,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStorageStorageNodeNodesRrd
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStorageStorageNodeNodesRrd {
 
@@ -16998,11 +17201,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function rrd($ds, $timeframe, $cf = null) {
-            $params = [
-                'ds' => $ds,
+            $params = ['ds' => $ds,
                 'timeframe' => $timeframe,
-                'cf' => $cf
-            ];
+                'cf' => $cf];
             return $this->client->get("/nodes/{$this->node}/storage/{$this->storage}/rrd", $params);
         }
 
@@ -17010,7 +17211,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStorageStorageNodeNodesRrddata
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStorageStorageNodeNodesRrddata {
 
@@ -17047,10 +17248,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function rrddata($timeframe, $cf = null) {
-            $params = [
-                'timeframe' => $timeframe,
-                'cf' => $cf
-            ];
+            $params = ['timeframe' => $timeframe,
+                'cf' => $cf];
             return $this->client->get("/nodes/{$this->node}/storage/{$this->storage}/rrddata", $params);
         }
 
@@ -17058,7 +17257,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStorageStorageNodeNodesUpload
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStorageStorageNodeNodesUpload {
 
@@ -17098,13 +17297,11 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function upload($content, $filename, $checksum = null, $checksum_algorithm = null, $tmpfilename = null) {
-            $params = [
-                'content' => $content,
+            $params = ['content' => $content,
                 'filename' => $filename,
                 'checksum' => $checksum,
                 'checksum-algorithm' => $checksum_algorithm,
-                'tmpfilename' => $tmpfilename
-            ];
+                'tmpfilename' => $tmpfilename];
             return $this->client->create("/nodes/{$this->node}/storage/{$this->storage}/upload", $params);
         }
 
@@ -17112,7 +17309,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStorageStorageNodeNodesDownloadUrl
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStorageStorageNodeNodesDownloadUrl {
 
@@ -17153,14 +17350,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function downloadUrl($content, $filename, $url, $checksum = null, $checksum_algorithm = null, $verify_certificates = null) {
-            $params = [
-                'content' => $content,
+            $params = ['content' => $content,
                 'filename' => $filename,
                 'url' => $url,
                 'checksum' => $checksum,
                 'checksum-algorithm' => $checksum_algorithm,
-                'verify-certificates' => $verify_certificates
-            ];
+                'verify-certificates' => $verify_certificates];
             return $this->client->create("/nodes/{$this->node}/storage/{$this->storage}/download-url", $params);
         }
 
@@ -17168,7 +17363,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesDisks
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesDisks {
 
@@ -17306,7 +17501,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEDisksNodeNodesLvm
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEDisksNodeNodesLvm {
 
@@ -17353,11 +17548,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function create($device, $name, $add_storage = null) {
-            $params = [
-                'device' => $device,
+            $params = ['device' => $device,
                 'name' => $name,
-                'add_storage' => $add_storage
-            ];
+                'add_storage' => $add_storage];
             return $this->client->create("/nodes/{$this->node}/disks/lvm", $params);
         }
 
@@ -17365,7 +17558,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemLvmDisksNodeNodesName
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemLvmDisksNodeNodesName {
 
@@ -17400,10 +17593,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function delete($cleanup_config = null, $cleanup_disks = null) {
-            $params = [
-                'cleanup-config' => $cleanup_config,
-                'cleanup-disks' => $cleanup_disks
-            ];
+            $params = ['cleanup-config' => $cleanup_config,
+                'cleanup-disks' => $cleanup_disks];
             return $this->client->delete("/nodes/{$this->node}/disks/lvm/{$this->name}", $params);
         }
 
@@ -17411,7 +17602,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEDisksNodeNodesLvmthin
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEDisksNodeNodesLvmthin {
 
@@ -17458,11 +17649,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function create($device, $name, $add_storage = null) {
-            $params = [
-                'device' => $device,
+            $params = ['device' => $device,
                 'name' => $name,
-                'add_storage' => $add_storage
-            ];
+                'add_storage' => $add_storage];
             return $this->client->create("/nodes/{$this->node}/disks/lvmthin", $params);
         }
 
@@ -17470,7 +17659,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemLvmthinDisksNodeNodesName
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemLvmthinDisksNodeNodesName {
 
@@ -17506,11 +17695,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function delete($volume_group, $cleanup_config = null, $cleanup_disks = null) {
-            $params = [
-                'volume-group' => $volume_group,
+            $params = ['volume-group' => $volume_group,
                 'cleanup-config' => $cleanup_config,
-                'cleanup-disks' => $cleanup_disks
-            ];
+                'cleanup-disks' => $cleanup_disks];
             return $this->client->delete("/nodes/{$this->node}/disks/lvmthin/{$this->name}", $params);
         }
 
@@ -17518,7 +17705,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEDisksNodeNodesDirectory
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEDisksNodeNodesDirectory {
 
@@ -17567,12 +17754,10 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function create($device, $name, $add_storage = null, $filesystem = null) {
-            $params = [
-                'device' => $device,
+            $params = ['device' => $device,
                 'name' => $name,
                 'add_storage' => $add_storage,
-                'filesystem' => $filesystem
-            ];
+                'filesystem' => $filesystem];
             return $this->client->create("/nodes/{$this->node}/disks/directory", $params);
         }
 
@@ -17580,7 +17765,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemDirectoryDisksNodeNodesName
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemDirectoryDisksNodeNodesName {
 
@@ -17615,10 +17800,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function delete($cleanup_config = null, $cleanup_disks = null) {
-            $params = [
-                'cleanup-config' => $cleanup_config,
-                'cleanup-disks' => $cleanup_disks
-            ];
+            $params = ['cleanup-config' => $cleanup_config,
+                'cleanup-disks' => $cleanup_disks];
             return $this->client->delete("/nodes/{$this->node}/disks/directory/{$this->name}", $params);
         }
 
@@ -17626,7 +17809,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEDisksNodeNodesZfs
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEDisksNodeNodesZfs {
 
@@ -17670,22 +17853,22 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $devices The block devices you want to create the zpool on.
          * @param string $name The storage identifier.
          * @param string $raidlevel The RAID level to use.
-         *   Enum: single,mirror,raid10,raidz,raidz2,raidz3
+         *   Enum: single,mirror,raid10,raidz,raidz2,raidz3,draid,draid2,draid3
          * @param bool $add_storage Configure storage using the zpool.
          * @param int $ashift Pool sector size exponent.
          * @param string $compression The compression algorithm to use.
          *   Enum: on,off,gzip,lz4,lzjb,zle,zstd
+         * @param string $draid_config 
          * @return Result
          */
-        public function create($devices, $name, $raidlevel, $add_storage = null, $ashift = null, $compression = null) {
-            $params = [
-                'devices' => $devices,
+        public function create($devices, $name, $raidlevel, $add_storage = null, $ashift = null, $compression = null, $draid_config = null) {
+            $params = ['devices' => $devices,
                 'name' => $name,
                 'raidlevel' => $raidlevel,
                 'add_storage' => $add_storage,
                 'ashift' => $ashift,
-                'compression' => $compression
-            ];
+                'compression' => $compression,
+                'draid-config' => $draid_config];
             return $this->client->create("/nodes/{$this->node}/disks/zfs", $params);
         }
 
@@ -17693,7 +17876,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemZfsDisksNodeNodesName
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemZfsDisksNodeNodesName {
 
@@ -17728,10 +17911,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function delete($cleanup_config = null, $cleanup_disks = null) {
-            $params = [
-                'cleanup-config' => $cleanup_config,
-                'cleanup-disks' => $cleanup_disks
-            ];
+            $params = ['cleanup-config' => $cleanup_config,
+                'cleanup-disks' => $cleanup_disks];
             return $this->client->delete("/nodes/{$this->node}/disks/zfs/{$this->name}", $params);
         }
 
@@ -17747,7 +17928,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEDisksNodeNodesList
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEDisksNodeNodesList {
 
@@ -17778,11 +17959,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function list_($include_partitions = null, $skipsmart = null, $type = null) {
-            $params = [
-                'include-partitions' => $include_partitions,
+            $params = ['include-partitions' => $include_partitions,
                 'skipsmart' => $skipsmart,
-                'type' => $type
-            ];
+                'type' => $type];
             return $this->client->get("/nodes/{$this->node}/disks/list", $params);
         }
 
@@ -17790,7 +17969,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEDisksNodeNodesSmart
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEDisksNodeNodesSmart {
 
@@ -17819,10 +17998,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function smart($disk, $healthonly = null) {
-            $params = [
-                'disk' => $disk,
-                'healthonly' => $healthonly
-            ];
+            $params = ['disk' => $disk,
+                'healthonly' => $healthonly];
             return $this->client->get("/nodes/{$this->node}/disks/smart", $params);
         }
 
@@ -17830,7 +18007,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEDisksNodeNodesInitgpt
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEDisksNodeNodesInitgpt {
 
@@ -17859,10 +18036,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function initgpt($disk, $uuid = null) {
-            $params = [
-                'disk' => $disk,
-                'uuid' => $uuid
-            ];
+            $params = ['disk' => $disk,
+                'uuid' => $uuid];
             return $this->client->create("/nodes/{$this->node}/disks/initgpt", $params);
         }
 
@@ -17870,7 +18045,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEDisksNodeNodesWipedisk
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEDisksNodeNodesWipedisk {
 
@@ -17906,7 +18081,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesApt
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesApt {
 
@@ -17992,7 +18167,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAptNodeNodesUpdate
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAptNodeNodesUpdate {
 
@@ -18029,10 +18204,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function updateDatabase($notify = null, $quiet = null) {
-            $params = [
-                'notify' => $notify,
-                'quiet' => $quiet
-            ];
+            $params = ['notify' => $notify,
+                'quiet' => $quiet];
             return $this->client->create("/nodes/{$this->node}/apt/update", $params);
         }
 
@@ -18040,7 +18213,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAptNodeNodesChangelog
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAptNodeNodesChangelog {
 
@@ -18069,10 +18242,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function changelog($name, $version = null) {
-            $params = [
-                'name' => $name,
-                'version' => $version
-            ];
+            $params = ['name' => $name,
+                'version' => $version];
             return $this->client->get("/nodes/{$this->node}/apt/changelog", $params);
         }
 
@@ -18080,7 +18251,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAptNodeNodesRepositories
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAptNodeNodesRepositories {
 
@@ -18119,12 +18290,10 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function changeRepository($index, $path, $digest = null, $enabled = null) {
-            $params = [
-                'index' => $index,
+            $params = ['index' => $index,
                 'path' => $path,
                 'digest' => $digest,
-                'enabled' => $enabled
-            ];
+                'enabled' => $enabled];
             return $this->client->create("/nodes/{$this->node}/apt/repositories", $params);
         }
 
@@ -18135,10 +18304,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function addRepository($handle, $digest = null) {
-            $params = [
-                'handle' => $handle,
-                'digest' => $digest
-            ];
+            $params = ['handle' => $handle,
+                'digest' => $digest];
             return $this->client->set("/nodes/{$this->node}/apt/repositories", $params);
         }
 
@@ -18146,7 +18313,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAptNodeNodesVersions
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAptNodeNodesVersions {
 
@@ -18180,7 +18347,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesFirewall
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesFirewall {
 
@@ -18253,7 +18420,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFirewallNodeNodesRules
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallNodeNodesRules {
 
@@ -18314,8 +18481,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function createRule($action, $type, $comment = null, $dest = null, $digest = null, $dport = null, $enable = null, $icmp_type = null, $iface = null, $log = null, $macro = null, $pos = null, $proto = null, $source = null, $sport = null) {
-            $params = [
-                'action' => $action,
+            $params = ['action' => $action,
                 'type' => $type,
                 'comment' => $comment,
                 'dest' => $dest,
@@ -18329,8 +18495,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'pos' => $pos,
                 'proto' => $proto,
                 'source' => $source,
-                'sport' => $sport
-            ];
+                'sport' => $sport];
             return $this->client->create("/nodes/{$this->node}/firewall/rules", $params);
         }
 
@@ -18338,7 +18503,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemRulesFirewallNodeNodesPos
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemRulesFirewallNodeNodesPos {
 
@@ -18407,8 +18572,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function updateRule($action = null, $comment = null, $delete = null, $dest = null, $digest = null, $dport = null, $enable = null, $icmp_type = null, $iface = null, $log = null, $macro = null, $moveto = null, $proto = null, $source = null, $sport = null, $type = null) {
-            $params = [
-                'action' => $action,
+            $params = ['action' => $action,
                 'comment' => $comment,
                 'delete' => $delete,
                 'dest' => $dest,
@@ -18423,8 +18587,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'proto' => $proto,
                 'source' => $source,
                 'sport' => $sport,
-                'type' => $type
-            ];
+                'type' => $type];
             return $this->client->set("/nodes/{$this->node}/firewall/rules/{$this->pos}", $params);
         }
 
@@ -18432,7 +18595,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFirewallNodeNodesOptions
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallNodeNodesOptions {
 
@@ -18489,8 +18652,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function setOptions($delete = null, $digest = null, $enable = null, $log_level_in = null, $log_level_out = null, $log_nf_conntrack = null, $ndp = null, $nf_conntrack_allow_invalid = null, $nf_conntrack_max = null, $nf_conntrack_tcp_timeout_established = null, $nf_conntrack_tcp_timeout_syn_recv = null, $nosmurfs = null, $protection_synflood = null, $protection_synflood_burst = null, $protection_synflood_rate = null, $smurf_log_level = null, $tcp_flags_log_level = null, $tcpflags = null) {
-            $params = [
-                'delete' => $delete,
+            $params = ['delete' => $delete,
                 'digest' => $digest,
                 'enable' => $enable,
                 'log_level_in' => $log_level_in,
@@ -18507,8 +18669,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'protection_synflood_rate' => $protection_synflood_rate,
                 'smurf_log_level' => $smurf_log_level,
                 'tcp_flags_log_level' => $tcp_flags_log_level,
-                'tcpflags' => $tcpflags
-            ];
+                'tcpflags' => $tcpflags];
             return $this->client->set("/nodes/{$this->node}/firewall/options", $params);
         }
 
@@ -18516,7 +18677,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEFirewallNodeNodesLog
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEFirewallNodeNodesLog {
 
@@ -18540,15 +18701,13 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Read firewall log
-         * @param int $limit
-         * @param int $start
+         * @param int $limit 
+         * @param int $start 
          * @return Result
          */
         public function log($limit = null, $start = null) {
-            $params = [
-                'limit' => $limit,
-                'start' => $start
-            ];
+            $params = ['limit' => $limit,
+                'start' => $start];
             return $this->client->get("/nodes/{$this->node}/firewall/log", $params);
         }
 
@@ -18556,7 +18715,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesReplication
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesReplication {
 
@@ -18601,7 +18760,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemReplicationNodeNodesId
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemReplicationNodeNodesId {
 
@@ -18680,7 +18839,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEIdReplicationNodeNodesStatus
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEIdReplicationNodeNodesStatus {
 
@@ -18720,7 +18879,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEIdReplicationNodeNodesLog
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEIdReplicationNodeNodesLog {
 
@@ -18750,15 +18909,13 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Read replication job log.
-         * @param int $limit
-         * @param int $start
+         * @param int $limit 
+         * @param int $start 
          * @return Result
          */
         public function readJobLog($limit = null, $start = null) {
-            $params = [
-                'limit' => $limit,
-                'start' => $start
-            ];
+            $params = ['limit' => $limit,
+                'start' => $start];
             return $this->client->get("/nodes/{$this->node}/replication/{$this->id}/log", $params);
         }
 
@@ -18766,7 +18923,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEIdReplicationNodeNodesScheduleNow
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEIdReplicationNodeNodesScheduleNow {
 
@@ -18806,7 +18963,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesCertificates
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesCertificates {
 
@@ -18879,7 +19036,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECertificatesNodeNodesAcme
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECertificatesNodeNodesAcme {
 
@@ -18926,7 +19083,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAcmeCertificatesNodeNodesCertificate
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAcmeCertificatesNodeNodesCertificate {
 
@@ -18980,7 +19137,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECertificatesNodeNodesInfo
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECertificatesNodeNodesInfo {
 
@@ -19014,7 +19171,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVECertificatesNodeNodesCustom
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVECertificatesNodeNodesCustom {
 
@@ -19055,12 +19212,10 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function uploadCustomCert($certificates, $force = null, $key = null, $restart = null) {
-            $params = [
-                'certificates' => $certificates,
+            $params = ['certificates' => $certificates,
                 'force' => $force,
                 'key' => $key,
-                'restart' => $restart
-            ];
+                'restart' => $restart];
             return $this->client->create("/nodes/{$this->node}/certificates/custom", $params);
         }
 
@@ -19068,7 +19223,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesConfig
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesConfig {
 
@@ -19113,14 +19268,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function setOptions($acme = null, $acmedomainN = null, $delete = null, $description = null, $digest = null, $startall_onboot_delay = null, $wakeonlan = null) {
-            $params = [
-                'acme' => $acme,
+            $params = ['acme' => $acme,
                 'delete' => $delete,
                 'description' => $description,
                 'digest' => $digest,
                 'startall-onboot-delay' => $startall_onboot_delay,
-                'wakeonlan' => $wakeonlan
-            ];
+                'wakeonlan' => $wakeonlan];
             $this->client->addIndexedParameter($params, 'acmedomain', $acmedomainN);
             return $this->client->set("/nodes/{$this->node}/config", $params);
         }
@@ -19129,7 +19282,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesSdn
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesSdn {
 
@@ -19176,7 +19329,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVESdnNodeNodesZones
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVESdnNodeNodesZones {
 
@@ -19219,7 +19372,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemZonesSdnNodeNodesZone
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemZonesSdnNodeNodesZone {
 
@@ -19261,7 +19414,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
 
         /**
-         *
+         * 
          * @return Result
          */
         public function diridx() {
@@ -19272,7 +19425,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEZoneZonesSdnNodeNodesContent
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEZoneZonesSdnNodeNodesContent {
 
@@ -19312,7 +19465,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesVersion
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesVersion {
 
@@ -19346,7 +19499,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesStatus
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesStatus {
 
@@ -19391,7 +19544,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesNetstat
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesNetstat {
 
@@ -19425,7 +19578,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesExecute
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesExecute {
 
@@ -19461,7 +19614,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesWakeonlan
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesWakeonlan {
 
@@ -19495,7 +19648,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesRrd
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesRrd {
 
@@ -19527,11 +19680,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function rrd($ds, $timeframe, $cf = null) {
-            $params = [
-                'ds' => $ds,
+            $params = ['ds' => $ds,
                 'timeframe' => $timeframe,
-                'cf' => $cf
-            ];
+                'cf' => $cf];
             return $this->client->get("/nodes/{$this->node}/rrd", $params);
         }
 
@@ -19539,7 +19690,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesRrddata
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesRrddata {
 
@@ -19570,10 +19721,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function rrddata($timeframe, $cf = null) {
-            $params = [
-                'timeframe' => $timeframe,
-                'cf' => $cf
-            ];
+            $params = ['timeframe' => $timeframe,
+                'cf' => $cf];
             return $this->client->get("/nodes/{$this->node}/rrddata", $params);
         }
 
@@ -19581,7 +19730,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesSyslog
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesSyslog {
 
@@ -19605,21 +19754,19 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Read system log
-         * @param int $limit
+         * @param int $limit 
          * @param string $service Service ID
          * @param string $since Display all log since this date-time string.
-         * @param int $start
+         * @param int $start 
          * @param string $until Display all log until this date-time string.
          * @return Result
          */
         public function syslog($limit = null, $service = null, $since = null, $start = null, $until = null) {
-            $params = [
-                'limit' => $limit,
+            $params = ['limit' => $limit,
                 'service' => $service,
                 'since' => $since,
                 'start' => $start,
-                'until' => $until
-            ];
+                'until' => $until];
             return $this->client->get("/nodes/{$this->node}/syslog", $params);
         }
 
@@ -19627,7 +19774,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesJournal
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesJournal {
 
@@ -19659,13 +19806,11 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function journal($endcursor = null, $lastentries = null, $since = null, $startcursor = null, $until = null) {
-            $params = [
-                'endcursor' => $endcursor,
+            $params = ['endcursor' => $endcursor,
                 'lastentries' => $lastentries,
                 'since' => $since,
                 'startcursor' => $startcursor,
-                'until' => $until
-            ];
+                'until' => $until];
             return $this->client->get("/nodes/{$this->node}/journal", $params);
         }
 
@@ -19673,7 +19818,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesVncshell
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesVncshell {
 
@@ -19698,7 +19843,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Creates a VNC Shell proxy.
          * @param string $cmd Run specific command or default to login.
-         *   Enum: ceph_install,upgrade,login
+         *   Enum: ceph_install,login,upgrade
          * @param string $cmd_opts Add parameters to a command. Encoded as null terminated strings.
          * @param int $height sets the height of the console in pixels.
          * @param bool $websocket use websocket instead of standard vnc.
@@ -19706,13 +19851,11 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function vncshell($cmd = null, $cmd_opts = null, $height = null, $websocket = null, $width = null) {
-            $params = [
-                'cmd' => $cmd,
+            $params = ['cmd' => $cmd,
                 'cmd-opts' => $cmd_opts,
                 'height' => $height,
                 'websocket' => $websocket,
-                'width' => $width
-            ];
+                'width' => $width];
             return $this->client->create("/nodes/{$this->node}/vncshell", $params);
         }
 
@@ -19720,7 +19863,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesTermproxy
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesTermproxy {
 
@@ -19745,15 +19888,13 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Creates a VNC Shell proxy.
          * @param string $cmd Run specific command or default to login.
-         *   Enum: ceph_install,upgrade,login
+         *   Enum: ceph_install,login,upgrade
          * @param string $cmd_opts Add parameters to a command. Encoded as null terminated strings.
          * @return Result
          */
         public function termproxy($cmd = null, $cmd_opts = null) {
-            $params = [
-                'cmd' => $cmd,
-                'cmd-opts' => $cmd_opts
-            ];
+            $params = ['cmd' => $cmd,
+                'cmd-opts' => $cmd_opts];
             return $this->client->create("/nodes/{$this->node}/termproxy", $params);
         }
 
@@ -19761,7 +19902,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesVncwebsocket
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesVncwebsocket {
 
@@ -19790,10 +19931,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function vncwebsocket($port, $vncticket) {
-            $params = [
-                'port' => $port,
-                'vncticket' => $vncticket
-            ];
+            $params = ['port' => $port,
+                'vncticket' => $vncticket];
             return $this->client->get("/nodes/{$this->node}/vncwebsocket", $params);
         }
 
@@ -19801,7 +19940,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesSpiceshell
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesSpiceshell {
 
@@ -19826,17 +19965,15 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Creates a SPICE shell.
          * @param string $cmd Run specific command or default to login.
-         *   Enum: ceph_install,upgrade,login
+         *   Enum: ceph_install,login,upgrade
          * @param string $cmd_opts Add parameters to a command. Encoded as null terminated strings.
          * @param string $proxy SPICE proxy server. This can be used by the client to specify the proxy server. All nodes in a cluster runs 'spiceproxy', so it is up to the client to choose one. By default, we return the node where the VM is currently running. As reasonable setting is to use same node you use to connect to the API (This is window.location.hostname for the JS GUI).
          * @return Result
          */
         public function spiceshell($cmd = null, $cmd_opts = null, $proxy = null) {
-            $params = [
-                'cmd' => $cmd,
+            $params = ['cmd' => $cmd,
                 'cmd-opts' => $cmd_opts,
-                'proxy' => $proxy
-            ];
+                'proxy' => $proxy];
             return $this->client->create("/nodes/{$this->node}/spiceshell", $params);
         }
 
@@ -19844,7 +19981,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesDns
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesDns {
 
@@ -19883,12 +20020,10 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function updateDns($search, $dns1 = null, $dns2 = null, $dns3 = null) {
-            $params = [
-                'search' => $search,
+            $params = ['search' => $search,
                 'dns1' => $dns1,
                 'dns2' => $dns2,
-                'dns3' => $dns3
-            ];
+                'dns3' => $dns3];
             return $this->client->set("/nodes/{$this->node}/dns", $params);
         }
 
@@ -19896,7 +20031,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesTime
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesTime {
 
@@ -19940,7 +20075,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesAplinfo
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesAplinfo {
 
@@ -19977,10 +20112,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function aplDownload($storage, $template) {
-            $params = [
-                'storage' => $storage,
-                'template' => $template
-            ];
+            $params = ['storage' => $storage,
+                'template' => $template];
             return $this->client->create("/nodes/{$this->node}/aplinfo", $params);
         }
 
@@ -19988,7 +20121,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesQueryUrlMetadata
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesQueryUrlMetadata {
 
@@ -20017,10 +20150,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function queryUrlMetadata($url, $verify_certificates = null) {
-            $params = [
-                'url' => $url,
-                'verify-certificates' => $verify_certificates
-            ];
+            $params = ['url' => $url,
+                'verify-certificates' => $verify_certificates];
             return $this->client->get("/nodes/{$this->node}/query-url-metadata", $params);
         }
 
@@ -20028,7 +20159,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesReport
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesReport {
 
@@ -20062,7 +20193,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesStartall
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesStartall {
 
@@ -20091,10 +20222,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function startall($force = null, $vms = null) {
-            $params = [
-                'force' => $force,
-                'vms' => $vms
-            ];
+            $params = ['force' => $force,
+                'vms' => $vms];
             return $this->client->create("/nodes/{$this->node}/startall", $params);
         }
 
@@ -20102,7 +20231,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesStopall
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesStopall {
 
@@ -20138,7 +20267,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesMigrateall
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesMigrateall {
 
@@ -20169,12 +20298,10 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function migrateall($target, $maxworkers = null, $vms = null, $with_local_disks = null) {
-            $params = [
-                'target' => $target,
+            $params = ['target' => $target,
                 'maxworkers' => $maxworkers,
                 'vms' => $vms,
-                'with-local-disks' => $with_local_disks
-            ];
+                'with-local-disks' => $with_local_disks];
             return $this->client->create("/nodes/{$this->node}/migrateall", $params);
         }
 
@@ -20182,7 +20309,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVENodeNodesHosts
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVENodeNodesHosts {
 
@@ -20219,10 +20346,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function writeEtcHosts($data, $digest = null) {
-            $params = [
-                'data' => $data,
-                'digest' => $digest
-            ];
+            $params = ['data' => $data,
+                'digest' => $digest];
             return $this->client->create("/nodes/{$this->node}/hosts", $params);
         }
 
@@ -20230,7 +20355,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEStorage
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEStorage {
 
@@ -20277,7 +20402,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $bwlimit Set bandwidth/io limits various operations.
          * @param string $comstar_hg host group for comstar views
          * @param string $comstar_tg target group for comstar views
-         * @param string $content Allowed content types.  NOTE: the value 'rootdir' is used for Containers, and value 'images' for VMs.
+         * @param string $content Allowed content types.  NOTE: the value 'rootdir' is used for Containers, and value 'images' for VMs. 
          * @param string $data_pool Data Pool (for erasure coding only)
          * @param string $datastore Proxmox Backup Server datastore name.
          * @param bool $disable Flag to disable the storage.
@@ -20299,7 +20424,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $mkdir Create the directory if it doesn't exist.
          * @param string $monhost IP addresses of monitors (for external clusters).
          * @param string $mountpoint mount point
-         * @param string $namespace RBD Namespace.
+         * @param string $namespace Namespace.
          * @param bool $nocow Set the NOCOW flag on files. Disables data checksumming and causes data errors to be unrecoverable from while allowing direct I/O. Only use this if data does not need to be any more safe than on a single ext4 formatted disk with no underlying raid system.
          * @param string $nodes List of cluster node names.
          * @param bool $nowritecache disable write caching on the target
@@ -20333,8 +20458,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function create($storage, $type, $authsupported = null, $base = null, $blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $data_pool = null, $datastore = null, $disable = null, $domain = null, $encryption_key = null, $export = null, $fingerprint = null, $format = null, $fs_name = null, $fuse = null, $is_mountpoint = null, $iscsiprovider = null, $keyring = null, $krbd = null, $lio_tpg = null, $master_pubkey = null, $max_protected_backups = null, $maxfiles = null, $mkdir = null, $monhost = null, $mountpoint = null, $namespace = null, $nocow = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $path = null, $pool = null, $port = null, $portal = null, $preallocation = null, $prune_backups = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $share = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $target = null, $thinpool = null, $transport = null, $username = null, $vgname = null, $volume = null) {
-            $params = [
-                'storage' => $storage,
+            $params = ['storage' => $storage,
                 'type' => $type,
                 'authsupported' => $authsupported,
                 'base' => $base,
@@ -20391,8 +20515,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'transport' => $transport,
                 'username' => $username,
                 'vgname' => $vgname,
-                'volume' => $volume
-            ];
+                'volume' => $volume];
             return $this->client->create("/storage", $params);
         }
 
@@ -20400,7 +20523,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemStorageStorage
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemStorageStorage {
 
@@ -20444,7 +20567,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $bwlimit Set bandwidth/io limits various operations.
          * @param string $comstar_hg host group for comstar views
          * @param string $comstar_tg target group for comstar views
-         * @param string $content Allowed content types.  NOTE: the value 'rootdir' is used for Containers, and value 'images' for VMs.
+         * @param string $content Allowed content types.  NOTE: the value 'rootdir' is used for Containers, and value 'images' for VMs. 
          * @param string $data_pool Data Pool (for erasure coding only)
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
@@ -20465,7 +20588,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $mkdir Create the directory if it doesn't exist.
          * @param string $monhost IP addresses of monitors (for external clusters).
          * @param string $mountpoint mount point
-         * @param string $namespace RBD Namespace.
+         * @param string $namespace Namespace.
          * @param bool $nocow Set the NOCOW flag on files. Disables data checksumming and causes data errors to be unrecoverable from while allowing direct I/O. Only use this if data does not need to be any more safe than on a single ext4 formatted disk with no underlying raid system.
          * @param string $nodes List of cluster node names.
          * @param bool $nowritecache disable write caching on the target
@@ -20492,8 +20615,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function update($blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $data_pool = null, $delete = null, $digest = null, $disable = null, $domain = null, $encryption_key = null, $fingerprint = null, $format = null, $fs_name = null, $fuse = null, $is_mountpoint = null, $keyring = null, $krbd = null, $lio_tpg = null, $master_pubkey = null, $max_protected_backups = null, $maxfiles = null, $mkdir = null, $monhost = null, $mountpoint = null, $namespace = null, $nocow = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $pool = null, $port = null, $preallocation = null, $prune_backups = null, $saferemove = null, $saferemove_throughput = null, $server = null, $server2 = null, $shared = null, $smbversion = null, $sparse = null, $subdir = null, $tagged_only = null, $transport = null, $username = null) {
-            $params = [
-                'blocksize' => $blocksize,
+            $params = ['blocksize' => $blocksize,
                 'bwlimit' => $bwlimit,
                 'comstar_hg' => $comstar_hg,
                 'comstar_tg' => $comstar_tg,
@@ -20538,8 +20660,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'subdir' => $subdir,
                 'tagged_only' => $tagged_only,
                 'transport' => $transport,
-                'username' => $username
-            ];
+                'username' => $username];
             return $this->client->set("/storage/{$this->storage}", $params);
         }
 
@@ -20547,7 +20668,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAccess
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAccess {
 
@@ -20705,7 +20826,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAccessUsers
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAccessUsers {
 
@@ -20737,30 +20858,27 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function index($enabled = null, $full = null) {
-            $params = [
-                'enabled' => $enabled,
-                'full' => $full
-            ];
+            $params = ['enabled' => $enabled,
+                'full' => $full];
             return $this->client->get("/access/users", $params);
         }
 
         /**
          * Create new user.
          * @param string $userid User ID
-         * @param string $comment
-         * @param string $email
+         * @param string $comment 
+         * @param string $email 
          * @param bool $enable Enable the account (default). You can set this to '0' to disable the account
          * @param int $expire Account expiration date (seconds since epoch). '0' means no expiration date.
-         * @param string $firstname
-         * @param string $groups
+         * @param string $firstname 
+         * @param string $groups 
          * @param string $keys Keys for two factor auth (yubico).
-         * @param string $lastname
+         * @param string $lastname 
          * @param string $password Initial password.
          * @return Result
          */
         public function createUser($userid, $comment = null, $email = null, $enable = null, $expire = null, $firstname = null, $groups = null, $keys = null, $lastname = null, $password = null) {
-            $params = [
-                'userid' => $userid,
+            $params = ['userid' => $userid,
                 'comment' => $comment,
                 'email' => $email,
                 'enable' => $enable,
@@ -20769,8 +20887,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'groups' => $groups,
                 'keys' => $keys,
                 'lastname' => $lastname,
-                'password' => $password
-            ];
+                'password' => $password];
             return $this->client->create("/access/users", $params);
         }
 
@@ -20778,7 +20895,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemUsersAccessUserid
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemUsersAccessUserid {
 
@@ -20844,20 +20961,19 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Update user configuration.
-         * @param bool $append
-         * @param string $comment
-         * @param string $email
+         * @param bool $append 
+         * @param string $comment 
+         * @param string $email 
          * @param bool $enable Enable the account (default). You can set this to '0' to disable the account
          * @param int $expire Account expiration date (seconds since epoch). '0' means no expiration date.
-         * @param string $firstname
-         * @param string $groups
+         * @param string $firstname 
+         * @param string $groups 
          * @param string $keys Keys for two factor auth (yubico).
-         * @param string $lastname
+         * @param string $lastname 
          * @return Result
          */
         public function updateUser($append = null, $comment = null, $email = null, $enable = null, $expire = null, $firstname = null, $groups = null, $keys = null, $lastname = null) {
-            $params = [
-                'append' => $append,
+            $params = ['append' => $append,
                 'comment' => $comment,
                 'email' => $email,
                 'enable' => $enable,
@@ -20865,8 +20981,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'firstname' => $firstname,
                 'groups' => $groups,
                 'keys' => $keys,
-                'lastname' => $lastname
-            ];
+                'lastname' => $lastname];
             return $this->client->set("/access/users/{$this->userid}", $params);
         }
 
@@ -20874,7 +20989,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEUseridUsersAccessTfa
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEUseridUsersAccessTfa {
 
@@ -20910,7 +21025,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEUseridUsersAccessToken
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEUseridUsersAccessToken {
 
@@ -20953,7 +21068,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemTokenUseridUsersAccessTokenid
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemTokenUseridUsersAccessTokenid {
 
@@ -20999,33 +21114,29 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Generate a new API token for a specific user. NOTE: returns API token value, which needs to be stored as it cannot be retrieved afterwards!
-         * @param string $comment
+         * @param string $comment 
          * @param int $expire API token expiration date (seconds since epoch). '0' means no expiration date.
          * @param bool $privsep Restrict API token privileges with separate ACLs (default), or give full privileges of corresponding user.
          * @return Result
          */
         public function generateToken($comment = null, $expire = null, $privsep = null) {
-            $params = [
-                'comment' => $comment,
+            $params = ['comment' => $comment,
                 'expire' => $expire,
-                'privsep' => $privsep
-            ];
+                'privsep' => $privsep];
             return $this->client->create("/access/users/{$this->userid}/token/{$this->tokenid}", $params);
         }
 
         /**
          * Update API token for a specific user.
-         * @param string $comment
+         * @param string $comment 
          * @param int $expire API token expiration date (seconds since epoch). '0' means no expiration date.
          * @param bool $privsep Restrict API token privileges with separate ACLs (default), or give full privileges of corresponding user.
          * @return Result
          */
         public function updateTokenInfo($comment = null, $expire = null, $privsep = null) {
-            $params = [
-                'comment' => $comment,
+            $params = ['comment' => $comment,
                 'expire' => $expire,
-                'privsep' => $privsep
-            ];
+                'privsep' => $privsep];
             return $this->client->set("/access/users/{$this->userid}/token/{$this->tokenid}", $params);
         }
 
@@ -21033,7 +21144,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAccessGroups
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAccessGroups {
 
@@ -21068,15 +21179,13 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Create new group.
-         * @param string $groupid
-         * @param string $comment
+         * @param string $groupid 
+         * @param string $comment 
          * @return Result
          */
         public function createGroup($groupid, $comment = null) {
-            $params = [
-                'groupid' => $groupid,
-                'comment' => $comment
-            ];
+            $params = ['groupid' => $groupid,
+                'comment' => $comment];
             return $this->client->create("/access/groups", $params);
         }
 
@@ -21084,7 +21193,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemGroupsAccessGroupid
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemGroupsAccessGroupid {
 
@@ -21124,7 +21233,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Update group data.
-         * @param string $comment
+         * @param string $comment 
          * @return Result
          */
         public function updateGroup($comment = null) {
@@ -21136,7 +21245,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAccessRoles
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAccessRoles {
 
@@ -21171,15 +21280,13 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Create new role.
-         * @param string $roleid
-         * @param string $privs
+         * @param string $roleid 
+         * @param string $privs 
          * @return Result
          */
         public function createRole($roleid, $privs = null) {
-            $params = [
-                'roleid' => $roleid,
-                'privs' => $privs
-            ];
+            $params = ['roleid' => $roleid,
+                'privs' => $privs];
             return $this->client->create("/access/roles", $params);
         }
 
@@ -21187,7 +21294,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemRolesAccessRoleid
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemRolesAccessRoleid {
 
@@ -21227,15 +21334,13 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Update an existing role.
-         * @param bool $append
-         * @param string $privs
+         * @param bool $append 
+         * @param string $privs 
          * @return Result
          */
         public function updateRole($append = null, $privs = null) {
-            $params = [
-                'append' => $append,
-                'privs' => $privs
-            ];
+            $params = ['append' => $append,
+                'privs' => $privs];
             return $this->client->set("/access/roles/{$this->roleid}", $params);
         }
 
@@ -21243,7 +21348,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAccessAcl
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAccessAcl {
 
@@ -21279,15 +21384,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function updateAcl($path, $roles, $delete = null, $groups = null, $propagate = null, $tokens = null, $users = null) {
-            $params = [
-                'path' => $path,
+            $params = ['path' => $path,
                 'roles' => $roles,
                 'delete' => $delete,
                 'groups' => $groups,
                 'propagate' => $propagate,
                 'tokens' => $tokens,
-                'users' => $users
-            ];
+                'users' => $users];
             return $this->client->set("/access/acl", $params);
         }
 
@@ -21295,7 +21398,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAccessDomains
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAccessDomains {
 
@@ -21373,8 +21476,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function create($realm, $type, $acr_values = null, $autocreate = null, $base_dn = null, $bind_dn = null, $capath = null, $case_sensitive = null, $cert = null, $certkey = null, $client_id = null, $client_key = null, $comment = null, $default = null, $domain = null, $filter = null, $group_classes = null, $group_dn = null, $group_filter = null, $group_name_attr = null, $issuer_url = null, $mode = null, $password = null, $port = null, $prompt = null, $scopes = null, $secure = null, $server1 = null, $server2 = null, $sslversion = null, $sync_defaults_options = null, $sync_attributes = null, $tfa = null, $user_attr = null, $user_classes = null, $username_claim = null, $verify = null) {
-            $params = [
-                'realm' => $realm,
+            $params = ['realm' => $realm,
                 'type' => $type,
                 'acr-values' => $acr_values,
                 'autocreate' => $autocreate,
@@ -21410,8 +21512,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'user_attr' => $user_attr,
                 'user_classes' => $user_classes,
                 'username-claim' => $username_claim,
-                'verify' => $verify
-            ];
+                'verify' => $verify];
             return $this->client->create("/access/domains", $params);
         }
 
@@ -21419,7 +21520,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemDomainsAccessRealm
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemDomainsAccessRealm {
 
@@ -21513,8 +21614,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function update($acr_values = null, $autocreate = null, $base_dn = null, $bind_dn = null, $capath = null, $case_sensitive = null, $cert = null, $certkey = null, $client_id = null, $client_key = null, $comment = null, $default = null, $delete = null, $digest = null, $domain = null, $filter = null, $group_classes = null, $group_dn = null, $group_filter = null, $group_name_attr = null, $issuer_url = null, $mode = null, $password = null, $port = null, $prompt = null, $scopes = null, $secure = null, $server1 = null, $server2 = null, $sslversion = null, $sync_defaults_options = null, $sync_attributes = null, $tfa = null, $user_attr = null, $user_classes = null, $verify = null) {
-            $params = [
-                'acr-values' => $acr_values,
+            $params = ['acr-values' => $acr_values,
                 'autocreate' => $autocreate,
                 'base_dn' => $base_dn,
                 'bind_dn' => $bind_dn,
@@ -21549,8 +21649,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'tfa' => $tfa,
                 'user_attr' => $user_attr,
                 'user_classes' => $user_classes,
-                'verify' => $verify
-            ];
+                'verify' => $verify];
             return $this->client->set("/access/domains/{$this->realm}", $params);
         }
 
@@ -21558,7 +21657,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVERealmDomainsAccessSync
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVERealmDomainsAccessSync {
 
@@ -21592,14 +21691,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function sync($dry_run = null, $enable_new = null, $full = null, $purge = null, $remove_vanished = null, $scope = null) {
-            $params = [
-                'dry-run' => $dry_run,
+            $params = ['dry-run' => $dry_run,
                 'enable-new' => $enable_new,
                 'full' => $full,
                 'purge' => $purge,
                 'remove-vanished' => $remove_vanished,
-                'scope' => $scope
-            ];
+                'scope' => $scope];
             return $this->client->create("/access/domains/{$this->realm}/sync", $params);
         }
 
@@ -21607,7 +21704,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAccessOpenid
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAccessOpenid {
 
@@ -21661,7 +21758,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEOpenidAccessAuthUrl
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEOpenidAccessAuthUrl {
 
@@ -21684,10 +21781,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function authUrl($realm, $redirect_url) {
-            $params = [
-                'realm' => $realm,
-                'redirect-url' => $redirect_url
-            ];
+            $params = ['realm' => $realm,
+                'redirect-url' => $redirect_url];
             return $this->client->create("/access/openid/auth-url", $params);
         }
 
@@ -21695,7 +21790,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEOpenidAccessLogin
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEOpenidAccessLogin {
 
@@ -21719,11 +21814,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function login($code, $redirect_url, $state) {
-            $params = [
-                'code' => $code,
+            $params = ['code' => $code,
                 'redirect-url' => $redirect_url,
-                'state' => $state
-            ];
+                'state' => $state];
             return $this->client->create("/access/openid/login", $params);
         }
 
@@ -21731,7 +21824,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAccessTfa
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAccessTfa {
 
@@ -21778,7 +21871,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemTfaAccessUserid
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemTfaAccessUserid {
 
@@ -21829,14 +21922,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function addTfaEntry($type, $challenge = null, $description = null, $password = null, $totp = null, $value = null) {
-            $params = [
-                'type' => $type,
+            $params = ['type' => $type,
                 'challenge' => $challenge,
                 'description' => $description,
                 'password' => $password,
                 'totp' => $totp,
-                'value' => $value
-            ];
+                'value' => $value];
             return $this->client->create("/access/tfa/{$this->userid}", $params);
         }
 
@@ -21844,7 +21935,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemUseridTfaAccessId
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemUseridTfaAccessId {
 
@@ -21898,11 +21989,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function updateTfaEntry($description = null, $enable = null, $password = null) {
-            $params = [
-                'description' => $description,
+            $params = ['description' => $description,
                 'enable' => $enable,
-                'password' => $password
-            ];
+                'password' => $password];
             return $this->client->set("/access/tfa/{$this->userid}/{$this->id}", $params);
         }
 
@@ -21910,7 +21999,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAccessTicket
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAccessTicket {
 
@@ -21947,16 +22036,14 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function createTicket($password, $username, $new_format = null, $otp = null, $path = null, $privs = null, $realm = null, $tfa_challenge = null) {
-            $params = [
-                'password' => $password,
+            $params = ['password' => $password,
                 'username' => $username,
                 'new-format' => $new_format,
                 'otp' => $otp,
                 'path' => $path,
                 'privs' => $privs,
                 'realm' => $realm,
-                'tfa-challenge' => $tfa_challenge
-            ];
+                'tfa-challenge' => $tfa_challenge];
             return $this->client->create("/access/ticket", $params);
         }
 
@@ -21964,7 +22051,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAccessPassword
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAccessPassword {
 
@@ -21987,10 +22074,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function changePassword($password, $userid) {
-            $params = [
-                'password' => $password,
-                'userid' => $userid
-            ];
+            $params = ['password' => $password,
+                'userid' => $userid];
             return $this->client->set("/access/password", $params);
         }
 
@@ -21998,7 +22083,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEAccessPermissions
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEAccessPermissions {
 
@@ -22021,10 +22106,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
         public function permissions($path = null, $userid = null) {
-            $params = [
-                'path' => $path,
-                'userid' => $userid
-            ];
+            $params = ['path' => $path,
+                'userid' => $userid];
             return $this->client->get("/access/permissions", $params);
         }
 
@@ -22032,7 +22115,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEPools
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEPools {
 
@@ -22067,15 +22150,13 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Create new pool.
-         * @param string $poolid
-         * @param string $comment
+         * @param string $poolid 
+         * @param string $comment 
          * @return Result
          */
         public function createPool($poolid, $comment = null) {
-            $params = [
-                'poolid' => $poolid,
-                'comment' => $comment
-            ];
+            $params = ['poolid' => $poolid,
+                'comment' => $comment];
             return $this->client->create("/pools", $params);
         }
 
@@ -22083,7 +22164,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEItemPoolsPoolid
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEItemPoolsPoolid {
 
@@ -22115,7 +22196,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Get pool configuration.
-         * @param string $type
+         * @param string $type 
          *   Enum: qemu,lxc,storage
          * @return Result
          */
@@ -22126,19 +22207,17 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Update pool data.
-         * @param string $comment
+         * @param string $comment 
          * @param bool $delete Remove vms/storage (instead of adding it).
          * @param string $storage List of storage IDs.
          * @param string $vms List of virtual machines.
          * @return Result
          */
         public function updatePool($comment = null, $delete = null, $storage = null, $vms = null) {
-            $params = [
-                'comment' => $comment,
+            $params = ['comment' => $comment,
                 'delete' => $delete,
                 'storage' => $storage,
-                'vms' => $vms
-            ];
+                'vms' => $vms];
             return $this->client->set("/pools/{$this->poolid}", $params);
         }
 
@@ -22146,7 +22225,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
     /**
      * Class PVEVersion
-     * @package Corsinvest\VE\ProxmoxVE\Api
+     * @package Corsinvest\VE\ProxmoxVE\Api 
      */
     class PVEVersion {
 
