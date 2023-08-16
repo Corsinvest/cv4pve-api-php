@@ -81,7 +81,8 @@ The result is class **Result** and contain methods:
 From version 6.2 of Proxmox VE is possible to use [Api token](https://pve.proxmox.com/pve-docs/pveum-plain.html).
 This feature permit execute Api without using user and password.
 If using **Privilege Separation** when create api token remember specify in permission.
-Format USER@REALM!TOKENID=UUID
+Format `USER@REALM!TOKENID=TOKEN` (Usage example below)
+
 
 ## Installation
 
@@ -207,4 +208,18 @@ The parameter indexed end with '[n]' in documentation (method createVM in Qemu p
   1 => "....",
   3 => "....",
 ]
+```
+
+### Usage with API-token instead username/password
+```php
+<?php
+
+// Require the autoloader
+require_once 'vendor/autoload.php';
+
+//if you want use lite version only get/set/create/delete use PveClientBase
+
+$client = new Corsinvest\ProxmoxVE\Api\PveClient("hostname", "8006");
+$client->setApiToken("root@pam!mytokenname=<TOKEN COMES HERE>");
+echo $client->getVersion();
 ```
