@@ -75,6 +75,7 @@ The result is class **Result** and contain methods:
   * default object disable from client.setResultIsObject(false)
 * ClientBase lite function
 * Form Proxmox VE 6.2 support Api Token for user
+* Login with One-time password for Two-factor authentication.
 
 ## Api token
 

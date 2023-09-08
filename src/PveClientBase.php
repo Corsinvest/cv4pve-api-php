@@ -185,9 +185,10 @@ class PveClientBase
      * @param string $userName user name or &lt;username&gt;@&lt;realm&gt;
      * @param string $password
      * @param string $realm pam/pve or custom
+     * @param string $otp One-time password for Two-factor authentication.
      * @return bool logged
      */
-    function login($userName, $password, $realm = "pam")
+    function login($userName, $password, $realm = "pam", $otp = null)
     {
         $uData = explode("@", $userName);
         if (count($uData) > 1) {
@@ -201,19 +202,26 @@ class PveClientBase
         $params = [
             'password' => $password,
             'username' => $userName,
-            'realm' => $realm
+            'realm' => $realm,
+            'otp' => $otp
         ];
 
         $result = $this->create("/access/ticket", $params);
         $this->setResultIsObject($oldResultIsObject);
 
         if ($result->isSuccessStatusCode()) {
+            if (isset($result->getResponse()->data->NeedTFA)) {
+                throw new PveExceptionAuthentication(
+                    $result,
+                    "Couldn't authenticate user: missing Two Factor Authentication (TFA)"
+                );
+            }
+
             $this->ticketCSRFPreventionToken = $result->getResponse()->data->CSRFPreventionToken;
             $this->ticketPVEAuthCookie = $result->getResponse()->data->ticket;
-            return true;
         }
 
-        return false;
+        return $result->isSuccessStatusCode();
     }
 
     /**

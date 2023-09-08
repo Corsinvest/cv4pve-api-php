@@ -9,7 +9,7 @@ require_once '../vendor/autoload.php';
 require_once '../src/PveClient.php';
 
 $client = new \Corsinvest\ProxmoxVE\Api\PveClient($argv[1]);
-if ($client->login($argv[2], $argv[3])) {
+if ($client->login($argv[2], $argv[3],"pam",$argv[4])) {
     $result = $client->getVersion()->version();
 
     var_dump($result);
@@ -51,4 +51,8 @@ if ($client->login($argv[2], $argv[3])) {
     //reset json result
     $client->setResponseType('json');
     var_dump($client->get('/version')->getResponse());
+}
+else
+{
+    echo "Error login!";
 }
