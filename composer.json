@@ -1,6 +1,7 @@
 {
     "name": "corsinvest/cv4pve-api-php",
     "description": "Corsinvest Proxmox VE Client API PHP",
+    "version": "8.0.1",
     "keywords": [
         "Proxmox",
         "Proxmox VE",
@@ -12,14 +13,21 @@
         "Client API",
         "Corsinvest"
     ],
+    "homepage": "https://github.com/Corsinvest/cv4pve-api-php",
     "type": "library",
     "license": "GPL-3.0-only",
     "authors": [
         {
+            "homepage": "https://www.corisnvest.it/cv4pve",
             "name": "Daniele Corsini",
-            "email": "daniele.corsini@corsinvest.it"
+            "email": "daniele.corsini@corsinvest.it",
+            "role": "Developer"
         }
     ],
+    "support": {
+        "issues": "https://github.com/Corsinvest/cv4pve-api-php/issues",
+        "source": "https://github.com/Corsinvest/cv4pve-api-php"
+    },
     "require": {
         "php": ">=5.5.0",
         "lib-curl": "*"
