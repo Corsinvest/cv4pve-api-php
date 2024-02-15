@@ -281,6 +281,13 @@ class PveClientBase
             return null !== $value;
         });
 
+        //fix bool value
+        $params = array_map(function ($value) {
+            return is_bool($value)
+                ? ($value ? 1 : 0)
+                : $value;
+        }, $params);
+
         if ($this->getDebugLevel() >= 1) {
             echo "Method: " . $method . " , Url: " . $url . "\n";
             if ($method != 'GET') {
@@ -289,6 +296,7 @@ class PveClientBase
             }
         }
 
+        $headers = [];
         $methodType = "";
         $prox_ch = curl_init();
         switch ($method) {
@@ -301,17 +309,19 @@ class PveClientBase
 
             case "PUT":
                 curl_setopt($prox_ch, CURLOPT_CUSTOMREQUEST, "PUT");
-                $action_postfields = http_build_query($params);
-                curl_setopt($prox_ch, CURLOPT_POSTFIELDS, $action_postfields);
-                unset($action_postfields);
+                $data = json_encode($params);
+                array_push($headers, 'Content-Type: application/json');
+                array_push($headers, 'Content-Length: ' . strlen($data));
+                curl_setopt($prox_ch, CURLOPT_POSTFIELDS, $data);
                 $methodType = "SET";
                 break;
 
             case "POST":
                 curl_setopt($prox_ch, CURLOPT_POST, true);
-                $action_postfields = http_build_query($params);
-                curl_setopt($prox_ch, CURLOPT_POSTFIELDS, $action_postfields);
-                unset($action_postfields);
+                $data = json_encode($params);
+                array_push($headers, 'Content-Type: application/json');
+                array_push($headers, 'Content-Length: ' . strlen($data));
+                curl_setopt($prox_ch, CURLOPT_POSTFIELDS, $data);
                 $methodType = "CREATE";
                 break;
 
@@ -331,7 +341,6 @@ class PveClientBase
         curl_setopt($prox_ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($prox_ch, CURLOPT_SSL_VERIFYHOST, false);
 
-        $headers = [];
         if (isset($this->ticketPVEAuthCookie)) {
             array_push($headers, "CSRFPreventionToken: {$this->ticketCSRFPreventionToken}");
         }
@@ -385,7 +394,7 @@ class PveClientBase
                 print_r($obj);
                 echo '</pre>';
             } else {
-                echo $obj . PHP_EOL;
+                echo var_dump($obj) . PHP_EOL;
             }
             echo "StatusCode:          " . $this->lastResult->getStatusCode() . PHP_EOL;
             echo "ReasonPhrase:        " . $this->lastResult->getReasonPhrase() . PHP_EOL;

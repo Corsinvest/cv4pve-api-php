@@ -9,7 +9,10 @@ require_once '../vendor/autoload.php';
 require_once '../src/PveClient.php';
 
 $client = new \Corsinvest\ProxmoxVE\Api\PveClient($argv[1]);
-if ($client->login($argv[2], $argv[3],"pam",$argv[4])) {
+$client->setDebugLevel(999);
+if ($client->login($argv[2], $argv[3], "pam")) {
+
+
     $result = $client->getVersion()->version();
 
     var_dump($result);
@@ -22,14 +25,16 @@ if ($client->login($argv[2], $argv[3],"pam",$argv[4])) {
         echo "\n" . $node->id;
     }
 
-    foreach ($client->getNodes()->get("cv-pve01")->getQemu()->vmlist()->getResponse()->data as $vm) {
-        echo "\n" . $vm->vmid . " - " . $vm->name;
-    }
+    $client->getNodes()->get("cc01")->getQemu()->get(1006)->getAgent()->getExec()->exec(array("powershell", "-command", "echo", "test"));
 
-    //loop snapshots
-    foreach ($client->getNodes()->get("cv-pve02")->getQemu()->get(100)->getSnapshot()->snapshotList()->getResponse()->data as $snap) {
-        echo "\n" . $snap->name;
-    }
+    // foreach ($client->getNodes()->get("cv-pve01")->getQemu()->vmlist()->getResponse()->data as $vm) {
+    //     echo "\n" . $vm->vmid . " - " . $vm->name;
+    // }
+
+    // //loop snapshots
+    // foreach ($client->getNodes()->get("cv-pve02")->getQemu()->get(100)->getSnapshot()->snapshotList()->getResponse()->data as $snap) {
+    //     echo "\n" . $snap->name;
+    // }
 
     //return object
     var_dump($client->getVersion()->version()->getResponse());
@@ -41,18 +46,16 @@ if ($client->login($argv[2], $argv[3],"pam",$argv[4])) {
     var_dump($retArr);
     echo "\n" . $retArr['data']['release'];
 
-    //enable return objet
-    $client->setResultIsObject(true);
+    // //enable return objet
+    // $client->setResultIsObject(true);
 
-    //image rrd
-    $client->setResponseType('png');
-    echo "<img src='{$client->getNodes()->get("pve1")->getRrd()->rrd('cpu', 'day')->getResponse()}' \>";
+    // //image rrd
+    // $client->setResponseType('png');
+    // echo "<img src='{$client->getNodes()->get("pve1")->getRrd()->rrd('cpu', 'day')->getResponse()}' \>";
 
-    //reset json result
-    $client->setResponseType('json');
-    var_dump($client->get('/version')->getResponse());
-}
-else
-{
+    // //reset json result
+    // $client->setResponseType('json');
+    // var_dump($client->get('/version')->getResponse());
+} else {
     echo "Error login!";
 }
