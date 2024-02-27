@@ -17,6 +17,12 @@ class PveClientBase
 {
 
     /**
+     * Set default of the timeout to 32 seconds.
+     * @ignore
+     */
+    private $timeoutInMs = 32000;
+
+    /**
      * @ignore
      */
     private $ticketCSRFPreventionToken;
@@ -71,6 +77,31 @@ class PveClientBase
         $this->hostname = $hostname;
         $this->port = $port;
     }
+
+    /**
+     * In Favor of convenience we can set the Timeout in Seconds as well.
+     * @return void
+     */
+    public function setTimeout($timeout_in_s) {
+        $this->timeoutInMs = $timeout_in_s * 1000;
+    }
+
+    /**
+     * Set the Timeout in MS value
+     * @return void
+     */
+    public function setTimeoutInMs($timeout) {
+        $this->timeoutInMs = $timeout;
+    }
+
+    /**
+     * Get the Timeout in MS
+     * @return int
+     */
+    public function getTimeoutInMs() {
+        return $this->timeoutInMs;
+    }
+
 
     /**
      * Return if result is object
@@ -340,6 +371,11 @@ class PveClientBase
         curl_setopt($prox_ch, CURLOPT_COOKIE, "PVEAuthCookie=" . $this->ticketPVEAuthCookie);
         curl_setopt($prox_ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($prox_ch, CURLOPT_SSL_VERIFYHOST, false);
+
+        /**
+         * Set the Timeout for the Request in curl | CURLOPT_TIMEOUT_MS sets the maximum execution time of the cUrl function.
+         */
+        curl_setopt($prox_ch, CURLOPT_TIMEOUT_MS, $this->getTimeoutInMs());
 
         if (isset($this->ticketPVEAuthCookie)) {
             array_push($headers, "CSRFPreventionToken: {$this->ticketCSRFPreventionToken}");
