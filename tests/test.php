@@ -25,6 +25,9 @@ if ($client->login($argv[2], $argv[3], "pam")) {
         echo "\n" . $node->id;
     }
 
+    /* Timeout test 2 seconds */
+    var_dump($client->setTimeout(2)->getVersion()->version()->getResponse());
+
     $client->getNodes()->get("cc01")->getQemu()->get(1006)->getAgent()->getExec()->exec(array("powershell", "-command", "echo", "test"));
 
     // foreach ($client->getNodes()->get("cv-pve01")->getQemu()->vmlist()->getResponse()->data as $vm) {
