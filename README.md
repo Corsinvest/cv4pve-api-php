@@ -76,6 +76,7 @@ The result is class **Result** and contain methods:
 * ClientBase lite function
 * Form Proxmox VE 6.2 support Api Token for user
 * Login with One-time password for Two-factor authentication.
+* Set Timeout for the Connection.
 
 ## Api token
 
@@ -157,6 +158,9 @@ if($client->login('root','password','pam')){
   //result json result
   $client->setResponseType('json');
   var_dump($client->get('/version')->getResponse());
+  
+  //set connection timeout (by default no timeout)
+  $client->setTimeout(2)->get('/version')->getResponse();
 }
 
 ```
