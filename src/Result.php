@@ -11,8 +11,8 @@ namespace Corsinvest\ProxmoxVE\Api;
  * Result request API
  * @package Corsinvest\ProxmoxVE\Api
  */
-class Result {
-
+class Result
+{
     /**
      * @ignore
      */
@@ -56,14 +56,16 @@ class Result {
     /**
      * @ignore
      */
-    function __construct($response,
-            $statusCode,
-            $reasonPhrase,
-            $resultIsObject,
-            $requestResource,
-            $requestParameters,
-            $methodType,
-            $responseType) {
+    public function __construct(
+        $response,
+        $statusCode,
+        $reasonPhrase,
+        $resultIsObject,
+        $requestResource,
+        $requestParameters,
+        $methodType,
+        $responseType
+    ) {
         $this->statusCode = $statusCode;
         $this->reasonPhrase = $reasonPhrase;
         $this->response = $response;
@@ -78,7 +80,8 @@ class Result {
      * Request method type
      * @return string
      */
-    function getMethodType() {
+    public function getMethodType()
+    {
         return $this->methodType;
     }
 
@@ -86,7 +89,8 @@ class Result {
      * Response type
      * @return string
      */
-    function getResponseType() {
+    public function getResponseType()
+    {
         return $this->responseType;
     }
 
@@ -94,7 +98,8 @@ class Result {
      * Resource request
      * @return string
      */
-    function getRequestResource() {
+    public function getRequestResource()
+    {
         return $this->requestResource;
     }
 
@@ -102,7 +107,8 @@ class Result {
      * Request parameter
      * @return
      */
-    function getRequestParameters() {
+    public function getRequestParameters()
+    {
         return $this->requestParameters;
     }
 
@@ -110,7 +116,8 @@ class Result {
      * Proxmox VE response.
      * @return mixed
      */
-    function getResponse() {
+    public function getResponse()
+    {
         return $this->response;
     }
 
@@ -118,7 +125,8 @@ class Result {
      * Contains the values of status codes defined for HTTP.
      * @return int
      */
-    function getStatusCode() {
+    public function getStatusCode()
+    {
         return $this->statusCode;
     }
 
@@ -126,7 +134,8 @@ class Result {
      * Gets the reason phrase which typically is sent by servers together with the status code.
      * @return string
      */
-    function getReasonPhrase() {
+    public function getReasonPhrase()
+    {
         return $this->reasonPhrase;
     }
 
@@ -134,7 +143,8 @@ class Result {
      * Gets a value that indicates if the HTTP response was successful.
      * @return bool
      */
-    public function isSuccessStatusCode() {
+    public function isSuccessStatusCode()
+    {
         return $this->statusCode == 200;
     }
 
@@ -142,7 +152,8 @@ class Result {
      * Get if response Proxmox VE contain errors
      * @return bool
      */
-    public function responseInError() {
+    public function responseInError()
+    {
         if ($this->resultIsObject) {
             return property_exists($this->response, 'errors') && $this->response->errors != null;
         } else {
@@ -154,26 +165,21 @@ class Result {
      * Get Error
      * @return string
      */
-    public function getError() {
+    public function getError()
+    {
         $ret = '';
         if ($this->responseInError()) {
-            if ($this->resultIsObject) {
-                foreach ($this->response->errors as $key => $value) {
-                    if ($ret != '') {
-                        $ret .= '\n';
-                    }
-                    $ret .= $key . " : " . $value;
+            $errors = $this->resultIsObject
+                ? $this->response->errors
+                : $this->response->errors['errors'];
+
+            foreach ($errors as $key => $value) {
+                if ($ret != '') {
+                    $ret .= '\n';
                 }
-            } else {
-                foreach ($this->response->errors['errors'] as $key => $value) {
-                    if ($ret != '') {
-                        $ret .= '\n';
-                    }
-                    $ret .= $key . " : " . $value;
-                }
+                $ret .= $key . " : " . $value;
             }
         }
         return $ret;
     }
-
 }

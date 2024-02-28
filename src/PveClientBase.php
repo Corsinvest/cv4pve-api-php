@@ -72,14 +72,14 @@ class PveClientBase
      * @param string $hostname Host Proxmox VE
      * @param int $port Port connection default 8006
      */
-    function __construct($hostname, $port = 8006)
+    public function __construct($hostname, $port = 8006)
     {
         $this->hostname = $hostname;
         $this->port = $port;
     }
-
     /**
      * Set timeout in seconds
+     * @param int $timeout Timeout
      * @return $this
      */
     public function setTimeout($timeout) {
@@ -100,7 +100,7 @@ class PveClientBase
      * Return if result is object
      * @return bool
      */
-    function isResultObject()
+    public function isResultObject()
     {
         return $this->resultIsObject;
     }
@@ -108,10 +108,12 @@ class PveClientBase
     /**
      * Set result is object
      * @param bool $resultIsObject
+     * @return $this
      */
-    function setResultIsObject($resultIsObject)
+    public function setResultIsObject($resultIsObject)
     {
         $this->resultIsObject = $resultIsObject;
+        return $this;
     }
 
     /**
@@ -138,10 +140,12 @@ class PveClientBase
      * Sets the response type that is going to be returned when doing requests.
      *
      * @param string One of json, png.
+     * @return $this
      */
     public function setResponseType($type = 'json')
     {
         $this->responseType = $type;
+        return $this;
     }
 
     /**
@@ -158,10 +162,12 @@ class PveClientBase
      * Sets the debug level value 0 - nothing 1 - Url and method 2 - Url and method and result
      *
      * @param string $debugLevel One of json, png.
+     * @return $this
      */
     public function setDebugLevel($debugLevel)
     {
         $this->debugLevel = $debugLevel;
+        return $this;
     }
 
     /**
@@ -188,10 +194,12 @@ class PveClientBase
      * Set Api Token format USER@REALM!TOKENID=UUID
      *
      * @param type string $apiToken
+     * @return $this
      */
     public function setApiToken($apiToken)
     {
         $this->apiToken = $apiToken;
+        return $this;
     }
 
     /**
@@ -212,7 +220,7 @@ class PveClientBase
      * @param string $otp One-time password for Two-factor authentication.
      * @return bool logged
      */
-    function login($userName, $password, $realm = "pam", $otp = null)
+    public function login($userName, $password, $realm = "pam", $otp = null)
     {
         $uData = explode("@", $userName);
         if (count($uData) > 1) {
@@ -483,7 +491,7 @@ class PveClientBase
      * @param string $task Task identifier
      * @return bool Is running
      */
-    function taskIsRunning($task)
+    public function taskIsRunning($task)
     {
         return $this->readTaskStatus($task)->getResponse()->data->status == "running";
     }
@@ -494,7 +502,7 @@ class PveClientBase
      * @param string $task Task identifier
      * @return string Message status
      */
-    function getExitStatusTask($task)
+    public function getExitStatusTask($task)
     {
         return $this->readTaskStatus($task)->getResponse()->data->exitstatus;
     }
@@ -504,7 +512,7 @@ class PveClientBase
      * @param string $task
      * @return type
      */
-    function getNodeFromTask($task)
+    public function getNodeFromTask($task)
     {
         return explode(":", $task)[1];
     }

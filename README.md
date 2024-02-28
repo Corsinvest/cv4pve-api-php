@@ -85,7 +85,6 @@ This feature permit execute Api without using user and password.
 If using **Privilege Separation** when create api token remember specify in permission.
 Format `USER@REALM!TOKENID=TOKEN` (Usage example below)
 
-
 ## Installation
 
 Recommended installation is using [Composer], if you do not have [Composer] what are you waiting?
@@ -158,7 +157,7 @@ if($client->login('root','password','pam')){
   //result json result
   $client->setResponseType('json');
   var_dump($client->get('/version')->getResponse());
-  
+
   //set connection timeout (by default no timeout)
   $client->setTimeout(2)->get('/version')->getResponse();
 }
@@ -216,6 +215,7 @@ The parameter indexed end with '[n]' in documentation (method createVM in Qemu p
 ```
 
 ### Usage with API-token instead username/password
+
 ```php
 <?php
 
