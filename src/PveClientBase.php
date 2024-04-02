@@ -68,6 +68,11 @@ class PveClientBase
     private $lastResult;
 
     /**
+     * @ignore
+     */
+    private $verifyCertificate = false;
+
+    /**
      * Client constructor.
      * @param string $hostname Host Proxmox VE
      * @param int $port Port connection default 8006
@@ -77,12 +82,14 @@ class PveClientBase
         $this->hostname = $hostname;
         $this->port = $port;
     }
+
     /**
      * Set timeout in seconds
      * @param int $timeout Timeout
-     * @return $this
+     * @return PveClientBase
      */
-    public function setTimeout($timeout) {
+    public function setTimeout($timeout)
+    {
         $this->timeout = $timeout;
         return $this;
     }
@@ -91,10 +98,10 @@ class PveClientBase
      * Get timeout in seconds.
      * @return int
      */
-    public function getTimeout() {
+    public function getTimeout()
+    {
         return $this->timeout;
     }
-
 
     /**
      * Return if result is object
@@ -108,7 +115,7 @@ class PveClientBase
     /**
      * Set result is object
      * @param bool $resultIsObject
-     * @return $this
+     * @return PveClientBase
      */
     public function setResultIsObject($resultIsObject)
     {
@@ -119,7 +126,7 @@ class PveClientBase
     /**
      * Gets the hostname configured.
      *
-     * @return string The hostname.
+     * @return string
      */
     public function getHostname()
     {
@@ -129,7 +136,7 @@ class PveClientBase
     /**
      * Gets the port configured.
      *
-     * @return int The port.
+     * @return int
      */
     public function getPort()
     {
@@ -139,8 +146,8 @@ class PveClientBase
     /**
      * Sets the response type that is going to be returned when doing requests.
      *
-     * @param string One of json, png.
-     * @return $this
+     * @param string
+     * @return PveClientBase
      */
     public function setResponseType($type = 'json')
     {
@@ -151,7 +158,7 @@ class PveClientBase
     /**
      * Returns the response type that is being used by the Proxmox API client.
      *
-     * @return string Response type being used.
+     * @return string
      */
     public function getResponseType()
     {
@@ -161,8 +168,8 @@ class PveClientBase
     /**
      * Sets the debug level value 0 - nothing 1 - Url and method 2 - Url and method and result
      *
-     * @param string $debugLevel One of json, png.
-     * @return $this
+     * @param int $debugLevel One of json, png.
+     * @return PveClientBase
      */
     public function setDebugLevel($debugLevel)
     {
@@ -173,11 +180,33 @@ class PveClientBase
     /**
      * Returns debug level.
      *
-     * @return string Response type being used.
+     * @return int debug level used.
      */
     public function getDebugLevel()
     {
         return $this->debugLevel;
+    }
+
+    /**
+     * Sets the Verify Certificate
+     *
+     * @param bool $verifyCertificate
+     * @return PveClientBase
+     */
+    public function setVerifyCertificate($verifyCertificate)
+    {
+        $this->verifyCertificate = $verifyCertificate;
+        return $this;
+    }
+
+    /**
+     * Returns verify Certificate.
+     *
+     * @return bool Verify Certificate.
+     */
+    public function getVerifyCertificate()
+    {
+        return $this->verifyCertificate;
     }
 
     /**
@@ -194,7 +223,7 @@ class PveClientBase
      * Set Api Token format USER@REALM!TOKENID=UUID
      *
      * @param type string $apiToken
-     * @return $this
+     * @return PveClientBase
      */
     public function setApiToken($apiToken)
     {
@@ -315,9 +344,7 @@ class PveClientBase
 
         //fix bool value
         $params = array_map(function ($value) {
-            return is_bool($value)
-                ? ($value ? 1 : 0)
-                : $value;
+            return is_bool($value) ? ($value ? 1 : 0) : $value;
         }, $params);
 
         if ($this->getDebugLevel() >= 1) {
@@ -370,15 +397,11 @@ class PveClientBase
         curl_setopt($prox_ch, CURLOPT_HEADER, true);
         curl_setopt($prox_ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($prox_ch, CURLOPT_COOKIE, "PVEAuthCookie=" . $this->ticketPVEAuthCookie);
-        curl_setopt($prox_ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($prox_ch, CURLOPT_SSL_VERIFYPEER, $this->verifyCertificate);
         curl_setopt($prox_ch, CURLOPT_SSL_VERIFYHOST, false);
 
-        /**
-         * Set the Timeout for the Request in curl | CURLOPT_TIMEOUT sets the maximum execution time of the cUrl function.
-         */
-        $timeout = $this->timeout;
-        if($timeout != 0) {
-            curl_setopt($prox_ch, CURLOPT_TIMEOUT, $timeout);
+        if ($this->timeout != 0) {
+            curl_setopt($prox_ch, CURLOPT_TIMEOUT, $this->timeout);
         }
 
         if (isset($this->ticketPVEAuthCookie)) {
