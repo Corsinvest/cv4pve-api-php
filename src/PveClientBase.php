@@ -70,7 +70,7 @@ class PveClientBase
     /**
      * @ignore
      */
-    private $verifyCertificate = false;
+    private $validateCertificate = false;
 
     /**
      * Client constructor.
@@ -188,25 +188,25 @@ class PveClientBase
     }
 
     /**
-     * Sets the Verify Certificate
+     * Sets the Validate Certificate.
      *
-     * @param bool $verifyCertificate
+     * @param bool $validateCertificate
      * @return PveClientBase
      */
-    public function setVerifyCertificate($verifyCertificate)
+    public function setValidateCertificate($validateCertificate)
     {
-        $this->verifyCertificate = $verifyCertificate;
+        $this->validateCertificate = $validateCertificate;
         return $this;
     }
 
     /**
-     * Returns verify Certificate.
+     * Returns Validate Certificate.
      *
      * @return bool Verify Certificate.
      */
-    public function getVerifyCertificate()
+    public function getValidateCertificate()
     {
-        return $this->verifyCertificate;
+        return $this->validateCertificate;
     }
 
     /**
@@ -397,7 +397,7 @@ class PveClientBase
         curl_setopt($prox_ch, CURLOPT_HEADER, true);
         curl_setopt($prox_ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($prox_ch, CURLOPT_COOKIE, "PVEAuthCookie=" . $this->ticketPVEAuthCookie);
-        curl_setopt($prox_ch, CURLOPT_SSL_VERIFYPEER, $this->verifyCertificate);
+        curl_setopt($prox_ch, CURLOPT_SSL_VERIFYPEER, $this->validateCertificate);
         curl_setopt($prox_ch, CURLOPT_SSL_VERIFYHOST, false);
 
         if ($this->timeout != 0) {
