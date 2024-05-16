@@ -357,6 +357,7 @@ class PveClientBase
 
         $headers = [];
         $methodType = "";
+        $data = ""; // default POSTFIELDS value as defined in https://curl.se/libcurl/c/CURLOPT_POSTFIELDS.html
         $prox_ch = curl_init();
         switch ($method) {
             case "GET":
@@ -368,18 +369,28 @@ class PveClientBase
 
             case "PUT":
                 curl_setopt($prox_ch, CURLOPT_CUSTOMREQUEST, "PUT");
-                $data = json_encode($params);
-                array_push($headers, 'Content-Type: application/json');
-                array_push($headers, 'Content-Length: ' . strlen($data));
+
+                // data from params only if there are any
+                if (count($params)) {
+                    $data = json_encode($params);
+                    array_push($headers, 'Content-Type: application/json');
+                    array_push($headers, 'Content-Length: ' . strlen($data));
+                }
+
                 curl_setopt($prox_ch, CURLOPT_POSTFIELDS, $data);
                 $methodType = "SET";
                 break;
 
             case "POST":
                 curl_setopt($prox_ch, CURLOPT_POST, true);
-                $data = json_encode($params);
-                array_push($headers, 'Content-Type: application/json');
-                array_push($headers, 'Content-Length: ' . strlen($data));
+
+                // data from params only if there are any
+                if (count($params)) {
+                    $data = json_encode($params);
+                    array_push($headers, 'Content-Type: application/json');
+                    array_push($headers, 'Content-Length: ' . strlen($data));
+                }
+                
                 curl_setopt($prox_ch, CURLOPT_POSTFIELDS, $data);
                 $methodType = "CREATE";
                 break;
