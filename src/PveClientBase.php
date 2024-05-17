@@ -72,6 +72,12 @@ class PveClientBase
      */
     private $validateCertificate = false;
 
+
+    /** @var callable[]
+     * 
+     */
+    public $onActionExecuted = [];
+
     /**
      * Client constructor.
      * @param string $hostname Host Proxmox VE
@@ -332,7 +338,7 @@ class PveClientBase
     /**
      * @ignore
      */
-    private function executeAction($resource, $method, $parameters = [])
+    protected function executeAction($resource, $method, $parameters = [])
     {
         //url resource
         $url = "{$this->getApiUrl()}{$resource}";
@@ -390,7 +396,7 @@ class PveClientBase
                     array_push($headers, 'Content-Type: application/json');
                     array_push($headers, 'Content-Length: ' . strlen($data));
                 }
-                
+
                 curl_setopt($prox_ch, CURLOPT_POSTFIELDS, $data);
                 $methodType = "CREATE";
                 break;
@@ -461,6 +467,21 @@ class PveClientBase
             $methodType,
             $this->responseType
         );
+
+        if (is_array($this->onActionExecuted) && count($this->onActionExecuted)) {
+            foreach ($this->onActionExecuted as $call) {
+                if (is_callable($call)) {
+                    call_user_func_array($call, [
+                        $this->lastResult, [
+                            'url' => $url, 
+                            'method' => $method, 
+                            'parameters' => $parameters, 
+                            'headers' => $headers
+                        ]
+                    ]);
+                }
+            }
+        }
 
         if ($this->getDebugLevel() >= 2) {
             if (is_array($obj)) {
