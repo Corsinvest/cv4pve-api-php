@@ -56,6 +56,11 @@ class Result
     /**
      * @ignore
      */
+    private $responseHeaders;
+
+    /**
+     * @ignore
+     */
     public function __construct(
         $response,
         $statusCode,
@@ -64,7 +69,8 @@ class Result
         $requestResource,
         $requestParameters,
         $methodType,
-        $responseType
+        $responseType,
+        $responseHeaders
     ) {
         $this->statusCode = $statusCode;
         $this->reasonPhrase = $reasonPhrase;
@@ -74,6 +80,7 @@ class Result
         $this->requestParameters = $requestParameters;
         $this->methodType = $methodType;
         $this->responseType = $responseType;
+        $this->responseHeaders = $responseHeaders;
     }
 
     /**
@@ -137,6 +144,15 @@ class Result
     public function getReasonPhrase()
     {
         return $this->reasonPhrase;
+    }
+
+    /**
+     * Gets the raw HTTP headers associated with this response.
+     * @return string
+     */
+    public function getResponseHeaders()
+    {
+        return $this->responseHeaders;
     }
 
     /**
