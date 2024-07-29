@@ -439,6 +439,7 @@ class PveClientBase
         unset($prox_ch);
 
         $body = substr($response, $curlInfo["header_size"]);
+        $responseHeaders = substr($response, 0, $curlInfo["header_size"]);
         unset($response);
         unset($curlInfo);
 
@@ -465,7 +466,8 @@ class PveClientBase
             $resource,
             $parameters,
             $methodType,
-            $this->responseType
+            $this->responseType,
+            $responseHeaders,
         );
 
         if (is_array($this->onActionExecuted) && count($this->onActionExecuted)) {

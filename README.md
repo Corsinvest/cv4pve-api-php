@@ -42,6 +42,7 @@ The result is class **Result** and contain methods:
 * **getReasonPhrase()** (string): The reason phrase which typically is sent by servers together with the status code.
 * **isSuccessStatusCode()** (bool) : Gets a value that indicates if the HTTP response was successful.
 * **getError()** (string) : Get error.
+* **getResponseHeaders()** (string) : Gets the raw HTTP headers associated with this response.
 
 ## Main features
 
