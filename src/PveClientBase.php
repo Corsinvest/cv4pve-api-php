@@ -72,6 +72,12 @@ class PveClientBase
      */
     private $validateCertificate = false;
 
+
+    /** @var callable[]
+     * 
+     */
+    public $onActionExecuted = [];
+
     /**
      * Client constructor.
      * @param string $hostname Host Proxmox VE
@@ -332,7 +338,7 @@ class PveClientBase
     /**
      * @ignore
      */
-    private function executeAction($resource, $method, $parameters = [])
+    protected function executeAction($resource, $method, $parameters = [])
     {
         //url resource
         $url = "{$this->getApiUrl()}{$resource}";
@@ -357,6 +363,7 @@ class PveClientBase
 
         $headers = [];
         $methodType = "";
+        $data = ""; // default POSTFIELDS value as defined in https://curl.se/libcurl/c/CURLOPT_POSTFIELDS.html
         $prox_ch = curl_init();
         switch ($method) {
             case "GET":
@@ -368,18 +375,28 @@ class PveClientBase
 
             case "PUT":
                 curl_setopt($prox_ch, CURLOPT_CUSTOMREQUEST, "PUT");
-                $data = json_encode($params);
-                array_push($headers, 'Content-Type: application/json');
-                array_push($headers, 'Content-Length: ' . strlen($data));
+
+                // data from params only if there are any
+                if (count($params)) {
+                    $data = json_encode($params);
+                    array_push($headers, 'Content-Type: application/json');
+                    array_push($headers, 'Content-Length: ' . strlen($data));
+                }
+
                 curl_setopt($prox_ch, CURLOPT_POSTFIELDS, $data);
                 $methodType = "SET";
                 break;
 
             case "POST":
                 curl_setopt($prox_ch, CURLOPT_POST, true);
-                $data = json_encode($params);
-                array_push($headers, 'Content-Type: application/json');
-                array_push($headers, 'Content-Length: ' . strlen($data));
+
+                // data from params only if there are any
+                if (count($params)) {
+                    $data = json_encode($params);
+                    array_push($headers, 'Content-Type: application/json');
+                    array_push($headers, 'Content-Length: ' . strlen($data));
+                }
+
                 curl_setopt($prox_ch, CURLOPT_POSTFIELDS, $data);
                 $methodType = "CREATE";
                 break;
@@ -422,6 +439,7 @@ class PveClientBase
         unset($prox_ch);
 
         $body = substr($response, $curlInfo["header_size"]);
+        $responseHeaders = substr($response, 0, $curlInfo["header_size"]);
         unset($response);
         unset($curlInfo);
 
@@ -448,8 +466,24 @@ class PveClientBase
             $resource,
             $parameters,
             $methodType,
-            $this->responseType
+            $this->responseType,
+            $responseHeaders,
         );
+
+        if (is_array($this->onActionExecuted) && count($this->onActionExecuted)) {
+            foreach ($this->onActionExecuted as $call) {
+                if (is_callable($call)) {
+                    call_user_func_array($call, [
+                        $this->lastResult, [
+                            'url' => $url, 
+                            'method' => $method, 
+                            'parameters' => $parameters, 
+                            'headers' => $headers
+                        ]
+                    ]);
+                }
+            }
+        }
 
         if ($this->getDebugLevel() >= 2) {
             if (is_array($obj)) {
