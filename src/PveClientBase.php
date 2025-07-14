@@ -404,6 +404,14 @@ class PveClientBase
             case "DELETE":
                 curl_setopt($prox_ch, CURLOPT_CUSTOMREQUEST, "DELETE");
                 $methodType = "DELETE";
+
+                // do not forget to pass query from params if there are any
+                if (count($params) > 0) {
+                    $action_postfields = http_build_query($params);
+                    $url .= '?' . $action_postfields;
+                    unset($action_postfields);
+                }
+
                 break;
 
             default:
