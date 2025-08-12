@@ -1,10 +1,17 @@
-# cv4pve-api-php
+# cv4pve-api-php 🔧
 
-[![License](https://img.shields.io/github/license/Corsinvest/cv4pve-api-php.svg)](LICENSE) [![Packagist Version](https://img.shields.io/packagist/v/corsinvest/cv4pve-api-php.svg)](https://packagist.org/packages/Corsinvest/cv4pve-api-php) ![Packagist Downloads (custom server)](https://img.shields.io/packagist/dt/corsinvest/cv4pve-api-php)
+<div align="center">
 
-Proxmox VE Client API PHP
+![cv4pve-api-php Banner](https://img.shields.io/badge/Corsinvest-Proxmox%20VE%20API%20PHP-blue?style=for-the-badge&logo=php)
 
-[Proxmox VE Api](https://pve.proxmox.com/pve-docs/api-viewer/)
+**🚀 Official PHP Client Library Suite for Proxmox VE API**
+
+[![License](https://img.shields.io/github/license/Corsinvest/cv4pve-api-php.svg)](LICENSE) 
+[![Packagist Version](https://img.shields.io/packagist/v/corsinvest/cv4pve-api-php.svg)](https://packagist.org/packages/Corsinvest/cv4pve-api-php) 
+![Packagist Downloads](https://img.shields.io/packagist/dt/corsinvest/cv4pve-api-php)
+[![PHP Version](https://img.shields.io/packagist/php-v/corsinvest/cv4pve-api-php.svg)](https://packagist.org/packages/Corsinvest/cv4pve-api-php)
+
+⭐ **We appreciate your star, it helps!** ⭐
 
 ```text
    ______                _                      __
@@ -13,219 +20,129 @@ Proxmox VE Client API PHP
 / /___/ /_/ / /  (__  ) / / / / |/ /  __(__  ) /_
 \____/\____/_/  /____/_/_/ /_/|___/\___/____/\__/
 
-Corsinvest for Proxmox VE Api Client  (Made in Italy)
+Corsinvest for Proxmox VE Api Client  (Made in Italy 🇮🇹)
 ```
 
-## Copyright and License
+</div>
 
-Copyright: Corsinvest Srl
-For licensing details please visit [LICENSE](LICENSE)
+## 📖 About
 
-## Commercial Support
+**cv4pve-api-php** is a comprehensive PHP client library that provides seamless integration with Proxmox VE's REST API. Designed for developers who need to programmatically manage virtual machines, containers, storage, and cluster resources in Proxmox VE environments.
 
-This software is part of a suite of tools called cv4pve-tools. If you want commercial support, visit the [site](https://www.corsinvest.it/cv4pve)
+## 📦 Package Suite
 
-## General
+| Package | Description | Status |
+|---------|-------------|---------|
+| **corsinvest/cv4pve-api-php** | Core API Client Library | ✅ Available |
 
-The client is generated from a JSON Api on Proxmox VE.
+## 🚀 Quick Start
 
-This PHP 5.4+ library allows you to interact with your Proxmox server via API.
-The client is generated from a JSON Api on Proxmox VE.
+### Installation
 
-## Result
-
-The result is class **Result** and contain methods:
-
-* **getResponse()** returned from Proxmox VE (data,errors,...) Object/Array
-* **responseInError** (bool) : Contains errors from Proxmox VE.
-* **getStatusCode()** (int) : Status code of the HTTP response.
-* **getReasonPhrase()** (string): The reason phrase which typically is sent by servers together with the status code.
-* **isSuccessStatusCode()** (bool) : Gets a value that indicates if the HTTP response was successful.
-* **getError()** (string) : Get error.
-* **getResponseHeaders()** (string) : Gets the raw HTTP headers associated with this response.
-
-## Main features
-
-* Easy to learn
-* No dependency external library only native curl
-* Implementation respect the [Api structure of Proxmox VE](https://pve.proxmox.com/pve-docs/api-viewer/)
-* Method named
-* Set ResponseType json, png
-* Full method generated from documentation
-* Comment any method and parameters
-* Parameters indexed eg [n] is structured in array index and value
-* Tree structure
-  * $client->getNodes()->get("pve1")->getQemu()->get(100)->getSnapshot()->snapshotList()->getResponse()->data
-* Return data proxmox
-* Return result
-  * Request
-  * Response
-  * Status
-* Wait task finish task
-  * waitForTaskToFinish
-  * taskIsRunning
-  * getExitStatusTask
-* Method direct access
-  * get
-  * set
-  * create
-  * delete
-* Login return bool if access
-* Return Result class more information
-* Return object/array data
-  * default object disable from client.setResultIsObject(false)
-* ClientBase lite function
-* Form Proxmox VE 6.2 support Api Token for user
-* Login with One-time password for Two-factor authentication.
-* Set Timeout for the Connection.
-
-## Api token
-
-From version 6.2 of Proxmox VE is possible to use [Api token](https://pve.proxmox.com/pve-docs/pveum-plain.html).
-This feature permit execute Api without using user and password.
-If using **Privilege Separation** when create api token remember specify in permission.
-Format `USER@REALM!TOKENID=TOKEN` (Usage example below)
-
-## Installation
-
-Recommended installation is using [Composer], if you do not have [Composer] what are you waiting?
-
-In the root of your project execute the following:
-
-```sh
-composer require Corsinvest/cv4pve-api-php
+```bash
+composer require corsinvest/cv4pve-api-php
 ```
 
-Or add this to your `composer.json`
-
-## Usage
+### Basic Usage
 
 ```php
 <?php
-
-// Require the autoloader
 require_once 'vendor/autoload.php';
 
-//if you want use lite version only get/set/create/delete use PveClientBase
+use Corsinvest\ProxmoxVE\Api\PveClient;
 
-$client = new Corsinvest\ProxmoxVE\Api\PveClient("192.168.0.24");
+$client = new PveClient("your-proxmox-host.com");
 
-//login check bool
-if($client->login('root','password','pam')){
-  //get version from get method
-  var_dump($client->get('/version')->getResponse());
-
-  // $client->put
-  // $client->post
-  // $client->delete
-
-  $retPippo=$client->get("/pippo");
-  echo "\n" . $retPippo->getStatusCode();
-  echo "\n" . $retPippo->getReasonPhrase();
-
-  //loop nodes
-  foreach ($client->getNodes()->Index()->getResponse()->data as $node) {
-    echo "\n" . $node->id;
-  }
-
-  //loop vm
-  foreach ($client->getNodes()->get("pve1")->getQemu()->Vmlist()->getResponse()->data as $vm) {
-      echo "\n" . $vm->vmid ." - " .$vm->name;
-  }
-
-  //loop snapshots
-  foreach ($client->getNodes()->get("pve1")->getQemu()->get(100)->getSnapshot()->snapshotList()->getResponse()->data as $snap) {
-    echo "\n" . $snap->name;
-  }
-
-  //return object
-  var_dump($client->getVersion()->version()->getResponse());
-
-  //disable return object
-  $client->setResultIsObject(false);
-  //return array
-  $retArr = $client->getVersion()->version()->getResponse();
-  var_dump($retArr);
-  echo "\n" . $retArr['data']['release'];
-
-  //enable return objet
-  $client->setResultIsObject(true);
-
-  //image rrd
-  $client->setResponseType('png');
-  echo "<img src='{$client->getNodes()->get("pve1")->getRrd()->rrd('cpu','day')->getResponse()}' \>";
-
-  //result json result
-  $client->setResponseType('json');
-  var_dump($client->get('/version')->getResponse());
-
-  //set connection timeout (by default no timeout)
-  $client->setTimeout(2)->get('/version')->getResponse();
-}
-
-```
-
-Sample output version request:
-
-```php
-//object result
-var_dump($client->getVersion()->Version()->getResponse());
-
-object(stdClass)#9 (1) {
-  ["data"]=>
-  object(stdClass)#32 (4) {
-    ["version"]=>
-    string(3) "5.0"
-    ["release"]=>
-    string(2) "31"
-    ["keyboard"]=>
-    string(2) "it"
-    ["repoid"]=>
-    string(8) "27769b1f"
-  }
-}
-
-//disable return object
-$client->setResultIsObject(false);
-
-//array result
-var_dump($client->getVersion()->Version());
-
-array(1) {
-  ["data"]=>
-  array(4) {
-    ["repoid"]=>
-    string(8) "2560e073"
-    ["release"]=>
-    string(2) "32"
-    ["version"]=>
-    string(3) "5.0"
-    ["keyboard"]=>
-    string(2) "it"
-  }
+if ($client->login('root', 'password', 'pam')) {
+    // Get cluster status
+    $status = $client->getNodes()->get("pve1")->getStatus()->current();
+    echo "Node Status: " . $status->getResponse()->data->status . "\n";
+    
+    // List VMs
+    foreach ($client->getNodes()->get("pve1")->getQemu()->vmlist()->getResponse()->data as $vm) {
+        echo "VM {$vm->vmid}: {$vm->name} - Status: {$vm->status}\n";
+    }
 }
 ```
 
-The parameter indexed end with '[n]' in documentation (method createVM in Qemu parameter ide) require array whit key and value
+## 🌟 Key Features
 
-```php
-[
-  1 => "....",
-  3 => "....",
-]
-```
+### Developer Experience
 
-### Usage with API-token instead username/password
+- **💡 Intuitive API Structure** - Mirrors Proxmox VE API hierarchy for easy navigation
+- **📝 Comprehensive Documentation** - Detailed examples and API reference
+- **🔧 Easy Integration** - Simple composer installation and minimal setup required
+- **⚡ Flexible Response Handling** - Choose between object or array response formats
 
-```php
-<?php
+### Core Functionality
 
-// Require the autoloader
-require_once 'vendor/autoload.php';
+- **🌐 Complete API Coverage** - Full implementation of Proxmox VE REST API endpoints
+- **🖥️ VM & Container Management** - Create, configure, start, stop, and monitor VMs and containers
+- **💾 Storage Operations** - Manage storage pools, volumes, and backups
+- **📊 Cluster Management** - Monitor cluster status, resources, and performance
 
-//if you want use lite version only get/set/create/delete use PveClientBase
+### Enterprise Ready
 
-$client = new Corsinvest\ProxmoxVE\Api\PveClient("hostname", "8006");
-$client->setApiToken("root@pam!mytokenname=<TOKEN COMES HERE>");
-echo $client->getVersion();
-```
+- **🔐 Multiple Authentication Methods** - Username/password, API tokens, and two-factor authentication
+- **🛡️ Security First** - Secure communication with SSL/TLS support
+- **📈 Task Management** - Built-in support for monitoring long-running operations
+- **⏱️ Connection Management** - Configurable timeouts and connection pooling
+
+### Technical Excellence
+
+- **🚀 Zero Dependencies** - Lightweight design using only native PHP cURL
+- **🏗️ PHP 5.5+ Compatible** - Wide compatibility with modern and legacy environments
+- **🔄 Error Handling** - Comprehensive error reporting and exception management
+- **📱 Cross-Platform** - Works on Windows, Linux, and macOS
+
+## 📚 Documentation
+
+- 🔗 **[API Reference](docs/API.md)** - Complete method documentation
+- 🛠️ **[Configuration Guide](docs/API.md#configuration-options)** - Setup and customization options
+- 🔐 **[Authentication](docs/API.md#authentication-methods)** - Login methods and API tokens
+- 📋 **[Usage Examples](docs/API.md#common-operations)** - Practical code examples
+- ⚙️ **[Task Management](docs/API.md#task-management)** - Handle long-running operations
+- 🚨 **[Error Handling](docs/API.md#error-handling)** - Exception management
+
+## 🤝 Community & Support
+
+### 🆘 Getting Help
+
+- 📚 **[Documentation](docs/API.md)** - Comprehensive guides and examples
+- 🐛 **[GitHub Issues](https://github.com/Corsinvest/cv4pve-api-php/issues)** - Bug reports and feature requests
+- 💼 **[Commercial Support](https://www.corsinvest.it/cv4pve)** - Professional consulting and support
+
+### 🏢 About Corsinvest
+
+**Corsinvest Srl** is an Italian software company specializing in virtualization solutions. We develop professional tools and libraries for Proxmox VE that help businesses automate and manage their virtual infrastructure efficiently.
+
+### 🤝 Contributing
+
+We welcome contributions from the community! Whether it's bug fixes, new features, or documentation improvements, your help makes this project better for everyone.
+
+## 🎯 Use Cases
+
+Perfect for:
+- **🏢 Infrastructure Automation** - Automate VM/CT deployment and configuration
+- **📊 Monitoring & Analytics** - Build custom dashboards and monitoring solutions
+- **💾 Backup Management** - Implement automated backup and disaster recovery workflows
+- **🌐 Multi-tenant Environments** - Manage multiple Proxmox VE clusters and tenants
+- **🔄 DevOps Integration** - Integrate with CI/CD pipelines and deployment automation
+
+## ⚙️ Requirements
+
+- **PHP:** 5.5.0 or higher
+- **Extension:** php-curl (typically included with PHP)
+- **Composer:** For dependency management
+
+## 📄 License
+
+**Copyright © Corsinvest Srl**
+
+This software is part of the **cv4pve-tools** suite. For licensing details, please visit [LICENSE](LICENSE).
+
+---
+
+<div align="center">
+  <sub>Part of <a href="https://www.corsinvest.it/cv4pve">cv4pve-tools</a> suite | Made with ❤️ in Italy by <a href="https://www.corsinvest.it">Corsinvest</a></sub>
+</div>
