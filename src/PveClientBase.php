@@ -482,10 +482,11 @@ class PveClientBase
             foreach ($this->onActionExecuted as $call) {
                 if (is_callable($call)) {
                     call_user_func_array($call, [
-                        $this->lastResult, [
-                            'url' => $url, 
-                            'method' => $method, 
-                            'parameters' => $parameters, 
+                        $this->lastResult,
+                        [
+                            'url' => $url,
+                            'method' => $method,
+                            'parameters' => $parameters,
                             'headers' => $headers
                         ]
                     ]);
