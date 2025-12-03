@@ -25,17 +25,11 @@ Corsinvest for Proxmox VE Api Client  (Made in Italy 🇮🇹)
 
 </div>
 
-## 📖 About
+## About
 
 **cv4pve-api-php** is a comprehensive PHP client library that provides seamless integration with Proxmox VE's REST API. Designed for developers who need to programmatically manage virtual machines, containers, storage, and cluster resources in Proxmox VE environments.
 
-## 📦 Package Suite
-
-| Package | Description | Status |
-|---------|-------------|---------|
-| **corsinvest/cv4pve-api-php** | Core API Client Library | ✅ Available |
-
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 
@@ -65,77 +59,67 @@ if ($client->login('root', 'password', 'pam')) {
 }
 ```
 
-## 🌟 Key Features
+## Key Features
 
 ### Developer Experience
 
-- **💡 Intuitive API Structure** - Mirrors Proxmox VE API hierarchy for easy navigation
-- **📝 Comprehensive Documentation** - Detailed examples and API reference
-- **🔧 Easy Integration** - Simple composer installation and minimal setup required
-- **⚡ Flexible Response Handling** - Choose between object or array response formats
+- **Intuitive API Structure** - Mirrors Proxmox VE API hierarchy for easy navigation
+- **Comprehensive Documentation** - Detailed examples and API reference
+- **Easy Integration** - Simple composer installation and minimal setup required
+- **Flexible Response Handling** - Choose between object or array response formats
 
 ### Core Functionality
 
-- **🌐 Complete API Coverage** - Full implementation of Proxmox VE REST API endpoints
-- **🖥️ VM & Container Management** - Create, configure, start, stop, and monitor VMs and containers
-- **💾 Storage Operations** - Manage storage pools, volumes, and backups
-- **📊 Cluster Management** - Monitor cluster status, resources, and performance
+- **Complete API Coverage** - Full implementation of Proxmox VE REST API endpoints
+- **VM & Container Management** - Create, configure, start, stop, and monitor VMs and containers
+- **Storage Operations** - Manage storage pools, volumes, and backups
+- **Cluster Management** - Monitor cluster status, resources, and performance
 
 ### Enterprise Ready
 
-- **🔐 Multiple Authentication Methods** - Username/password, API tokens, and two-factor authentication
-- **🛡️ Security First** - Secure communication with SSL/TLS support
-- **📈 Task Management** - Built-in support for monitoring long-running operations
-- **⏱️ Connection Management** - Configurable timeouts and connection pooling
+- **Multiple Authentication Methods** - Username/password, API tokens, and two-factor authentication
+- **Security First** - Secure communication with SSL/TLS support
+- **Task Management** - Built-in support for monitoring long-running operations
+- **Connection Management** - Configurable timeouts and connection pooling
 
 ### Technical Excellence
 
-- **🚀 Zero Dependencies** - Lightweight design using only native PHP cURL
-- **🏗️ PHP 5.5+ Compatible** - Wide compatibility with modern and legacy environments
-- **🔄 Error Handling** - Comprehensive error reporting and exception management
-- **📱 Cross-Platform** - Works on Windows, Linux, and macOS
+- **Zero Dependencies** - Lightweight design using only native PHP cURL
+- **PHP 5.5+ Compatible** - Wide compatibility with modern and legacy environments
+- **Error Handling** - Comprehensive error reporting and exception management
+- **Cross-Platform** - Works on Windows, Linux, and macOS
 
-## 📚 Documentation
+## Documentation
 
-- 🔗 **[API Reference](docs/API.md)** - Complete method documentation
-- 🛠️ **[Configuration Guide](docs/API.md#configuration-options)** - Setup and customization options
-- 🔐 **[Authentication](docs/API.md#authentication-methods)** - Login methods and API tokens
-- 📋 **[Usage Examples](docs/API.md#common-operations)** - Practical code examples
-- ⚙️ **[Task Management](docs/API.md#task-management)** - Handle long-running operations
-- 🚨 **[Error Handling](docs/API.md#error-handling)** - Exception management
+- **[API Reference](docs/API.md)** - Complete method documentation
+- **[Configuration Guide](docs/API.md#configuration-options)** - Setup and customization options
+- **[Authentication](docs/API.md#authentication-methods)** - Login methods and API tokens
+- **[Usage Examples](docs/API.md#common-operations)** - Practical code examples
+- **[Task Management](docs/API.md#task-management)** - Handle long-running operations
+- **[Error Handling](docs/API.md#error-handling)** - Exception management
 
-## 🤝 Community & Support
+## Community & Support
 
-### 🆘 Getting Help
+### Getting Help
 
-- 📚 **[Documentation](docs/API.md)** - Comprehensive guides and examples
-- 🐛 **[GitHub Issues](https://github.com/Corsinvest/cv4pve-api-php/issues)** - Bug reports and feature requests
-- 💼 **[Commercial Support](https://www.corsinvest.it/cv4pve)** - Professional consulting and support
+- **[Documentation](docs/API.md)** - Comprehensive guides and examples
+- **[GitHub Issues](https://github.com/Corsinvest/cv4pve-api-php/issues)** - Bug reports and feature requests
+- **[Commercial Support](https://www.corsinvest.it/cv4pve)** - Professional consulting and support
 
-### 🏢 About Corsinvest
-
-**Corsinvest Srl** is an Italian software company specializing in virtualization solutions. We develop professional tools and libraries for Proxmox VE that help businesses automate and manage their virtual infrastructure efficiently.
-
-### 🤝 Contributing
+### Contributing
 
 We welcome contributions from the community! Whether it's bug fixes, new features, or documentation improvements, your help makes this project better for everyone.
 
-## 🎯 Use Cases
+## Use Cases
 
 Perfect for:
-- **🏢 Infrastructure Automation** - Automate VM/CT deployment and configuration
-- **📊 Monitoring & Analytics** - Build custom dashboards and monitoring solutions
-- **💾 Backup Management** - Implement automated backup and disaster recovery workflows
-- **🌐 Multi-tenant Environments** - Manage multiple Proxmox VE clusters and tenants
-- **🔄 DevOps Integration** - Integrate with CI/CD pipelines and deployment automation
+- **Infrastructure Automation** - Automate VM/CT deployment and configuration
+- **Monitoring & Analytics** - Build custom dashboards and monitoring solutions
+- **Backup Management** - Implement automated backup and disaster recovery workflows
+- **Multi-tenant Environments** - Manage multiple Proxmox VE clusters and tenants
+- **DevOps Integration** - Integrate with CI/CD pipelines and deployment automation
 
-## ⚙️ Requirements
-
-- **PHP:** 5.5.0 or higher
-- **Extension:** php-curl (typically included with PHP)
-- **Composer:** For dependency management
-
-## 📄 License
+## License
 
 **Copyright © Corsinvest Srl**
 
