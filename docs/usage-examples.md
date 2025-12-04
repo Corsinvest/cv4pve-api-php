@@ -1,4 +1,4 @@
-# 📋 Usage Examples
+# Usage Examples
 
 Practical code examples for cv4pve-api-php library.
 

@@ -91,18 +91,18 @@ if ($client->login('root', 'password', 'pam')) {
 
 ## Documentation
 
-- **[API Reference](docs/API.md)** - Complete method documentation
-- **[Configuration Guide](docs/API.md#configuration-options)** - Setup and customization options
-- **[Authentication](docs/API.md#authentication-methods)** - Login methods and API tokens
-- **[Usage Examples](docs/API.md#common-operations)** - Practical code examples
-- **[Task Management](docs/API.md#task-management)** - Handle long-running operations
-- **[Error Handling](docs/API.md#error-handling)** - Exception management
+- **[API Reference](docs/api.md)** - Complete method documentation
+- **[Configuration Guide](docs/api.md#configuration-options)** - Setup and customization options
+- **[Authentication](docs/api.md#authentication-methods)** - Login methods and API tokens
+- **[Usage Examples](docs/api.md#common-operations)** - Practical code examples
+- **[Task Management](docs/api.md#task-management)** - Handle long-running operations
+- **[Error Handling](docs/api.md#error-handling)** - Exception management
 
 ## Community & Support
 
 ### Getting Help
 
-- **[Documentation](docs/API.md)** - Comprehensive guides and examples
+- **[Documentation](docs/api.md)** - Comprehensive guides and examples
 - **[GitHub Issues](https://github.com/Corsinvest/cv4pve-api-php/issues)** - Bug reports and feature requests
 - **[Commercial Support](https://www.corsinvest.it/cv4pve)** - Professional consulting and support
 

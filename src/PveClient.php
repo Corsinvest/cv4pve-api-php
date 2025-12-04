@@ -292,6 +292,18 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * @ignore
          */
+        private $bulkAction;
+        /**
+         * Get ClusterBulkAction
+         * @return PVEClusterBulkAction
+         */
+        public function getBulkAction()
+        {
+            return $this->bulkAction ?: ($this->bulkAction = new PVEClusterBulkAction($this->client));
+        }
+        /**
+         * @ignore
+         */
         private $sdn;
         /**
          * Get ClusterSdn
@@ -833,15 +845,17 @@ namespace Corsinvest\ProxmoxVE\Api {
          * Retrieve metrics of the cluster.
          * @param bool $history Also return historic values. Returns full available metric history unless `start-time` is also set
          * @param bool $local_only Only return metrics for the current node instead of the whole cluster
+         * @param string $node_list Only return metrics from nodes passed as comma-separated list
          * @param int $start_time Only include metrics with a timestamp &amp;gt; start-time.
          * @return Result
          */
 
-        public function export($history = null, $local_only = null, $start_time = null)
+        public function export($history = null, $local_only = null, $node_list = null, $start_time = null)
         {
             $params = [
                 'history' => $history,
                 'local-only' => $local_only,
+                'node-list' => $node_list,
                 'start-time' => $start_time
             ];
             return $this->client->get("/cluster/metrics/export", $params);
@@ -3929,12 +3943,14 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Delete resource configuration.
+         * @param bool $purge Remove this resource from rules that reference it, deleting the rule if this resource is the only resource in the rule
          * @return Result
          */
 
-        public function delete()
+        public function delete($purge = null)
         {
-            return $this->client->delete("/cluster/ha/resources/{$this->sid}");
+            $params = ['purge' => $purge];
+            return $this->client->delete("/cluster/ha/resources/{$this->sid}", $params);
         }
         /**
          * Read resource configuration.
@@ -5924,6 +5940,302 @@ namespace Corsinvest\ProxmoxVE\Api {
     }
 
     /**
+     * Class PVEClusterBulkAction
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEClusterBulkAction
+    {
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client)
+        {
+            $this->client = $client;
+        }
+
+        /**
+         * @ignore
+         */
+        private $guest;
+        /**
+         * Get BulkActionClusterGuest
+         * @return PVEBulkActionClusterGuest
+         */
+        public function getGuest()
+        {
+            return $this->guest ?: ($this->guest = new PVEBulkActionClusterGuest($this->client));
+        }
+
+
+        /**
+         * List resource types.
+         * @return Result
+         */
+
+        public function index()
+        {
+            return $this->client->get("/cluster/bulk-action");
+        }
+    }
+    /**
+     * Class PVEBulkActionClusterGuest
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEBulkActionClusterGuest
+    {
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client)
+        {
+            $this->client = $client;
+        }
+
+        /**
+         * @ignore
+         */
+        private $start;
+        /**
+         * Get GuestBulkActionClusterStart
+         * @return PVEGuestBulkActionClusterStart
+         */
+        public function getStart()
+        {
+            return $this->start ?: ($this->start = new PVEGuestBulkActionClusterStart($this->client));
+        }
+        /**
+         * @ignore
+         */
+        private $shutdown;
+        /**
+         * Get GuestBulkActionClusterShutdown
+         * @return PVEGuestBulkActionClusterShutdown
+         */
+        public function getShutdown()
+        {
+            return $this->shutdown ?: ($this->shutdown = new PVEGuestBulkActionClusterShutdown($this->client));
+        }
+        /**
+         * @ignore
+         */
+        private $suspend;
+        /**
+         * Get GuestBulkActionClusterSuspend
+         * @return PVEGuestBulkActionClusterSuspend
+         */
+        public function getSuspend()
+        {
+            return $this->suspend ?: ($this->suspend = new PVEGuestBulkActionClusterSuspend($this->client));
+        }
+        /**
+         * @ignore
+         */
+        private $migrate;
+        /**
+         * Get GuestBulkActionClusterMigrate
+         * @return PVEGuestBulkActionClusterMigrate
+         */
+        public function getMigrate()
+        {
+            return $this->migrate ?: ($this->migrate = new PVEGuestBulkActionClusterMigrate($this->client));
+        }
+
+
+        /**
+         * Bulk action index.
+         * @return Result
+         */
+
+        public function index()
+        {
+            return $this->client->get("/cluster/bulk-action/guest");
+        }
+    }
+    /**
+     * Class PVEGuestBulkActionClusterStart
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEGuestBulkActionClusterStart
+    {
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client)
+        {
+            $this->client = $client;
+        }
+
+
+
+        /**
+         * Bulk start or resume all guests on the cluster.
+         * @param int $maxworkers How many parallel tasks at maximum should be started.
+         * @param int $timeout Default start timeout in seconds. Only valid for VMs. (default depends on the guest configuration).
+         * @param array $vms Only consider guests from this list of VMIDs.
+         * @return Result
+         */
+
+        public function start($maxworkers = null, $timeout = null, $vms = null)
+        {
+            $params = [
+                'maxworkers' => $maxworkers,
+                'timeout' => $timeout,
+                'vms' => $vms
+            ];
+            return $this->client->create("/cluster/bulk-action/guest/start", $params);
+        }
+    }
+
+    /**
+     * Class PVEGuestBulkActionClusterShutdown
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEGuestBulkActionClusterShutdown
+    {
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client)
+        {
+            $this->client = $client;
+        }
+
+
+
+        /**
+         * Bulk shutdown all guests on the cluster.
+         * @param bool $force_stop Makes sure the Guest stops after the timeout.
+         * @param int $maxworkers How many parallel tasks at maximum should be started.
+         * @param int $timeout Default shutdown timeout in seconds if none is configured for the guest.
+         * @param array $vms Only consider guests from this list of VMIDs.
+         * @return Result
+         */
+
+        public function shutdown($force_stop = null, $maxworkers = null, $timeout = null, $vms = null)
+        {
+            $params = [
+                'force-stop' => $force_stop,
+                'maxworkers' => $maxworkers,
+                'timeout' => $timeout,
+                'vms' => $vms
+            ];
+            return $this->client->create("/cluster/bulk-action/guest/shutdown", $params);
+        }
+    }
+
+    /**
+     * Class PVEGuestBulkActionClusterSuspend
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEGuestBulkActionClusterSuspend
+    {
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client)
+        {
+            $this->client = $client;
+        }
+
+
+
+        /**
+         * Bulk suspend all guests on the cluster.
+         * @param int $maxworkers How many parallel tasks at maximum should be started.
+         * @param string $statestorage The storage for the VM state.
+         * @param bool $to_disk If set, suspends the guests to disk. Will be resumed on next start.
+         * @param array $vms Only consider guests from this list of VMIDs.
+         * @return Result
+         */
+
+        public function suspend($maxworkers = null, $statestorage = null, $to_disk = null, $vms = null)
+        {
+            $params = [
+                'maxworkers' => $maxworkers,
+                'statestorage' => $statestorage,
+                'to-disk' => $to_disk,
+                'vms' => $vms
+            ];
+            return $this->client->create("/cluster/bulk-action/guest/suspend", $params);
+        }
+    }
+
+    /**
+     * Class PVEGuestBulkActionClusterMigrate
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEGuestBulkActionClusterMigrate
+    {
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client)
+        {
+            $this->client = $client;
+        }
+
+
+
+        /**
+         * Bulk migrate all guests on the cluster.
+         * @param string $target Target node.
+         * @param int $maxworkers How many parallel tasks at maximum should be started.
+         * @param bool $online Enable live migration for VMs and restart migration for CTs.
+         * @param array $vms Only consider guests from this list of VMIDs.
+         * @param bool $with_local_disks Enable live storage migration for local disk
+         * @return Result
+         */
+
+        public function migrate($target, $maxworkers = null, $online = null, $vms = null, $with_local_disks = null)
+        {
+            $params = [
+                'target' => $target,
+                'maxworkers' => $maxworkers,
+                'online' => $online,
+                'vms' => $vms,
+                'with-local-disks' => $with_local_disks
+            ];
+            return $this->client->create("/cluster/bulk-action/guest/migrate", $params);
+        }
+    }
+
+    /**
      * Class PVEClusterSdn
      * @package Corsinvest\VE\ProxmoxVE\Api
      */
@@ -6115,14 +6427,14 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Create a new sdn vnet object.
          * @param string $vnet The SDN vnet object identifier.
-         * @param string $zone zone id
-         * @param string $alias alias name of the vnet
-         * @param bool $isolate_ports If true, sets the isolated property for all members of this VNet
+         * @param string $zone Name of the zone this VNet belongs to.
+         * @param string $alias Alias name of the VNet.
+         * @param bool $isolate_ports If true, sets the isolated property for all interfaces on the bridge of this VNet.
          * @param string $lock_token the token for unlocking the global SDN configuration
-         * @param int $tag vlan or vxlan id
-         * @param string $type Type
+         * @param int $tag VLAN Tag (for VLAN or QinQ zones) or VXLAN VNI (for VXLAN or EVPN zones).
+         * @param string $type Type of the VNet.
          *   Enum: vnet
-         * @param bool $vlanaware Allow vm VLANs to pass through this vnet.
+         * @param bool $vlanaware Allow VLANs to pass through this vnet.
          * @return Result
          */
 
@@ -6232,14 +6544,14 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
         /**
          * Update sdn vnet object configuration.
-         * @param string $alias alias name of the vnet
+         * @param string $alias Alias name of the VNet.
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
-         * @param bool $isolate_ports If true, sets the isolated property for all members of this VNet
+         * @param bool $isolate_ports If true, sets the isolated property for all interfaces on the bridge of this VNet.
          * @param string $lock_token the token for unlocking the global SDN configuration
-         * @param int $tag vlan or vxlan id
-         * @param bool $vlanaware Allow vm VLANs to pass through this vnet.
-         * @param string $zone zone id
+         * @param int $tag VLAN Tag (for VLAN or QinQ zones) or VXLAN VNI (for VXLAN or EVPN zones).
+         * @param bool $vlanaware Allow VLANs to pass through this vnet.
+         * @param string $zone Name of the zone this VNet belongs to.
          * @return Result
          */
 
@@ -6873,33 +7185,33 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $type Plugin type.
          *   Enum: evpn,faucet,qinq,simple,vlan,vxlan
          * @param string $zone The SDN zone object identifier.
-         * @param bool $advertise_subnets Advertise evpn subnets if you have silent hosts
-         * @param string $bridge 
+         * @param bool $advertise_subnets Advertise IP prefixes (Type-5 routes) instead of MAC/IP pairs (Type-2 routes).
+         * @param string $bridge The bridge for which VLANs should be managed.
          * @param bool $bridge_disable_mac_learning Disable auto mac learning.
-         * @param string $controller Frr router name
+         * @param string $controller Controller for this zone.
          * @param string $dhcp Type of the DHCP backend for this zone
          *   Enum: dnsmasq
-         * @param bool $disable_arp_nd_suppression Disable ipv4 arp &amp;&amp; ipv6 neighbour discovery suppression
+         * @param bool $disable_arp_nd_suppression Suppress IPv4 ARP &amp;&amp; IPv6 Neighbour Discovery messages.
          * @param string $dns dns api server
          * @param string $dnszone dns domain zone  ex: mydomain.com
          * @param int $dp_id Faucet dataplane id
          * @param string $exitnodes List of cluster node names.
-         * @param bool $exitnodes_local_routing Allow exitnodes to connect to evpn guests
-         * @param string $exitnodes_primary Force traffic to this exitnode first.
+         * @param bool $exitnodes_local_routing Allow exitnodes to connect to EVPN guests.
+         * @param string $exitnodes_primary Force traffic through this exitnode first.
          * @param string $fabric SDN fabric to use as underlay for this VXLAN zone.
          * @param string $ipam use a specific ipam
          * @param string $lock_token the token for unlocking the global SDN configuration
-         * @param string $mac Anycast logical router mac address
-         * @param int $mtu MTU
+         * @param string $mac Anycast logical router mac address.
+         * @param int $mtu MTU of the zone, will be used for the created VNet bridges.
          * @param string $nodes List of cluster node names.
-         * @param string $peers peers address list.
+         * @param string $peers Comma-separated list of peers, that are part of the VXLAN zone. Usually the IPs of the nodes.
          * @param string $reversedns reverse dns api server
-         * @param string $rt_import Route-Target import
-         * @param int $tag Service-VLAN Tag
-         * @param string $vlan_protocol 
+         * @param string $rt_import List of Route Targets that should be imported into the VRF of the zone.
+         * @param int $tag Service-VLAN Tag (outer VLAN)
+         * @param string $vlan_protocol Which VLAN protocol should be used for the creation of the QinQ zone.
          *   Enum: 802.1q,802.1ad
-         * @param int $vrf_vxlan l3vni.
-         * @param int $vxlan_port Vxlan tunnel udp port (default 4789).
+         * @param int $vrf_vxlan VNI for the zone VRF.
+         * @param int $vxlan_port UDP port that should be used for the VXLAN tunnel (default 4789).
          * @return Result
          */
 
@@ -6992,35 +7304,35 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
         /**
          * Update sdn zone object configuration.
-         * @param bool $advertise_subnets Advertise evpn subnets if you have silent hosts
-         * @param string $bridge 
+         * @param bool $advertise_subnets Advertise IP prefixes (Type-5 routes) instead of MAC/IP pairs (Type-2 routes).
+         * @param string $bridge The bridge for which VLANs should be managed.
          * @param bool $bridge_disable_mac_learning Disable auto mac learning.
-         * @param string $controller Frr router name
+         * @param string $controller Controller for this zone.
          * @param string $delete A list of settings you want to delete.
          * @param string $dhcp Type of the DHCP backend for this zone
          *   Enum: dnsmasq
          * @param string $digest Prevent changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
-         * @param bool $disable_arp_nd_suppression Disable ipv4 arp &amp;&amp; ipv6 neighbour discovery suppression
+         * @param bool $disable_arp_nd_suppression Suppress IPv4 ARP &amp;&amp; IPv6 Neighbour Discovery messages.
          * @param string $dns dns api server
          * @param string $dnszone dns domain zone  ex: mydomain.com
          * @param int $dp_id Faucet dataplane id
          * @param string $exitnodes List of cluster node names.
-         * @param bool $exitnodes_local_routing Allow exitnodes to connect to evpn guests
-         * @param string $exitnodes_primary Force traffic to this exitnode first.
+         * @param bool $exitnodes_local_routing Allow exitnodes to connect to EVPN guests.
+         * @param string $exitnodes_primary Force traffic through this exitnode first.
          * @param string $fabric SDN fabric to use as underlay for this VXLAN zone.
          * @param string $ipam use a specific ipam
          * @param string $lock_token the token for unlocking the global SDN configuration
-         * @param string $mac Anycast logical router mac address
-         * @param int $mtu MTU
+         * @param string $mac Anycast logical router mac address.
+         * @param int $mtu MTU of the zone, will be used for the created VNet bridges.
          * @param string $nodes List of cluster node names.
-         * @param string $peers peers address list.
+         * @param string $peers Comma-separated list of peers, that are part of the VXLAN zone. Usually the IPs of the nodes.
          * @param string $reversedns reverse dns api server
-         * @param string $rt_import Route-Target import
-         * @param int $tag Service-VLAN Tag
-         * @param string $vlan_protocol 
+         * @param string $rt_import List of Route Targets that should be imported into the VRF of the zone.
+         * @param int $tag Service-VLAN Tag (outer VLAN)
+         * @param string $vlan_protocol Which VLAN protocol should be used for the creation of the QinQ zone.
          *   Enum: 802.1q,802.1ad
-         * @param int $vrf_vxlan l3vni.
-         * @param int $vxlan_port Vxlan tunnel udp port (default 4789).
+         * @param int $vrf_vxlan VNI for the zone VRF.
+         * @param int $vxlan_port UDP port that should be used for the VXLAN tunnel (default 4789).
          * @return Result
          */
 
@@ -7114,15 +7426,15 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $type Plugin type.
          *   Enum: bgp,evpn,faucet,isis
          * @param int $asn autonomous system number
-         * @param bool $bgp_multipath_as_path_relax 
-         * @param bool $ebgp Enable ebgp. (remote-as external)
-         * @param int $ebgp_multihop 
+         * @param bool $bgp_multipath_as_path_relax Consider different AS paths of equal length for multipath computation.
+         * @param bool $ebgp Enable eBGP (remote-as external).
+         * @param int $ebgp_multihop Set maximum amount of hops for eBGP peers.
          * @param string $fabric SDN fabric to use as underlay for this EVPN controller.
-         * @param string $isis_domain ISIS domain.
-         * @param string $isis_ifaces ISIS interface.
-         * @param string $isis_net ISIS network entity title.
+         * @param string $isis_domain Name of the IS-IS domain.
+         * @param string $isis_ifaces Comma-separated list of interfaces where IS-IS should be active.
+         * @param string $isis_net Network Entity title for this node in the IS-IS network.
          * @param string $lock_token the token for unlocking the global SDN configuration
-         * @param string $loopback source loopback interface.
+         * @param string $loopback Name of the loopback/dummy interface that provides the Router-IP.
          * @param string $node The cluster node name.
          * @param string $peers peers address list.
          * @return Result
@@ -7205,17 +7517,17 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Update sdn controller object configuration.
          * @param int $asn autonomous system number
-         * @param bool $bgp_multipath_as_path_relax 
+         * @param bool $bgp_multipath_as_path_relax Consider different AS paths of equal length for multipath computation.
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
-         * @param bool $ebgp Enable ebgp. (remote-as external)
-         * @param int $ebgp_multihop 
+         * @param bool $ebgp Enable eBGP (remote-as external).
+         * @param int $ebgp_multihop Set maximum amount of hops for eBGP peers.
          * @param string $fabric SDN fabric to use as underlay for this EVPN controller.
-         * @param string $isis_domain ISIS domain.
-         * @param string $isis_ifaces ISIS interface.
-         * @param string $isis_net ISIS network entity title.
+         * @param string $isis_domain Name of the IS-IS domain.
+         * @param string $isis_ifaces Comma-separated list of interfaces where IS-IS should be active.
+         * @param string $isis_net Network Entity title for this node in the IS-IS network.
          * @param string $lock_token the token for unlocking the global SDN configuration
-         * @param string $loopback source loopback interface.
+         * @param string $loopback Name of the loopback/dummy interface that provides the Router-IP.
          * @param string $node The cluster node name.
          * @param string $peers peers address list.
          * @return Result
@@ -8897,6 +9209,18 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * @ignore
          */
+        private $queryOciRepoTags;
+        /**
+         * Get NodeNodesQueryOciRepoTags
+         * @return PVENodeNodesQueryOciRepoTags
+         */
+        public function getQueryOciRepoTags()
+        {
+            return $this->queryOciRepoTags ?: ($this->queryOciRepoTags = new PVENodeNodesQueryOciRepoTags($this->client, $this->node));
+        }
+        /**
+         * @ignore
+         */
         private $queryUrlMetadata;
         /**
          * Get NodeNodesQueryUrlMetadata
@@ -9043,6 +9367,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $acpi Enable/disable ACPI.
          * @param string $affinity List of host cores used to execute guest processes, for example: 0,5,8-11
          * @param string $agent Enable/disable communication with the QEMU Guest Agent and its properties.
+         * @param bool $allow_ksm Allow memory pages of this guest to be merged via KSM (Kernel Samepage Merging).
          * @param string $amd_sev Secure Encrypted Virtualization (SEV) features by AMD CPUs
          * @param string $arch Virtual processor architecture. Defaults to the host.
          *   Enum: x86_64,aarch64
@@ -9071,13 +9396,15 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $efidisk0 Configure a disk for storing EFI vars. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Note that SIZE_IN_GiB is ignored here and that the default EFI vars are copied to the volume instead. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param bool $force Allow to overwrite existing VM.
          * @param bool $freeze Freeze CPU at startup (use 'c' monitor command to start execution).
+         * @param bool $ha_managed Add the VM as a HA resource after it was created.
          * @param string $hookscript Script that will be executed during various steps in the vms lifetime.
          * @param array $hostpciN Map host PCI devices into guest.
          * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory', 'usb' and 'cloudinit'. Use '0' to disable hotplug completely. Using '1' as value is an alias for the default `network,disk,usb`. USB hotplugging is possible for guests with machine version &amp;gt;= 7.1 and ostype l26 or windows &amp;gt; 7.
-         * @param string $hugepages Enable/disable hugepages memory.
+         * @param string $hugepages Enables hugepages memory.  Sets the size of hugepages in MiB. If the value is set to 'any' then 1 GiB hugepages will be used if possible, otherwise the size will fall back to 2 MiB.
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param string $import_working_storage A file-based storage with 'images' content-type enabled, which is used as an intermediary extraction storage during import. Defaults to the source storage.
+         * @param string $intel_tdx Trusted Domain Extension (TDX) features by Intel CPUs
          * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration. This requires cloud-init 19.4 or newer.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4. 
          * @param string $ivshmem Inter-VM shared memory. Useful for direct communication between VMs, or to the host.
          * @param bool $keephugepages Use together with hugepages. If enabled, hugepages will not not be deleted after VM shutdown and can be used for subsequent starts.
@@ -9139,13 +9466,14 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
 
-        public function createVm($vmid, $acpi = null, $affinity = null, $agent = null, $amd_sev = null, $arch = null, $archive = null, $args = null, $audio0 = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $bwlimit = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciupgrade = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $description = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $import_working_storage = null, $ipconfigN = null, $ivshmem = null, $keephugepages = null, $keyboard = null, $kvm = null, $live_restore = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $pool = null, $protection = null, $reboot = null, $rng0 = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $smbios1 = null, $smp = null, $sockets = null, $spice_enhancements = null, $sshkeys = null, $start = null, $startdate = null, $startup = null, $storage = null, $tablet = null, $tags = null, $tdf = null, $template = null, $tpmstate0 = null, $unique = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $virtiofsN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null)
+        public function createVm($vmid, $acpi = null, $affinity = null, $agent = null, $allow_ksm = null, $amd_sev = null, $arch = null, $archive = null, $args = null, $audio0 = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $bwlimit = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciupgrade = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $description = null, $efidisk0 = null, $force = null, $freeze = null, $ha_managed = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $import_working_storage = null, $intel_tdx = null, $ipconfigN = null, $ivshmem = null, $keephugepages = null, $keyboard = null, $kvm = null, $live_restore = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $pool = null, $protection = null, $reboot = null, $rng0 = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $smbios1 = null, $smp = null, $sockets = null, $spice_enhancements = null, $sshkeys = null, $start = null, $startdate = null, $startup = null, $storage = null, $tablet = null, $tags = null, $tdf = null, $template = null, $tpmstate0 = null, $unique = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $virtiofsN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null)
         {
             $params = [
                 'vmid' => $vmid,
                 'acpi' => $acpi,
                 'affinity' => $affinity,
                 'agent' => $agent,
+                'allow-ksm' => $allow_ksm,
                 'amd-sev' => $amd_sev,
                 'arch' => $arch,
                 'archive' => $archive,
@@ -9171,10 +9499,12 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'efidisk0' => $efidisk0,
                 'force' => $force,
                 'freeze' => $freeze,
+                'ha-managed' => $ha_managed,
                 'hookscript' => $hookscript,
                 'hotplug' => $hotplug,
                 'hugepages' => $hugepages,
                 'import-working-storage' => $import_working_storage,
+                'intel-tdx' => $intel_tdx,
                 'ivshmem' => $ivshmem,
                 'keephugepages' => $keephugepages,
                 'keyboard' => $keyboard,
@@ -12137,6 +12467,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $acpi Enable/disable ACPI.
          * @param string $affinity List of host cores used to execute guest processes, for example: 0,5,8-11
          * @param string $agent Enable/disable communication with the QEMU Guest Agent and its properties.
+         * @param bool $allow_ksm Allow memory pages of this guest to be merged via KSM (Kernel Samepage Merging).
          * @param string $amd_sev Secure Encrypted Virtualization (SEV) features by AMD CPUs
          * @param string $arch Virtual processor architecture. Defaults to the host.
          *   Enum: x86_64,aarch64
@@ -12169,10 +12500,11 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $hookscript Script that will be executed during various steps in the vms lifetime.
          * @param array $hostpciN Map host PCI devices into guest.
          * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory', 'usb' and 'cloudinit'. Use '0' to disable hotplug completely. Using '1' as value is an alias for the default `network,disk,usb`. USB hotplugging is possible for guests with machine version &amp;gt;= 7.1 and ostype l26 or windows &amp;gt; 7.
-         * @param string $hugepages Enable/disable hugepages memory.
+         * @param string $hugepages Enables hugepages memory.  Sets the size of hugepages in MiB. If the value is set to 'any' then 1 GiB hugepages will be used if possible, otherwise the size will fall back to 2 MiB.
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param string $import_working_storage A file-based storage with 'images' content-type enabled, which is used as an intermediary extraction storage during import. Defaults to the source storage.
+         * @param string $intel_tdx Trusted Domain Extension (TDX) features by Intel CPUs
          * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration. This requires cloud-init 19.4 or newer.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4. 
          * @param string $ivshmem Inter-VM shared memory. Useful for direct communication between VMs, or to the host.
          * @param bool $keephugepages Use together with hugepages. If enabled, hugepages will not not be deleted after VM shutdown and can be used for subsequent starts.
@@ -12231,12 +12563,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
 
-        public function updateVmAsync($acpi = null, $affinity = null, $agent = null, $amd_sev = null, $arch = null, $args = null, $audio0 = null, $autostart = null, $background_delay = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciupgrade = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $import_working_storage = null, $ipconfigN = null, $ivshmem = null, $keephugepages = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $rng0 = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $spice_enhancements = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tags = null, $tdf = null, $template = null, $tpmstate0 = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $virtiofsN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null)
+        public function updateVmAsync($acpi = null, $affinity = null, $agent = null, $allow_ksm = null, $amd_sev = null, $arch = null, $args = null, $audio0 = null, $autostart = null, $background_delay = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciupgrade = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $import_working_storage = null, $intel_tdx = null, $ipconfigN = null, $ivshmem = null, $keephugepages = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $rng0 = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $spice_enhancements = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tags = null, $tdf = null, $template = null, $tpmstate0 = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $virtiofsN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null)
         {
             $params = [
                 'acpi' => $acpi,
                 'affinity' => $affinity,
                 'agent' => $agent,
+                'allow-ksm' => $allow_ksm,
                 'amd-sev' => $amd_sev,
                 'arch' => $arch,
                 'args' => $args,
@@ -12267,6 +12600,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'hotplug' => $hotplug,
                 'hugepages' => $hugepages,
                 'import-working-storage' => $import_working_storage,
+                'intel-tdx' => $intel_tdx,
                 'ivshmem' => $ivshmem,
                 'keephugepages' => $keephugepages,
                 'keyboard' => $keyboard,
@@ -12328,6 +12662,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $acpi Enable/disable ACPI.
          * @param string $affinity List of host cores used to execute guest processes, for example: 0,5,8-11
          * @param string $agent Enable/disable communication with the QEMU Guest Agent and its properties.
+         * @param bool $allow_ksm Allow memory pages of this guest to be merged via KSM (Kernel Samepage Merging).
          * @param string $amd_sev Secure Encrypted Virtualization (SEV) features by AMD CPUs
          * @param string $arch Virtual processor architecture. Defaults to the host.
          *   Enum: x86_64,aarch64
@@ -12359,9 +12694,10 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $hookscript Script that will be executed during various steps in the vms lifetime.
          * @param array $hostpciN Map host PCI devices into guest.
          * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory', 'usb' and 'cloudinit'. Use '0' to disable hotplug completely. Using '1' as value is an alias for the default `network,disk,usb`. USB hotplugging is possible for guests with machine version &amp;gt;= 7.1 and ostype l26 or windows &amp;gt; 7.
-         * @param string $hugepages Enable/disable hugepages memory.
+         * @param string $hugepages Enables hugepages memory.  Sets the size of hugepages in MiB. If the value is set to 'any' then 1 GiB hugepages will be used if possible, otherwise the size will fall back to 2 MiB.
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
+         * @param string $intel_tdx Trusted Domain Extension (TDX) features by Intel CPUs
          * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration. This requires cloud-init 19.4 or newer.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4. 
          * @param string $ivshmem Inter-VM shared memory. Useful for direct communication between VMs, or to the host.
          * @param bool $keephugepages Use together with hugepages. If enabled, hugepages will not not be deleted after VM shutdown and can be used for subsequent starts.
@@ -12420,12 +12756,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
 
-        public function updateVm($acpi = null, $affinity = null, $agent = null, $amd_sev = null, $arch = null, $args = null, $audio0 = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciupgrade = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $ipconfigN = null, $ivshmem = null, $keephugepages = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $rng0 = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $spice_enhancements = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tags = null, $tdf = null, $template = null, $tpmstate0 = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $virtiofsN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null)
+        public function updateVm($acpi = null, $affinity = null, $agent = null, $allow_ksm = null, $amd_sev = null, $arch = null, $args = null, $audio0 = null, $autostart = null, $balloon = null, $bios = null, $boot = null, $bootdisk = null, $cdrom = null, $cicustom = null, $cipassword = null, $citype = null, $ciupgrade = null, $ciuser = null, $cores = null, $cpu = null, $cpulimit = null, $cpuunits = null, $delete = null, $description = null, $digest = null, $efidisk0 = null, $force = null, $freeze = null, $hookscript = null, $hostpciN = null, $hotplug = null, $hugepages = null, $ideN = null, $intel_tdx = null, $ipconfigN = null, $ivshmem = null, $keephugepages = null, $keyboard = null, $kvm = null, $localtime = null, $lock = null, $machine = null, $memory = null, $migrate_downtime = null, $migrate_speed = null, $name = null, $nameserver = null, $netN = null, $numa = null, $numaN = null, $onboot = null, $ostype = null, $parallelN = null, $protection = null, $reboot = null, $revert = null, $rng0 = null, $sataN = null, $scsiN = null, $scsihw = null, $searchdomain = null, $serialN = null, $shares = null, $skiplock = null, $smbios1 = null, $smp = null, $sockets = null, $spice_enhancements = null, $sshkeys = null, $startdate = null, $startup = null, $tablet = null, $tags = null, $tdf = null, $template = null, $tpmstate0 = null, $unusedN = null, $usbN = null, $vcpus = null, $vga = null, $virtioN = null, $virtiofsN = null, $vmgenid = null, $vmstatestorage = null, $watchdog = null)
         {
             $params = [
                 'acpi' => $acpi,
                 'affinity' => $affinity,
                 'agent' => $agent,
+                'allow-ksm' => $allow_ksm,
                 'amd-sev' => $amd_sev,
                 'arch' => $arch,
                 'args' => $args,
@@ -12454,6 +12791,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'hookscript' => $hookscript,
                 'hotplug' => $hotplug,
                 'hugepages' => $hugepages,
+                'intel-tdx' => $intel_tdx,
                 'ivshmem' => $ivshmem,
                 'keephugepages' => $keephugepages,
                 'keyboard' => $keyboard,
@@ -12848,7 +13186,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
 
         /**
-         * Opens a weksocket for VNC traffic.
+         * Opens a websocket for VNC traffic.
          * @param int $port Port number returned by previous vncproxy call.
          * @param string $vncticket Ticket from previous call to vncproxy.
          * @return Result
@@ -13134,6 +13472,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $migration_network CIDR of the (sub) network that is used for migration.
          * @param string $migration_type Migration traffic is encrypted using an SSH tunnel by default. On secure, completely private networks this can be disabled to increase performance.
          *   Enum: secure,insecure
+         * @param string $nets_host_mtu Used for migration compat. List of VirtIO network devices and their effective host_mtu setting according to the QEMU object model on the source side of the migration. A value of 0 means that the host_mtu parameter is to be avoided for the corresponding device.
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
          * @param string $stateuri Some command save/restore state from this location.
          * @param string $targetstorage Mapping from source to target storages. Providing only a single storage ID maps all source storages to that storage. Providing the special value '1' will map each source storage to itself.
@@ -13142,7 +13481,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
 
-        public function vmStart($force_cpu = null, $machine = null, $migratedfrom = null, $migration_network = null, $migration_type = null, $skiplock = null, $stateuri = null, $targetstorage = null, $timeout = null, $with_conntrack_state = null)
+        public function vmStart($force_cpu = null, $machine = null, $migratedfrom = null, $migration_network = null, $migration_type = null, $nets_host_mtu = null, $skiplock = null, $stateuri = null, $targetstorage = null, $timeout = null, $with_conntrack_state = null)
         {
             $params = [
                 'force-cpu' => $force_cpu,
@@ -13150,6 +13489,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'migratedfrom' => $migratedfrom,
                 'migration_network' => $migration_network,
                 'migration_type' => $migration_type,
+                'nets-host-mtu' => $nets_host_mtu,
                 'skiplock' => $skiplock,
                 'stateuri' => $stateuri,
                 'targetstorage' => $targetstorage,
@@ -13671,11 +14011,11 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: ide0,ide1,ide2,ide3,scsi0,scsi1,scsi2,scsi3,scsi4,scsi5,scsi6,scsi7,scsi8,scsi9,scsi10,scsi11,scsi12,scsi13,scsi14,scsi15,scsi16,scsi17,scsi18,scsi19,scsi20,scsi21,scsi22,scsi23,scsi24,scsi25,scsi26,scsi27,scsi28,scsi29,scsi30,virtio0,virtio1,virtio2,virtio3,virtio4,virtio5,virtio6,virtio7,virtio8,virtio9,virtio10,virtio11,virtio12,virtio13,virtio14,virtio15,sata0,sata1,sata2,sata3,sata4,sata5,efidisk0,tpmstate0,unused0,unused1,unused2,unused3,unused4,unused5,unused6,unused7,unused8,unused9,unused10,unused11,unused12,unused13,unused14,unused15,unused16,unused17,unused18,unused19,unused20,unused21,unused22,unused23,unused24,unused25,unused26,unused27,unused28,unused29,unused30,unused31,unused32,unused33,unused34,unused35,unused36,unused37,unused38,unused39,unused40,unused41,unused42,unused43,unused44,unused45,unused46,unused47,unused48,unused49,unused50,unused51,unused52,unused53,unused54,unused55,unused56,unused57,unused58,unused59,unused60,unused61,unused62,unused63,unused64,unused65,unused66,unused67,unused68,unused69,unused70,unused71,unused72,unused73,unused74,unused75,unused76,unused77,unused78,unused79,unused80,unused81,unused82,unused83,unused84,unused85,unused86,unused87,unused88,unused89,unused90,unused91,unused92,unused93,unused94,unused95,unused96,unused97,unused98,unused99,unused100,unused101,unused102,unused103,unused104,unused105,unused106,unused107,unused108,unused109,unused110,unused111,unused112,unused113,unused114,unused115,unused116,unused117,unused118,unused119,unused120,unused121,unused122,unused123,unused124,unused125,unused126,unused127,unused128,unused129,unused130,unused131,unused132,unused133,unused134,unused135,unused136,unused137,unused138,unused139,unused140,unused141,unused142,unused143,unused144,unused145,unused146,unused147,unused148,unused149,unused150,unused151,unused152,unused153,unused154,unused155,unused156,unused157,unused158,unused159,unused160,unused161,unused162,unused163,unused164,unused165,unused166,unused167,unused168,unused169,unused170,unused171,unused172,unused173,unused174,unused175,unused176,unused177,unused178,unused179,unused180,unused181,unused182,unused183,unused184,unused185,unused186,unused187,unused188,unused189,unused190,unused191,unused192,unused193,unused194,unused195,unused196,unused197,unused198,unused199,unused200,unused201,unused202,unused203,unused204,unused205,unused206,unused207,unused208,unused209,unused210,unused211,unused212,unused213,unused214,unused215,unused216,unused217,unused218,unused219,unused220,unused221,unused222,unused223,unused224,unused225,unused226,unused227,unused228,unused229,unused230,unused231,unused232,unused233,unused234,unused235,unused236,unused237,unused238,unused239,unused240,unused241,unused242,unused243,unused244,unused245,unused246,unused247,unused248,unused249,unused250,unused251,unused252,unused253,unused254,unused255
          * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param bool $delete Delete the original disk after successful copy. By default the original disk is kept as unused disk.
-         * @param string $digest Prevent changes if current configuration file has different SHA1" 		    ." digest. This can be used to prevent concurrent modifications.
+         * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
          * @param string $format Target Format.
          *   Enum: raw,qcow2,vmdk
          * @param string $storage Target storage.
-         * @param string $target_digest Prevent changes if the current config file of the target VM has a" 		    ." different SHA1 digest. This can be used to detect concurrent modifications.
+         * @param string $target_digest Prevent changes if the current config file of the target VM has a different SHA1 digest. This can be used to detect concurrent modifications.
          * @param string $target_disk The config key the disk will be moved to on the target VM (for example, ide0 or scsi1). Default is the source disk key.
          *   Enum: ide0,ide1,ide2,ide3,scsi0,scsi1,scsi2,scsi3,scsi4,scsi5,scsi6,scsi7,scsi8,scsi9,scsi10,scsi11,scsi12,scsi13,scsi14,scsi15,scsi16,scsi17,scsi18,scsi19,scsi20,scsi21,scsi22,scsi23,scsi24,scsi25,scsi26,scsi27,scsi28,scsi29,scsi30,virtio0,virtio1,virtio2,virtio3,virtio4,virtio5,virtio6,virtio7,virtio8,virtio9,virtio10,virtio11,virtio12,virtio13,virtio14,virtio15,sata0,sata1,sata2,sata3,sata4,sata5,efidisk0,tpmstate0,unused0,unused1,unused2,unused3,unused4,unused5,unused6,unused7,unused8,unused9,unused10,unused11,unused12,unused13,unused14,unused15,unused16,unused17,unused18,unused19,unused20,unused21,unused22,unused23,unused24,unused25,unused26,unused27,unused28,unused29,unused30,unused31,unused32,unused33,unused34,unused35,unused36,unused37,unused38,unused39,unused40,unused41,unused42,unused43,unused44,unused45,unused46,unused47,unused48,unused49,unused50,unused51,unused52,unused53,unused54,unused55,unused56,unused57,unused58,unused59,unused60,unused61,unused62,unused63,unused64,unused65,unused66,unused67,unused68,unused69,unused70,unused71,unused72,unused73,unused74,unused75,unused76,unused77,unused78,unused79,unused80,unused81,unused82,unused83,unused84,unused85,unused86,unused87,unused88,unused89,unused90,unused91,unused92,unused93,unused94,unused95,unused96,unused97,unused98,unused99,unused100,unused101,unused102,unused103,unused104,unused105,unused106,unused107,unused108,unused109,unused110,unused111,unused112,unused113,unused114,unused115,unused116,unused117,unused118,unused119,unused120,unused121,unused122,unused123,unused124,unused125,unused126,unused127,unused128,unused129,unused130,unused131,unused132,unused133,unused134,unused135,unused136,unused137,unused138,unused139,unused140,unused141,unused142,unused143,unused144,unused145,unused146,unused147,unused148,unused149,unused150,unused151,unused152,unused153,unused154,unused155,unused156,unused157,unused158,unused159,unused160,unused161,unused162,unused163,unused164,unused165,unused166,unused167,unused168,unused169,unused170,unused171,unused172,unused173,unused174,unused175,unused176,unused177,unused178,unused179,unused180,unused181,unused182,unused183,unused184,unused185,unused186,unused187,unused188,unused189,unused190,unused191,unused192,unused193,unused194,unused195,unused196,unused197,unused198,unused199,unused200,unused201,unused202,unused203,unused204,unused205,unused206,unused207,unused208,unused209,unused210,unused211,unused212,unused213,unused214,unused215,unused216,unused217,unused218,unused219,unused220,unused221,unused222,unused223,unused224,unused225,unused226,unused227,unused228,unused229,unused230,unused231,unused232,unused233,unused234,unused235,unused236,unused237,unused238,unused239,unused240,unused241,unused242,unused243,unused244,unused245,unused246,unused247,unused248,unused249,unused250,unused251,unused252,unused253,unused254,unused255
          * @param int $target_vmid The (unique) ID of the VM.
@@ -14383,7 +14723,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
 
         /**
-         * Stop the dbus-vmstate helper for the given VM if running.
+         * Control the dbus-vmstate helper for a given running VM.
          * @param string $action Action to perform on the DBus VMState helper.
          *   Enum: start,stop
          * @return Result
@@ -14457,8 +14797,11 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $debug Try to be more verbose. For now this only enables debug log-level on start.
          * @param string $description Description for the Container. Shown in the web-interface CT's summary. This is saved as comment inside the configuration file.
          * @param array $devN Device to pass through to the container
+         * @param string $entrypoint Command to run as init, optionally with arguments; may start with an absolute path, relative path, or a binary in $PATH.
+         * @param string $env The container runtime environment as NUL-separated list. Replaces any lxc.environment.runtime entries in the config.
          * @param string $features Allow containers access to advanced features.
          * @param bool $force Allow to overwrite existing container.
+         * @param bool $ha_managed Add the CT as a HA resource after it was created.
          * @param string $hookscript Script that will be executed during various steps in the containers lifetime.
          * @param string $hostname Set a host name for the container.
          * @param bool $ignore_unpack_errors Ignore errors when extracting the template.
@@ -14487,12 +14830,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $timezone Time zone to use in the container. If option isn't set, then nothing will be done. Can be set to 'host' to match the host time zone, or an arbitrary time zone option from /usr/share/zoneinfo/zone.tab
          * @param int $tty Specify the number of tty available to the container
          * @param bool $unique Assign a unique random ethernet address.
-         * @param bool $unprivileged Makes the container run as unprivileged user. (Should not be modified manually.)
+         * @param bool $unprivileged Makes the container run as unprivileged user. For creation, the default is 1. For restore, the default is the value from the backup. (Should not be modified manually.)
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
          * @return Result
          */
 
-        public function createVm($ostemplate, $vmid, $arch = null, $bwlimit = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $debug = null, $description = null, $devN = null, $features = null, $force = null, $hookscript = null, $hostname = null, $ignore_unpack_errors = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $password = null, $pool = null, $protection = null, $restore = null, $rootfs = null, $searchdomain = null, $ssh_public_keys = null, $start = null, $startup = null, $storage = null, $swap = null, $tags = null, $template = null, $timezone = null, $tty = null, $unique = null, $unprivileged = null, $unusedN = null)
+        public function createVm($ostemplate, $vmid, $arch = null, $bwlimit = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $debug = null, $description = null, $devN = null, $entrypoint = null, $env = null, $features = null, $force = null, $ha_managed = null, $hookscript = null, $hostname = null, $ignore_unpack_errors = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $password = null, $pool = null, $protection = null, $restore = null, $rootfs = null, $searchdomain = null, $ssh_public_keys = null, $start = null, $startup = null, $storage = null, $swap = null, $tags = null, $template = null, $timezone = null, $tty = null, $unique = null, $unprivileged = null, $unusedN = null)
         {
             $params = [
                 'ostemplate' => $ostemplate,
@@ -14506,8 +14849,11 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'cpuunits' => $cpuunits,
                 'debug' => $debug,
                 'description' => $description,
+                'entrypoint' => $entrypoint,
+                'env' => $env,
                 'features' => $features,
                 'force' => $force,
+                'ha-managed' => $ha_managed,
                 'hookscript' => $hookscript,
                 'hostname' => $hostname,
                 'ignore-unpack-errors' => $ignore_unpack_errors,
@@ -14916,6 +15262,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $description Description for the Container. Shown in the web-interface CT's summary. This is saved as comment inside the configuration file.
          * @param array $devN Device to pass through to the container
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
+         * @param string $entrypoint Command to run as init, optionally with arguments; may start with an absolute path, relative path, or a binary in $PATH.
+         * @param string $env The container runtime environment as NUL-separated list. Replaces any lxc.environment.runtime entries in the config.
          * @param string $features Allow containers access to advanced features.
          * @param string $hookscript Script that will be executed during various steps in the containers lifetime.
          * @param string $hostname Set a host name for the container.
@@ -14938,12 +15286,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $template Enable/disable Template.
          * @param string $timezone Time zone to use in the container. If option isn't set, then nothing will be done. Can be set to 'host' to match the host time zone, or an arbitrary time zone option from /usr/share/zoneinfo/zone.tab
          * @param int $tty Specify the number of tty available to the container
-         * @param bool $unprivileged Makes the container run as unprivileged user. (Should not be modified manually.)
+         * @param bool $unprivileged Makes the container run as unprivileged user. For creation, the default is 1. For restore, the default is the value from the backup. (Should not be modified manually.)
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
          * @return Result
          */
 
-        public function updateVm($arch = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $debug = null, $delete = null, $description = null, $devN = null, $digest = null, $features = null, $hookscript = null, $hostname = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $protection = null, $revert = null, $rootfs = null, $searchdomain = null, $startup = null, $swap = null, $tags = null, $template = null, $timezone = null, $tty = null, $unprivileged = null, $unusedN = null)
+        public function updateVm($arch = null, $cmode = null, $console = null, $cores = null, $cpulimit = null, $cpuunits = null, $debug = null, $delete = null, $description = null, $devN = null, $digest = null, $entrypoint = null, $env = null, $features = null, $hookscript = null, $hostname = null, $lock = null, $memory = null, $mpN = null, $nameserver = null, $netN = null, $onboot = null, $ostype = null, $protection = null, $revert = null, $rootfs = null, $searchdomain = null, $startup = null, $swap = null, $tags = null, $template = null, $timezone = null, $tty = null, $unprivileged = null, $unusedN = null)
         {
             $params = [
                 'arch' => $arch,
@@ -14956,6 +15304,8 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'delete' => $delete,
                 'description' => $description,
                 'digest' => $digest,
+                'entrypoint' => $entrypoint,
+                'env' => $env,
                 'features' => $features,
                 'hookscript' => $hookscript,
                 'hostname' => $hostname,
@@ -16829,7 +17179,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
 
         /**
-         * Opens a weksocket for VNC traffic.
+         * Opens a websocket for VNC traffic.
          * @param int $port Port number returned by previous vncproxy call.
          * @param string $vncticket Ticket from previous call to vncproxy.
          * @return Result
@@ -20278,7 +20628,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Read task list for one node (finished tasks).
          * @param bool $errors Only list tasks with a status of ERROR.
-         * @param int $limit Only list this amount of tasks.
+         * @param int $limit Only list this number of tasks.
          * @param int $since Only list tasks since this UNIX epoch.
          * @param string $source List archived, active or all tasks.
          *   Enum: archive,active,all
@@ -20420,7 +20770,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Read task log.
          * @param bool $download Whether the tasklog file should be downloaded. This parameter can't be used in conjunction with other parameters
-         * @param int $limit The amount of lines to read from the tasklog.
+         * @param int $limit The number of lines to read from the tasklog.
          * @param int $start Start at this line when reading the tasklog
          * @return Result
          */
@@ -21238,6 +21588,18 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * @ignore
          */
+        private $cpuFlags;
+        /**
+         * Get QemuCapabilitiesNodeNodesCpuFlags
+         * @return PVEQemuCapabilitiesNodeNodesCpuFlags
+         */
+        public function getCpuFlags()
+        {
+            return $this->cpuFlags ?: ($this->cpuFlags = new PVEQemuCapabilitiesNodeNodesCpuFlags($this->client, $this->node));
+        }
+        /**
+         * @ignore
+         */
         private $machines;
         /**
          * Get QemuCapabilitiesNodeNodesMachines
@@ -21306,6 +21668,44 @@ namespace Corsinvest\ProxmoxVE\Api {
         public function index()
         {
             return $this->client->get("/nodes/{$this->node}/capabilities/qemu/cpu");
+        }
+    }
+
+    /**
+     * Class PVEQemuCapabilitiesNodeNodesCpuFlags
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEQemuCapabilitiesNodeNodesCpuFlags
+    {
+
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $node)
+        {
+            $this->client = $client;
+            $this->node = $node;
+        }
+
+
+
+        /**
+         * List of available VM-specific CPU flags.
+         * @return Result
+         */
+
+        public function index()
+        {
+            return $this->client->get("/nodes/{$this->node}/capabilities/qemu/cpu-flags");
         }
     }
 
@@ -21569,6 +21969,18 @@ namespace Corsinvest\ProxmoxVE\Api {
         public function getDownloadUrl()
         {
             return $this->downloadUrl ?: ($this->downloadUrl = new PVEStorageStorageNodeNodesDownloadUrl($this->client, $this->node, $this->storage));
+        }
+        /**
+         * @ignore
+         */
+        private $ociRegistryPull;
+        /**
+         * Get StorageStorageNodeNodesOciRegistryPull
+         * @return PVEStorageStorageNodeNodesOciRegistryPull
+         */
+        public function getOciRegistryPull()
+        {
+            return $this->ociRegistryPull ?: ($this->ociRegistryPull = new PVEStorageStorageNodeNodesOciRegistryPull($this->client, $this->node, $this->storage));
         }
         /**
          * @ignore
@@ -22259,6 +22671,56 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'verify-certificates' => $verify_certificates
             ];
             return $this->client->create("/nodes/{$this->node}/storage/{$this->storage}/download-url", $params);
+        }
+    }
+
+    /**
+     * Class PVEStorageStorageNodeNodesOciRegistryPull
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEStorageStorageNodeNodesOciRegistryPull
+    {
+
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        private $storage;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $node, $storage)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->storage = $storage;
+        }
+
+
+
+        /**
+         * Pull an OCI image from a registry.
+         * @param string $reference The reference to the OCI image to download.
+         * @param string $filename Custom destination file name of the OCI image. Caution: This will be normalized!
+         * @return Result
+         */
+
+        public function ociRegistryPull($reference, $filename = null)
+        {
+            $params = [
+                'reference' => $reference,
+                'filename' => $filename
+            ];
+            return $this->client->create("/nodes/{$this->node}/storage/{$this->storage}/oci-registry-pull", $params);
         }
     }
 
@@ -24430,6 +24892,18 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * @ignore
          */
+        private $fabrics;
+        /**
+         * Get SdnNodeNodesFabrics
+         * @return PVESdnNodeNodesFabrics
+         */
+        public function getFabrics()
+        {
+            return $this->fabrics ?: ($this->fabrics = new PVESdnNodeNodesFabrics($this->client, $this->node));
+        }
+        /**
+         * @ignore
+         */
         private $zones;
         /**
          * Get SdnNodeNodesZones
@@ -24438,6 +24912,18 @@ namespace Corsinvest\ProxmoxVE\Api {
         public function getZones()
         {
             return $this->zones ?: ($this->zones = new PVESdnNodeNodesZones($this->client, $this->node));
+        }
+        /**
+         * @ignore
+         */
+        private $vnets;
+        /**
+         * Get SdnNodeNodesVnets
+         * @return PVESdnNodeNodesVnets
+         */
+        public function getVnets()
+        {
+            return $this->vnets ?: ($this->vnets = new PVESdnNodeNodesVnets($this->client, $this->node));
         }
 
 
@@ -24451,6 +24937,253 @@ namespace Corsinvest\ProxmoxVE\Api {
             return $this->client->get("/nodes/{$this->node}/sdn");
         }
     }
+    /**
+     * Class PVESdnNodeNodesFabrics
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVESdnNodeNodesFabrics
+    {
+
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $node)
+        {
+            $this->client = $client;
+            $this->node = $node;
+        }
+
+
+        /**
+         * Get ItemFabricsSdnNodeNodesFabric
+         * @param fabric
+         * @return PVEItemFabricsSdnNodeNodesFabric
+         */
+        public function get($fabric)
+        {
+            return new PVEItemFabricsSdnNodeNodesFabric($this->client, $this->node, $fabric);
+        }
+    }
+    /**
+     * Class PVEItemFabricsSdnNodeNodesFabric
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEItemFabricsSdnNodeNodesFabric
+    {
+
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        private $fabric;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $node, $fabric)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->fabric = $fabric;
+        }
+
+        /**
+         * @ignore
+         */
+        private $routes;
+        /**
+         * Get FabricFabricsSdnNodeNodesRoutes
+         * @return PVEFabricFabricsSdnNodeNodesRoutes
+         */
+        public function getRoutes()
+        {
+            return $this->routes ?: ($this->routes = new PVEFabricFabricsSdnNodeNodesRoutes($this->client, $this->node, $this->fabric));
+        }
+        /**
+         * @ignore
+         */
+        private $neighbors;
+        /**
+         * Get FabricFabricsSdnNodeNodesNeighbors
+         * @return PVEFabricFabricsSdnNodeNodesNeighbors
+         */
+        public function getNeighbors()
+        {
+            return $this->neighbors ?: ($this->neighbors = new PVEFabricFabricsSdnNodeNodesNeighbors($this->client, $this->node, $this->fabric));
+        }
+        /**
+         * @ignore
+         */
+        private $interfaces;
+        /**
+         * Get FabricFabricsSdnNodeNodesInterfaces
+         * @return PVEFabricFabricsSdnNodeNodesInterfaces
+         */
+        public function getInterfaces()
+        {
+            return $this->interfaces ?: ($this->interfaces = new PVEFabricFabricsSdnNodeNodesInterfaces($this->client, $this->node, $this->fabric));
+        }
+
+
+        /**
+         * Directory index for SDN fabric status.
+         * @return Result
+         */
+
+        public function diridx()
+        {
+            return $this->client->get("/nodes/{$this->node}/sdn/fabrics/{$this->fabric}");
+        }
+    }
+    /**
+     * Class PVEFabricFabricsSdnNodeNodesRoutes
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEFabricFabricsSdnNodeNodesRoutes
+    {
+
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        private $fabric;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $node, $fabric)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->fabric = $fabric;
+        }
+
+
+
+        /**
+         * Get all routes for a fabric.
+         * @return Result
+         */
+
+        public function routes()
+        {
+            return $this->client->get("/nodes/{$this->node}/sdn/fabrics/{$this->fabric}/routes");
+        }
+    }
+
+    /**
+     * Class PVEFabricFabricsSdnNodeNodesNeighbors
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEFabricFabricsSdnNodeNodesNeighbors
+    {
+
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        private $fabric;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $node, $fabric)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->fabric = $fabric;
+        }
+
+
+
+        /**
+         * Get all neighbors for a fabric.
+         * @return Result
+         */
+
+        public function neighbors()
+        {
+            return $this->client->get("/nodes/{$this->node}/sdn/fabrics/{$this->fabric}/neighbors");
+        }
+    }
+
+    /**
+     * Class PVEFabricFabricsSdnNodeNodesInterfaces
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEFabricFabricsSdnNodeNodesInterfaces
+    {
+
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        private $fabric;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $node, $fabric)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->fabric = $fabric;
+        }
+
+
+
+        /**
+         * Get all interfaces for a fabric.
+         * @return Result
+         */
+
+        public function interfaces()
+        {
+            return $this->client->get("/nodes/{$this->node}/sdn/fabrics/{$this->fabric}/interfaces");
+        }
+    }
+
     /**
      * Class PVESdnNodeNodesZones
      * @package Corsinvest\VE\ProxmoxVE\Api
@@ -24540,10 +25273,34 @@ namespace Corsinvest\ProxmoxVE\Api {
         {
             return $this->content ?: ($this->content = new PVEZoneZonesSdnNodeNodesContent($this->client, $this->node, $this->zone));
         }
+        /**
+         * @ignore
+         */
+        private $bridges;
+        /**
+         * Get ZoneZonesSdnNodeNodesBridges
+         * @return PVEZoneZonesSdnNodeNodesBridges
+         */
+        public function getBridges()
+        {
+            return $this->bridges ?: ($this->bridges = new PVEZoneZonesSdnNodeNodesBridges($this->client, $this->node, $this->zone));
+        }
+        /**
+         * @ignore
+         */
+        private $ipVrf;
+        /**
+         * Get ZoneZonesSdnNodeNodesIpVrf
+         * @return PVEZoneZonesSdnNodeNodesIpVrf
+         */
+        public function getIpVrf()
+        {
+            return $this->ipVrf ?: ($this->ipVrf = new PVEZoneZonesSdnNodeNodesIpVrf($this->client, $this->node, $this->zone));
+        }
 
 
         /**
-         * 
+         * Directory index for SDN zone status.
          * @return Result
          */
 
@@ -24593,6 +25350,229 @@ namespace Corsinvest\ProxmoxVE\Api {
         public function index()
         {
             return $this->client->get("/nodes/{$this->node}/sdn/zones/{$this->zone}/content");
+        }
+    }
+
+    /**
+     * Class PVEZoneZonesSdnNodeNodesBridges
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEZoneZonesSdnNodeNodesBridges
+    {
+
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        private $zone;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $node, $zone)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->zone = $zone;
+        }
+
+
+
+        /**
+         * Get a list of all bridges (vnets) that are part of a zone, as well as the ports that are members of that bridge.
+         * @return Result
+         */
+
+        public function bridges()
+        {
+            return $this->client->get("/nodes/{$this->node}/sdn/zones/{$this->zone}/bridges");
+        }
+    }
+
+    /**
+     * Class PVEZoneZonesSdnNodeNodesIpVrf
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEZoneZonesSdnNodeNodesIpVrf
+    {
+
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        private $zone;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $node, $zone)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->zone = $zone;
+        }
+
+
+
+        /**
+         * Get the IP VRF of an EVPN zone.
+         * @return Result
+         */
+
+        public function ipVrf()
+        {
+            return $this->client->get("/nodes/{$this->node}/sdn/zones/{$this->zone}/ip-vrf");
+        }
+    }
+
+    /**
+     * Class PVESdnNodeNodesVnets
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVESdnNodeNodesVnets
+    {
+
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $node)
+        {
+            $this->client = $client;
+            $this->node = $node;
+        }
+
+
+        /**
+         * Get ItemVnetsSdnNodeNodesVnet
+         * @param vnet
+         * @return PVEItemVnetsSdnNodeNodesVnet
+         */
+        public function get($vnet)
+        {
+            return new PVEItemVnetsSdnNodeNodesVnet($this->client, $this->node, $vnet);
+        }
+    }
+    /**
+     * Class PVEItemVnetsSdnNodeNodesVnet
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEItemVnetsSdnNodeNodesVnet
+    {
+
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        private $vnet;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $node, $vnet)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vnet = $vnet;
+        }
+
+        /**
+         * @ignore
+         */
+        private $macVrf;
+        /**
+         * Get VnetVnetsSdnNodeNodesMacVrf
+         * @return PVEVnetVnetsSdnNodeNodesMacVrf
+         */
+        public function getMacVrf()
+        {
+            return $this->macVrf ?: ($this->macVrf = new PVEVnetVnetsSdnNodeNodesMacVrf($this->client, $this->node, $this->vnet));
+        }
+
+
+        /**
+         * 
+         * @return Result
+         */
+
+        public function diridx()
+        {
+            return $this->client->get("/nodes/{$this->node}/sdn/vnets/{$this->vnet}");
+        }
+    }
+    /**
+     * Class PVEVnetVnetsSdnNodeNodesMacVrf
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEVnetVnetsSdnNodeNodesMacVrf
+    {
+
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        private $vnet;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $node, $vnet)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->vnet = $vnet;
+        }
+
+
+
+        /**
+         * Get the MAC VRF for a VNet in an EVPN zone.
+         * @return Result
+         */
+
+        public function macVrf()
+        {
+            return $this->client->get("/nodes/{$this->node}/sdn/vnets/{$this->vnet}/mac-vrf");
         }
     }
 
@@ -25024,7 +26004,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Creates a VNC Shell proxy.
          * @param string $cmd Run specific command or default to login (requires 'root@pam')
-         *   Enum: upgrade,ceph_install,login
+         *   Enum: ceph_install,login,upgrade
          * @param string $cmd_opts Add parameters to a command. Encoded as null terminated strings.
          * @param int $height sets the height of the console in pixels.
          * @param bool $websocket use websocket instead of standard vnc.
@@ -25075,7 +26055,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Creates a VNC Shell proxy.
          * @param string $cmd Run specific command or default to login (requires 'root@pam')
-         *   Enum: upgrade,ceph_install,login
+         *   Enum: ceph_install,login,upgrade
          * @param string $cmd_opts Add parameters to a command. Encoded as null terminated strings.
          * @return Result
          */
@@ -25164,7 +26144,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Creates a SPICE shell.
          * @param string $cmd Run specific command or default to login (requires 'root@pam')
-         *   Enum: upgrade,ceph_install,login
+         *   Enum: ceph_install,login,upgrade
          * @param string $cmd_opts Add parameters to a command. Encoded as null terminated strings.
          * @param string $proxy SPICE proxy server. This can be used by the client to specify the proxy server. All nodes in a cluster runs 'spiceproxy', so it is up to the client to choose one. By default, we return the node where the VM is currently running. As reasonable setting is to use same node you use to connect to the API (This is window.location.hostname for the JS GUI).
          * @return Result
@@ -25337,6 +26317,46 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'template' => $template
             ];
             return $this->client->create("/nodes/{$this->node}/aplinfo", $params);
+        }
+    }
+
+    /**
+     * Class PVENodeNodesQueryOciRepoTags
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVENodeNodesQueryOciRepoTags
+    {
+
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $node)
+        {
+            $this->client = $client;
+            $this->node = $node;
+        }
+
+
+
+        /**
+         * List all tags for an OCI repository reference.
+         * @param string $reference The reference to the repository to query tags from.
+         * @return Result
+         */
+
+        public function queryOciRepoTags($reference)
+        {
+            $params = ['reference' => $reference];
+            return $this->client->get("/nodes/{$this->node}/query-oci-repo-tags", $params);
         }
     }
 
@@ -25746,6 +26766,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: off,metadata,falloc,full
          * @param string $prune_backups The retention options with shorter intervals are processed first with --keep-last being the very first one. Each option covers a specific period of time. We say that backups within this period are covered by this option. The next option does not take care of already covered backups and only considers older backups.
          * @param bool $saferemove Zero-out data when removing LVs.
+         * @param int $saferemove_stepsize Wipe step size in MiB. It will be capped to the maximum supported by the storage.
+         *   Enum: 1,2,4,8,16,32
          * @param string $saferemove_throughput Wipe throughput (cstream -t parameter value).
          * @param string $server Server IP or DNS name.
          * @param string $share CIFS share.
@@ -25765,7 +26787,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
 
-        public function create($storage, $type, $authsupported = null, $base = null, $blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $content_dirs = null, $create_base_path = null, $create_subdirs = null, $data_pool = null, $datastore = null, $disable = null, $domain = null, $encryption_key = null, $export = null, $fingerprint = null, $format = null, $fs_name = null, $fuse = null, $is_mountpoint = null, $iscsiprovider = null, $keyring = null, $krbd = null, $lio_tpg = null, $master_pubkey = null, $max_protected_backups = null, $mkdir = null, $monhost = null, $mountpoint = null, $namespace = null, $nocow = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $path = null, $pool = null, $port = null, $portal = null, $preallocation = null, $prune_backups = null, $saferemove = null, $saferemove_throughput = null, $server = null, $share = null, $shared = null, $skip_cert_verification = null, $smbversion = null, $snapshot_as_volume_chain = null, $sparse = null, $subdir = null, $tagged_only = null, $target = null, $thinpool = null, $username = null, $vgname = null, $zfs_base_path = null)
+        public function create($storage, $type, $authsupported = null, $base = null, $blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $content_dirs = null, $create_base_path = null, $create_subdirs = null, $data_pool = null, $datastore = null, $disable = null, $domain = null, $encryption_key = null, $export = null, $fingerprint = null, $format = null, $fs_name = null, $fuse = null, $is_mountpoint = null, $iscsiprovider = null, $keyring = null, $krbd = null, $lio_tpg = null, $master_pubkey = null, $max_protected_backups = null, $mkdir = null, $monhost = null, $mountpoint = null, $namespace = null, $nocow = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $path = null, $pool = null, $port = null, $portal = null, $preallocation = null, $prune_backups = null, $saferemove = null, $saferemove_stepsize = null, $saferemove_throughput = null, $server = null, $share = null, $shared = null, $skip_cert_verification = null, $smbversion = null, $snapshot_as_volume_chain = null, $sparse = null, $subdir = null, $tagged_only = null, $target = null, $thinpool = null, $username = null, $vgname = null, $zfs_base_path = null)
         {
             $params = [
                 'storage' => $storage,
@@ -25813,6 +26835,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'preallocation' => $preallocation,
                 'prune-backups' => $prune_backups,
                 'saferemove' => $saferemove,
+                'saferemove-stepsize' => $saferemove_stepsize,
                 'saferemove_throughput' => $saferemove_throughput,
                 'server' => $server,
                 'share' => $share,
@@ -25919,6 +26942,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: off,metadata,falloc,full
          * @param string $prune_backups The retention options with shorter intervals are processed first with --keep-last being the very first one. Each option covers a specific period of time. We say that backups within this period are covered by this option. The next option does not take care of already covered backups and only considers older backups.
          * @param bool $saferemove Zero-out data when removing LVs.
+         * @param int $saferemove_stepsize Wipe step size in MiB. It will be capped to the maximum supported by the storage.
+         *   Enum: 1,2,4,8,16,32
          * @param string $saferemove_throughput Wipe throughput (cstream -t parameter value).
          * @param string $server Server IP or DNS name.
          * @param bool $shared Indicate that this is a single storage with the same contents on all nodes (or all listed in the 'nodes' option). It will not make the contents of a local storage automatically accessible to other nodes, it just marks an already shared storage as such!
@@ -25934,7 +26959,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
 
-        public function update($blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $content_dirs = null, $create_base_path = null, $create_subdirs = null, $data_pool = null, $delete = null, $digest = null, $disable = null, $domain = null, $encryption_key = null, $fingerprint = null, $format = null, $fs_name = null, $fuse = null, $is_mountpoint = null, $keyring = null, $krbd = null, $lio_tpg = null, $master_pubkey = null, $max_protected_backups = null, $mkdir = null, $monhost = null, $mountpoint = null, $namespace = null, $nocow = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $pool = null, $port = null, $preallocation = null, $prune_backups = null, $saferemove = null, $saferemove_throughput = null, $server = null, $shared = null, $skip_cert_verification = null, $smbversion = null, $snapshot_as_volume_chain = null, $sparse = null, $subdir = null, $tagged_only = null, $username = null, $zfs_base_path = null)
+        public function update($blocksize = null, $bwlimit = null, $comstar_hg = null, $comstar_tg = null, $content = null, $content_dirs = null, $create_base_path = null, $create_subdirs = null, $data_pool = null, $delete = null, $digest = null, $disable = null, $domain = null, $encryption_key = null, $fingerprint = null, $format = null, $fs_name = null, $fuse = null, $is_mountpoint = null, $keyring = null, $krbd = null, $lio_tpg = null, $master_pubkey = null, $max_protected_backups = null, $mkdir = null, $monhost = null, $mountpoint = null, $namespace = null, $nocow = null, $nodes = null, $nowritecache = null, $options = null, $password = null, $pool = null, $port = null, $preallocation = null, $prune_backups = null, $saferemove = null, $saferemove_stepsize = null, $saferemove_throughput = null, $server = null, $shared = null, $skip_cert_verification = null, $smbversion = null, $snapshot_as_volume_chain = null, $sparse = null, $subdir = null, $tagged_only = null, $username = null, $zfs_base_path = null)
         {
             $params = [
                 'blocksize' => $blocksize,
@@ -25975,6 +27000,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'preallocation' => $preallocation,
                 'prune-backups' => $prune_backups,
                 'saferemove' => $saferemove,
+                'saferemove-stepsize' => $saferemove_stepsize,
                 'saferemove_throughput' => $saferemove_throughput,
                 'server' => $server,
                 'shared' => $shared,
@@ -26106,6 +27132,18 @@ namespace Corsinvest\ProxmoxVE\Api {
         public function getTicket()
         {
             return $this->ticket ?: ($this->ticket = new PVEAccessTicket($this->client));
+        }
+        /**
+         * @ignore
+         */
+        private $vncticket;
+        /**
+         * Get AccessVncticket
+         * @return PVEAccessVncticket
+         */
+        public function getVncticket()
+        {
+            return $this->vncticket ?: ($this->vncticket = new PVEAccessVncticket($this->client));
         }
         /**
          * @ignore
@@ -26527,15 +27565,17 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Update API token for a specific user.
          * @param string $comment 
+         * @param string $delete A list of settings you want to delete.
          * @param int $expire API token expiration date (seconds since epoch). '0' means no expiration date.
          * @param bool $privsep Restrict API token privileges with separate ACLs (default), or give full privileges of corresponding user.
          * @return Result
          */
 
-        public function updateTokenInfo($comment = null, $expire = null, $privsep = null)
+        public function updateTokenInfo($comment = null, $delete = null, $expire = null, $privsep = null)
         {
             $params = [
                 'comment' => $comment,
+                'delete' => $delete,
                 'expire' => $expire,
                 'privsep' => $privsep
             ];
@@ -27554,6 +28594,49 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'tfa-challenge' => $tfa_challenge
             ];
             return $this->client->create("/access/ticket", $params);
+        }
+    }
+
+    /**
+     * Class PVEAccessVncticket
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEAccessVncticket
+    {
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client)
+        {
+            $this->client = $client;
+        }
+
+
+
+        /**
+         * verify VNC authentication ticket.
+         * @param string $authid UserId or token
+         * @param string $path Verify ticket, and check if user have access 'privs' on 'path'
+         * @param string $privs Verify ticket, and check if user have access 'privs' on 'path'
+         * @param string $vncticket The VNC ticket.
+         * @return Result
+         */
+
+        public function verifyVncTicket($authid, $path, $privs, $vncticket)
+        {
+            $params = [
+                'authid' => $authid,
+                'path' => $path,
+                'privs' => $privs,
+                'vncticket' => $vncticket
+            ];
+            return $this->client->create("/access/vncticket", $params);
         }
     }
 

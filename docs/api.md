@@ -1,4 +1,4 @@
-# 📚 API Documentation
+# API Documentation
 
 ## Overview
 
@@ -110,11 +110,11 @@ The library follows Proxmox VE's API structure using a fluent interface:
 <?php
 // API Path: /nodes/{node}/qemu/{vmid}/status
 $result = $client->getNodes()           // /nodes
-                ->get('pve1')          // /nodes/pve1  
-                ->getQemu()            // /nodes/pve1/qemu
-                ->get(100)             // /nodes/pve1/qemu/100
-                ->getStatus()          // /nodes/pve1/qemu/100/status
-                ->current();           // GET request
+                 ->get('pve1')          // /nodes/pve1  
+                 ->getQemu()            // /nodes/pve1/qemu
+                 ->get(100)             // /nodes/pve1/qemu/100
+                 ->getStatus()          // /nodes/pve1/qemu/100/status
+                 ->current();           // GET request
 
 // API Path: /nodes/{node}/storage
 $storages = $client->getNodes()

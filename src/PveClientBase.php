@@ -443,7 +443,9 @@ class PveClientBase
         $curlInfo = curl_getinfo($prox_ch);
         $reasonPhrase = curl_error($prox_ch);
         $reasonCode = $curlInfo["http_code"];
-        curl_close($prox_ch);
+        if (PHP_VERSION_ID < 80000) {
+            curl_close($prox_ch);
+        }
         unset($prox_ch);
 
         $body = substr($response, $curlInfo["header_size"]);

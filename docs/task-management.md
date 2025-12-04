@@ -1,4 +1,4 @@
-# ⚙️ Task Management
+# Task Management
 
 Handle long-running operations with cv4pve-api-php library.
 
