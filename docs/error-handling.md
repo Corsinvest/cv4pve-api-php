@@ -1,4 +1,4 @@
-# 🚨 Error Handling
+# Error Handling
 
 Exception management for cv4pve-api-php library.
 
