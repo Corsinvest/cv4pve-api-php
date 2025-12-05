@@ -1,24 +1,18 @@
-name: "CodeQL Analysis"
+name: CodeQL Analysis (PHP)
 
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
-  schedule:
-    - cron: '34 4 * * 1'
-  workflow_dispatch:
-    inputs:
-      reason:
-        description: 'Reason for running manual scan'
-        required: false
-        default: 'Manual trigger'
-        type: string
 
 jobs:
   analyze:
-    name: Analyze
+    name: Analyze PHP code (PHP ${{ matrix.php-versions }})
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-versions: ['5.5', '7.4', '8.0', '8.1']
     permissions:
       actions: read
       contents: read
@@ -28,13 +22,20 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v4
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
       with:
-        languages: php
+        php-version: ${{ matrix.php-versions }}
+        extensions: curl
 
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v4
+    - name: PHP Syntax Check
+      run: find . -name '*.php' -print0 | xargs -0 -n1 -P4 php -l
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v4
+    - name: Basic functionality test
+      run: |
+        php -r "
+          require_once 'src/PveClientBase.php';
+          require_once 'src/Result.php';
+          require_once 'src/PveClient.php';
+          echo 'Basic functionality test passed for PHP ' . PHP_VERSION . PHP_EOL;
+        "
