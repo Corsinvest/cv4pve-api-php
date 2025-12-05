@@ -477,7 +477,7 @@ class PveClientBase
             $parameters,
             $methodType,
             $this->responseType,
-            $responseHeaders,
+            $responseHeaders
         );
 
         if (is_array($this->onActionExecuted) && count($this->onActionExecuted)) {
