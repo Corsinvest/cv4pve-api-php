@@ -8,6 +8,7 @@ on:
   schedule:
     - cron: '34 4 * * 1'
   workflow_dispatch:
+    description: "Run CodeQL analysis manually"
 
 jobs:
   analyze:
