@@ -1,6 +1,49 @@
+# Composer
 /vendor/
 composer.phar
+composer.lock
+
+# PHP Documentation tools
 phpdox.phar
 phpdox.xml
 phpDocumentor.phar
-/nbproject/private/
+
+# IDE - PhpStorm
+.idea/
+*.iml
+
+# IDE - VSCode
+.vscode/
+*.code-workspace
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+
+# Logs and databases
+*.log
+*.sql
+*.sqlite
+
+# Build artifacts
+/build/
+/dist/
+
+# Testing
+/phpunit.xml
+/coverage/
+/.phpunit.cache/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Claude AI
+.claude/
