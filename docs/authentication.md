@@ -1,324 +1,344 @@
-# 🔐 Authentication
+# Authentication Guide
 
-Login methods and API tokens for cv4pve-api-php library.
+This guide covers all authentication methods available for connecting to Proxmox VE.
 
-## Overview
+## Authentication Methods
 
-Proxmox VE supports multiple authentication methods. This library provides support for:
+### **API Token (Recommended)**
 
-- **Username/Password Authentication** - Traditional login with credentials
-- **API Token Authentication** - Secure token-based authentication (Proxmox VE 6.2+)
-- **Two-Factor Authentication** - Additional security with OTP codes
-
-## Username/Password Authentication
-
-### Basic Login
+API tokens are the most secure method for automation and applications.
 
 ```php
 <?php
 use Corsinvest\ProxmoxVE\Api\PveClient;
 
-$client = new PveClient("your-proxmox-host.com");
+$client = new PveClient("pve.example.com", 8006);
+
+// Set API token (no login() call needed)
+$client->setApiToken("user@realm!tokenid=uuid");
+
+// Ready to use
+$version = $client->getVersion()->version();
+```
+
+**Format:** `USER@REALM!TOKENID=UUID`
+
+**Example:** `automation@pve!api-token=12345678-1234-1234-1234-123456789abc`
+
+### **Username/Password**
+
+Traditional authentication with username and password.
+
+```php
+<?php
+use Corsinvest\ProxmoxVE\Api\PveClient;
+
+$client = new PveClient("pve.example.com", 8006);
 
 // Basic login
-if ($client->login('root', 'your-password', 'pam')) {
-    echo "Authentication successful!\n";
-    
-    // Use the API
-    $version = $client->getVersion()->version();
-    echo "Proxmox VE Version: " . $version->getResponse()->data->version . "\n";
-} else {
-    echo "Authentication failed!\n";
-}
+$success = $client->login("root", "password");
+
+// Login with specific realm
+$success = $client->login("admin@pve", "password");
+
+// Login with PAM realm (default)
+$success = $client->login("user@pam", "password");
 ```
 
-### Authentication Realms
+### **Two-Factor Authentication (2FA)**
 
-Proxmox VE supports multiple authentication realms:
-
-```php
-<?php
-// PAM authentication (Linux system users)
-$client->login('root', 'password', 'pam');
-
-// Proxmox VE authentication (built-in users)
-$client->login('admin', 'password', 'pve');
-
-// LDAP authentication
-$client->login('john.doe', 'password', 'ldap-realm');
-
-// Active Directory authentication
-$client->login('john.doe', 'password', 'ad-realm');
-```
-
-### Username with Realm
-
-You can specify the realm in the username:
-
-```php
-<?php
-// These are equivalent:
-$client->login('root@pam', 'password');
-$client->login('root', 'password', 'pam');
-
-// LDAP user
-$client->login('john.doe@company-ldap', 'password');
-$client->login('john.doe', 'password', 'company-ldap');
-```
-
-## Two-Factor Authentication (2FA)
-
-### TOTP (Time-based One-Time Password)
-
-```php
-<?php
-// User with TOTP enabled
-$totpCode = '123456'; // From authenticator app
-if ($client->login('root', 'password', 'pam', $totpCode)) {
-    echo "2FA authentication successful!\n";
-}
-```
-
-### Handling 2FA Requirements
-
-```php
-<?php
-use Corsinvest\ProxmoxVE\Api\PveExceptionAuthentication;
-
-try {
-    // Attempt login without 2FA
-    if (!$client->login('root', 'password', 'pam')) {
-        echo "Login failed\n";
-    }
-} catch (PveExceptionAuthentication $e) {
-    // Check if 2FA is required
-    $result = $e->getResult();
-    if (isset($result->getResponse()->data->ticket) && 
-        isset($result->getResponse()->data->{'tfa-challenge'})) {
-        
-        echo "Two-factor authentication required!\n";
-        
-        // Get TOTP code from user
-        echo "Enter TOTP code: ";
-        $totpCode = trim(fgets(STDIN));
-        
-        // Retry with TOTP
-        if ($client->login('root', 'password', 'pam', $totpCode)) {
-            echo "2FA authentication successful!\n";
-        }
-    }
-}
-```
-
-## API Token Authentication
-
-### Creating API Tokens
-
-First, create an API token in Proxmox VE web interface or CLI:
-
-```bash
-# Create API token via Proxmox VE CLI
-pveum user token add root@pam mytoken --privsep=0
-```
-
-### Using API Tokens
+For accounts with Two-Factor Authentication enabled.
 
 ```php
 <?php
 use Corsinvest\ProxmoxVE\Api\PveClient;
 
-$client = new PveClient("your-proxmox-host.com");
+$client = new PveClient("pve.example.com", 8006);
 
-// Set API token (no login required)
-$client->setApiToken("root@pam!mytoken=12345678-1234-1234-1234-123456789abc");
+// Login with TOTP/OTP code
+$success = $client->login("admin@pve", "password", "pam", "123456");
 
-// Use API immediately
-$nodes = $client->getNodes()->index();
-foreach ($nodes->getResponse()->data as $node) {
-    echo "Node: {$node->node} - Status: {$node->status}\n";
-}
+// The fourth parameter is the 6-digit code from your authenticator app
 ```
 
-### API Token Format
+---
 
-API tokens follow this format:
-```
-USER@REALM!TOKENID=UUID
-```
+## Creating API Tokens
 
-Examples:
-```php
-<?php
-// Root user with PAM realm
-$client->setApiToken("root@pam!automation=12345678-1234-1234-1234-123456789abc");
+### **Via Proxmox VE Web Interface**
 
-// Regular user with PVE realm
-$client->setApiToken("admin@pve!backup-script=87654321-4321-4321-4321-cba987654321");
+1. **Login** to Proxmox VE web interface
+2. **Navigate** to Datacenter Permissions API Tokens
+3. **Click** "Add" button
+4. **Configure** token:
+   - **User:** Select user (e.g., `root@pam`)
+   - **Token ID:** Choose name (e.g., `api-automation`)
+   - **Privilege Separation:** Uncheck for full user permissions
+   - **Comment:** Optional description
+5. **Click** "Add" and **copy the token** (you won't see it again!)
 
-// LDAP user
-$client->setApiToken("john.doe@ldap!monitoring=abcdef12-3456-7890-abcd-ef1234567890");
-```
+### **Via Command Line**
 
-### Privilege Separation
+```bash
+# Create API token
+pveum user token add root@pam api-automation --privsep=0
 
-API tokens can be created with or without privilege separation:
+# List tokens
+pveum user token list root@pam
 
-```php
-<?php
-// Token without privilege separation (inherits user permissions)
-$client->setApiToken("root@pam!full-access=token-uuid");
-
-// Token with privilege separation (requires explicit permissions)
-$client->setApiToken("root@pam!limited-access=token-uuid");
+# Remove token
+pveum user token remove root@pam api-automation
 ```
 
-## Authentication Methods Comparison
+### **Example Token Creation**
 
-| Method | Security | Use Case | Proxmox VE Version |
-|--------|----------|----------|-------------------|
-| Username/Password | Medium | Interactive applications | All versions |
-| Username/Password + 2FA | High | Interactive applications with high security | 4.0+ |
-| API Token | High | Automation and scripts | 6.2+ |
+```bash
+# Create token for automation user
+pveum user add automation@pve --password "secure-password"
+pveum user token add automation@pve api-token --privsep=0 --comment "API automation"
 
-## Best Practices
+# Grant necessary permissions
+pveum aclmod / -user automation@pve -role Administrator
+```
 
-### For Interactive Applications
+---
+
+## Security Best Practices
+
+### **DO's**
 
 ```php
 <?php
-function authenticateInteractive($hostname, $username, $password, $realm = 'pam')
-{
-    $client = new PveClient($hostname);
-    
-    try {
-        if ($client->login($username, $password, $realm)) {
-            return $client;
-        }
-    } catch (PveExceptionAuthentication $e) {
-        $result = $e->getResult();
-        
-        // Check if 2FA is required
-        if (isset($result->getResponse()->data->{'tfa-challenge'})) {
-            echo "Two-factor authentication required.\n";
-            echo "Enter TOTP code: ";
-            $totpCode = trim(fgets(STDIN));
-            
-            if ($client->login($username, $password, $realm, $totpCode)) {
-                return $client;
-            }
-        }
-    }
-    
-    throw new Exception("Authentication failed");
-}
+use Corsinvest\ProxmoxVE\Api\PveClient;
+
+// Use API tokens for automation
+$client = new PveClient("pve.company.com", 8006);
+$client->setApiToken(getenv("PROXMOX_API_TOKEN"));
+
+// Store credentials securely
+$username = getenv("PROXMOX_USER");
+$password = getenv("PROXMOX_PASS");
+
+// Enable SSL validation in production
+$client->setValidateCertificate(true);
+
+// Use specific user accounts (not root)
+$client->login("automation@pve", $password);
 ```
 
-### For Automation Scripts
+### **DON'Ts**
 
 ```php
 <?php
-function authenticateAutomation($hostname, $apiToken)
-{
-    $client = new PveClient($hostname);
+use Corsinvest\ProxmoxVE\Api\PveClient;
+
+// Don't hardcode credentials
+$client = new PveClient("pve.example.com", 8006);
+$client->login("root", "password123"); // Bad!
+
+// Don't disable SSL validation in production
+$client->setValidateCertificate(false); // Only for development!
+
+// Don't use overly permissive tokens
+// Create tokens with minimal required permissions
+```
+
+---
+
+## Permission Management
+
+### **Creating Dedicated Users**
+
+```bash
+# Create user for API access
+pveum user add api-user@pve --password "secure-password" --comment "API automation user"
+
+# Create custom role with specific permissions
+pveum role add ApiUser -privs "VM.Audit,VM.Config.Disk,VM.Config.Memory,VM.PowerMgmt,VM.Snapshot"
+
+# Assign role to user
+pveum aclmod / -user api-user@pve -role ApiUser
+```
+
+### **Common Permission Sets**
+
+```bash
+# Read-only access
+pveum role add ReadOnly -privs "VM.Audit,Datastore.Audit,Sys.Audit"
+
+# VM management
+pveum role add VMManager -privs "VM.Audit,VM.Config.Disk,VM.Config.Memory,VM.PowerMgmt,VM.Snapshot,VM.Clone"
+
+# Full administrator (use with caution)
+pveum aclmod / -user user@pve -role Administrator
+```
+
+---
+
+## Environment Configuration
+
+### **Environment Variables**
+
+```bash
+# Set environment variables
+export PROXMOX_HOST="pve.example.com"
+export PROXMOX_API_TOKEN="user@pve!token=uuid"
+
+# Or for username/password
+export PROXMOX_USER="admin@pve"
+export PROXMOX_PASS="secure-password"
+```
+
+### **Application Configuration**
+
+```php
+<?php
+use Corsinvest\ProxmoxVE\Api\PveClient;
+
+// Load from environment variables
+$host = getenv("PROXMOX_HOST") ?: "pve.example.com";
+$client = new PveClient($host, 8006);
+
+// Use API token if available
+$apiToken = getenv("PROXMOX_API_TOKEN");
+if (!empty($apiToken)) {
     $client->setApiToken($apiToken);
-    
-    // Test the connection
+} else {
+    // Fallback to username/password
+    $username = getenv("PROXMOX_USER");
+    $password = getenv("PROXMOX_PASS");
+    $client->login($username, $password);
+}
+```
+
+### **Configuration File Example**
+
+```json
+{
+  "Proxmox": {
+    "Host": "pve.example.com",
+    "ApiToken": "user@pve!token=uuid",
+    "ValidateCertificate": true,
+    "Timeout": 120
+  }
+}
+```
+
+---
+
+## Troubleshooting Authentication
+
+### **Common Issues**
+
+#### **"Authentication Failed"**
+```php
+<?php
+use Corsinvest\ProxmoxVE\Api\PveClient;
+
+// Check credentials
+try {
+    $client = new PveClient("pve.example.com", 8006);
+    $success = $client->login("user@pam", "password");
+    if (!$success) {
+        echo "Invalid credentials\n";
+    }
+} catch (Exception $ex) {
+    echo "Login error: " . $ex->getMessage() . "\n";
+}
+```
+
+#### **"Permission Denied"**
+```bash
+# Check user permissions
+pveum user list
+pveum aclmod / -user user@pve -role Administrator
+```
+
+#### **"Invalid API Token"**
+```php
+<?php
+use Corsinvest\ProxmoxVE\Api\PveClient;
+
+// Verify token format
+$client = new PveClient("pve.example.com", 8006);
+$client->setApiToken("user@realm!tokenid=uuid"); // Correct format
+
+// Check if token exists
+// Token format: USER@REALM!TOKENID=SECRET
+```
+
+### **Testing Authentication**
+
+```php
+<?php
+use Corsinvest\ProxmoxVE\Api\PveClient;
+
+function testAuthentication($client)
+{
     try {
-        $client->getVersion()->version();
-        return $client;
-    } catch (Exception $e) {
-        throw new Exception("API token authentication failed: " . $e->getMessage());
+        $version = $client->getVersion()->version();
+        if ($version->isSuccessStatusCode()) {
+            echo "Authentication successful\n";
+            echo "Connected to Proxmox VE " . $version->getResponse()->data->version . "\n";
+            return true;
+        } else {
+            echo "Authentication failed: " . $version->getReasonPhrase() . "\n";
+            return false;
+        }
+    } catch (Exception $ex) {
+        echo "Connection error: " . $ex->getMessage() . "\n";
+        return false;
     }
-}
-
-// Usage
-$client = authenticateAutomation("proxmox.local", "root@pam!script=token-uuid");
-```
-
-### Environment Variable Authentication
-
-```php
-<?php
-function authenticateFromEnv()
-{
-    $hostname = $_ENV['PROXMOX_HOST'] ?? 'localhost';
-    $client = new PveClient($hostname);
-    
-    // Try API token first (preferred for automation)
-    if (!empty($_ENV['PROXMOX_API_TOKEN'])) {
-        $client->setApiToken($_ENV['PROXMOX_API_TOKEN']);
-        return $client;
-    }
-    
-    // Fall back to username/password
-    $username = $_ENV['PROXMOX_USER'] ?? 'root';
-    $password = $_ENV['PROXMOX_PASSWORD'] ?? '';
-    $realm = $_ENV['PROXMOX_REALM'] ?? 'pam';
-    $otp = $_ENV['PROXMOX_OTP'] ?? null;
-    
-    if ($client->login($username, $password, $realm, $otp)) {
-        return $client;
-    }
-    
-    throw new Exception("Authentication failed");
 }
 ```
 
-## Security Considerations
+---
 
-### API Token Security
+## Authentication Examples
 
-1. **Store tokens securely** - Never commit tokens to version control
-2. **Use environment variables** - Store tokens in environment variables
-3. **Rotate tokens regularly** - Create new tokens and delete old ones
-4. **Use privilege separation** - Limit token permissions when possible
-5. **Monitor token usage** - Check Proxmox VE logs for token usage
-
-### Password Security
-
-1. **Use strong passwords** - Enforce strong password policies
-2. **Enable 2FA** - Use two-factor authentication for interactive access
-3. **Limit session duration** - Configure appropriate session timeouts
-4. **Monitor login attempts** - Watch for failed authentication attempts
-
-### Example Secure Configuration
+### **Enterprise Setup**
 
 ```php
 <?php
-class SecureProxmoxClient
-{
-    private static function getTokenFromSecureSource()
-    {
-        // In production, get from secure key management system
-        return $_ENV['PROXMOX_API_TOKEN'] ?? null;
-    }
-    
-    public static function create($hostname)
-    {
-        $client = new PveClient($hostname);
-        
-        // Always validate SSL certificates in production
-        $client->setValidateCertificate(true);
-        
-        // Use secure authentication
-        $token = self::getTokenFromSecureSource();
-        if (empty($token)) {
-            throw new Exception("No API token available");
-        }
-        
-        $client->setApiToken($token);
-        
-        // Test authentication
-        try {
-            $client->getVersion()->version();
-        } catch (Exception $e) {
-            throw new Exception("Authentication test failed: " . $e->getMessage());
-        }
-        
-        return $client;
-    }
-}
+use Corsinvest\ProxmoxVE\Api\PveClient;
 
-// Usage
-$client = SecureProxmoxClient::create("proxmox.company.com");
+// Corporate environment with custom certificates
+$client = new PveClient("pve.company.com", 8006);
+$client->setValidateCertificate(true);
+$client->setTimeout(300); // 5 minutes
+
+$client->setApiToken(getenv("PROXMOX_API_TOKEN"));
+```
+
+### **Home Lab Setup**
+
+```php
+<?php
+use Corsinvest\ProxmoxVE\Api\PveClient;
+
+// Simple home lab setup
+$client = new PveClient("192.168.1.100", 8006);
+$client->setValidateCertificate(false); // Self-signed cert
+$client->setTimeout(120); // 2 minutes
+
+$client->login("root@pam", getenv("PVE_PASSWORD"));
+```
+
+### **Cloud/Automation Setup**
+
+```php
+<?php
+use Corsinvest\ProxmoxVE\Api\PveClient;
+
+// Automated deployment script
+$client = new PveClient(getenv("PROXMOX_HOST"), 8006);
+$client->setValidateCertificate(true);
+
+// Use API token for automation
+$client->setApiToken(getenv("PROXMOX_API_TOKEN"));
+
+// Verify connection before proceeding
+if (!testAuthentication($client)) {
+    exit(1);
+}
 ```
