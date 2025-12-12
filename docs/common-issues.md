@@ -44,9 +44,7 @@ $client->setApiToken("root@pam!automation-token=uuid-here");
 
 // No login() call needed with API tokens
 $version = $client->getVersion()->version();
-if ($version->isSuccessStatusCode()) {
-    echo "Connected using API token\n";
-}
+echo "Connected using API token\n";
 ```
 
 ---
@@ -101,23 +99,17 @@ $result = $client->getNodes()->get("pve1")->getQemu()->createVm(
 // Getting VM information
 $vm = $client->getNodes()->get("pve1")->getQemu()->get(100);
 $config = $vm->getConfig()->vmConfig();
-
-if ($config->isSuccessStatusCode()) {
-    $data = $config->getResponse()->data;
-    echo "VM Name: {$data->name}\n";
-    echo "Memory: {$data->memory} MB\n";
-    echo "Cores: {$data->cores}\n";
-}
+$data = $config->getResponse()->data;
+echo "VM Name: {$data->name}\n";
+echo "Memory: {$data->memory} MB\n";
+echo "Cores: {$data->cores}\n";
 
 // Working with container
 $ct = $client->getNodes()->get("pve1")->getLxc()->get(101);
 $ctConfig = $ct->getConfig()->vmConfig();
-
-if ($ctConfig->isSuccessStatusCode()) {
-    $data = $ctConfig->getResponse()->data;
-    echo "Container Hostname: {$data->hostname}\n";
-    echo "Memory: {$data->memory} MB\n";
-}
+$data = $ctConfig->getResponse()->data;
+echo "Container Hostname: {$data->hostname}\n";
+echo "Memory: {$data->memory} MB\n";
 ```
 
 ### **Indexed Parameters (Arrays)**
@@ -407,15 +399,11 @@ $result = $client->getNodes()->get($node)->getQemu()->createVm(
     searchdomain: $searchdomain
 );
 
-if ($result->isSuccessStatusCode()) {
-    echo "VM $vmid created successfully!\n";
+echo "VM $vmid created successfully!\n";
 
-    // Start the VM
-    $startResult = $client->getNodes()->get($node)->getQemu()->get($vmid)->getStatus()->getStart()->vmStart();
-    if ($startResult->isSuccessStatusCode()) {
-        echo "VM $vmid started successfully!\n";
-    }
-}
+// Start the VM
+$client->getNodes()->get($node)->getQemu()->get($vmid)->getStatus()->getStart()->vmStart();
+echo "VM $vmid started successfully!\n";
 ```
 
 ---
@@ -452,12 +440,10 @@ $result = $client->getNodes()->get("pve1")->getQemu()->get(100)->getClone()->clo
 
 // Task operations may take considerable time
 // The timeout ensures the client waits appropriately
-if ($result->isSuccessStatusCode()) {
-    $taskId = $result->getResponse()->data;
-    echo "Clone started: $taskId\n";
-    
-    // Monitor task completion separately
-}
+$taskId = $result->getResponse()->data;
+echo "Clone started: $taskId\n";
+
+// Monitor task completion separately
 ```
 
 ---
@@ -521,10 +507,8 @@ The library is compatible with PHP 5.5+ but some examples may use newer syntax:
 
 // Valid in all supported PHP versions:
 $result = $client->getVersion()->version();
-if ($result->isSuccessStatusCode()) {
-    $versionData = $result->getResponse()->data;
-    echo "Proxmox VE version: " . $versionData->version . "\n";
-}
+$versionData = $result->getResponse()->data;
+echo "Proxmox VE version: " . $versionData->version . "\n";
 ```
 
 ### **Large Payload Handling**
@@ -566,17 +550,11 @@ $createResult = $client->getNodes()->get("pve1")->getQemu()->createVm(
     agent: 'enabled=1'
 );
 
-if ($createResult->isSuccessStatusCode()) {
-    echo "VM created successfully\n";
-    
-    // Step 2: Start the VM
-    $startResult = $client->getNodes()->get("pve1")->getQemu()->get(200)->getStatus()->getStart()->vmStart();
-    if ($startResult->isSuccessStatusCode()) {
-        echo "VM started successfully\n";
-    }
-} else {
-    echo "Failed to create VM: " . $createResult->getError() . "\n";
-}
+echo "VM created successfully\n";
+
+// Step 2: Start the VM
+$client->getNodes()->get("pve1")->getQemu()->get(200)->getStatus()->getStart()->vmStart();
+echo "VM started successfully\n";
 ```
 
 ### **Storage Operations**
@@ -585,11 +563,9 @@ if ($createResult->isSuccessStatusCode()) {
 <?php
 // List available storage
 $storageResult = $client->getNodes()->get("pve1")->getStorage()->index();
-if ($storageResult->isSuccessStatusCode()) {
-    foreach ($storageResult->getResponse()->data as $storage) {
-        echo "Storage: {$storage->storage} ({$storage->type}) - ";
-        echo "Available: " . formatBytes($storage->avail) . "/" . formatBytes($storage->total) . "\n";
-    }
+foreach ($storageResult->getResponse()->data as $storage) {
+    echo "Storage: {$storage->storage} ({$storage->type}) - ";
+    echo "Available: " . formatBytes($storage->avail) . "/" . formatBytes($storage->total) . "\n";
 }
 
 function formatBytes($size, $precision = 2) {
@@ -612,33 +588,28 @@ $cloneResult = $client->getNodes()->get("pve1")->getQemu()->get(100)->getClone()
     name: 'cloned-vm'
 );
 
-if ($cloneResult->isSuccessStatusCode()) {
-    $taskId = $cloneResult->getResponse()->data;
-    echo "Clone task started: $taskId\n";
-    
-    // Monitor the task until completion
-    $timeout = 1800; // 30 minutes
-    $start = time();
-    
-    while ((time() - $start) < $timeout) {
-        $taskResult = $client->getNodes()->get("pve1")->getTasks()->get($taskId)->index();
-        
-        if ($taskResult->isSuccessStatusCode()) {
-            $taskData = $taskResult->getResponse()->data;
-            
-            if ($taskData->status === 'stopped') {
-                if (isset($taskData->exitstatus) && $taskData->exitstatus === 'OK') {
-                    echo "Task completed successfully\n";
-                    break;
-                } else {
-                    echo "Task failed with status: " . $taskData->exitstatus . "\n";
-                    break;
-                }
-            }
+$taskId = $cloneResult->getResponse()->data;
+echo "Clone task started: $taskId\n";
+
+// Monitor the task until completion
+$timeout = 1800; // 30 minutes
+$start = time();
+
+while ((time() - $start) < $timeout) {
+    $taskResult = $client->getNodes()->get("pve1")->getTasks()->get($taskId)->index();
+    $taskData = $taskResult->getResponse()->data;
+
+    if ($taskData->status === 'stopped') {
+        if (isset($taskData->exitstatus) && $taskData->exitstatus === 'OK') {
+            echo "Task completed successfully\n";
+            break;
+        } else {
+            echo "Task failed with status: " . $taskData->exitstatus . "\n";
+            break;
         }
-        
-        sleep(5); // Check every 5 seconds
     }
+
+    sleep(5); // Check every 5 seconds
 }
 ```
 
@@ -682,13 +653,7 @@ $client->setValidateCertificate(false);
 
 // The certificate validation affects SSL connections
 $version = $client->getVersion()->version();
-if ($version->isSuccessStatusCode()) {
-    echo "Secure connection established\n";
-} else {
-    if (!$client->isValidateCertificate()) {
-        echo "Consider using valid SSL certificates for production\n";
-    }
-}
+echo "Secure connection established\n";
 ```
 
 ---

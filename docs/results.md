@@ -59,13 +59,10 @@ use Corsinvest\ProxmoxVE\Api\PveClient;
 $client = new PveClient("pve.example.com", 8006);
 
 $result = $client->getNodes()->get("pve1")->getQemu()->get(100)->getConfig()->vmConfig();
-if ($result->isSuccessStatusCode())
-{
-    $data = $result->getResponse()->data;
-    echo "VM Name: " . $data->name . "\n";
-    echo "Memory: " . $data->memory . "\n";
-    echo "Cores: " . $data->cores . "\n";
-}
+$data = $result->getResponse()->data;
+echo "VM Name: " . $data->name . "\n";
+echo "Memory: " . $data->memory . "\n";
+echo "Cores: " . $data->cores . "\n";
 ```
 
 ### **Array Access**
@@ -78,13 +75,9 @@ $client = new PveClient("pve.example.com", 8006);
 $client->setResultIsObject(false);
 
 $result = $client->getNodes()->get("pve1")->getQemu()->get(100)->getConfig()->vmConfig();
-if ($result->isSuccessStatusCode())
-{
-    $data = $result->getResponse()->data;
-    foreach ($data as $key => $value)
-    {
-        echo "$key: $value\n";
-    }
+$data = $result->getResponse()->data;
+foreach ($data as $key => $value) {
+    echo "$key: $value\n";
 }
 ```
 
@@ -184,20 +177,15 @@ use Corsinvest\ProxmoxVE\Api\PveClient;
 $client = new PveClient("pve.example.com", 8006);
 
 $result = $client->getCluster()->getResources()->resources();
-if ($result->isSuccessStatusCode())
-{
-    foreach ($result->getResponse()->data as $resource)
-    {
-        echo $resource->type . ": " . $resource->id . "\n";
-    }
+foreach ($result->getResponse()->data as $resource) {
+    echo $resource->type . ": " . $resource->id . "\n";
 }
 
 // Filter resources
 $filteredResources = array_filter($result->getResponse()->data, function($r) {
     return $r->type == "qemu";
 });
-foreach ($filteredResources as $vm)
-{
+foreach ($filteredResources as $vm) {
     echo "VM: " . $vm->name . " (" . $vm->vmid . ")\n";
 }
 ```
@@ -214,13 +202,10 @@ $vm = $client->getNodes()->get("pve1")->getQemu()->get(100);
 
 // Operations that return task IDs
 $result = $vm->getSnapshot()->snapshot("backup-snapshot", "Backup snapshot");
-if ($result->isSuccessStatusCode())
-{
-    $taskId = $result->getResponse()->data;
-    echo "Task started: " . $taskId . "\n";
+$taskId = $result->getResponse()->data;
+echo "Task started: " . $taskId . "\n";
 
-    // Monitor task progress...
-}
+// Monitor task progress...
 ```
 
 ### **Image Responses**
@@ -275,16 +260,13 @@ $client->login("admin@pve", "password");
 
 $vm = $client->getNodes()->get("pve1")->getQemu()->get(100);
 $result = $vm->getConfig()->vmConfig();
-if ($result->isSuccessStatusCode())
-{
-    $data = $result->getResponse()->data;
+$data = $result->getResponse()->data;
 
-    // Safe access
-    $vmName = isset($data->name) ? $data->name : "Unnamed VM";
-    $description = isset($data->description) ? $data->description : "No description";
+// Safe access
+$vmName = isset($data->name) ? $data->name : "Unnamed VM";
+$description = isset($data->description) ? $data->description : "No description";
 
-    echo "VM: $vmName - $description\n";
-}
+echo "VM: $vmName - $description\n";
 ```
 
 ### **Choose Object or Array Consistently**

@@ -124,12 +124,10 @@ function bulkVmOperation($client, $vmIds, $operation, $operationName) {
     // Get all resources to find VM locations
     $resources = $client->getCluster()->getResources()->resources();
     $vmLocations = [];
-    
-    if ($resources->isSuccessStatusCode() && isset($resources->getResponse()->data)) {
-        foreach ($resources->getResponse()->data as $resource) {
-            if ($resource->type == "qemu" && in_array($resource->vmid, $vmIds)) {
-                $vmLocations[$resource->vmid] = $resource->node;
-            }
+
+    foreach ($resources->getResponse()->data as $resource) {
+        if ($resource->type == "qemu" && in_array($resource->vmid, $vmIds)) {
+            $vmLocations[$resource->vmid] = $resource->node;
         }
     }
     
@@ -337,16 +335,10 @@ class ProxmoxRepository implements ProxmoxRepositoryInterface
     public function startVm($node, $vmId)
     {
         echo "Starting VM $vmId on node $node\n";
-        
-        $result = $this->client->getNodes()->get($node)->getQemu()->get($vmId)->getStatus()->getStart()->vmStart();
-        
-        if ($result->isSuccessStatusCode()) {
-            echo "Successfully started VM $vmId\n";
-            return true;
-        } else {
-            echo "Failed to start VM $vmId: " . $result->getError() . "\n";
-            return false;
-        }
+
+        $this->client->getNodes()->get($node)->getQemu()->get($vmId)->getStatus()->getStart()->vmStart();
+        echo "Successfully started VM $vmId\n";
+        return true;
     }
     
     public function createSnapshot($node, $vmId, $name, $description = null)
