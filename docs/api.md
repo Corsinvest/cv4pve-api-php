@@ -118,22 +118,15 @@ $client = new PveClient("pve.example.com", 8006);
 
 $result = $client->getNodes()->get("pve1")->getQemu()->get(100)->getConfig()->index();
 
-// Check success
-if ($result->isSuccessStatusCode()) {
-    // Access response data
-    $data = $result->getResponse()->data;
-    echo "VM Name: " . $data->name . "\n";
-    echo "Memory: " . $data->memory . "\n";
-    echo "Cores: " . $data->cores . "\n";
-    
-    // Iterate through response data
-    foreach ($data as $key => $value) {
-        echo "$key: $value\n";
-    }
-} else {
-    // Handle errors
-    echo "Error: " . $result->getError() . "\n";
-    echo "Status: " . $result->getStatusCode() . " - " . $result->getReasonPhrase() . "\n";
+// Access response data
+$data = $result->getResponse()->data;
+echo "VM Name: " . $data->name . "\n";
+echo "Memory: " . $data->memory . "\n";
+echo "Cores: " . $data->cores . "\n";
+
+// Iterate through response data
+foreach ($data as $key => $value) {
+    echo "$key: $value\n";
 }
 ```
 
@@ -188,7 +181,6 @@ $updateResult = $vm->getConfig()->updateVmAsync(
     cores: 4       // 4 CPU cores
 );
 
-// Note: In production code, always check $updateResult->isSuccessStatusCode()
 echo "Configuration update initiated\n";
 ```
 
@@ -210,26 +202,18 @@ $vm = $client->getNodes()->get("pve1")->getQemu()->get(100);
 // Using specific method
 $snapshot = $vm->getSnapshot()->snapshot("backup-before-update", "Pre-update backup");
 
-if ($snapshot->isSuccessStatusCode()) {
-    echo "Snapshot created successfully!\n";
-}
+echo "Snapshot created successfully!\n";
 
 // List snapshots
 $snapshots = $vm->getSnapshot()->snapshotList();
-
-if ($snapshots->isSuccessStatusCode()) {
-    echo "Available snapshots:\n";
-    foreach ($snapshots->getResponse()->data as $snap) {
-        echo "  - " . $snap->name . ": " . $snap->description . " (" . date('Y-m-d H:i:s', $snap->snaptime) . ")\n";
-    }
+echo "Available snapshots:\n";
+foreach ($snapshots->getResponse()->data as $snap) {
+    echo "  - " . $snap->name . ": " . $snap->description . " (" . date('Y-m-d H:i:s', $snap->snaptime) . ")\n";
 }
 
 // Delete snapshot
-$deleteResult = $vm->getSnapshot()->get("backup-before-update")->delete();
-
-if ($deleteResult->isSuccessStatusCode()) {
-    echo "Snapshot deleted successfully!\n";
-}
+$vm->getSnapshot()->get("backup-before-update")->delete();
+echo "Snapshot deleted successfully!\n";
 ```
 
 </details>
@@ -257,19 +241,15 @@ echo "Memory usage: " . (($statusData->mem / $statusData->maxmem) * 100) . "%\n"
 if ($statusData->status == "stopped") {
     $vm->getStatus()->getStart()->vmStart();
     echo "VM start initiated\n";
-    // Note: In production code, check $startResult->isSuccessStatusCode()
 }
 
 // Stop VM
 $vm->getStatus()->getStop()->vmStop();
 echo "VM stop initiated\n";
-// Note: In production code, check result success
 
 // Restart VM
-$restartResult = $vm->getStatus()->getReboot()->vmReboot();
-if ($restartResult->isSuccessStatusCode()) {
-    echo "VM restarted successfully!\n";
-}
+$vm->getStatus()->getReboot()->vmReboot();
+echo "VM restarted successfully!\n";
 ```
 
 </details>
@@ -291,12 +271,11 @@ $container = $client->getNodes()->get("pve1")->getLxc()->get(101);
 
 // Get container configuration
 $config = $container->getConfig()->vmConfig();
-if ($config->isSuccessStatusCode()) {
-    $ctData = $config->getResponse()->data;
-    echo "Container: " . $ctData->hostname . "\n";
-    echo "OS Template: " . $ctData->ostemplate . "\n";
-    echo "Memory: " . $ctData->memory . " MB\n";
-}
+$ctData = $config->getResponse()->data;
+
+echo "Container: " . $ctData->hostname . "\n";
+echo "OS Template: " . $ctData->ostemplate . "\n";
+echo "Memory: " . $ctData->memory . " MB\n";
 
 // Container status operations
 $status = $container->getStatus()->getCurrent()->vmStatus();
@@ -304,15 +283,13 @@ echo "Status: " . $status->getResponse()->data->status . "\n";
 
 // Start container
 if ($status->getResponse()->data->status == "stopped") {
-    $startResult = $container->getStatus()->getStart()->vmStart();
+    $container->getStatus()->getStart()->vmStart();
     echo "Container started!\n";
 }
 
 // Create container snapshot
-$snapshot = $container->getSnapshot()->snapshot("backup-snapshot", "Backup");
-if ($snapshot->isSuccessStatusCode()) {
-    echo "Container snapshot created!\n";
-}
+$container->getSnapshot()->snapshot("backup-snapshot", "Backup");
+echo "Container snapshot created!\n";
 ```
 
 </details>
@@ -331,33 +308,27 @@ $client->login("admin@pve", "password");
 
 // Get cluster status
 $clusterStatus = $client->getCluster()->getStatus()->getStatus();
-if ($clusterStatus->isSuccessStatusCode()) {
-    echo "Cluster Status:\n";
-    foreach ($clusterStatus->getResponse()->data as $item) {
-        echo "  " . $item->type . ": " . $item->name . " - " . $item->status . "\n";
-    }
+echo "Cluster Status:\n";
+foreach ($clusterStatus->getResponse()->data as $item) {
+    echo "  " . $item->type . ": " . $item->name . " - " . $item->status . "\n";
 }
 
 // Get cluster resources
 $resources = $client->getCluster()->getResources()->resources();
-if ($resources->isSuccessStatusCode()) {
-    echo "Cluster Resources:\n";
-    foreach ($resources->getResponse()->data as $resource) {
-        if ($resource->type == "node") {
-            echo "  Node: " . $resource->node . " - CPU: " . ($resource->cpu * 100) . "%, Memory: " . (($resource->mem / $resource->maxmem) * 100) . "%\n";
-        } elseif ($resource->type == "qemu") {
-            echo "  VM: " . $resource->vmid . " (" . $resource->name . ") on " . $resource->node . " - " . $resource->status . "\n";
-        }
+echo "Cluster Resources:\n";
+foreach ($resources->getResponse()->data as $resource) {
+    if ($resource->type == "node") {
+        echo "  Node: " . $resource->node . " - CPU: " . ($resource->cpu * 100) . "%, Memory: " . (($resource->mem / $resource->maxmem) * 100) . "%\n";
+    } elseif ($resource->type == "qemu") {
+        echo "  VM: " . $resource->vmid . " (" . $resource->name . ") on " . $resource->node . " - " . $resource->status . "\n";
     }
 }
 
 // Get node information
 $nodes = $client->getNodes()->index();
-if ($nodes->isSuccessStatusCode()) {
-    echo "Available Nodes:\n";
-    foreach ($nodes->getResponse()->data as $node) {
-        echo "  " . $node->node . ": " . $node->status . " - Uptime: " . $node->uptime . "s\n";
-    }
+echo "Available Nodes:\n";
+foreach ($nodes->getResponse()->data as $node) {
+    echo "  " . $node->node . ": " . $node->status . " - Uptime: " . $node->uptime . "s\n";
 }
 ```
 
@@ -377,36 +348,31 @@ $client->login("admin@pve", "password");
 
 // List storage on a node
 $storages = $client->getNodes()->get("pve1")->getStorage()->index();
-if ($storages->isSuccessStatusCode()) {
-    echo "Available Storage:\n";
-    foreach ($storages->getResponse()->data as $storage) {
-        $availableGB = $storage->avail / (1024*1024*1024);
-        echo "  " . $storage->storage . ": " . $storage->type . " - " . number_format($availableGB, 2) . " GB available\n";
-    }
+echo "Available Storage:\n";
+foreach ($storages->getResponse()->data as $storage) {
+    $availableGB = $storage->avail / (1024*1024*1024);
+    echo "  " . $storage->storage . ": " . $storage->type . " - " . number_format($availableGB, 2) . " GB available\n";
 }
 
 // Get specific storage details
 $localStorage = $client->getNodes()->get("pve1")->getStorage()->get("local")->diridx();
-if ($localStorage->isSuccessStatusCode()) {
-    $storageData = $localStorage->getResponse()->data;
-    echo "Storage: " . $storageData->storage . "\n";
-    echo "Type: " . $storageData->type . "\n";
-    $totalGB = $storageData->total / (1024*1024*1024);
-    echo "Total: " . number_format($totalGB, 2) . " GB\n";
-    $usedGB = $storageData->used / (1024*1024*1024);
-    echo "Used: " . number_format($usedGB, 2) . " GB\n";
-    $availGB = $storageData->avail / (1024*1024*1024);
-    echo "Available: " . number_format($availGB, 2) . " GB\n";
-}
+$storageData = $localStorage->getResponse()->data;
+
+echo "Storage: " . $storageData->storage . "\n";
+echo "Type: " . $storageData->type . "\n";
+$totalGB = $storageData->total / (1024*1024*1024);
+echo "Total: " . number_format($totalGB, 2) . " GB\n";
+$usedGB = $storageData->used / (1024*1024*1024);
+echo "Used: " . number_format($usedGB, 2) . " GB\n";
+$availGB = $storageData->avail / (1024*1024*1024);
+echo "Available: " . number_format($availGB, 2) . " GB\n";
 
 // List storage content
 $content = $client->getNodes()->get("pve1")->getStorage()->get("local")->getContent()->index();
-if ($content->isSuccessStatusCode()) {
-    echo "Storage Content:\n";
-    foreach ($content->getResponse()->data as $item) {
-        $sizeMB = $item->size / (1024*1024);
-        echo "  " . $item->volid . ": " . $item->format . " - " . number_format($sizeMB, 2) . " MB\n";
-    }
+echo "Storage Content:\n";
+foreach ($content->getResponse()->data as $item) {
+    $sizeMB = $item->size / (1024*1024);
+    echo "  " . $item->volid . ": " . $item->format . " - " . number_format($sizeMB, 2) . " MB\n";
 }
 ```
 
@@ -456,26 +422,21 @@ $createResult = $client->getNodes()->get("pve1")->getQemu()->createVm(
     scsi0: 'local-lvm:32'      // optional: storage configuration
 );
 
-if ($createResult->isSuccessStatusCode()) {
-    $taskId = $createResult->getResponse()->data;  // This would contain the task ID
-    echo "Task started: $taskId\n";
-    
-    // Monitor task progress
-    while (true) {
-        $taskStatus = $client->getNodes()->get("pve1")->getTasks()->get($taskId)->index();
-        
-        if ($taskStatus->isSuccessStatusCode()) {
-            $status = $taskStatus->getResponse()->data->status;
-            
-            if ($status == "stopped") {
-                $exitStatus = $taskStatus->getResponse()->data->exitstatus;
-                echo "Task completed with status: $exitStatus\n";
-                break;
-            } elseif ($status == "running") {
-                echo "Task still running...\n";
-                sleep(2);
-            }
-        }
+$taskId = $createResult->getResponse()->data;  // This would contain the task ID
+echo "Task started: $taskId\n";
+
+// Monitor task progress
+while (true) {
+    $taskStatus = $client->getNodes()->get("pve1")->getTasks()->get($taskId)->index();
+    $status = $taskStatus->getResponse()->data->status;
+
+    if ($status == "stopped") {
+        $exitStatus = $taskStatus->getResponse()->data->exitstatus;
+        echo "Task completed with status: $exitStatus\n";
+        break;
+    } elseif ($status == "running") {
+        echo "Task still running...\n";
+        sleep(2);
     }
 }
 ```

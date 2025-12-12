@@ -16,9 +16,7 @@ $client->setApiToken("user@pve!token=uuid");
 
 // Test connection
 $version = $client->getVersion()->version();
-if ($version->isSuccessStatusCode()) {
-    echo "Connected to Proxmox VE " . $version->getResponse()->data->version . "\n";
-}
+echo "Connected to Proxmox VE " . $version->getResponse()->data->version . "\n";
 ```
 
 ### **Client Setup with Error Handling**
@@ -170,11 +168,9 @@ $client->login("admin@pve", "password");
 
 // Get all containers
 $resources = $client->getCluster()->getResources()->resources();
-if ($resources->isSuccessStatusCode()) {
-    foreach ($resources->getResponse()->data as $resource) {
-        if ($resource->type == "lxc") {
-            echo "CT {$resource->vmid}: {$resource->name} on {$resource->node} - {$resource->status}\n";
-        }
+foreach ($resources->getResponse()->data as $resource) {
+    if ($resource->type == "lxc") {
+        echo "CT {$resource->vmid}: {$resource->name} on {$resource->node} - {$resource->status}\n";
     }
 }
 ```
@@ -192,25 +188,22 @@ $container = $client->getNodes()->get("pve1")->getLxc()->get(101);
 
 // Get container configuration
 $config = $container->getConfig()->vmConfig();
-if ($config->isSuccessStatusCode()) {
-    $ctConfig = $config->getResponse()->data;
-    echo "Container: {$ctConfig->hostname}\n";
-    echo "OS Template: {$ctConfig->ostemplate}\n";
-    echo "Memory: {$ctConfig->memory} MB\n";
-}
+$ctConfig = $config->getResponse()->data;
+
+echo "Container: {$ctConfig->hostname}\n";
+echo "OS Template: {$ctConfig->ostemplate}\n";
+echo "Memory: {$ctConfig->memory} MB\n";
 
 // Start container
-$startResult = $container->getStatus()->getStart()->vmStart();
-if ($startResult->isSuccessStatusCode()) {
-    echo "Container started\n";
-}
+$container->getStatus()->getStart()->vmStart();
+echo "Container started\n";
 
 // Get container status
 $status = $container->getStatus()->getCurrent()->vmStatus();
-if ($status->isSuccessStatusCode()) {
-    echo "Status: {$status->getResponse()->data->status}\n";
-    echo "Uptime: {$status->getResponse()->data->uptime} seconds\n";
-}
+$statusData = $status->getResponse()->data;
+
+echo "Status: {$statusData->status}\n";
+echo "Uptime: {$statusData->uptime} seconds\n";
 ```
 
 ---
@@ -228,11 +221,9 @@ $client->login("admin@pve", "password");
 
 // Get cluster status
 $clusterStatus = $client->getCluster()->getStatus()->getStatus();
-if ($clusterStatus->isSuccessStatusCode()) {
-    echo "Cluster Status:\n";
-    foreach ($clusterStatus->getResponse()->data as $item) {
-        echo "  {$item->type}: {$item->name} - {$item->status}\n";
-    }
+echo "Cluster Status:\n";
+foreach ($clusterStatus->getResponse()->data as $item) {
+    echo "  {$item->type}: {$item->name} - {$item->status}\n";
 }
 ```
 
@@ -247,14 +238,12 @@ $client->login("admin@pve", "password");
 
 // Get all nodes
 $nodes = $client->getNodes()->index();
-if ($nodes->isSuccessStatusCode()) {
-    echo "Available Nodes:\n";
-    foreach ($nodes->getResponse()->data as $node) {
-        echo "  {$node->node}: {$node->status}\n";
-        echo "    CPU: " . sprintf("%.2f%%", $node->cpu * 100) . "\n";
-        echo "    Memory: " . sprintf("%.2f%%", ($node->mem / $node->maxmem) * 100) . "\n";
-        echo "    Uptime: " . gmdate("H:i:s", $node->uptime) . "\n";
-    }
+echo "Available Nodes:\n";
+foreach ($nodes->getResponse()->data as $node) {
+    echo "  {$node->node}: {$node->status}\n";
+    echo "    CPU: " . sprintf("%.2f%%", $node->cpu * 100) . "\n";
+    echo "    Memory: " . sprintf("%.2f%%", ($node->mem / $node->maxmem) * 100) . "\n";
+    echo "    Uptime: " . gmdate("H:i:s", $node->uptime) . "\n";
 }
 ```
 
@@ -269,14 +258,12 @@ $client->login("admin@pve", "password");
 
 // Get storage for a specific node
 $storages = $client->getNodes()->get("pve1")->getStorage()->index();
-if ($storages->isSuccessStatusCode()) {
-    echo "Available Storage:\n";
-    foreach ($storages->getResponse()->data as $storage) {
-        $usedPercent = ($storage->used / $storage->total) * 100;
-        echo "  {$storage->storage} ({$storage->type}): " . sprintf("%.1f%%", $usedPercent) . " used\n";
-        echo "    Total: " . sprintf("%.2f GB", $storage->total / (1024*1024*1024)) . "\n";
-        echo "    Available: " . sprintf("%.2f GB", $storage->avail / (1024*1024*1024)) . "\n";
-    }
+echo "Available Storage:\n";
+foreach ($storages->getResponse()->data as $storage) {
+    $usedPercent = ($storage->used / $storage->total) * 100;
+    echo "  {$storage->storage} ({$storage->type}): " . sprintf("%.1f%%", $usedPercent) . " used\n";
+    echo "    Total: " . sprintf("%.2f GB", $storage->total / (1024*1024*1024)) . "\n";
+    echo "    Available: " . sprintf("%.2f GB", $storage->avail / (1024*1024*1024)) . "\n";
 }
 ```
 
@@ -332,12 +319,10 @@ function batchVmOperation($client, $vmIds, $operation) {
         // Find VM location
         $resources = $client->getCluster()->getResources()->resources();
         $vm = null;
-        if ($resources->isSuccessStatusCode()) {
-            foreach ($resources->getResponse()->data as $r) {
-                if ($r->type == "qemu" && $r->vmid == $vmId) {
-                    $vm = $r;
-                    break;
-                }
+        foreach ($resources->getResponse()->data as $r) {
+            if ($r->type == "qemu" && $r->vmid == $vmId) {
+                $vm = $r;
+                break;
             }
         }
 
@@ -363,8 +348,7 @@ function batchVmOperation($client, $vmIds, $operation) {
     }
 
     foreach ($tasks as $task) {
-        $success = $task['result']->isSuccessStatusCode();
-        echo "VM {$task['vmId']} $operation: " . ($success ? "Success" : "Failed") . "\n";
+        echo "VM {$task['vmId']} $operation: Success\n";
     }
 }
 ```
@@ -380,19 +364,17 @@ function getVmPerformance($client, $node, $vmId) {
 
     // Get current status
     $status = $vm->getStatus()->getCurrent()->vmStatus();
-    if ($status->isSuccessStatusCode()) {
-        $data = $status->getResponse()->data;
+    $data = $status->getResponse()->data;
 
-        echo "VM $vmId Performance:\n";
-        echo "  Status: {$data->status}\n";
-        echo "  CPU Usage: " . sprintf("%.2f%%", $data->cpu * 100) . "\n";
-        echo "  Memory: " . formatBytes($data->mem) . " / " . formatBytes($data->maxmem) . " (" . sprintf("%.1f%%", ($data->mem / $data->maxmem) * 100) . ")\n";
-        echo "  Disk Read: " . formatBytes($data->diskread) . "\n";
-        echo "  Disk Write: " . formatBytes($data->diskwrite) . "\n";
-        echo "  Network In: " . formatBytes($data->netin) . "\n";
-        echo "  Network Out: " . formatBytes($data->netout) . "\n";
-        echo "  Uptime: " . gmdate("H:i:s", $data->uptime) . "\n";
-    }
+    echo "VM $vmId Performance:\n";
+    echo "  Status: {$data->status}\n";
+    echo "  CPU Usage: " . sprintf("%.2f%%", $data->cpu * 100) . "\n";
+    echo "  Memory: " . formatBytes($data->mem) . " / " . formatBytes($data->maxmem) . " (" . sprintf("%.1f%%", ($data->mem / $data->maxmem) * 100) . ")\n";
+    echo "  Disk Read: " . formatBytes($data->diskread) . "\n";
+    echo "  Disk Write: " . formatBytes($data->diskwrite) . "\n";
+    echo "  Network In: " . formatBytes($data->netin) . "\n";
+    echo "  Network Out: " . formatBytes($data->netout) . "\n";
+    echo "  Uptime: " . gmdate("H:i:s", $data->uptime) . "\n";
 }
 
 function formatBytes($bytes) {
@@ -452,11 +434,9 @@ use Corsinvest\ProxmoxVE\Api\PveClient;
 
 function findVm($client, $vmName) {
     $resources = $client->getCluster()->getResources()->resources();
-    if ($resources->isSuccessStatusCode()) {
-        foreach ($resources->getResponse()->data as $r) {
-            if ($r->type == "qemu" && strcasecmp($r->name, $vmName) === 0) {
-                return ['node' => $r->node, 'vmId' => $r->vmid];
-            }
+    foreach ($resources->getResponse()->data as $r) {
+        if ($r->type == "qemu" && strcasecmp($r->name, $vmName) === 0) {
+            return ['node' => $r->node, 'vmId' => $r->vmid];
         }
     }
 
