@@ -541,13 +541,10 @@ class PveClientBase
             $timeOut = $wait + 5000;
         }
         $timeStart = floor(microtime(true) * 1000);
-        $waitTime = floor(microtime(true) * 1000);
 
         while ($isRunning && ((floor(microtime(true) * 1000) - $timeStart) < $timeOut)) {
-            if ((floor(microtime(true) * 1000) - $waitTime) >= $wait) {
-                $waitTime = floor(microtime(true) * 1000);
-                $isRunning = $this->taskIsRunning($task);
-            }
+            $isRunning = $this->taskIsRunning($task);
+            usleep($wait * 1000);
         }
 
         return $isRunning;
