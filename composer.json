@@ -1,7 +1,7 @@
 {
     "name": "corsinvest/cv4pve-api-php",
     "description": "Corsinvest Proxmox VE Client API PHP",
-    "version": "9.2.0",
+    "version": "9.2.1",
     "keywords": [
         "Proxmox",
         "Proxmox VE",
@@ -15,7 +15,7 @@
     ],
     "homepage": "https://github.com/Corsinvest/cv4pve-api-php",
     "type": "library",
-    "license": "GPL-3.0-only",
+    "license": "MIT",
     "authors": [
         {
             "homepage": "https://www.corisnvest.it/cv4pve",
