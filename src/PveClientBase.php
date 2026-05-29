@@ -357,7 +357,18 @@ class PveClientBase
             echo "Method: " . $method . " , Url: " . $url . "\n";
             if ($method != 'GET') {
                 echo "Parameters:\n";
-                var_dump($params);
+                $sensitiveParams = ['password', 'token', 'ticket', 'otp', 'apitoken'];
+                foreach ($params as $key => $value) {
+                    $paramName = strtolower($key);
+                    $isSensitive = false;
+                    foreach ($sensitiveParams as $sensitive) {
+                        if (strpos($paramName, $sensitive) !== false) {
+                            $isSensitive = true;
+                            break;
+                        }
+                    }
+                    echo $key . " : " . ($isSensitive ? "****" : $value) . "\n";
+                }
             }
         }
 

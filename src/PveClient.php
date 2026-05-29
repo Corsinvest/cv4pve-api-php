@@ -184,6 +184,18 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * @ignore
          */
+        private $qemu;
+        /**
+         * Get ClusterQemu
+         * @return PVEClusterQemu
+         */
+        public function getQemu()
+        {
+            return $this->qemu ?: ($this->qemu = new PVEClusterQemu($this->client));
+        }
+        /**
+         * @ignore
+         */
         private $config;
         /**
          * Get ClusterConfig
@@ -1948,6 +1960,249 @@ namespace Corsinvest\ProxmoxVE\Api {
     }
 
     /**
+     * Class PVEClusterQemu
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEClusterQemu
+    {
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client)
+        {
+            $this->client = $client;
+        }
+
+        /**
+         * @ignore
+         */
+        private $cpuFlags;
+        /**
+         * Get QemuClusterCpuFlags
+         * @return PVEQemuClusterCpuFlags
+         */
+        public function getCpuFlags()
+        {
+            return $this->cpuFlags ?: ($this->cpuFlags = new PVEQemuClusterCpuFlags($this->client));
+        }
+        /**
+         * @ignore
+         */
+        private $customCpuModels;
+        /**
+         * Get QemuClusterCustomCpuModels
+         * @return PVEQemuClusterCustomCpuModels
+         */
+        public function getCustomCpuModels()
+        {
+            return $this->customCpuModels ?: ($this->customCpuModels = new PVEQemuClusterCustomCpuModels($this->client));
+        }
+
+
+        /**
+         * Cluster-wide QEMU index
+         * @return Result
+         */
+
+        public function index()
+        {
+            return $this->client->get("/cluster/qemu");
+        }
+    }
+    /**
+     * Class PVEQemuClusterCpuFlags
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEQemuClusterCpuFlags
+    {
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client)
+        {
+            $this->client = $client;
+        }
+
+
+
+        /**
+         * List of available CPU flags. Currently only implemented for x86_64, returns an empty list for aarch64.
+         * @param string $accel Acceleration type to check node compatibility for.
+         *   Enum: kvm,tcg
+         * @param string $arch Virtual processor architecture. Defaults to the host architecture.
+         *   Enum: x86_64,aarch64
+         * @return Result
+         */
+
+        public function index($accel = null, $arch = null)
+        {
+            $params = [
+                'accel' => $accel,
+                'arch' => $arch
+            ];
+            return $this->client->get("/cluster/qemu/cpu-flags", $params);
+        }
+    }
+
+    /**
+     * Class PVEQemuClusterCustomCpuModels
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEQemuClusterCustomCpuModels
+    {
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client)
+        {
+            $this->client = $client;
+        }
+
+
+        /**
+         * Get ItemCustomCpuModelsQemuClusterCputype
+         * @param cputype
+         * @return PVEItemCustomCpuModelsQemuClusterCputype
+         */
+        public function get($cputype)
+        {
+            return new PVEItemCustomCpuModelsQemuClusterCputype($this->client, $cputype);
+        }
+
+        /**
+         * List all custom CPU model definitions visible to the user.
+         * @return Result
+         */
+
+        public function config()
+        {
+            return $this->client->get("/cluster/qemu/custom-cpu-models");
+        }
+        /**
+         * Add a custom CPU model definition.
+         * @param string $cputype Name for the custom CPU model. The 'custom-' prefix is optional.
+         * @param string $reported_model CPU model and vendor to report to the guest. Must be a QEMU/KVM supported model. Only valid for custom CPU model definitions, default models will always report themselves to the guest OS.
+         *   Enum: 486,a64fx,athlon,Broadwell,Broadwell-IBRS,Broadwell-noTSX,Broadwell-noTSX-IBRS,Cascadelake-Server,Cascadelake-Server-noTSX,Cascadelake-Server-v2,Cascadelake-Server-v4,Cascadelake-Server-v5,ClearwaterForest,ClearwaterForest-v2,ClearwaterForest-v3,Conroe,Cooperlake,Cooperlake-v2,core2duo,coreduo,cortex-a35,cortex-a53,cortex-a55,cortex-a57,cortex-a710,cortex-a72,cortex-a76,cortex-a78ae,DiamondRapids,EPYC,EPYC-Genoa,EPYC-Genoa-v2,EPYC-IBPB,EPYC-Milan,EPYC-Milan-v2,EPYC-Milan-v3,EPYC-Rome,EPYC-Rome-v2,EPYC-Rome-v3,EPYC-Rome-v4,EPYC-Rome-v5,EPYC-Turin,EPYC-v3,EPYC-v4,EPYC-v5,GraniteRapids,GraniteRapids-v2,GraniteRapids-v3,GraniteRapids-v4,GraniteRapids-v5,Haswell,Haswell-IBRS,Haswell-noTSX,Haswell-noTSX-IBRS,host,Icelake-Client,Icelake-Client-noTSX,Icelake-Server,Icelake-Server-noTSX,Icelake-Server-v3,Icelake-Server-v4,Icelake-Server-v5,Icelake-Server-v6,Icelake-Server-v7,IvyBridge,IvyBridge-IBRS,KnightsMill,kvm32,kvm64,max,Nehalem,Nehalem-IBRS,neoverse-n1,neoverse-n2,neoverse-v1,Opteron_G1,Opteron_G2,Opteron_G3,Opteron_G4,Opteron_G5,Penryn,pentium,pentium2,pentium3,phenom,qemu32,qemu64,SandyBridge,SandyBridge-IBRS,SapphireRapids,SapphireRapids-v2,SapphireRapids-v3,SapphireRapids-v4,SapphireRapids-v5,SapphireRapids-v6,SierraForest,SierraForest-v2,SierraForest-v3,SierraForest-v4,SierraForest-v5,Skylake-Client,Skylake-Client-IBRS,Skylake-Client-noTSX-IBRS,Skylake-Client-v4,Skylake-Server,Skylake-Server-IBRS,Skylake-Server-noTSX-IBRS,Skylake-Server-v4,Skylake-Server-v5,Westmere,Westmere-IBRS
+         * @param string $flags List of additional CPU flags separated by ';'. Use '+FLAG' to enable, '-FLAG' to disable a flag. There is a special 'nested-virt' shorthand which controls nested virtualization for the current CPU ('svm' for AMD and 'vmx' for Intel). Custom CPU models can specify any flag supported by QEMU/KVM, VM-specific flags must be from the following set for security reasons: aes, amd-no-ssb, amd-ssbd, hv-evmcs, hv-tlbflush, ibpb, md-clear, nested-virt, pcid, pdpe1gb, spec-ctrl, ssbd, virt-ssbd
+         * @param int $guest_phys_bits Number of physical address bits available to the guest.
+         * @param bool $hidden Do not identify as a KVM virtual machine. Only affects vCPUs with x86-64 architecture.
+         * @param string $hv_vendor_id The Hyper-V vendor ID. Some drivers or programs inside Windows guests need a specific ID.
+         * @param int $level Maximum input value for the basic CPUID leaves the guest can query - that is the vendor (leaf 0), family/model/stepping and feature bits (leaf 1), cache and topology info (leaves 4 and B), and so on. Higher-numbered leaves are hidden. Setting '30' is a common workaround for Hyper-V boot failures on Windows guests running on recent Intel hosts. Only applies when the vCPU architecture is x86_64.
+         * @param string $phys_bits The physical memory address bits that are reported to the guest OS. Should be smaller or equal to the host's. Set to 'host' to use value from host CPU, but note that doing so will break live migration to CPUs with other values.
+         * @return Result
+         */
+
+        public function create($cputype, $reported_model, $flags = null, $guest_phys_bits = null, $hidden = null, $hv_vendor_id = null, $level = null, $phys_bits = null)
+        {
+            $params = [
+                'cputype' => $cputype,
+                'reported-model' => $reported_model,
+                'flags' => $flags,
+                'guest-phys-bits' => $guest_phys_bits,
+                'hidden' => $hidden,
+                'hv-vendor-id' => $hv_vendor_id,
+                'level' => $level,
+                'phys-bits' => $phys_bits
+            ];
+            return $this->client->create("/cluster/qemu/custom-cpu-models", $params);
+        }
+    }
+    /**
+     * Class PVEItemCustomCpuModelsQemuClusterCputype
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEItemCustomCpuModelsQemuClusterCputype
+    {
+
+        /**
+         * @ignore
+         */
+        private $cputype;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $cputype)
+        {
+            $this->client = $client;
+            $this->cputype = $cputype;
+        }
+
+
+
+        /**
+         * Delete a custom CPU model definition.
+         * @return Result
+         */
+
+        public function delete()
+        {
+            return $this->client->delete("/cluster/qemu/custom-cpu-models/{$this->cputype}");
+        }
+        /**
+         * Retrieve details about a specific custom CPU model.
+         * @return Result
+         */
+
+        public function info()
+        {
+            return $this->client->get("/cluster/qemu/custom-cpu-models/{$this->cputype}");
+        }
+        /**
+         * Update a custom CPU model definition.
+         * @param string $delete A list of properties to delete.
+         * @param string $digest Prevent changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
+         * @param string $flags List of additional CPU flags separated by ';'. Use '+FLAG' to enable, '-FLAG' to disable a flag. There is a special 'nested-virt' shorthand which controls nested virtualization for the current CPU ('svm' for AMD and 'vmx' for Intel). Custom CPU models can specify any flag supported by QEMU/KVM, VM-specific flags must be from the following set for security reasons: aes, amd-no-ssb, amd-ssbd, hv-evmcs, hv-tlbflush, ibpb, md-clear, nested-virt, pcid, pdpe1gb, spec-ctrl, ssbd, virt-ssbd
+         * @param int $guest_phys_bits Number of physical address bits available to the guest.
+         * @param bool $hidden Do not identify as a KVM virtual machine. Only affects vCPUs with x86-64 architecture.
+         * @param string $hv_vendor_id The Hyper-V vendor ID. Some drivers or programs inside Windows guests need a specific ID.
+         * @param int $level Maximum input value for the basic CPUID leaves the guest can query - that is the vendor (leaf 0), family/model/stepping and feature bits (leaf 1), cache and topology info (leaves 4 and B), and so on. Higher-numbered leaves are hidden. Setting '30' is a common workaround for Hyper-V boot failures on Windows guests running on recent Intel hosts. Only applies when the vCPU architecture is x86_64.
+         * @param string $phys_bits The physical memory address bits that are reported to the guest OS. Should be smaller or equal to the host's. Set to 'host' to use value from host CPU, but note that doing so will break live migration to CPUs with other values.
+         * @param string $reported_model CPU model and vendor to report to the guest. Must be a QEMU/KVM supported model. Only valid for custom CPU model definitions, default models will always report themselves to the guest OS.
+         *   Enum: 486,a64fx,athlon,Broadwell,Broadwell-IBRS,Broadwell-noTSX,Broadwell-noTSX-IBRS,Cascadelake-Server,Cascadelake-Server-noTSX,Cascadelake-Server-v2,Cascadelake-Server-v4,Cascadelake-Server-v5,ClearwaterForest,ClearwaterForest-v2,ClearwaterForest-v3,Conroe,Cooperlake,Cooperlake-v2,core2duo,coreduo,cortex-a35,cortex-a53,cortex-a55,cortex-a57,cortex-a710,cortex-a72,cortex-a76,cortex-a78ae,DiamondRapids,EPYC,EPYC-Genoa,EPYC-Genoa-v2,EPYC-IBPB,EPYC-Milan,EPYC-Milan-v2,EPYC-Milan-v3,EPYC-Rome,EPYC-Rome-v2,EPYC-Rome-v3,EPYC-Rome-v4,EPYC-Rome-v5,EPYC-Turin,EPYC-v3,EPYC-v4,EPYC-v5,GraniteRapids,GraniteRapids-v2,GraniteRapids-v3,GraniteRapids-v4,GraniteRapids-v5,Haswell,Haswell-IBRS,Haswell-noTSX,Haswell-noTSX-IBRS,host,Icelake-Client,Icelake-Client-noTSX,Icelake-Server,Icelake-Server-noTSX,Icelake-Server-v3,Icelake-Server-v4,Icelake-Server-v5,Icelake-Server-v6,Icelake-Server-v7,IvyBridge,IvyBridge-IBRS,KnightsMill,kvm32,kvm64,max,Nehalem,Nehalem-IBRS,neoverse-n1,neoverse-n2,neoverse-v1,Opteron_G1,Opteron_G2,Opteron_G3,Opteron_G4,Opteron_G5,Penryn,pentium,pentium2,pentium3,phenom,qemu32,qemu64,SandyBridge,SandyBridge-IBRS,SapphireRapids,SapphireRapids-v2,SapphireRapids-v3,SapphireRapids-v4,SapphireRapids-v5,SapphireRapids-v6,SierraForest,SierraForest-v2,SierraForest-v3,SierraForest-v4,SierraForest-v5,Skylake-Client,Skylake-Client-IBRS,Skylake-Client-noTSX-IBRS,Skylake-Client-v4,Skylake-Server,Skylake-Server-IBRS,Skylake-Server-noTSX-IBRS,Skylake-Server-v4,Skylake-Server-v5,Westmere,Westmere-IBRS
+         * @return Result
+         */
+
+        public function update($delete = null, $digest = null, $flags = null, $guest_phys_bits = null, $hidden = null, $hv_vendor_id = null, $level = null, $phys_bits = null, $reported_model = null)
+        {
+            $params = [
+                'delete' => $delete,
+                'digest' => $digest,
+                'flags' => $flags,
+                'guest-phys-bits' => $guest_phys_bits,
+                'hidden' => $hidden,
+                'hv-vendor-id' => $hv_vendor_id,
+                'level' => $level,
+                'phys-bits' => $phys_bits,
+                'reported-model' => $reported_model
+            ];
+            return $this->client->set("/cluster/qemu/custom-cpu-models/{$this->cputype}", $params);
+        }
+    }
+
+    /**
      * Class PVEClusterConfig
      * @package Corsinvest\VE\ProxmoxVE\Api
      */
@@ -2043,15 +2298,17 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $clustername The name of the cluster.
          * @param array $linkN Address and priority information of a single corosync link. (up to 8 links supported; link0..link7)
          * @param int $nodeid Node id for this node.
+         * @param int $token_coefficient Coefficient used to determine Corosync's token timeout. See the corosync.conf(5) manual for more details.
          * @param int $votes Number of votes for this node.
          * @return Result
          */
 
-        public function create($clustername, $linkN = null, $nodeid = null, $votes = null)
+        public function create($clustername, $linkN = null, $nodeid = null, $token_coefficient = null, $votes = null)
         {
             $params = [
                 'clustername' => $clustername,
                 'nodeid' => $nodeid,
+                'token-coefficient' => $token_coefficient,
                 'votes' => $votes
             ];
             $this->client->addIndexedParameter($params, 'link', $linkN);
@@ -3382,7 +3639,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $comment Description for the Job.
          * @param string $compress Compress dump file.
          *   Enum: 0,1,gzip,lzo,zstd
-         * @param string $dow Day of week selection.
+         * @param string $dow Deprecated: Use 'schedule' instead. Day of week selection. 'starttime' and 'dow' will be converted into 'schedule' if used.
          * @param string $dumpdir Store resulting files to specified directory.
          * @param bool $enabled Enable or disable the job.
          * @param string $exclude Exclude specified guest systems (assumes --all)
@@ -3394,7 +3651,6 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $mailnotification Deprecated: use notification targets/matchers instead. Specify when to send a notification mail
          *   Enum: always,failure
          * @param string $mailto Deprecated: Use notification targets/matchers instead. Comma-separated list of email addresses or users that should receive email notifications.
-         * @param int $maxfiles Deprecated: use 'prune-backups' instead. Maximal number of backup files per guest system.
          * @param string $mode Backup mode.
          *   Enum: snapshot,suspend,stop
          * @param string $node Only run if executed on this node.
@@ -3413,7 +3669,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $repeat_missed If true, the job will be run as soon as possible if it was missed while the scheduler was not running.
          * @param string $schedule Backup schedule. The format is a subset of `systemd` calendar events.
          * @param string $script Use specified hook script.
-         * @param string $starttime Job Start time.
+         * @param string $starttime Deprecated: Use 'schedule' instead. Job Start time. 'starttime' and 'dow' will be converted into 'schedule' if used.
          * @param bool $stdexcludes Exclude temporary files and logs.
          * @param bool $stop Stop running backup jobs on this host.
          * @param int $stopwait Maximal time to wait until a guest system is stopped (minutes).
@@ -3424,7 +3680,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
 
-        public function createJob($all = null, $bwlimit = null, $comment = null, $compress = null, $dow = null, $dumpdir = null, $enabled = null, $exclude = null, $exclude_path = null, $fleecing = null, $id = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $node = null, $notes_template = null, $notification_mode = null, $pbs_change_detection_mode = null, $performance = null, $pigz = null, $pool = null, $protected = null, $prune_backups = null, $quiet = null, $remove = null, $repeat_missed = null, $schedule = null, $script = null, $starttime = null, $stdexcludes = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null)
+        public function createJob($all = null, $bwlimit = null, $comment = null, $compress = null, $dow = null, $dumpdir = null, $enabled = null, $exclude = null, $exclude_path = null, $fleecing = null, $id = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $mode = null, $node = null, $notes_template = null, $notification_mode = null, $pbs_change_detection_mode = null, $performance = null, $pigz = null, $pool = null, $protected = null, $prune_backups = null, $quiet = null, $remove = null, $repeat_missed = null, $schedule = null, $script = null, $starttime = null, $stdexcludes = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null)
         {
             $params = [
                 'all' => $all,
@@ -3442,7 +3698,6 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'lockwait' => $lockwait,
                 'mailnotification' => $mailnotification,
                 'mailto' => $mailto,
-                'maxfiles' => $maxfiles,
                 'mode' => $mode,
                 'node' => $node,
                 'notes-template' => $notes_template,
@@ -3535,7 +3790,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $compress Compress dump file.
          *   Enum: 0,1,gzip,lzo,zstd
          * @param string $delete A list of settings you want to delete.
-         * @param string $dow Day of week selection.
+         * @param string $dow Deprecated: Use 'schedule' instead. Day of week selection. 'starttime' and 'dow' will be converted into 'schedule' if used.
          * @param string $dumpdir Store resulting files to specified directory.
          * @param bool $enabled Enable or disable the job.
          * @param string $exclude Exclude specified guest systems (assumes --all)
@@ -3546,7 +3801,6 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $mailnotification Deprecated: use notification targets/matchers instead. Specify when to send a notification mail
          *   Enum: always,failure
          * @param string $mailto Deprecated: Use notification targets/matchers instead. Comma-separated list of email addresses or users that should receive email notifications.
-         * @param int $maxfiles Deprecated: use 'prune-backups' instead. Maximal number of backup files per guest system.
          * @param string $mode Backup mode.
          *   Enum: snapshot,suspend,stop
          * @param string $node Only run if executed on this node.
@@ -3565,7 +3819,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $repeat_missed If true, the job will be run as soon as possible if it was missed while the scheduler was not running.
          * @param string $schedule Backup schedule. The format is a subset of `systemd` calendar events.
          * @param string $script Use specified hook script.
-         * @param string $starttime Job Start time.
+         * @param string $starttime Deprecated: Use 'schedule' instead. Job Start time. 'starttime' and 'dow' will be converted into 'schedule' if used.
          * @param bool $stdexcludes Exclude temporary files and logs.
          * @param bool $stop Stop running backup jobs on this host.
          * @param int $stopwait Maximal time to wait until a guest system is stopped (minutes).
@@ -3576,7 +3830,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
 
-        public function updateJob($all = null, $bwlimit = null, $comment = null, $compress = null, $delete = null, $dow = null, $dumpdir = null, $enabled = null, $exclude = null, $exclude_path = null, $fleecing = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $node = null, $notes_template = null, $notification_mode = null, $pbs_change_detection_mode = null, $performance = null, $pigz = null, $pool = null, $protected = null, $prune_backups = null, $quiet = null, $remove = null, $repeat_missed = null, $schedule = null, $script = null, $starttime = null, $stdexcludes = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null)
+        public function updateJob($all = null, $bwlimit = null, $comment = null, $compress = null, $delete = null, $dow = null, $dumpdir = null, $enabled = null, $exclude = null, $exclude_path = null, $fleecing = null, $ionice = null, $lockwait = null, $mailnotification = null, $mailto = null, $mode = null, $node = null, $notes_template = null, $notification_mode = null, $pbs_change_detection_mode = null, $performance = null, $pigz = null, $pool = null, $protected = null, $prune_backups = null, $quiet = null, $remove = null, $repeat_missed = null, $schedule = null, $script = null, $starttime = null, $stdexcludes = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null)
         {
             $params = [
                 'all' => $all,
@@ -3594,7 +3848,6 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'lockwait' => $lockwait,
                 'mailnotification' => $mailnotification,
                 'mailto' => $mailto,
-                'maxfiles' => $maxfiles,
                 'mode' => $mode,
                 'node' => $node,
                 'notes-template' => $notes_template,
@@ -3863,11 +4116,12 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Create a new HA resource.
          * @param string $sid HA resource ID. This consists of a resource type followed by a resource specific name, separated with colon (example: vm:100 / ct:100). For virtual machines and containers, you can simply use the VM or CT id as a shortcut (example: 100).
+         * @param bool $auto_rebalance HA resource may be migrated during automatic rebalancing
          * @param string $comment Description.
          * @param bool $failback Automatically migrate HA resource to the node with the highest priority according to their node affinity  rules, if a node with a higher priority than the current node comes online.
          * @param string $group The HA group identifier.
-         * @param int $max_relocate Maximal number of service relocate tries when a service failes to start.
-         * @param int $max_restart Maximal number of tries to restart the service on a node after its start failed.
+         * @param int $max_relocate Maximal number of resource relocate tries when a resource fails to start.
+         * @param int $max_restart Maximal number of tries to restart the resource on a node after its start failed. When reached, the HA manager will try to relocate the resource to an eligible node.
          * @param string $state Requested resource state.
          *   Enum: started,stopped,enabled,disabled,ignored
          * @param string $type Resource type.
@@ -3875,10 +4129,11 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
 
-        public function create($sid, $comment = null, $failback = null, $group = null, $max_relocate = null, $max_restart = null, $state = null, $type = null)
+        public function create($sid, $auto_rebalance = null, $comment = null, $failback = null, $group = null, $max_relocate = null, $max_restart = null, $state = null, $type = null)
         {
             $params = [
                 'sid' => $sid,
+                'auto-rebalance' => $auto_rebalance,
                 'comment' => $comment,
                 'failback' => $failback,
                 'group' => $group,
@@ -3963,21 +4218,23 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
         /**
          * Update resource configuration.
+         * @param bool $auto_rebalance HA resource may be migrated during automatic rebalancing
          * @param string $comment Description.
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
          * @param bool $failback Automatically migrate HA resource to the node with the highest priority according to their node affinity  rules, if a node with a higher priority than the current node comes online.
          * @param string $group The HA group identifier.
-         * @param int $max_relocate Maximal number of service relocate tries when a service failes to start.
-         * @param int $max_restart Maximal number of tries to restart the service on a node after its start failed.
+         * @param int $max_relocate Maximal number of resource relocate tries when a resource fails to start.
+         * @param int $max_restart Maximal number of tries to restart the resource on a node after its start failed. When reached, the HA manager will try to relocate the resource to an eligible node.
          * @param string $state Requested resource state.
          *   Enum: started,stopped,enabled,disabled,ignored
          * @return Result
          */
 
-        public function update($comment = null, $delete = null, $digest = null, $failback = null, $group = null, $max_relocate = null, $max_restart = null, $state = null)
+        public function update($auto_rebalance = null, $comment = null, $delete = null, $digest = null, $failback = null, $group = null, $max_relocate = null, $max_restart = null, $state = null)
         {
             $params = [
+                'auto-rebalance' => $auto_rebalance,
                 'comment' => $comment,
                 'delete' => $delete,
                 'digest' => $digest,
@@ -4058,7 +4315,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
 
         /**
-         * Request resource relocatzion to another node. This stops the service on the old node, and restarts it on the target node.
+         * Request resource relocation to another node. This stops the service on the old node, and restarts it on the target node.
          * @param string $node Target node.
          * @return Result
          */
@@ -4404,6 +4661,30 @@ namespace Corsinvest\ProxmoxVE\Api {
         {
             return $this->managerStatus ?: ($this->managerStatus = new PVEStatusHaClusterManagerStatus($this->client));
         }
+        /**
+         * @ignore
+         */
+        private $disarmHa;
+        /**
+         * Get StatusHaClusterDisarmHa
+         * @return PVEStatusHaClusterDisarmHa
+         */
+        public function getDisarmHa()
+        {
+            return $this->disarmHa ?: ($this->disarmHa = new PVEStatusHaClusterDisarmHa($this->client));
+        }
+        /**
+         * @ignore
+         */
+        private $armHa;
+        /**
+         * Get StatusHaClusterArmHa
+         * @return PVEStatusHaClusterArmHa
+         */
+        public function getArmHa()
+        {
+            return $this->armHa ?: ($this->armHa = new PVEStatusHaClusterArmHa($this->client));
+        }
 
 
         /**
@@ -4439,7 +4720,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
 
         /**
-         * Get HA manger status.
+         * Get HA manager status.
          * @return Result
          */
 
@@ -4472,13 +4753,82 @@ namespace Corsinvest\ProxmoxVE\Api {
 
 
         /**
-         * Get full HA manger status, including LRM status.
+         * Get full HA manager status, including LRM status.
          * @return Result
          */
 
         public function managerStatus()
         {
             return $this->client->get("/cluster/ha/status/manager_status");
+        }
+    }
+
+    /**
+     * Class PVEStatusHaClusterDisarmHa
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEStatusHaClusterDisarmHa
+    {
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client)
+        {
+            $this->client = $client;
+        }
+
+
+
+        /**
+         * Request disarming the HA stack, releasing all watchdogs cluster-wide.
+         * @param string $resource_mode Controls how HA managed resources are handled while disarmed. The current state of resources is not affected. 'freeze': new commands and state changes are not applied. 'ignore': resources are removed from HA tracking and can be managed as if they were not HA managed.
+         *   Enum: freeze,ignore
+         * @return Result
+         */
+
+        public function disarmHa($resource_mode)
+        {
+            $params = ['resource-mode' => $resource_mode];
+            return $this->client->create("/cluster/ha/status/disarm-ha", $params);
+        }
+    }
+
+    /**
+     * Class PVEStatusHaClusterArmHa
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEStatusHaClusterArmHa
+    {
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client)
+        {
+            $this->client = $client;
+        }
+
+
+
+        /**
+         * Request re-arming the HA stack after it was disarmed.
+         * @return Result
+         */
+
+        public function armHa()
+        {
+            return $this->client->create("/cluster/ha/status/arm-ha");
         }
     }
 
@@ -4635,7 +4985,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $type ACME challenge type.
          *   Enum: dns,standalone
          * @param string $api API plugin name
-         *   Enum: 1984hosting,acmedns,acmeproxy,active24,ad,ali,alviy,anx,artfiles,arvan,aurora,autodns,aws,azion,azure,beget,bookmyname,bunny,cf,clouddns,cloudns,cn,conoha,constellix,cpanel,curanet,cyon,da,ddnss,desec,df,dgon,dnsexit,dnshome,dnsimple,dnsservices,doapi,domeneshop,dp,dpi,dreamhost,duckdns,durabledns,dyn,dynu,dynv6,easydns,edgecenter,edgedns,euserv,exoscale,fornex,freedns,freemyip,gandi_livedns,gcloud,gcore,gd,geoscaling,googledomains,he,he_ddns,hetzner,hexonet,hostingde,huaweicloud,infoblox,infomaniak,internetbs,inwx,ionos,ionos_cloud,ipv64,ispconfig,jd,joker,kappernet,kas,kinghost,knot,la,leaseweb,lexicon,limacity,linode,linode_v4,loopia,lua,maradns,me,miab,mijnhost,misaka,myapi,mydevil,mydnsjp,mythic_beasts,namecheap,namecom,namesilo,nanelo,nederhost,neodigit,netcup,netlify,nic,njalla,nm,nsd,nsone,nsupdate,nw,oci,omglol,one,online,openprovider,openstack,opnsense,ovh,pdns,pleskxml,pointhq,porkbun,rackcorp,rackspace,rage4,rcode0,regru,scaleway,schlundtech,selectel,selfhost,servercow,simply,technitium,tele3,tencent,timeweb,transip,udr,ultra,unoeuro,variomedia,veesp,vercel,vscale,vultr,websupport,west_cn,world4you,yandex360,yc,zilore,zone,zoneedit,zonomi
+         *   Enum: 1984hosting,acmedns,acmeproxy,active24,ad,ali,alviy,anx,artfiles,arvan,aurora,autodns,aws,azion,azure,beget,bookmyname,bunny,cf,clouddns,cloudns,cn,conoha,constellix,cpanel,curanet,cyon,da,ddnss,desec,df,dgon,dnsexit,dnshome,dnsimple,dnsservices,doapi,domeneshop,dp,dpi,dreamhost,duckdns,durabledns,dyn,dynu,dynv6,easydns,edgecenter,edgedns,euserv,exoscale,fornex,freedns,freemyip,gandi_livedns,gcloud,gcore,gd,geoscaling,googledomains,he,he_ddns,hetzner,hetznercloud,hexonet,hostingde,huaweicloud,infoblox,infomaniak,internetbs,inwx,ionos,ionos_cloud,ipv64,ispconfig,jd,joker,kappernet,kas,kinghost,knot,la,leaseweb,lexicon,limacity,linode,linode_v4,loopia,lua,maradns,me,miab,mijnhost,misaka,myapi,mydevil,mydnsjp,mythic_beasts,namecheap,namecom,namesilo,nanelo,nederhost,neodigit,netcup,netlify,nic,njalla,nm,nsd,nsone,nsupdate,nw,oci,omglol,one,online,openprovider,openprovider_rest,openstack,opnsense,ovh,pdns,pleskxml,pointhq,porkbun,rackcorp,rackspace,rage4,rcode0,regru,scaleway,schlundtech,selectel,selfhost,servercow,simply,spaceship,technitium,tele3,tencent,timeweb,transip,udr,ultra,unoeuro,variomedia,veesp,vercel,vscale,vultr,websupport,west_cn,world4you,yandex360,yc,zilore,zone,zoneedit,zonomi
          * @param string $data DNS plugin data. (base64 encoded)
          * @param bool $disable Flag to disable the config.
          * @param string $nodes List of cluster node names.
@@ -4705,7 +5055,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Update ACME plugin configuration.
          * @param string $api API plugin name
-         *   Enum: 1984hosting,acmedns,acmeproxy,active24,ad,ali,alviy,anx,artfiles,arvan,aurora,autodns,aws,azion,azure,beget,bookmyname,bunny,cf,clouddns,cloudns,cn,conoha,constellix,cpanel,curanet,cyon,da,ddnss,desec,df,dgon,dnsexit,dnshome,dnsimple,dnsservices,doapi,domeneshop,dp,dpi,dreamhost,duckdns,durabledns,dyn,dynu,dynv6,easydns,edgecenter,edgedns,euserv,exoscale,fornex,freedns,freemyip,gandi_livedns,gcloud,gcore,gd,geoscaling,googledomains,he,he_ddns,hetzner,hexonet,hostingde,huaweicloud,infoblox,infomaniak,internetbs,inwx,ionos,ionos_cloud,ipv64,ispconfig,jd,joker,kappernet,kas,kinghost,knot,la,leaseweb,lexicon,limacity,linode,linode_v4,loopia,lua,maradns,me,miab,mijnhost,misaka,myapi,mydevil,mydnsjp,mythic_beasts,namecheap,namecom,namesilo,nanelo,nederhost,neodigit,netcup,netlify,nic,njalla,nm,nsd,nsone,nsupdate,nw,oci,omglol,one,online,openprovider,openstack,opnsense,ovh,pdns,pleskxml,pointhq,porkbun,rackcorp,rackspace,rage4,rcode0,regru,scaleway,schlundtech,selectel,selfhost,servercow,simply,technitium,tele3,tencent,timeweb,transip,udr,ultra,unoeuro,variomedia,veesp,vercel,vscale,vultr,websupport,west_cn,world4you,yandex360,yc,zilore,zone,zoneedit,zonomi
+         *   Enum: 1984hosting,acmedns,acmeproxy,active24,ad,ali,alviy,anx,artfiles,arvan,aurora,autodns,aws,azion,azure,beget,bookmyname,bunny,cf,clouddns,cloudns,cn,conoha,constellix,cpanel,curanet,cyon,da,ddnss,desec,df,dgon,dnsexit,dnshome,dnsimple,dnsservices,doapi,domeneshop,dp,dpi,dreamhost,duckdns,durabledns,dyn,dynu,dynv6,easydns,edgecenter,edgedns,euserv,exoscale,fornex,freedns,freemyip,gandi_livedns,gcloud,gcore,gd,geoscaling,googledomains,he,he_ddns,hetzner,hetznercloud,hexonet,hostingde,huaweicloud,infoblox,infomaniak,internetbs,inwx,ionos,ionos_cloud,ipv64,ispconfig,jd,joker,kappernet,kas,kinghost,knot,la,leaseweb,lexicon,limacity,linode,linode_v4,loopia,lua,maradns,me,miab,mijnhost,misaka,myapi,mydevil,mydnsjp,mythic_beasts,namecheap,namecom,namesilo,nanelo,nederhost,neodigit,netcup,netlify,nic,njalla,nm,nsd,nsone,nsupdate,nw,oci,omglol,one,online,openprovider,openprovider_rest,openstack,opnsense,ovh,pdns,pleskxml,pointhq,porkbun,rackcorp,rackspace,rage4,rcode0,regru,scaleway,schlundtech,selectel,selfhost,servercow,simply,spaceship,technitium,tele3,tencent,timeweb,transip,udr,ultra,unoeuro,variomedia,veesp,vercel,vscale,vultr,websupport,west_cn,world4you,yandex360,yc,zilore,zone,zoneedit,zonomi
          * @param string $data DNS plugin data. (base64 encoded)
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
@@ -5080,7 +5430,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Get ceph metadata.
-         * @param string $scope 
+         * @param string $scope Which metadata facet to return: 'all' enriches the per-daemon metadata with the PVE-side service state (presence of unit, data directory), 'versions' collects only per-node Ceph binary version data.
          *   Enum: all,versions
          * @return Result
          */
@@ -5166,7 +5516,7 @@ namespace Corsinvest\ProxmoxVE\Api {
             return $this->client->get("/cluster/ceph/flags");
         }
         /**
-         * Set/Unset multiple ceph flags at once.
+         * Set/Unset multiple Ceph flags at once. Each flag is a top-level optional boolean: passing true sets the flag, false unsets it, omitting it leaves the current state untouched. Runs as a worker task; returns a UPID to follow.
          * @param bool $nobackfill Backfilling of PGs is suspended.
          * @param bool $nodeep_scrub Deep Scrubbing is disabled.
          * @param bool $nodown OSD failure reports are being ignored, such that the monitors will not mark OSDs down.
@@ -5236,7 +5586,7 @@ namespace Corsinvest\ProxmoxVE\Api {
             return $this->client->get("/cluster/ceph/flags/{$this->flag}");
         }
         /**
-         * Set or clear (unset) a specific ceph flag
+         * Set or clear (unset) a specific Ceph flag. Runs synchronously (unlike the bulk PUT /cluster/ceph/flags endpoint, which forks a worker task).
          * @param bool $value The new value of the flag
          * @return Result
          */
@@ -6087,15 +6437,17 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Bulk start or resume all guests on the cluster.
-         * @param int $maxworkers How many parallel tasks at maximum should be started.
+         * @param int $max_workers Defines the maximum number of tasks running concurrently.
+         * @param int $maxworkers Defines the maximum number of tasks running concurrently. Deprecated, use 'max-workers' instead.
          * @param int $timeout Default start timeout in seconds. Only valid for VMs. (default depends on the guest configuration).
          * @param array $vms Only consider guests from this list of VMIDs.
          * @return Result
          */
 
-        public function start($maxworkers = null, $timeout = null, $vms = null)
+        public function start($max_workers = null, $maxworkers = null, $timeout = null, $vms = null)
         {
             $params = [
+                'max-workers' => $max_workers,
                 'maxworkers' => $maxworkers,
                 'timeout' => $timeout,
                 'vms' => $vms
@@ -6129,16 +6481,18 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Bulk shutdown all guests on the cluster.
          * @param bool $force_stop Makes sure the Guest stops after the timeout.
-         * @param int $maxworkers How many parallel tasks at maximum should be started.
+         * @param int $max_workers Defines the maximum number of tasks running concurrently.
+         * @param int $maxworkers Defines the maximum number of tasks running concurrently. Deprecated, use 'max-workers' instead.
          * @param int $timeout Default shutdown timeout in seconds if none is configured for the guest.
          * @param array $vms Only consider guests from this list of VMIDs.
          * @return Result
          */
 
-        public function shutdown($force_stop = null, $maxworkers = null, $timeout = null, $vms = null)
+        public function shutdown($force_stop = null, $max_workers = null, $maxworkers = null, $timeout = null, $vms = null)
         {
             $params = [
                 'force-stop' => $force_stop,
+                'max-workers' => $max_workers,
                 'maxworkers' => $maxworkers,
                 'timeout' => $timeout,
                 'vms' => $vms
@@ -6171,16 +6525,18 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Bulk suspend all guests on the cluster.
-         * @param int $maxworkers How many parallel tasks at maximum should be started.
+         * @param int $max_workers Defines the maximum number of tasks running concurrently.
+         * @param int $maxworkers Defines the maximum number of tasks running concurrently. Deprecated, use 'max-workers' instead.
          * @param string $statestorage The storage for the VM state.
          * @param bool $to_disk If set, suspends the guests to disk. Will be resumed on next start.
          * @param array $vms Only consider guests from this list of VMIDs.
          * @return Result
          */
 
-        public function suspend($maxworkers = null, $statestorage = null, $to_disk = null, $vms = null)
+        public function suspend($max_workers = null, $maxworkers = null, $statestorage = null, $to_disk = null, $vms = null)
         {
             $params = [
+                'max-workers' => $max_workers,
                 'maxworkers' => $maxworkers,
                 'statestorage' => $statestorage,
                 'to-disk' => $to_disk,
@@ -6215,17 +6571,19 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Bulk migrate all guests on the cluster.
          * @param string $target Target node.
-         * @param int $maxworkers How many parallel tasks at maximum should be started.
+         * @param int $max_workers Defines the maximum number of tasks running concurrently.
+         * @param int $maxworkers Defines the maximum number of tasks running concurrently. Deprecated, use 'max-workers' instead.
          * @param bool $online Enable live migration for VMs and restart migration for CTs.
          * @param array $vms Only consider guests from this list of VMIDs.
          * @param bool $with_local_disks Enable live storage migration for local disk
          * @return Result
          */
 
-        public function migrate($target, $maxworkers = null, $online = null, $vms = null, $with_local_disks = null)
+        public function migrate($target, $max_workers = null, $maxworkers = null, $online = null, $vms = null, $with_local_disks = null)
         {
             $params = [
                 'target' => $target,
+                'max-workers' => $max_workers,
                 'maxworkers' => $maxworkers,
                 'online' => $online,
                 'vms' => $vms,
@@ -6330,6 +6688,30 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * @ignore
          */
+        private $prefixLists;
+        /**
+         * Get SdnClusterPrefixLists
+         * @return PVESdnClusterPrefixLists
+         */
+        public function getPrefixLists()
+        {
+            return $this->prefixLists ?: ($this->prefixLists = new PVESdnClusterPrefixLists($this->client));
+        }
+        /**
+         * @ignore
+         */
+        private $routeMaps;
+        /**
+         * Get SdnClusterRouteMaps
+         * @return PVESdnClusterRouteMaps
+         */
+        public function getRouteMaps()
+        {
+            return $this->routeMaps ?: ($this->routeMaps = new PVESdnClusterRouteMaps($this->client));
+        }
+        /**
+         * @ignore
+         */
         private $lock;
         /**
          * Get SdnClusterLock
@@ -6351,6 +6733,18 @@ namespace Corsinvest\ProxmoxVE\Api {
         {
             return $this->rollback ?: ($this->rollback = new PVESdnClusterRollback($this->client));
         }
+        /**
+         * @ignore
+         */
+        private $dryRun;
+        /**
+         * Get SdnClusterDryRun
+         * @return PVESdnClusterDryRun
+         */
+        public function getDryRun()
+        {
+            return $this->dryRun ?: ($this->dryRun = new PVESdnClusterDryRun($this->client));
+        }
 
 
         /**
@@ -6365,7 +6759,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Apply sdn controller changes &amp;&amp; reload.
          * @param string $lock_token the token for unlocking the global SDN configuration
-         * @param bool $release_lock When lock-token has been provided and configuration successfully commited, release the lock automatically afterwards
+         * @param bool $release_lock When lock-token has been provided and configuration successfully committed, release the lock automatically afterwards
          * @return Result
          */
 
@@ -7207,6 +7601,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $peers Comma-separated list of peers, that are part of the VXLAN zone. Usually the IPs of the nodes.
          * @param string $reversedns reverse dns api server
          * @param string $rt_import List of Route Targets that should be imported into the VRF of the zone.
+         * @param array $secondary_controllers Additional controllers.
          * @param int $tag Service-VLAN Tag (outer VLAN)
          * @param string $vlan_protocol Which VLAN protocol should be used for the creation of the QinQ zone.
          *   Enum: 802.1q,802.1ad
@@ -7215,7 +7610,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
 
-        public function create($type, $zone, $advertise_subnets = null, $bridge = null, $bridge_disable_mac_learning = null, $controller = null, $dhcp = null, $disable_arp_nd_suppression = null, $dns = null, $dnszone = null, $dp_id = null, $exitnodes = null, $exitnodes_local_routing = null, $exitnodes_primary = null, $fabric = null, $ipam = null, $lock_token = null, $mac = null, $mtu = null, $nodes = null, $peers = null, $reversedns = null, $rt_import = null, $tag = null, $vlan_protocol = null, $vrf_vxlan = null, $vxlan_port = null)
+        public function create($type, $zone, $advertise_subnets = null, $bridge = null, $bridge_disable_mac_learning = null, $controller = null, $dhcp = null, $disable_arp_nd_suppression = null, $dns = null, $dnszone = null, $dp_id = null, $exitnodes = null, $exitnodes_local_routing = null, $exitnodes_primary = null, $fabric = null, $ipam = null, $lock_token = null, $mac = null, $mtu = null, $nodes = null, $peers = null, $reversedns = null, $rt_import = null, $secondary_controllers = null, $tag = null, $vlan_protocol = null, $vrf_vxlan = null, $vxlan_port = null)
         {
             $params = [
                 'type' => $type,
@@ -7241,6 +7636,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'peers' => $peers,
                 'reversedns' => $reversedns,
                 'rt-import' => $rt_import,
+                'secondary-controllers' => $secondary_controllers,
                 'tag' => $tag,
                 'vlan-protocol' => $vlan_protocol,
                 'vrf-vxlan' => $vrf_vxlan,
@@ -7328,6 +7724,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $peers Comma-separated list of peers, that are part of the VXLAN zone. Usually the IPs of the nodes.
          * @param string $reversedns reverse dns api server
          * @param string $rt_import List of Route Targets that should be imported into the VRF of the zone.
+         * @param array $secondary_controllers Additional controllers.
          * @param int $tag Service-VLAN Tag (outer VLAN)
          * @param string $vlan_protocol Which VLAN protocol should be used for the creation of the QinQ zone.
          *   Enum: 802.1q,802.1ad
@@ -7336,7 +7733,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
 
-        public function update($advertise_subnets = null, $bridge = null, $bridge_disable_mac_learning = null, $controller = null, $delete = null, $dhcp = null, $digest = null, $disable_arp_nd_suppression = null, $dns = null, $dnszone = null, $dp_id = null, $exitnodes = null, $exitnodes_local_routing = null, $exitnodes_primary = null, $fabric = null, $ipam = null, $lock_token = null, $mac = null, $mtu = null, $nodes = null, $peers = null, $reversedns = null, $rt_import = null, $tag = null, $vlan_protocol = null, $vrf_vxlan = null, $vxlan_port = null)
+        public function update($advertise_subnets = null, $bridge = null, $bridge_disable_mac_learning = null, $controller = null, $delete = null, $dhcp = null, $digest = null, $disable_arp_nd_suppression = null, $dns = null, $dnszone = null, $dp_id = null, $exitnodes = null, $exitnodes_local_routing = null, $exitnodes_primary = null, $fabric = null, $ipam = null, $lock_token = null, $mac = null, $mtu = null, $nodes = null, $peers = null, $reversedns = null, $rt_import = null, $secondary_controllers = null, $tag = null, $vlan_protocol = null, $vrf_vxlan = null, $vxlan_port = null)
         {
             $params = [
                 'advertise-subnets' => $advertise_subnets,
@@ -7362,6 +7759,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'peers' => $peers,
                 'reversedns' => $reversedns,
                 'rt-import' => $rt_import,
+                'secondary-controllers' => $secondary_controllers,
                 'tag' => $tag,
                 'vlan-protocol' => $vlan_protocol,
                 'vrf-vxlan' => $vrf_vxlan,
@@ -7426,6 +7824,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $type Plugin type.
          *   Enum: bgp,evpn,faucet,isis
          * @param int $asn autonomous system number
+         * @param string $bgp_mode Whether to use eBGP or iBGP. Auto mode chooses depending on BGP controller or falls back to iBGP.
+         *   Enum: auto,external,internal
          * @param bool $bgp_multipath_as_path_relax Consider different AS paths of equal length for multipath computation.
          * @param bool $ebgp Enable eBGP (remote-as external).
          * @param int $ebgp_multihop Set maximum amount of hops for eBGP peers.
@@ -7436,16 +7836,21 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $lock_token the token for unlocking the global SDN configuration
          * @param string $loopback Name of the loopback/dummy interface that provides the Router-IP.
          * @param string $node The cluster node name.
+         * @param string $nodes List of cluster node names.
+         * @param string $peer_group_name Name of the peer group for this EVPN controller
          * @param string $peers peers address list.
+         * @param string $route_map_in Route Map that should be applied for incoming routes
+         * @param string $route_map_out Route Map that should be applied for outgoing routes
          * @return Result
          */
 
-        public function create($controller, $type, $asn = null, $bgp_multipath_as_path_relax = null, $ebgp = null, $ebgp_multihop = null, $fabric = null, $isis_domain = null, $isis_ifaces = null, $isis_net = null, $lock_token = null, $loopback = null, $node = null, $peers = null)
+        public function create($controller, $type, $asn = null, $bgp_mode = null, $bgp_multipath_as_path_relax = null, $ebgp = null, $ebgp_multihop = null, $fabric = null, $isis_domain = null, $isis_ifaces = null, $isis_net = null, $lock_token = null, $loopback = null, $node = null, $nodes = null, $peer_group_name = null, $peers = null, $route_map_in = null, $route_map_out = null)
         {
             $params = [
                 'controller' => $controller,
                 'type' => $type,
                 'asn' => $asn,
+                'bgp-mode' => $bgp_mode,
                 'bgp-multipath-as-path-relax' => $bgp_multipath_as_path_relax,
                 'ebgp' => $ebgp,
                 'ebgp-multihop' => $ebgp_multihop,
@@ -7456,7 +7861,11 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'lock-token' => $lock_token,
                 'loopback' => $loopback,
                 'node' => $node,
-                'peers' => $peers
+                'nodes' => $nodes,
+                'peer-group-name' => $peer_group_name,
+                'peers' => $peers,
+                'route-map-in' => $route_map_in,
+                'route-map-out' => $route_map_out
             ];
             return $this->client->create("/cluster/sdn/controllers", $params);
         }
@@ -7517,6 +7926,8 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Update sdn controller object configuration.
          * @param int $asn autonomous system number
+         * @param string $bgp_mode Whether to use eBGP or iBGP. Auto mode chooses depending on BGP controller or falls back to iBGP.
+         *   Enum: auto,external,internal
          * @param bool $bgp_multipath_as_path_relax Consider different AS paths of equal length for multipath computation.
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
@@ -7529,14 +7940,19 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $lock_token the token for unlocking the global SDN configuration
          * @param string $loopback Name of the loopback/dummy interface that provides the Router-IP.
          * @param string $node The cluster node name.
+         * @param string $nodes List of cluster node names.
+         * @param string $peer_group_name Name of the peer group for this EVPN controller
          * @param string $peers peers address list.
+         * @param string $route_map_in Route Map that should be applied for incoming routes
+         * @param string $route_map_out Route Map that should be applied for outgoing routes
          * @return Result
          */
 
-        public function update($asn = null, $bgp_multipath_as_path_relax = null, $delete = null, $digest = null, $ebgp = null, $ebgp_multihop = null, $fabric = null, $isis_domain = null, $isis_ifaces = null, $isis_net = null, $lock_token = null, $loopback = null, $node = null, $peers = null)
+        public function update($asn = null, $bgp_mode = null, $bgp_multipath_as_path_relax = null, $delete = null, $digest = null, $ebgp = null, $ebgp_multihop = null, $fabric = null, $isis_domain = null, $isis_ifaces = null, $isis_net = null, $lock_token = null, $loopback = null, $node = null, $nodes = null, $peer_group_name = null, $peers = null, $route_map_in = null, $route_map_out = null)
         {
             $params = [
                 'asn' => $asn,
+                'bgp-mode' => $bgp_mode,
                 'bgp-multipath-as-path-relax' => $bgp_multipath_as_path_relax,
                 'delete' => $delete,
                 'digest' => $digest,
@@ -7549,7 +7965,11 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'lock-token' => $lock_token,
                 'loopback' => $loopback,
                 'node' => $node,
-                'peers' => $peers
+                'nodes' => $nodes,
+                'peer-group-name' => $peer_group_name,
+                'peers' => $peers,
+                'route-map-in' => $route_map_in,
+                'route-map-out' => $route_map_out
             ];
             return $this->client->set("/cluster/sdn/controllers/{$this->controller}", $params);
         }
@@ -8016,7 +8436,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * Add a fabric
          * @param string $id Identifier for SDN fabrics
          * @param string $protocol Type of configuration entry in an SDN Fabric section config
-         *   Enum: openfabric,ospf
+         *   Enum: openfabric,ospf,wireguard,bgp
+         * @param array $redistribute 
          * @param string $area OSPF area. Either a IPv4 address or a 32-bit number. Gets validated in rust.
          * @param float $csnp_interval The csnp_interval property for Openfabric
          * @param string $digest Prevent changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
@@ -8024,21 +8445,26 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $ip6_prefix The IP prefix for Node IPs
          * @param string $ip_prefix The IP prefix for Node IPs
          * @param string $lock_token the token for unlocking the global SDN configuration
+         * @param float $persistent_keepalive A seconds interval, between 1 and 65535 inclusive, of how often to send an authenticated empty packet to the peer for the purpose of keeping a stateful firewall or NAT mapping valid persistently. For example, if the interface very rarely sends traffic, but it might at anytime receive traffic from another node, and it is behind NAT, the interface might benefit from having a persistent keepalive interval of 25 seconds. If unset or set to 0, it is turned off
+         * @param string $route_filter A prefix list that should be used for filtering routes that are to be installed into the kernel routing table
          * @return Result
          */
 
-        public function addFabric($id, $protocol, $area = null, $csnp_interval = null, $digest = null, $hello_interval = null, $ip6_prefix = null, $ip_prefix = null, $lock_token = null)
+        public function addFabric($id, $protocol, $redistribute, $area = null, $csnp_interval = null, $digest = null, $hello_interval = null, $ip6_prefix = null, $ip_prefix = null, $lock_token = null, $persistent_keepalive = null, $route_filter = null)
         {
             $params = [
                 'id' => $id,
                 'protocol' => $protocol,
+                'redistribute' => $redistribute,
                 'area' => $area,
                 'csnp_interval' => $csnp_interval,
                 'digest' => $digest,
                 'hello_interval' => $hello_interval,
                 'ip6_prefix' => $ip6_prefix,
                 'ip_prefix' => $ip_prefix,
-                'lock-token' => $lock_token
+                'lock-token' => $lock_token,
+                'persistent_keepalive' => $persistent_keepalive,
+                'route_filter' => $route_filter
             ];
             return $this->client->create("/cluster/sdn/fabrics/fabric", $params);
         }
@@ -8092,7 +8518,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * Update a fabric
          * @param array $delete 
          * @param string $protocol Type of configuration entry in an SDN Fabric section config
-         *   Enum: openfabric,ospf
+         *   Enum: openfabric,ospf,wireguard,bgp
+         * @param array $redistribute 
          * @param string $area OSPF area. Either a IPv4 address or a 32-bit number. Gets validated in rust.
          * @param float $csnp_interval The csnp_interval property for Openfabric
          * @param string $digest Prevent changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
@@ -8100,21 +8527,26 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $ip6_prefix The IP prefix for Node IPs
          * @param string $ip_prefix The IP prefix for Node IPs
          * @param string $lock_token the token for unlocking the global SDN configuration
+         * @param float $persistent_keepalive A seconds interval, between 1 and 65535 inclusive, of how often to send an authenticated empty packet to the peer for the purpose of keeping a stateful firewall or NAT mapping valid persistently. For example, if the interface very rarely sends traffic, but it might at anytime receive traffic from another node, and it is behind NAT, the interface might benefit from having a persistent keepalive interval of 25 seconds. If unset or set to 0, it is turned off
+         * @param string $route_filter A prefix list that should be used for filtering routes that are to be installed into the kernel routing table
          * @return Result
          */
 
-        public function updateFabric($delete, $protocol, $area = null, $csnp_interval = null, $digest = null, $hello_interval = null, $ip6_prefix = null, $ip_prefix = null, $lock_token = null)
+        public function updateFabric($delete, $protocol, $redistribute, $area = null, $csnp_interval = null, $digest = null, $hello_interval = null, $ip6_prefix = null, $ip_prefix = null, $lock_token = null, $persistent_keepalive = null, $route_filter = null)
         {
             $params = [
                 'delete' => $delete,
                 'protocol' => $protocol,
+                'redistribute' => $redistribute,
                 'area' => $area,
                 'csnp_interval' => $csnp_interval,
                 'digest' => $digest,
                 'hello_interval' => $hello_interval,
                 'ip6_prefix' => $ip6_prefix,
                 'ip_prefix' => $ip_prefix,
-                'lock-token' => $lock_token
+                'lock-token' => $lock_token,
+                'persistent_keepalive' => $persistent_keepalive,
+                'route_filter' => $route_filter
             ];
             return $this->client->set("/cluster/sdn/fabrics/fabric/{$this->id}", $params);
         }
@@ -8223,24 +8655,35 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param array $interfaces 
          * @param string $node_id Identifier for nodes in an SDN fabric
          * @param string $protocol Type of configuration entry in an SDN Fabric section config
-         *   Enum: openfabric,ospf
+         *   Enum: openfabric,ospf,wireguard,bgp
+         * @param array $allowed_ips A list of IPs that are routable via this node in the WireGuard fabric.
          * @param string $digest Prevent changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
+         * @param string $endpoint The endpoint used for connecting to this node.
          * @param string $ip IPv4 address for this node
          * @param string $ip6 IPv6 address for this node
          * @param string $lock_token the token for unlocking the global SDN configuration
+         * @param array $peers 
+         * @param string $public_key The public key for the external node.
+         * @param string $role The role of this node in the WireGuard fabric.
+         *   Enum: internal,external
          * @return Result
          */
 
-        public function addNode($interfaces, $node_id, $protocol, $digest = null, $ip = null, $ip6 = null, $lock_token = null)
+        public function addNode($interfaces, $node_id, $protocol, $allowed_ips = null, $digest = null, $endpoint = null, $ip = null, $ip6 = null, $lock_token = null, $peers = null, $public_key = null, $role = null)
         {
             $params = [
                 'interfaces' => $interfaces,
                 'node_id' => $node_id,
                 'protocol' => $protocol,
+                'allowed_ips' => $allowed_ips,
                 'digest' => $digest,
+                'endpoint' => $endpoint,
                 'ip' => $ip,
                 'ip6' => $ip6,
-                'lock-token' => $lock_token
+                'lock-token' => $lock_token,
+                'peers' => $peers,
+                'public_key' => $public_key,
+                'role' => $role
             ];
             return $this->client->create("/cluster/sdn/fabrics/node/{$this->fabric_id}", $params);
         }
@@ -8298,27 +8741,38 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
         /**
          * Update a node
+         * @param array $delete 
          * @param array $interfaces 
          * @param string $protocol Type of configuration entry in an SDN Fabric section config
-         *   Enum: openfabric,ospf
-         * @param array $delete 
+         *   Enum: openfabric,ospf,wireguard,bgp
+         * @param array $allowed_ips A list of IPs that are routable via this node in the WireGuard fabric.
          * @param string $digest Prevent changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
+         * @param string $endpoint The endpoint used for connecting to this node.
          * @param string $ip IPv4 address for this node
          * @param string $ip6 IPv6 address for this node
          * @param string $lock_token the token for unlocking the global SDN configuration
+         * @param array $peers 
+         * @param string $public_key The public key for the external node.
+         * @param string $role The role of this node in the WireGuard fabric.
+         *   Enum: internal,external
          * @return Result
          */
 
-        public function updateNode($interfaces, $protocol, $delete = null, $digest = null, $ip = null, $ip6 = null, $lock_token = null)
+        public function updateNode($delete, $interfaces, $protocol, $allowed_ips = null, $digest = null, $endpoint = null, $ip = null, $ip6 = null, $lock_token = null, $peers = null, $public_key = null, $role = null)
         {
             $params = [
+                'delete' => $delete,
                 'interfaces' => $interfaces,
                 'protocol' => $protocol,
-                'delete' => $delete,
+                'allowed_ips' => $allowed_ips,
                 'digest' => $digest,
+                'endpoint' => $endpoint,
                 'ip' => $ip,
                 'ip6' => $ip6,
-                'lock-token' => $lock_token
+                'lock-token' => $lock_token,
+                'peers' => $peers,
+                'public_key' => $public_key,
+                'role' => $role
             ];
             return $this->client->set("/cluster/sdn/fabrics/node/{$this->fabric_id}/{$this->node_id}", $params);
         }
@@ -8360,6 +8814,613 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'running' => $running
             ];
             return $this->client->get("/cluster/sdn/fabrics/all", $params);
+        }
+    }
+
+    /**
+     * Class PVESdnClusterPrefixLists
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVESdnClusterPrefixLists
+    {
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client)
+        {
+            $this->client = $client;
+        }
+
+
+        /**
+         * Get ItemPrefixListsSdnClusterId
+         * @param id
+         * @return PVEItemPrefixListsSdnClusterId
+         */
+        public function get($id)
+        {
+            return new PVEItemPrefixListsSdnClusterId($this->client, $id);
+        }
+
+        /**
+         * List Prefix Lists
+         * @param bool $pending Display pending config.
+         * @param bool $running Display running config.
+         * @param bool $verbose If 0, only returns id - otherwise returns all properties.
+         * @return Result
+         */
+
+        public function listPrefixLists($pending = null, $running = null, $verbose = null)
+        {
+            $params = [
+                'pending' => $pending,
+                'running' => $running,
+                'verbose' => $verbose
+            ];
+            return $this->client->get("/cluster/sdn/prefix-lists", $params);
+        }
+        /**
+         * Create Prefix List
+         * @param string $id The SDN prefix list identifier
+         * @param string $digest Prevent changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
+         * @param array $entries 
+         * @param string $lock_token the token for unlocking the global SDN configuration
+         * @return Result
+         */
+
+        public function createPrefixListEntry($id, $digest = null, $entries = null, $lock_token = null)
+        {
+            $params = [
+                'id' => $id,
+                'digest' => $digest,
+                'entries' => $entries,
+                'lock-token' => $lock_token
+            ];
+            return $this->client->create("/cluster/sdn/prefix-lists", $params);
+        }
+    }
+    /**
+     * Class PVEItemPrefixListsSdnClusterId
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEItemPrefixListsSdnClusterId
+    {
+
+        /**
+         * @ignore
+         */
+        private $id;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $id)
+        {
+            $this->client = $client;
+            $this->id = $id;
+        }
+
+        /**
+         * @ignore
+         */
+        private $entries;
+        /**
+         * Get IdPrefixListsSdnClusterEntries
+         * @return PVEIdPrefixListsSdnClusterEntries
+         */
+        public function getEntries()
+        {
+            return $this->entries ?: ($this->entries = new PVEIdPrefixListsSdnClusterEntries($this->client, $this->id));
+        }
+
+
+        /**
+         * Delete Prefix List
+         * @param string $lock_token the token for unlocking the global SDN configuration
+         * @return Result
+         */
+
+        public function deletePrefixList($lock_token = null)
+        {
+            $params = ['lock-token' => $lock_token];
+            return $this->client->delete("/cluster/sdn/prefix-lists/{$this->id}", $params);
+        }
+        /**
+         * Get Prefix List
+         * @return Result
+         */
+
+        public function getPrefixList()
+        {
+            return $this->client->get("/cluster/sdn/prefix-lists/{$this->id}");
+        }
+        /**
+         * Update Prefix List
+         * @param array $delete 
+         * @param string $digest Prevent changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
+         * @param array $entries 
+         * @param string $lock_token the token for unlocking the global SDN configuration
+         * @return Result
+         */
+
+        public function updatePrefixList($delete = null, $digest = null, $entries = null, $lock_token = null)
+        {
+            $params = [
+                'delete' => $delete,
+                'digest' => $digest,
+                'entries' => $entries,
+                'lock-token' => $lock_token
+            ];
+            return $this->client->set("/cluster/sdn/prefix-lists/{$this->id}", $params);
+        }
+    }
+    /**
+     * Class PVEIdPrefixListsSdnClusterEntries
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEIdPrefixListsSdnClusterEntries
+    {
+
+        /**
+         * @ignore
+         */
+        private $id;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $id)
+        {
+            $this->client = $client;
+            $this->id = $id;
+        }
+
+
+        /**
+         * Get ItemEntriesIdPrefixListsSdnClusterUrlSeq
+         * @param url_seq
+         * @return PVEItemEntriesIdPrefixListsSdnClusterUrlSeq
+         */
+        public function get($url_seq)
+        {
+            return new PVEItemEntriesIdPrefixListsSdnClusterUrlSeq($this->client, $this->id, $url_seq);
+        }
+
+        /**
+         * List Prefix List Entries
+         * @return Result
+         */
+
+        public function getPrefixListEntries()
+        {
+            return $this->client->get("/cluster/sdn/prefix-lists/{$this->id}/entries");
+        }
+        /**
+         * Create Prefix List Entry
+         * @param string $action 
+         *   Enum: permit,deny
+         * @param string $prefix 
+         * @param int $ge 
+         * @param int $le 
+         * @param string $lock_token the token for unlocking the global SDN configuration
+         * @param int $seq 
+         * @return Result
+         */
+
+        public function createPrefixListEntry($action, $prefix, $ge = null, $le = null, $lock_token = null, $seq = null)
+        {
+            $params = [
+                'action' => $action,
+                'prefix' => $prefix,
+                'ge' => $ge,
+                'le' => $le,
+                'lock-token' => $lock_token,
+                'seq' => $seq
+            ];
+            return $this->client->create("/cluster/sdn/prefix-lists/{$this->id}/entries", $params);
+        }
+    }
+    /**
+     * Class PVEItemEntriesIdPrefixListsSdnClusterUrlSeq
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEItemEntriesIdPrefixListsSdnClusterUrlSeq
+    {
+
+        /**
+         * @ignore
+         */
+        private $id;
+
+        /**
+         * @ignore
+         */
+        private $url_seq;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $id, $url_seq)
+        {
+            $this->client = $client;
+            $this->id = $id;
+            $this->url_seq = $url_seq;
+        }
+
+
+
+        /**
+         * Delete Prefix List Entry
+         * @param string $lock_token the token for unlocking the global SDN configuration
+         * @return Result
+         */
+
+        public function deletePrefixListEntry($lock_token = null)
+        {
+            $params = ['lock-token' => $lock_token];
+            return $this->client->delete("/cluster/sdn/prefix-lists/{$this->id}/entries/{$this->url_seq}", $params);
+        }
+        /**
+         * Get Prefix List Entry
+         * @return Result
+         */
+
+        public function getPrefixListEntry()
+        {
+            return $this->client->get("/cluster/sdn/prefix-lists/{$this->id}/entries/{$this->url_seq}");
+        }
+        /**
+         * Update Prefix List Entry
+         * @param string $action 
+         *   Enum: permit,deny
+         * @param array $delete 
+         * @param string $digest Prevent changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
+         * @param int $ge 
+         * @param int $le 
+         * @param string $lock_token the token for unlocking the global SDN configuration
+         * @param string $prefix 
+         * @param int $seq 
+         * @return Result
+         */
+
+        public function updatePrefixListEntry($action = null, $delete = null, $digest = null, $ge = null, $le = null, $lock_token = null, $prefix = null, $seq = null)
+        {
+            $params = [
+                'action' => $action,
+                'delete' => $delete,
+                'digest' => $digest,
+                'ge' => $ge,
+                'le' => $le,
+                'lock-token' => $lock_token,
+                'prefix' => $prefix,
+                'seq' => $seq
+            ];
+            return $this->client->set("/cluster/sdn/prefix-lists/{$this->id}/entries/{$this->url_seq}", $params);
+        }
+    }
+
+    /**
+     * Class PVESdnClusterRouteMaps
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVESdnClusterRouteMaps
+    {
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client)
+        {
+            $this->client = $client;
+        }
+
+        /**
+         * @ignore
+         */
+        private $entries;
+        /**
+         * Get RouteMapsSdnClusterEntries
+         * @return PVERouteMapsSdnClusterEntries
+         */
+        public function getEntries()
+        {
+            return $this->entries ?: ($this->entries = new PVERouteMapsSdnClusterEntries($this->client));
+        }
+
+
+        /**
+         * List Route Maps
+         * @param bool $running Display running config.
+         * @return Result
+         */
+
+        public function listRouteMaps($running = null)
+        {
+            $params = ['running' => $running];
+            return $this->client->get("/cluster/sdn/route-maps", $params);
+        }
+    }
+    /**
+     * Class PVERouteMapsSdnClusterEntries
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVERouteMapsSdnClusterEntries
+    {
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client)
+        {
+            $this->client = $client;
+        }
+
+
+        /**
+         * Get ItemEntriesRouteMapsSdnClusterRouteMapId
+         * @param route_map_id
+         * @return PVEItemEntriesRouteMapsSdnClusterRouteMapId
+         */
+        public function get($route_map_id)
+        {
+            return new PVEItemEntriesRouteMapsSdnClusterRouteMapId($this->client, $route_map_id);
+        }
+
+        /**
+         * Lists all route map entries.
+         * @param bool $pending Display pending config.
+         * @param bool $running Display running config.
+         * @return Result
+         */
+
+        public function listRouteMapEntries($pending = null, $running = null)
+        {
+            $params = [
+                'pending' => $pending,
+                'running' => $running
+            ];
+            return $this->client->get("/cluster/sdn/route-maps/entries", $params);
+        }
+        /**
+         * Create Route Map entry
+         * @param string $action Matching policy of a route map entry.
+         *   Enum: permit,deny
+         * @param int $order The index of this route map entry
+         * @param string $route_map_id The SDN route map identifier
+         * @param string $call The SDN route map identifier
+         * @param string $digest Prevent changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
+         * @param string $exit_action 
+         * @param string $lock_token the token for unlocking the global SDN configuration
+         * @param array $match 
+         * @param array $set 
+         * @return Result
+         */
+
+        public function createRouteMapEntry($action, $order, $route_map_id, $call = null, $digest = null, $exit_action = null, $lock_token = null, $match = null, $set = null)
+        {
+            $params = [
+                'action' => $action,
+                'order' => $order,
+                'route-map-id' => $route_map_id,
+                'call' => $call,
+                'digest' => $digest,
+                'exit-action' => $exit_action,
+                'lock-token' => $lock_token,
+                'match' => $match,
+                'set' => $set
+            ];
+            return $this->client->create("/cluster/sdn/route-maps/entries", $params);
+        }
+    }
+    /**
+     * Class PVEItemEntriesRouteMapsSdnClusterRouteMapId
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEItemEntriesRouteMapsSdnClusterRouteMapId
+    {
+
+        /**
+         * @ignore
+         */
+        private $route_map_id;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $route_map_id)
+        {
+            $this->client = $client;
+            $this->route_map_id = $route_map_id;
+        }
+
+        /**
+         * @ignore
+         */
+        private $entry;
+        /**
+         * Get RouteMapIdEntriesRouteMapsSdnClusterEntry
+         * @return PVERouteMapIdEntriesRouteMapsSdnClusterEntry
+         */
+        public function getEntry()
+        {
+            return $this->entry ?: ($this->entry = new PVERouteMapIdEntriesRouteMapsSdnClusterEntry($this->client, $this->route_map_id));
+        }
+
+
+        /**
+         * List all entries for a given Route Map
+         * @param string $route_map_id The SDN route map identifier
+         * @param bool $pending Display pending config.
+         * @param bool $running Display running config.
+         * @return Result
+         */
+
+        public function listRouteMapEntriesForRouteMap($route_map_id, $pending = null, $running = null)
+        {
+            $params = [
+                'route-map-id' => $route_map_id,
+                'pending' => $pending,
+                'running' => $running
+            ];
+            return $this->client->get("/cluster/sdn/route-maps/entries/{$this->route_map_id}", $params);
+        }
+    }
+    /**
+     * Class PVERouteMapIdEntriesRouteMapsSdnClusterEntry
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVERouteMapIdEntriesRouteMapsSdnClusterEntry
+    {
+
+        /**
+         * @ignore
+         */
+        private $route_map_id;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $route_map_id)
+        {
+            $this->client = $client;
+            $this->route_map_id = $route_map_id;
+        }
+
+
+        /**
+         * Get ItemEntryRouteMapIdEntriesRouteMapsSdnClusterOrder
+         * @param order
+         * @return PVEItemEntryRouteMapIdEntriesRouteMapsSdnClusterOrder
+         */
+        public function get($order)
+        {
+            return new PVEItemEntryRouteMapIdEntriesRouteMapsSdnClusterOrder($this->client, $this->route_map_id, $order);
+        }
+    }
+    /**
+     * Class PVEItemEntryRouteMapIdEntriesRouteMapsSdnClusterOrder
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEItemEntryRouteMapIdEntriesRouteMapsSdnClusterOrder
+    {
+
+        /**
+         * @ignore
+         */
+        private $route_map_id;
+
+        /**
+         * @ignore
+         */
+        private $order;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $route_map_id, $order)
+        {
+            $this->client = $client;
+            $this->route_map_id = $route_map_id;
+            $this->order = $order;
+        }
+
+
+
+        /**
+         * Delete Route Map Entry
+         * @param string $route_map_id The SDN route map identifier
+         * @param string $lock_token the token for unlocking the global SDN configuration
+         * @return Result
+         */
+
+        public function deleteRouteMapEntry($route_map_id, $lock_token = null)
+        {
+            $params = [
+                'route-map-id' => $route_map_id,
+                'lock-token' => $lock_token
+            ];
+            return $this->client->delete("/cluster/sdn/route-maps/entries/{$this->route_map_id}/entry/{$this->order}", $params);
+        }
+        /**
+         * Get Route Map Entry
+         * @param string $route_map_id The SDN route map identifier
+         * @return Result
+         */
+
+        public function getRouteMapEntry($route_map_id)
+        {
+            $params = ['route-map-id' => $route_map_id];
+            return $this->client->get("/cluster/sdn/route-maps/entries/{$this->route_map_id}/entry/{$this->order}", $params);
+        }
+        /**
+         * Update Route Map Entry
+         * @param string $route_map_id The SDN route map identifier
+         * @param string $action Matching policy of a route map entry.
+         *   Enum: permit,deny
+         * @param string $call The SDN route map identifier
+         * @param array $delete 
+         * @param string $digest Prevent changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
+         * @param string $exit_action 
+         * @param string $lock_token the token for unlocking the global SDN configuration
+         * @param array $match 
+         * @param array $set 
+         * @return Result
+         */
+
+        public function updateRouteMapEntry($route_map_id, $action = null, $call = null, $delete = null, $digest = null, $exit_action = null, $lock_token = null, $match = null, $set = null)
+        {
+            $params = [
+                'route-map-id' => $route_map_id,
+                'action' => $action,
+                'call' => $call,
+                'delete' => $delete,
+                'digest' => $digest,
+                'exit-action' => $exit_action,
+                'lock-token' => $lock_token,
+                'match' => $match,
+                'set' => $set
+            ];
+            return $this->client->set("/cluster/sdn/route-maps/entries/{$this->route_map_id}/entry/{$this->order}", $params);
         }
     }
 
@@ -8449,6 +9510,41 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'release-lock' => $release_lock
             ];
             return $this->client->create("/cluster/sdn/rollback", $params);
+        }
+    }
+
+    /**
+     * Class PVESdnClusterDryRun
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVESdnClusterDryRun
+    {
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client)
+        {
+            $this->client = $client;
+        }
+
+
+
+        /**
+         * Dry-run the SDN apply action and return the difference between the current configuration and the pending configuration
+         * @param string $node The cluster node name.
+         * @return Result
+         */
+
+        public function dryRun($node)
+        {
+            $params = ['node' => $node];
+            return $this->client->get("/cluster/sdn/dry-run", $params);
         }
     }
 
@@ -8605,6 +9701,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: de,de-ch,da,en-gb,en-us,es,fi,fr,fr-be,fr-ca,fr-ch,hu,is,it,ja,lt,mk,nl,no,pl,pt,pt-br,sv,sl,tr
          * @param string $language Default GUI language.
          *   Enum: ar,ca,da,de,en,es,eu,fa,fr,hr,he,it,ja,ka,kr,nb,nl,nn,pl,pt_BR,ru,sl,sv,tr,ukr,zh_CN,zh_TW
+         * @param string $location The location of the cluster.
          * @param string $mac_prefix Prefix for the auto-generated MAC addresses of virtual guests. The default 'BC:24:11' is the OUI assigned by the IEEE to Proxmox Server Solutions GmbH for a 24-bit large MAC block. You're allowed to use this in local networks, i.e., those not directly reachable by the public (e.g., in a LAN or behind NAT).
          * @param int $max_workers Defines how many workers (per node) are maximal started  on actions like 'stopall VMs' or task from the ha-manager.
          * @param string $migration For cluster wide migration settings.
@@ -8620,7 +9717,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
 
-        public function setOptions($bwlimit = null, $consent_text = null, $console = null, $crs = null, $delete = null, $description = null, $email_from = null, $fencing = null, $ha = null, $http_proxy = null, $keyboard = null, $language = null, $mac_prefix = null, $max_workers = null, $migration = null, $migration_unsecure = null, $next_id = null, $notify = null, $registered_tags = null, $replication = null, $tag_style = null, $u2f = null, $user_tag_access = null, $webauthn = null)
+        public function setOptions($bwlimit = null, $consent_text = null, $console = null, $crs = null, $delete = null, $description = null, $email_from = null, $fencing = null, $ha = null, $http_proxy = null, $keyboard = null, $language = null, $location = null, $mac_prefix = null, $max_workers = null, $migration = null, $migration_unsecure = null, $next_id = null, $notify = null, $registered_tags = null, $replication = null, $tag_style = null, $u2f = null, $user_tag_access = null, $webauthn = null)
         {
             $params = [
                 'bwlimit' => $bwlimit,
@@ -8635,6 +9732,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'http_proxy' => $http_proxy,
                 'keyboard' => $keyboard,
                 'language' => $language,
+                'location' => $location,
                 'mac_prefix' => $mac_prefix,
                 'max_workers' => $max_workers,
                 'migration' => $migration,
@@ -9369,13 +10467,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $agent Enable/disable communication with the QEMU Guest Agent and its properties.
          * @param bool $allow_ksm Allow memory pages of this guest to be merged via KSM (Kernel Samepage Merging).
          * @param string $amd_sev Secure Encrypted Virtualization (SEV) features by AMD CPUs
-         * @param string $arch Virtual processor architecture. Defaults to the host.
+         * @param string $arch Virtual processor architecture. Defaults to the host architecture.
          *   Enum: x86_64,aarch64
          * @param string $archive The backup archive. Either the file system path to a .tar or .vma file (use '-' to pipe data from stdin) or a proxmox storage backup volume identifier.
          * @param string $args Arbitrary arguments passed to kvm.
          * @param string $audio0 Configure a audio device, useful in combination with QXL/Spice.
          * @param bool $autostart Automatic restart after crash (currently ignored).
-         * @param int $balloon Amount of target RAM for the VM in MiB. Using zero disables the ballon driver.
+         * @param int $balloon Amount of target RAM for the VM in MiB. The balloon driver is enabled by default, unless it is explicitly disabled by setting the value to zero.
          * @param string $bios Select BIOS implementation.
          *   Enum: seabios,ovmf
          * @param string $boot Specify guest boot order. Use the 'order=' sub-property as usage with no key or 'legacy=' is deprecated.
@@ -9417,7 +10515,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: backup,clone,create,migrate,rollback,snapshot,snapshot-delete,suspending,suspended
          * @param string $machine Specify the QEMU machine.
          * @param string $memory Memory properties.
-         * @param float $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations. Should the migration not be able to converge in the very end, because too much newly dirtied RAM needs to be transferred, the limit will be increased automatically step-by-step until migration can converge.
+         * @param float $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations. Should the migration not be able to converge in the very end, because too much newly dirtied RAM needs to be transferred, the limit will be increased automatically step-by-step until migration can converge. Will be capped to 2000 seconds (maximum in QEMU).
          * @param int $migrate_speed Set maximum speed (in MB/s) for migrations. Value 0 is no limit.
          * @param string $name Set a name for the VM. Only used on the configuration web interface.
          * @param string $nameserver cloud-init: Sets DNS server IP address for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
@@ -12246,12 +13344,20 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Reads the given file via guest agent. Is limited to 16777216 bytes.
          * @param string $file The path to the file
+         * @param int $count Number of bytes to read.
+         * @param bool $decode Data received from the QEMU Guest-Agent is base64 encoded. If this is set to true, the data is decoded. Otherwise the content is forwarded with base64 encoding. Defaults to true.
+         * @param int $offset Offset to start reading at
          * @return Result
          */
 
-        public function fileRead($file)
+        public function fileRead($file, $count = null, $decode = null, $offset = null)
         {
-            $params = ['file' => $file];
+            $params = [
+                'file' => $file,
+                'count' => $count,
+                'decode' => $decode,
+                'offset' => $offset
+            ];
             return $this->client->get("/nodes/{$this->node}/qemu/{$this->vmid}/agent/file-read", $params);
         }
     }
@@ -12469,13 +13575,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $agent Enable/disable communication with the QEMU Guest Agent and its properties.
          * @param bool $allow_ksm Allow memory pages of this guest to be merged via KSM (Kernel Samepage Merging).
          * @param string $amd_sev Secure Encrypted Virtualization (SEV) features by AMD CPUs
-         * @param string $arch Virtual processor architecture. Defaults to the host.
+         * @param string $arch Virtual processor architecture. Defaults to the host architecture.
          *   Enum: x86_64,aarch64
          * @param string $args Arbitrary arguments passed to kvm.
          * @param string $audio0 Configure a audio device, useful in combination with QXL/Spice.
          * @param bool $autostart Automatic restart after crash (currently ignored).
          * @param int $background_delay Time to wait for the task to finish. We return 'null' if the task finish within that time.
-         * @param int $balloon Amount of target RAM for the VM in MiB. Using zero disables the ballon driver.
+         * @param int $balloon Amount of target RAM for the VM in MiB. The balloon driver is enabled by default, unless it is explicitly disabled by setting the value to zero.
          * @param string $bios Select BIOS implementation.
          *   Enum: seabios,ovmf
          * @param string $boot Specify guest boot order. Use the 'order=' sub-property as usage with no key or 'legacy=' is deprecated.
@@ -12516,7 +13622,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: backup,clone,create,migrate,rollback,snapshot,snapshot-delete,suspending,suspended
          * @param string $machine Specify the QEMU machine.
          * @param string $memory Memory properties.
-         * @param float $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations. Should the migration not be able to converge in the very end, because too much newly dirtied RAM needs to be transferred, the limit will be increased automatically step-by-step until migration can converge.
+         * @param float $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations. Should the migration not be able to converge in the very end, because too much newly dirtied RAM needs to be transferred, the limit will be increased automatically step-by-step until migration can converge. Will be capped to 2000 seconds (maximum in QEMU).
          * @param int $migrate_speed Set maximum speed (in MB/s) for migrations. Value 0 is no limit.
          * @param string $name Set a name for the VM. Only used on the configuration web interface.
          * @param string $nameserver cloud-init: Sets DNS server IP address for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
@@ -12664,12 +13770,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $agent Enable/disable communication with the QEMU Guest Agent and its properties.
          * @param bool $allow_ksm Allow memory pages of this guest to be merged via KSM (Kernel Samepage Merging).
          * @param string $amd_sev Secure Encrypted Virtualization (SEV) features by AMD CPUs
-         * @param string $arch Virtual processor architecture. Defaults to the host.
+         * @param string $arch Virtual processor architecture. Defaults to the host architecture.
          *   Enum: x86_64,aarch64
          * @param string $args Arbitrary arguments passed to kvm.
          * @param string $audio0 Configure a audio device, useful in combination with QXL/Spice.
          * @param bool $autostart Automatic restart after crash (currently ignored).
-         * @param int $balloon Amount of target RAM for the VM in MiB. Using zero disables the ballon driver.
+         * @param int $balloon Amount of target RAM for the VM in MiB. The balloon driver is enabled by default, unless it is explicitly disabled by setting the value to zero.
          * @param string $bios Select BIOS implementation.
          *   Enum: seabios,ovmf
          * @param string $boot Specify guest boot order. Use the 'order=' sub-property as usage with no key or 'legacy=' is deprecated.
@@ -12709,7 +13815,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: backup,clone,create,migrate,rollback,snapshot,snapshot-delete,suspending,suspended
          * @param string $machine Specify the QEMU machine.
          * @param string $memory Memory properties.
-         * @param float $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations. Should the migration not be able to converge in the very end, because too much newly dirtied RAM needs to be transferred, the limit will be increased automatically step-by-step until migration can converge.
+         * @param float $migrate_downtime Set maximum tolerated downtime (in seconds) for migrations. Should the migration not be able to converge in the very end, because too much newly dirtied RAM needs to be transferred, the limit will be increased automatically step-by-step until migration can converge. Will be capped to 2000 seconds (maximum in QEMU).
          * @param int $migrate_speed Set maximum speed (in MB/s) for migrations. Value 0 is no limit.
          * @param string $name Set a name for the VM. Only used on the configuration web interface.
          * @param string $nameserver cloud-init: Sets DNS server IP address for a container. Create will automatically use the setting from the host if neither searchdomain nor nameserver are set.
@@ -13090,7 +14196,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Creates a TCP VNC proxy connections.
-         * @param bool $generate_password Generates a random password to be used as ticket instead of the API ticket.
+         * @param bool $generate_password Deprecated, do not use. Password is generated when required.
          * @param bool $websocket Prepare for websocket upgrade (only required when using serial terminal, otherwise upgrade is always possible).
          * @return Result
          */
@@ -18244,8 +19350,8 @@ namespace Corsinvest\ProxmoxVE\Api {
 
 
         /**
-         * Get configured values from either the config file or config DB.
-         * @param string $config_keys List of &amp;lt;section&amp;gt;:&amp;lt;config key&amp;gt; items.
+         * Get configured values from either ceph.conf or the mon config DB. Underscores in section and key names are normalised to hyphens in the response, regardless of how they're written in the source.
+         * @param string $config_keys List of &amp;lt;section&amp;gt;:&amp;lt;config key&amp;gt; items separated by semicolon, comma or space.
          * @return Result
          */
 
@@ -18308,7 +19414,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $db_dev Block device name for block.db.
          * @param float $db_dev_size Size in GiB for block.db.
          * @param bool $encrypted Enables encryption of the OSD.
-         * @param int $osds_per_device OSD services per physical device. Only useful for fast NVMe devices" 		    ." to utilize their performance better.
+         * @param int $osds_per_device OSD services per physical device. Only useful for fast NVMe devices to utilize their performance better. Mutually exclusive with 'db_dev' and 'wal_dev'.
          * @param string $wal_dev Block device name for block.wal.
          * @param float $wal_dev_size Size in GiB for block.wal.
          * @return Result
@@ -18424,7 +19530,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Destroy OSD
-         * @param bool $cleanup If set, we remove partition table entries.
+         * @param bool $cleanup If set, also destroy the underlying logical volumes via 'ceph-volume lvm zap --destroy', remove the volume group's physical volume with pvremove, and wipe any journal/block.db/block.wal partitions left over from filestore OSDs. Without this flag the LVs and partitions are left intact for inspection.
          * @return Result
          */
 
@@ -18948,7 +20054,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
 
         /**
-         * Destroy Ceph Monitor and Manager.
+         * Destroy a Ceph Monitor. Refuses to remove the last monitor of the cluster. Does not destroy any Manager on the same node; use /nodes/{node}/ceph/mgr/{id} for that.
          * @return Result
          */
 
@@ -18957,7 +20063,7 @@ namespace Corsinvest\ProxmoxVE\Api {
             return $this->client->delete("/nodes/{$this->node}/ceph/mon/{$this->monid}");
         }
         /**
-         * Create Ceph Monitor and Manager
+         * Create a Ceph Monitor. Also auto-creates a Manager for the first monitor.
          * @param string $mon_address Overwrites autodetected monitor IP address(es). Must be in the public network(s) of Ceph.
          * @return Result
          */
@@ -19049,6 +20155,21 @@ namespace Corsinvest\ProxmoxVE\Api {
 
 
         /**
+         * Destroy a Ceph filesystem. Refuses if any PVE storage entry of type 'cephfs' still references the filesystem and is not disabled. Optionally also removes the storage entries and/or the underlying metadata and data pools.
+         * @param bool $remove_pools Remove the metadata and data pools used by this filesystem.
+         * @param bool $remove_storages Remove pveceph-managed storages configured for this filesystem.
+         * @return Result
+         */
+
+        public function destroyfs($remove_pools = null, $remove_storages = null)
+        {
+            $params = [
+                'remove-pools' => $remove_pools,
+                'remove-storages' => $remove_storages
+            ];
+            return $this->client->delete("/nodes/{$this->node}/ceph/fs/{$this->name}", $params);
+        }
+        /**
          * Create a Ceph filesystem
          * @param bool $add_storage Configure the created CephFS as storage for this cluster.
          * @param int $pg_num Number of placement groups for the backing data pool. The metadata pool will use a quarter of this.
@@ -19113,7 +20234,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Create Ceph pool
          * @param string $name The name of the pool. It must be unique.
-         * @param bool $add_storages Configure VM and CT storage using the new pool.
+         * @param bool $add_storages Configure VM and CT storage using the new pool. Defaults to false for replicated pools and to true for erasure-coded pools (since EC pools are typically only useful when wired up to storage).
          * @param string $application The application of the pool.
          *   Enum: rbd,cephfs,rgw
          * @param string $crush_rule The rule to use for mapping object placement in the cluster.
@@ -19325,8 +20446,8 @@ namespace Corsinvest\ProxmoxVE\Api {
 
 
         /**
-         * Create initial ceph default configuration and setup symlinks.
-         * @param string $cluster_network Declare a separate cluster network, OSDs will routeheartbeat, object replication and recovery traffic over it
+         * Create the initial Ceph default configuration and set up symlinks. Idempotent on re-call: if a [global] section already exists in ceph.conf, the existing fsid / auth / pool defaults are preserved and most parameters are silently ignored.
+         * @param string $cluster_network Declare a separate cluster network, OSDs will route heartbeat, object replication and recovery traffic over it
          * @param bool $disable_cephx Disable cephx authentication.  WARNING: cephx is a security feature protecting against man-in-the-middle attacks. Only consider disabling cephx if your network is private!
          * @param int $min_size Minimum number of available replicas per object to allow I/O
          * @param string $network Use specific network for all ceph related traffic
@@ -19497,7 +20618,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
 
         /**
-         * Get ceph status.
+         * Get the Ceph cluster status (raw 'ceph status' output). The response is cluster-wide and identical to /cluster/ceph/status; this node-level alias exists for operator convenience.
          * @return Result
          */
 
@@ -19574,8 +20695,8 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Read ceph log
-         * @param int $limit 
-         * @param int $start 
+         * @param int $limit Maximum number of log lines to return. Defaults to the dump_logfile limit (typically 50) when omitted.
+         * @param int $start Offset of the first log line to return (0-based).
          * @return Result
          */
 
@@ -19742,7 +20863,6 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $mailnotification Deprecated: use notification targets/matchers instead. Specify when to send a notification mail
          *   Enum: always,failure
          * @param string $mailto Deprecated: Use notification targets/matchers instead. Comma-separated list of email addresses or users that should receive email notifications.
-         * @param int $maxfiles Deprecated: use 'prune-backups' instead. Maximal number of backup files per guest system.
          * @param string $mode Backup mode.
          *   Enum: snapshot,suspend,stop
          * @param string $notes_template Template string for generating notes for the backup(s). It can contain variables which will be replaced by their values. Currently supported are {{cluster}}, {{guestname}}, {{node}}, and {{vmid}}, but more might be added in the future. Needs to be a single line, newline and backslash need to be escaped as '\n' and '\\' respectively.
@@ -19769,7 +20889,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
 
-        public function vzdump($all = null, $bwlimit = null, $compress = null, $dumpdir = null, $exclude = null, $exclude_path = null, $fleecing = null, $ionice = null, $job_id = null, $lockwait = null, $mailnotification = null, $mailto = null, $maxfiles = null, $mode = null, $notes_template = null, $notification_mode = null, $pbs_change_detection_mode = null, $performance = null, $pigz = null, $pool = null, $protected = null, $prune_backups = null, $quiet = null, $remove = null, $script = null, $stdexcludes = null, $stdout = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null)
+        public function vzdump($all = null, $bwlimit = null, $compress = null, $dumpdir = null, $exclude = null, $exclude_path = null, $fleecing = null, $ionice = null, $job_id = null, $lockwait = null, $mailnotification = null, $mailto = null, $mode = null, $notes_template = null, $notification_mode = null, $pbs_change_detection_mode = null, $performance = null, $pigz = null, $pool = null, $protected = null, $prune_backups = null, $quiet = null, $remove = null, $script = null, $stdexcludes = null, $stdout = null, $stop = null, $stopwait = null, $storage = null, $tmpdir = null, $vmid = null, $zstd = null)
         {
             $params = [
                 'all' => $all,
@@ -19784,7 +20904,6 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'lockwait' => $lockwait,
                 'mailnotification' => $mailnotification,
                 'mailto' => $mailto,
-                'maxfiles' => $maxfiles,
                 'mode' => $mode,
                 'notes-template' => $notes_template,
                 'notification-mode' => $notification_mode,
@@ -21662,12 +22781,15 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * List all custom and default CPU models.
+         * @param string $arch Virtual processor architecture. Defaults to the host architecture.
+         *   Enum: x86_64,aarch64
          * @return Result
          */
 
-        public function index()
+        public function index($arch = null)
         {
-            return $this->client->get("/nodes/{$this->node}/capabilities/qemu/cpu");
+            $params = ['arch' => $arch];
+            return $this->client->get("/nodes/{$this->node}/capabilities/qemu/cpu", $params);
         }
     }
 
@@ -21699,13 +22821,21 @@ namespace Corsinvest\ProxmoxVE\Api {
 
 
         /**
-         * List of available VM-specific CPU flags.
+         * List of available VM-specific CPU flags. Returns an empty list for 'aarch64' as no VM-specific flags are defined for it yet.
+         * @param string $accel Acceleration type to check node compatibility for.
+         *   Enum: kvm,tcg
+         * @param string $arch Virtual processor architecture. Defaults to the host architecture.
+         *   Enum: x86_64,aarch64
          * @return Result
          */
 
-        public function index()
+        public function index($accel = null, $arch = null)
         {
-            return $this->client->get("/nodes/{$this->node}/capabilities/qemu/cpu-flags");
+            $params = [
+                'accel' => $accel,
+                'arch' => $arch
+            ];
+            return $this->client->get("/nodes/{$this->node}/capabilities/qemu/cpu-flags", $params);
         }
     }
 
@@ -21738,12 +22868,15 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Get available QEMU/KVM machine types.
+         * @param string $arch Virtual processor architecture. Defaults to the host architecture.
+         *   Enum: x86_64,aarch64
          * @return Result
          */
 
-        public function types()
+        public function types($arch = null)
         {
-            return $this->client->get("/nodes/{$this->node}/capabilities/qemu/machines");
+            $params = ['arch' => $arch];
+            return $this->client->get("/nodes/{$this->node}/capabilities/qemu/machines", $params);
         }
     }
 
@@ -21993,6 +23126,18 @@ namespace Corsinvest\ProxmoxVE\Api {
         public function getImportMetadata()
         {
             return $this->importMetadata ?: ($this->importMetadata = new PVEStorageStorageNodeNodesImportMetadata($this->client, $this->node, $this->storage));
+        }
+        /**
+         * @ignore
+         */
+        private $identity;
+        /**
+         * Get StorageStorageNodeNodesIdentity
+         * @return PVEStorageStorageNodeNodesIdentity
+         */
+        public function getIdentity()
+        {
+            return $this->identity ?: ($this->identity = new PVEStorageStorageNodeNodesIdentity($this->client, $this->node, $this->storage));
         }
 
 
@@ -22767,6 +23912,50 @@ namespace Corsinvest\ProxmoxVE\Api {
         {
             $params = ['volume' => $volume];
             return $this->client->get("/nodes/{$this->node}/storage/{$this->storage}/import-metadata", $params);
+        }
+    }
+
+    /**
+     * Class PVEStorageStorageNodeNodesIdentity
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEStorageStorageNodeNodesIdentity
+    {
+
+        /**
+         * @ignore
+         */
+        private $node;
+
+        /**
+         * @ignore
+         */
+        private $storage;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $node, $storage)
+        {
+            $this->client = $client;
+            $this->node = $node;
+            $this->storage = $storage;
+        }
+
+
+
+        /**
+         * Return identity information for this storage instance.
+         * @return Result
+         */
+
+        public function identity()
+        {
+            return $this->client->get("/nodes/{$this->node}/storage/{$this->storage}/identity");
         }
     }
 
@@ -24826,7 +26015,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Get node configuration options.
          * @param string $property Return only a specific property from the node configuration.
-         *   Enum: acme,acmedomain0,acmedomain1,acmedomain2,acmedomain3,acmedomain4,acmedomain5,ballooning-target,description,startall-onboot-delay,wakeonlan
+         *   Enum: acme,acmedomain0,acmedomain1,acmedomain2,acmedomain3,acmedomain4,acmedomain5,ballooning-target,description,location,startall-onboot-delay,wakeonlan
          * @return Result
          */
 
@@ -24843,12 +26032,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $delete A list of settings you want to delete.
          * @param string $description Description for the Node. Shown in the web-interface node notes panel. This is saved as comment inside the configuration file.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
+         * @param string $location The location of the node. Overrides the default from the datacenter config.
          * @param int $startall_onboot_delay Initial delay in seconds, before starting all the Virtual Guests with on-boot enabled.
          * @param string $wakeonlan Node specific wake on LAN settings.
          * @return Result
          */
 
-        public function setOptions($acme = null, $acmedomainN = null, $ballooning_target = null, $delete = null, $description = null, $digest = null, $startall_onboot_delay = null, $wakeonlan = null)
+        public function setOptions($acme = null, $acmedomainN = null, $ballooning_target = null, $delete = null, $description = null, $digest = null, $location = null, $startall_onboot_delay = null, $wakeonlan = null)
         {
             $params = [
                 'acme' => $acme,
@@ -24856,6 +26046,7 @@ namespace Corsinvest\ProxmoxVE\Api {
                 'delete' => $delete,
                 'description' => $description,
                 'digest' => $digest,
+                'location' => $location,
                 'startall-onboot-delay' => $startall_onboot_delay,
                 'wakeonlan' => $wakeonlan
             ];
@@ -26099,8 +27290,8 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Opens a websocket for VNC traffic.
-         * @param int $port Port number returned by previous vncproxy call.
-         * @param string $vncticket Ticket from previous call to vncproxy.
+         * @param int $port Port number returned by previous 'vncshell' call.
+         * @param string $vncticket Ticket from previous call to 'vncshell'.
          * @return Result
          */
 
@@ -26472,14 +27663,16 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Start all VMs and containers located on this node (by default only those with onboot=1).
          * @param bool $force Issue start command even if virtual guest have 'onboot' not set or set to off.
+         * @param int $max_workers Defines the maximum number of tasks running concurrently. If not set, uses 'max_workers' from datacenter.cfg, and if that's not set, the available CPU threads, clamped to a maximum of 8, are used.
          * @param string $vms Only consider guests from this comma separated list of VMIDs.
          * @return Result
          */
 
-        public function startall($force = null, $vms = null)
+        public function startall($force = null, $max_workers = null, $vms = null)
         {
             $params = [
                 'force' => $force,
+                'max-workers' => $max_workers,
                 'vms' => $vms
             ];
             return $this->client->create("/nodes/{$this->node}/startall", $params);
@@ -26516,15 +27709,17 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Stop all VMs and Containers.
          * @param bool $force_stop Force a hard-stop after the timeout.
+         * @param int $max_workers Defines the maximum number of tasks running concurrently. If  not set, uses 'max_workers' from datacenter.cfg, and if that's not set, the available CPU threads, clamped to a maximum of 8, are used.
          * @param int $timeout Timeout for each guest shutdown task. Depending on `force-stop`, the shutdown gets then simply aborted or a hard-stop is forced.
          * @param string $vms Only consider Guests with these IDs.
          * @return Result
          */
 
-        public function stopall($force_stop = null, $timeout = null, $vms = null)
+        public function stopall($force_stop = null, $max_workers = null, $timeout = null, $vms = null)
         {
             $params = [
                 'force-stop' => $force_stop,
+                'max-workers' => $max_workers,
                 'timeout' => $timeout,
                 'vms' => $vms
             ];
@@ -26561,13 +27756,17 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Suspend all VMs.
+         * @param int $max_workers Maximal number of parallel migration job. If not set, uses'max_workers' from datacenter.cfg, and if that's not set the available'                     .' CPU threads, clamped to a maximum of 8, are used.
          * @param string $vms Only consider Guests with these IDs.
          * @return Result
          */
 
-        public function suspendall($vms = null)
+        public function suspendall($max_workers = null, $vms = null)
         {
-            $params = ['vms' => $vms];
+            $params = [
+                'max-workers' => $max_workers,
+                'vms' => $vms
+            ];
             return $this->client->create("/nodes/{$this->node}/suspendall", $params);
         }
     }
@@ -26602,16 +27801,18 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Migrate all VMs and Containers.
          * @param string $target Target node.
-         * @param int $maxworkers Maximal number of parallel migration job. If not set, uses'max_workers' from datacenter.cfg. One of both must be set!
+         * @param int $max_workers Maximal number of parallel migration job. If not set, uses'max_workers' from datacenter.cfg. One of both must be set!
+         * @param int $maxworkers Maximal number of parallel migration job. If not set, uses'max_workers' from datacenter.cfg. One of both must be set!Deprecated, use 'max-workers' instead.
          * @param string $vms Only consider Guests with these IDs.
          * @param bool $with_local_disks Enable live storage migration for local disk
          * @return Result
          */
 
-        public function migrateall($target, $maxworkers = null, $vms = null, $with_local_disks = null)
+        public function migrateall($target, $max_workers = null, $maxworkers = null, $vms = null, $with_local_disks = null)
         {
             $params = [
                 'target' => $target,
+                'max-workers' => $max_workers,
                 'maxworkers' => $maxworkers,
                 'vms' => $vms,
                 'with-local-disks' => $with_local_disks
@@ -26723,7 +27924,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: btrfs,cephfs,cifs,dir,esxi,iscsi,iscsidirect,lvm,lvmthin,nfs,pbs,rbd,zfs,zfspool
          * @param string $authsupported Authsupported.
          * @param string $base Base volume. This volume is automatically activated.
-         * @param string $blocksize block size
+         * @param string $blocksize ZFS block size
          * @param string $bwlimit Set I/O bandwidth limit for various operations (in KiB/s).
          * @param string $comstar_hg host group for comstar views
          * @param string $comstar_tg target group for comstar views
@@ -26778,7 +27979,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $snapshot_as_volume_chain Enable support for creating storage-vendor agnostic snapshot through volume backing-chains.
          * @param bool $sparse use sparse volumes
          * @param string $subdir Subdir to mount.
-         * @param bool $tagged_only Only use logical volumes tagged with 'pve-vm-ID'.
+         * @param bool $tagged_only Only list logical volumes tagged with 'pve-vm-ID'.
          * @param string $target iSCSI target.
          * @param string $thinpool LVM thin pool LV name.
          * @param string $username RBD Id.
@@ -26902,7 +28103,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
         /**
          * Update storage configuration.
-         * @param string $blocksize block size
+         * @param string $blocksize ZFS block size
          * @param string $bwlimit Set I/O bandwidth limit for various operations (in KiB/s).
          * @param string $comstar_hg host group for comstar views
          * @param string $comstar_tg target group for comstar views
@@ -26953,7 +28154,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $snapshot_as_volume_chain Enable support for creating storage-vendor agnostic snapshot through volume backing-chains.
          * @param bool $sparse use sparse volumes
          * @param string $subdir Subdir to mount.
-         * @param bool $tagged_only Only use logical volumes tagged with 'pve-vm-ID'.
+         * @param bool $tagged_only Only list logical volumes tagged with 'pve-vm-ID'.
          * @param string $username RBD Id.
          * @param string $zfs_base_path Base path where to look for the created ZFS block devices. Set automatically during creation if not specified. Usually '/dev/zvol'.
          * @return Result
@@ -27563,21 +28764,23 @@ namespace Corsinvest\ProxmoxVE\Api {
             return $this->client->create("/access/users/{$this->userid}/token/{$this->tokenid}", $params);
         }
         /**
-         * Update API token for a specific user.
+         * Update API token for a specific user. NOTE: when 'regenerate' is set, the returned token value needs to be stored as it cannot be retrieved afterwards!
          * @param string $comment 
          * @param string $delete A list of settings you want to delete.
          * @param int $expire API token expiration date (seconds since epoch). '0' means no expiration date.
          * @param bool $privsep Restrict API token privileges with separate ACLs (default), or give full privileges of corresponding user.
+         * @param bool $regenerate Regenerate the token's secret value. All users of the previous secret will lose access after this operation.
          * @return Result
          */
 
-        public function updateTokenInfo($comment = null, $delete = null, $expire = null, $privsep = null)
+        public function updateTokenInfo($comment = null, $delete = null, $expire = null, $privsep = null, $regenerate = null)
         {
             $params = [
                 'comment' => $comment,
                 'delete' => $delete,
                 'expire' => $expire,
-                'privsep' => $privsep
+                'privsep' => $privsep,
+                'regenerate' => $regenerate
             ];
             return $this->client->set("/access/users/{$this->userid}/token/{$this->tokenid}", $params);
         }
@@ -27919,6 +29122,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $type Realm type.
          *   Enum: ad,ldap,openid,pam,pve
          * @param string $acr_values Specifies the Authentication Context Class Reference values that theAuthorization Server is being requested to use for the Auth Request.
+         * @param string $audiences A list of audiences that the OpenID Issuer may include that are accepted in addition to 'client-id'.
          * @param bool $autocreate Automatically create users if they do not exist.
          * @param string $base_dn LDAP base domain name
          * @param string $bind_dn LDAP bind domain name
@@ -27963,12 +29167,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
 
-        public function create($realm, $type, $acr_values = null, $autocreate = null, $base_dn = null, $bind_dn = null, $capath = null, $case_sensitive = null, $cert = null, $certkey = null, $check_connection = null, $client_id = null, $client_key = null, $comment = null, $default = null, $domain = null, $filter = null, $group_classes = null, $group_dn = null, $group_filter = null, $group_name_attr = null, $groups_autocreate = null, $groups_claim = null, $groups_overwrite = null, $issuer_url = null, $mode = null, $password = null, $port = null, $prompt = null, $query_userinfo = null, $scopes = null, $secure = null, $server1 = null, $server2 = null, $sslversion = null, $sync_defaults_options = null, $sync_attributes = null, $tfa = null, $user_attr = null, $user_classes = null, $username_claim = null, $verify = null)
+        public function create($realm, $type, $acr_values = null, $audiences = null, $autocreate = null, $base_dn = null, $bind_dn = null, $capath = null, $case_sensitive = null, $cert = null, $certkey = null, $check_connection = null, $client_id = null, $client_key = null, $comment = null, $default = null, $domain = null, $filter = null, $group_classes = null, $group_dn = null, $group_filter = null, $group_name_attr = null, $groups_autocreate = null, $groups_claim = null, $groups_overwrite = null, $issuer_url = null, $mode = null, $password = null, $port = null, $prompt = null, $query_userinfo = null, $scopes = null, $secure = null, $server1 = null, $server2 = null, $sslversion = null, $sync_defaults_options = null, $sync_attributes = null, $tfa = null, $user_attr = null, $user_classes = null, $username_claim = null, $verify = null)
         {
             $params = [
                 'realm' => $realm,
                 'type' => $type,
                 'acr-values' => $acr_values,
+                'audiences' => $audiences,
                 'autocreate' => $autocreate,
                 'base_dn' => $base_dn,
                 'bind_dn' => $bind_dn,
@@ -28072,6 +29277,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Update authentication server settings.
          * @param string $acr_values Specifies the Authentication Context Class Reference values that theAuthorization Server is being requested to use for the Auth Request.
+         * @param string $audiences A list of audiences that the OpenID Issuer may include that are accepted in addition to 'client-id'.
          * @param bool $autocreate Automatically create users if they do not exist.
          * @param string $base_dn LDAP base domain name
          * @param string $bind_dn LDAP bind domain name
@@ -28117,10 +29323,11 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
 
-        public function update($acr_values = null, $autocreate = null, $base_dn = null, $bind_dn = null, $capath = null, $case_sensitive = null, $cert = null, $certkey = null, $check_connection = null, $client_id = null, $client_key = null, $comment = null, $default = null, $delete = null, $digest = null, $domain = null, $filter = null, $group_classes = null, $group_dn = null, $group_filter = null, $group_name_attr = null, $groups_autocreate = null, $groups_claim = null, $groups_overwrite = null, $issuer_url = null, $mode = null, $password = null, $port = null, $prompt = null, $query_userinfo = null, $scopes = null, $secure = null, $server1 = null, $server2 = null, $sslversion = null, $sync_defaults_options = null, $sync_attributes = null, $tfa = null, $user_attr = null, $user_classes = null, $verify = null)
+        public function update($acr_values = null, $audiences = null, $autocreate = null, $base_dn = null, $bind_dn = null, $capath = null, $case_sensitive = null, $cert = null, $certkey = null, $check_connection = null, $client_id = null, $client_key = null, $comment = null, $default = null, $delete = null, $digest = null, $domain = null, $filter = null, $group_classes = null, $group_dn = null, $group_filter = null, $group_name_attr = null, $groups_autocreate = null, $groups_claim = null, $groups_overwrite = null, $issuer_url = null, $mode = null, $password = null, $port = null, $prompt = null, $query_userinfo = null, $scopes = null, $secure = null, $server1 = null, $server2 = null, $sslversion = null, $sync_defaults_options = null, $sync_attributes = null, $tfa = null, $user_attr = null, $user_classes = null, $verify = null)
         {
             $params = [
                 'acr-values' => $acr_values,
+                'audiences' => $audiences,
                 'autocreate' => $autocreate,
                 'base_dn' => $base_dn,
                 'bind_dn' => $bind_dn,
@@ -28625,16 +29832,18 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $path Verify ticket, and check if user have access 'privs' on 'path'
          * @param string $privs Verify ticket, and check if user have access 'privs' on 'path'
          * @param string $vncticket The VNC ticket.
+         * @param int $port Verify that the ticket is valid for this port.
          * @return Result
          */
 
-        public function verifyVncTicket($authid, $path, $privs, $vncticket)
+        public function verifyVncTicket($authid, $path, $privs, $vncticket, $port = null)
         {
             $params = [
                 'authid' => $authid,
                 'path' => $path,
                 'privs' => $privs,
-                'vncticket' => $vncticket
+                'vncticket' => $vncticket,
+                'port' => $port
             ];
             return $this->client->create("/access/vncticket", $params);
         }
