@@ -1,0 +1,49 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Validate version
+      id: version
+      run: |
+        # Extract version from composer.json
+        PROJECT_VERSION=$(php -r "echo json_decode(file_get_contents('composer.json'))->version;")
+        echo "Project version: $PROJECT_VERSION"
+        # Extract version from tag
+        TAG_VERSION=${GITHUB_REF#refs/tags/v}
+        echo "Tag version: $TAG_VERSION"
+        # Validate they match
+        if [ "$PROJECT_VERSION" != "$TAG_VERSION" ]; then
+          echo "❌ ERROR: Version mismatch!"
+          echo "   composer.json: $PROJECT_VERSION"
+          echo "   Git tag: v$TAG_VERSION"
+          exit 1
+        fi
+        echo "✅ Version validated: $PROJECT_VERSION"
+        echo "version=$PROJECT_VERSION" >> $GITHUB_OUTPUT
+
+    - name: Create release
+      uses: softprops/action-gh-release@v2
+      with:
+        name: Release v${{ steps.version.outputs.version }}
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+
+    # Packagist auto-updates via the GitHub webhook/integration once the
+    # release tag is pushed, so no explicit publish step is required.
