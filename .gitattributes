@@ -1,0 +1,26 @@
+# Normalize line endings: store as LF in the repo, check out per platform
+* text=auto eol=lf
+
+# PHP source files
+*.php text eol=lf
+
+# Common text files
+*.json text eol=lf
+*.md   text eol=lf
+*.xml  text eol=lf
+*.yml  text eol=lf
+*.yaml text eol=lf
+*.txt  text eol=lf
+*.lock text eol=lf
+
+# Windows-specific scripts keep CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary files (no line ending conversion)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.zip binary
