@@ -11,6 +11,7 @@ jobs:
   analyze:
     name: Analyze PHP code (PHP ${{ matrix.php-versions }})
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     strategy:
       matrix:
         php-versions: ['5.5', '7.4', '8.0', '8.1']
