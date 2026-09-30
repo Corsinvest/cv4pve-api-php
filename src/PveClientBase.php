@@ -605,7 +605,8 @@ class PveClientBase
      */
     public function getExitStatusTask($task)
     {
-        return $this->readTaskStatus($task)->exitstatus ?? null;
+        $data = $this->readTaskStatus($task);
+        return isset($data->exitstatus) ? $data->exitstatus : null;
     }
 
     /**
