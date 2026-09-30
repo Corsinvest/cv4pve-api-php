@@ -252,7 +252,8 @@ class PveClientBase
      * @param string $userName user name or &lt;username&gt;@&lt;realm&gt;
      * @param string $password
      * @param string $realm pam/pve or custom
-     * @param string $otp One-time password for Two-factor authentication.
+     * @param string $otp Second factor of a user with two-factor authentication: a TOTP code
+     *                    (e.g. 123456) or 'type:value' (e.g. recovery:abcd-1234).
      * @return bool logged
      */
     public function login($userName, $password, $realm = "pam", $otp = null)
@@ -269,26 +270,47 @@ class PveClientBase
         $params = [
             'password' => $password,
             'username' => $userName,
-            'realm' => $realm,
-            'otp' => $otp
+            'realm' => $realm
         ];
 
         $result = $this->create("/access/ticket", $params);
-        $this->setResultIsObject($oldResultIsObject);
 
-        if ($result->isSuccessStatusCode()) {
-            if (isset($result->getResponse()->data->NeedTFA)) {
+        if ($result->isSuccessStatusCode() && isset($result->getResponse()->data->NeedTFA)) {
+            if ($otp === null || trim($otp) === '') {
+                $this->setResultIsObject($oldResultIsObject);
                 throw new PveExceptionAuthentication(
                     $result,
                     "Couldn't authenticate user: missing Two Factor Authentication (TFA)"
                 );
             }
 
+            //second step: the response to the challenge of the first one
+            $result = $this->create("/access/ticket", [
+                'password' => self::getTfaResponse($otp),
+                'username' => $userName,
+                'realm' => $realm,
+                'tfa-challenge' => $result->getResponse()->data->ticket
+            ]);
+        }
+        $this->setResultIsObject($oldResultIsObject);
+
+        if ($result->isSuccessStatusCode()) {
             $this->ticketCSRFPreventionToken = $result->getResponse()->data->CSRFPreventionToken;
             $this->ticketPVEAuthCookie = $result->getResponse()->data->ticket;
         }
 
         return $result->isSuccessStatusCode();
+    }
+
+    /**
+     * Second factor as Proxmox VE expects it in the response to a TFA challenge: 'type:value'.
+     * A code without a type is a TOTP code.
+     * @param string $otp
+     * @return string
+     */
+    private static function getTfaResponse($otp)
+    {
+        return strpos($otp, ':') !== false ? $otp : "totp:{$otp}";
     }
 
     /**
@@ -357,7 +379,7 @@ class PveClientBase
             echo "Method: " . $method . " , Url: " . $url . "\n";
             if ($method != 'GET') {
                 echo "Parameters:\n";
-                $sensitiveParams = ['password', 'token', 'ticket', 'otp', 'apitoken'];
+                $sensitiveParams = ['password', 'token', 'ticket', 'otp', 'apitoken', 'tfa-challenge'];
                 foreach ($params as $key => $value) {
                     $paramName = strtolower($key);
                     $isSensitive = false;
@@ -540,11 +562,11 @@ class PveClientBase
      * @param string $task Task identifier
      * @param int $wait Millisecond wait next check
      * @param int $timeOut Millisecond timeout
-     * @return bool Function timed out
+     * @return bool Function timed out: true if the task is still running at the timeout
+     * @throws PveResultException The status of the task cannot be read
      */
     public function waitForTaskToFinish($task, $wait = 500, $timeOut = 10000)
     {
-        $isRunning = $this->taskIsRunning($task);
         if ($wait <= 0) {
             $wait = 500;
         }
@@ -553,9 +575,10 @@ class PveClientBase
         }
         $timeStart = floor(microtime(true) * 1000);
 
+        $isRunning = $this->taskIsRunning($task);
         while ($isRunning && ((floor(microtime(true) * 1000) - $timeStart) < $timeOut)) {
-            $isRunning = $this->taskIsRunning($task);
             usleep($wait * 1000);
+            $isRunning = $this->taskIsRunning($task);
         }
 
         return $isRunning;
@@ -566,21 +589,23 @@ class PveClientBase
      *
      * @param string $task Task identifier
      * @return bool Is running
+     * @throws PveResultException The status of the task cannot be read
      */
     public function taskIsRunning($task)
     {
-        return $this->readTaskStatus($task)->getResponse()->data->status == "running";
+        return $this->readTaskStatus($task)->status == "running";
     }
 
     /**
      * Return exit status code task
      *
      * @param string $task Task identifier
-     * @return string Message status
+     * @return string|null Message status, null while the task is running
+     * @throws PveResultException The status of the task cannot be read
      */
     public function getExitStatusTask($task)
     {
-        return $this->readTaskStatus($task)->getResponse()->data->exitstatus;
+        return $this->readTaskStatus($task)->exitstatus ?? null;
     }
 
     /**
@@ -594,11 +619,41 @@ class PveClientBase
     }
 
     /**
-     * Read task status.
-     * @return Result
+     * Read task status, checked before it is used, so that an API failure (node down, missing
+     * privilege) is reported with the HTTP status and the Proxmox VE error instead of being
+     * taken for a finished task.
+     * @param string $task Task identifier
+     * @return object Data of the task status
+     * @throws PveResultException The status of the task cannot be read
      */
     private function readTaskStatus($task)
     {
-        return $this->get("/nodes/{$this->getNodeFromTask($task)}/tasks/{$task}/status");
+        $oldResultIsObject = $this->isResultObject();
+        $this->setResultIsObject(true);
+        try {
+            $result = $this->get("/nodes/{$this->getNodeFromTask($task)}/tasks/{$task}/status");
+        } finally {
+            $this->setResultIsObject($oldResultIsObject);
+        }
+
+        if ($result === null) {
+            throw new PveResultException(null, "Read status of task '{$task}' returned no result");
+        }
+
+        $response = $result->getResponse();
+        $inError = is_object($response) && $result->responseInError();
+        $data = is_object($response) && isset($response->data) ? $response->data : null;
+        if ($inError || !$result->isSuccessStatusCode() || !is_object($data)) {
+            $detail = $inError ? $result->getError()
+                : (!$result->isSuccessStatusCode() ? $result->getReasonPhrase()
+                    : "response does not contain 'data'");
+
+            throw new PveResultException(
+                $result,
+                "Read status of task '{$task}' failed ({$result->getStatusCode()} {$result->getReasonPhrase()}): {$detail}"
+            );
+        }
+
+        return $data;
     }
 }
