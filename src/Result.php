@@ -170,11 +170,23 @@ class Result
      */
     public function responseInError()
     {
-        if ($this->resultIsObject) {
-            return property_exists($this->response, 'errors') && $this->response->errors != null;
-        } else {
-            return array_key_exists('errors', $this->response);
+        return $this->getResponseErrors() !== null;
+    }
+
+    /**
+     * Errors of the response, whatever its form (object or array); null when the response has none,
+     * also when there is no response at all (the request got no answer, the body is not JSON).
+     * @return array|object|null
+     */
+    private function getResponseErrors()
+    {
+        $errors = null;
+        if (is_object($this->response) && isset($this->response->errors)) {
+            $errors = $this->response->errors;
+        } elseif (is_array($this->response) && isset($this->response['errors'])) {
+            $errors = $this->response['errors'];
         }
+        return is_array($errors) || is_object($errors) ? $errors : null;
     }
 
     /**
@@ -184,16 +196,13 @@ class Result
     public function getError()
     {
         $ret = '';
-        if ($this->responseInError()) {
-            $errors = $this->resultIsObject
-                ? $this->response->errors
-                : $this->response->errors['errors'];
-
+        $errors = $this->getResponseErrors();
+        if ($errors !== null) {
             foreach ($errors as $key => $value) {
                 if ($ret != '') {
-                    $ret .= '\n';
+                    $ret .= "\n";
                 }
-                $ret .= $key . " : " . $value;
+                $ret .= $key . " : " . (is_scalar($value) ? $value : json_encode($value));
             }
         }
         return $ret;

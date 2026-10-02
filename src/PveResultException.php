@@ -8,7 +8,6 @@
 namespace Corsinvest\ProxmoxVE\Api;
 
 use Exception;
-use Throwable;
 
 /**
  * Call to the Proxmox VE API that did not return the expected result, e.g. the status of a task
@@ -25,7 +24,7 @@ class PveResultException extends Exception
      * @param int $code
      * @param Throwable $previous
      */
-    public function __construct($result, $message, $code = 0, Throwable $previous = null)
+    public function __construct($result, $message, $code = 0, $previous = null)
     {
         parent::__construct($message, $code, $previous);
         $this->result = $result;

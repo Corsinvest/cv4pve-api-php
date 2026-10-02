@@ -8,7 +8,6 @@
 namespace Corsinvest\ProxmoxVE\Api;
 
 use Exception;
-use Throwable;
 
 /**
  *
@@ -24,7 +23,7 @@ class PveExceptionAuthentication extends Exception
      * @param int $code
      * @param Throwable $previous
      */
-    public function __construct($result, $message, $code = 0, Throwable $previous = null)
+    public function __construct($result, $message, $code = 0, $previous = null)
     {
         parent::__construct($message, $code, $previous);
         $this->result = $result;
