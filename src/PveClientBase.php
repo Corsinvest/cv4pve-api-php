@@ -248,58 +248,84 @@ class PveClientBase
     }
 
     /**
+     * Run a call with the answers read as JSON objects, whatever the response type and the result mode
+     * of the client, which are restored afterwards: login and task status need the data of the answer.
+     * @param callable $call
+     * @return mixed what $call returns
+     */
+    private function withJsonObject($call)
+    {
+        $oldResultIsObject = $this->resultIsObject;
+        $oldResponseType = $this->responseType;
+        $this->resultIsObject = true;
+        $this->responseType = 'json';
+        try {
+            return $call();
+        } finally {
+            $this->resultIsObject = $oldResultIsObject;
+            $this->responseType = $oldResponseType;
+        }
+    }
+
+    /**
      * Creation ticket from login.
      * @param string $userName user name or &lt;username&gt;@&lt;realm&gt;
      * @param string $password
      * @param string $realm pam/pve or custom
      * @param string $otp Second factor of a user with two-factor authentication: a TOTP code
      *                    (e.g. 123456) or 'type:value' (e.g. recovery:abcd-1234).
-     * @return bool logged
+     * @return bool logged: true when Proxmox VE gave a ticket; when false the reason is in getLastResult()
+     * @throws PveExceptionAuthentication The user needs a second factor and $otp is missing
      */
     public function login($userName, $password, $realm = "pam", $otp = null)
     {
-        $uData = explode("@", $userName);
-        if (count($uData) > 1) {
-            $userName = $uData[0];
-            $realm = $uData[1];
+        //user@realm: the realm is what follows the last @
+        $at = strrpos($userName, '@');
+        if ($at !== false && $at > 0) {
+            $realm = substr($userName, $at + 1);
+            $userName = substr($userName, 0, $at);
         }
 
-        $oldResultIsObject = $this->isResultObject();
-        $this->setResultIsObject(true);
+        $result = $this->withJsonObject(function () use ($userName, $password, $realm, $otp) {
+            $result = $this->create("/access/ticket", [
+                'password' => $password,
+                'username' => $userName,
+                'realm' => $realm
+            ]);
 
-        $params = [
-            'password' => $password,
-            'username' => $userName,
-            'realm' => $realm
-        ];
+            if ($result->isSuccessStatusCode() && isset($result->getResponse()->data->NeedTFA)) {
+                if ($otp === null || trim($otp) === '') {
+                    throw new PveExceptionAuthentication(
+                        $result,
+                        "Couldn't authenticate user: missing Two Factor Authentication (TFA)"
+                    );
+                }
 
-        $result = $this->create("/access/ticket", $params);
-
-        if ($result->isSuccessStatusCode() && isset($result->getResponse()->data->NeedTFA)) {
-            if ($otp === null || trim($otp) === '') {
-                $this->setResultIsObject($oldResultIsObject);
-                throw new PveExceptionAuthentication(
-                    $result,
-                    "Couldn't authenticate user: missing Two Factor Authentication (TFA)"
-                );
+                //second step: the response to the challenge of the first one
+                $result = $this->create("/access/ticket", [
+                    'password' => self::getTfaResponse($otp),
+                    'username' => $userName,
+                    'realm' => $realm,
+                    'tfa-challenge' => $result->getResponse()->data->ticket
+                ]);
             }
 
-            //second step: the response to the challenge of the first one
-            $result = $this->create("/access/ticket", [
-                'password' => self::getTfaResponse($otp),
-                'username' => $userName,
-                'realm' => $realm,
-                'tfa-challenge' => $result->getResponse()->data->ticket
-            ]);
-        }
-        $this->setResultIsObject($oldResultIsObject);
+            return $result;
+        });
 
-        if ($result->isSuccessStatusCode()) {
-            $this->ticketCSRFPreventionToken = $result->getResponse()->data->CSRFPreventionToken;
-            $this->ticketPVEAuthCookie = $result->getResponse()->data->ticket;
+        //logged only with a ticket: a success status alone (e.g. the page of a proxy) is not a login
+        $response = $result->getResponse();
+        if (
+            !$result->isSuccessStatusCode()
+            || !is_object($response)
+            || !isset($response->data->ticket, $response->data->CSRFPreventionToken)
+        ) {
+            return false;
         }
 
-        return $result->isSuccessStatusCode();
+        $this->ticketCSRFPreventionToken = $response->data->CSRFPreventionToken;
+        $this->ticketPVEAuthCookie = $response->data->ticket;
+        return true;
     }
 
     /**
@@ -389,7 +415,7 @@ class PveClientBase
                             break;
                         }
                     }
-                    echo $key . " : " . ($isSensitive ? "****" : $value) . "\n";
+                    echo $key . " : " . ($isSensitive ? "****" : (is_scalar($value) ? $value : json_encode($value))) . "\n";
                 }
             }
         }
@@ -397,6 +423,10 @@ class PveClientBase
         $headers = [];
         $methodType = "";
         $data = ""; // default POSTFIELDS value as defined in https://curl.se/libcurl/c/CURLOPT_POSTFIELDS.html
+        if (($method == 'PUT' || $method == 'POST') && count($params)) {
+            //checked before anything is sent
+            self::encodeParameters($params);
+        }
         $prox_ch = curl_init();
         switch ($method) {
             case "GET":
@@ -411,7 +441,7 @@ class PveClientBase
 
                 // data from params only if there are any
                 if (count($params)) {
-                    $data = json_encode($params);
+                    $data = self::encodeParameters($params);
                     array_push($headers, 'Content-Type: application/json');
                     array_push($headers, 'Content-Length: ' . strlen($data));
                 }
@@ -425,7 +455,7 @@ class PveClientBase
 
                 // data from params only if there are any
                 if (count($params)) {
-                    $data = json_encode($params);
+                    $data = self::encodeParameters($params);
                     array_push($headers, 'Content-Type: application/json');
                     array_push($headers, 'Content-Length: ' . strlen($data));
                 }
@@ -455,11 +485,13 @@ class PveClientBase
         curl_setopt($prox_ch, CURLOPT_HEADER, true);
         curl_setopt($prox_ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($prox_ch, CURLOPT_COOKIE, "PVEAuthCookie=" . $this->ticketPVEAuthCookie);
+        //validating a certificate means also checking that it is the one of this host
         curl_setopt($prox_ch, CURLOPT_SSL_VERIFYPEER, $this->validateCertificate);
-        curl_setopt($prox_ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($prox_ch, CURLOPT_SSL_VERIFYHOST, $this->validateCertificate ? 2 : 0);
 
         if ($this->timeout != 0) {
             curl_setopt($prox_ch, CURLOPT_TIMEOUT, $this->timeout);
+            curl_setopt($prox_ch, CURLOPT_CONNECTTIMEOUT, $this->timeout);
         }
 
         if (isset($this->ticketPVEAuthCookie)) {
@@ -474,30 +506,28 @@ class PveClientBase
 
         $response = curl_exec($prox_ch);
         $curlInfo = curl_getinfo($prox_ch);
-        $reasonPhrase = curl_error($prox_ch);
+        $curlError = curl_error($prox_ch);
         $reasonCode = $curlInfo["http_code"];
         if (PHP_VERSION_ID < 80000) {
             curl_close($prox_ch);
         }
         unset($prox_ch);
 
-        $body = substr($response, $curlInfo["header_size"]);
-        $responseHeaders = substr($response, 0, $curlInfo["header_size"]);
+        //no answer at all (connection refused, name not resolved, certificate refused, timeout)
+        $body = $response === false ? '' : (string) substr($response, $curlInfo["header_size"]);
+        $responseHeaders = $response === false ? '' : (string) substr($response, 0, $curlInfo["header_size"]);
         unset($response);
         unset($curlInfo);
 
+        //Proxmox VE writes the reason of an error in the status line; without an answer the reason is the one of curl
+        $reasonPhrase = $responseHeaders !== '' ? self::getReasonPhraseFromHeaders($responseHeaders) : $curlError;
+
         $obj = null;
-        switch ($this->responseType) {
-            case 'json':
-                $obj = json_decode($body, !$this->isResultObject());
-                break;
-
-            case 'png':
-                $obj = 'data:image/png;base64,' . base64_encode($body);
-                break;
-
-            default:
-                break;
+        if ($this->responseType == 'png' && $reasonCode == 200) {
+            $obj = 'data:image/png;base64,' . base64_encode($body);
+        } elseif ($this->responseType == 'json' || $this->responseType == 'png') {
+            //json, or the error answer of a png request
+            $obj = $body === '' ? null : json_decode($body, !$this->isResultObject());
         }
         unset($body);
 
@@ -530,13 +560,16 @@ class PveClientBase
         }
 
         if ($this->getDebugLevel() >= 2) {
-            if (is_array($obj)) {
+            $shown = self::maskSensitiveResponse($obj);
+            if (is_array($shown)) {
                 echo '<pre>';
-                print_r($obj);
+                print_r($shown);
                 echo '</pre>';
             } else {
-                echo var_dump($obj) . PHP_EOL;
+                var_dump($shown);
+                echo PHP_EOL;
             }
+            unset($shown);
             echo "StatusCode:          " . $this->lastResult->getStatusCode() . PHP_EOL;
             echo "ReasonPhrase:        " . $this->lastResult->getReasonPhrase() . PHP_EOL;
             echo "IsSuccessStatusCode: " . $this->lastResult->isSuccessStatusCode() . PHP_EOL;
@@ -546,6 +579,70 @@ class PveClientBase
             echo "=============================";
         }
         return $this->lastResult;
+    }
+
+    /**
+     * Parameters as the JSON body of a request.
+     * @param array $params
+     * @return string
+     * @throws \InvalidArgumentException A value cannot be encoded (e.g. text that is not UTF-8)
+     */
+    private static function encodeParameters($params)
+    {
+        $data = json_encode($params);
+        if ($data === false) {
+            throw new \InvalidArgumentException('Parameters cannot be encoded as JSON: ' . json_last_error_msg());
+        }
+        return $data;
+    }
+
+    /**
+     * Reason of the last status line of the response headers ('HTTP/1.1 403 Permission check failed').
+     * HTTP/2 has no reason: empty string.
+     * @param string $headers
+     * @return string
+     */
+    private static function getReasonPhraseFromHeaders($headers)
+    {
+        $reason = '';
+        foreach (preg_split('/\r\n|\n|\r/', $headers) as $line) {
+            if (preg_match('#^HTTP/[0-9.]+ +[0-9]{3}(?: +(.*))?$#', $line, $match)) {
+                $reason = isset($match[1]) ? trim($match[1]) : '';
+            }
+        }
+        return $reason;
+    }
+
+    /**
+     * Copy of an answer for the debug output, without the secrets it carries (the ticket and the
+     * CSRF token of a login, the value of a new token).
+     * @param mixed $response
+     * @return mixed
+     */
+    private static function maskSensitiveResponse($response)
+    {
+        $sensitive = ['password', 'token', 'ticket'];
+        $mask = function ($data) use ($sensitive) {
+            $masked = [];
+            foreach ((array) $data as $key => $value) {
+                $hide = false;
+                foreach ($sensitive as $name) {
+                    $hide = $hide || stripos((string) $key, $name) !== false;
+                }
+                $masked[$key] = $hide ? '****' : $value;
+            }
+            return $masked;
+        };
+
+        if (is_object($response) && isset($response->data) && is_object($response->data)) {
+            $copy = clone $response;
+            $copy->data = (object) $mask($response->data);
+            return $copy;
+        }
+        if (is_array($response) && isset($response['data']) && is_array($response['data'])) {
+            $response['data'] = $mask($response['data']);
+        }
+        return $response;
     }
 
     /**
@@ -616,6 +713,12 @@ class PveClientBase
      */
     public function getNodeFromTask($task)
     {
+        if (!is_string($task) || !preg_match('/^UPID:[^:]+:/', $task)) {
+            throw new PveResultException(
+                null,
+                "'" . (is_scalar($task) ? $task : gettype($task)) . "' is not a valid task identifier (UPID)"
+            );
+        }
         return explode(":", $task)[1];
     }
 
@@ -629,13 +732,10 @@ class PveClientBase
      */
     private function readTaskStatus($task)
     {
-        $oldResultIsObject = $this->isResultObject();
-        $this->setResultIsObject(true);
-        try {
-            $result = $this->get("/nodes/{$this->getNodeFromTask($task)}/tasks/{$task}/status");
-        } finally {
-            $this->setResultIsObject($oldResultIsObject);
-        }
+        $node = $this->getNodeFromTask($task);
+        $result = $this->withJsonObject(function () use ($node, $task) {
+            return $this->get("/nodes/{$node}/tasks/{$task}/status");
+        });
 
         if ($result === null) {
             throw new PveResultException(null, "Read status of task '{$task}' returned no result");

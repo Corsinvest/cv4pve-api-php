@@ -1,0 +1,40 @@
+# SPDX-FileCopyrightText: Copyright Corsinvest Srl
+# SPDX-License-Identifier: MIT
+
+name: Test
+
+on:
+  push:
+    branches: [ "master" ]
+    paths: [ "src/**", "tests/**", ".github/workflows/test.yml" ]
+  pull_request:
+    branches: [ "master" ]
+    paths: [ "src/**", "tests/**", ".github/workflows/test.yml" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    strategy:
+      matrix:
+        php: [ "7.4", "8.3", "8.4" ]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP ${{ matrix.php }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: curl
+          coverage: none
+
+      # offline tests of the hand-written classes (curl replaced by a fake): no cluster needed
+      - name: Run tests
+        run: php tests/BaseTest.php
