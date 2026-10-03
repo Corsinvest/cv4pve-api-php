@@ -451,7 +451,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
         /**
          * Create a new replication job
-         * @param string $id Replication Job ID. The ID is composed of a Guest ID and a job number, separated by a hyphen, i.e. '&amp;lt;GUEST&amp;gt;-&amp;lt;JOBNUM&amp;gt;'.
+         * @param string $id Replication Job ID. The ID is composed of a Guest ID and a job number, separated by a hyphen, i.e. '&lt;GUEST&gt;-&lt;JOBNUM&gt;'.
          * @param string $target Target node.
          * @param string $type Section type.
          *   Enum: local
@@ -710,7 +710,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $server server dns name or IP address
          * @param string $type Plugin type.
          *   Enum: graphite,influxdb,opentelemetry
-         * @param string $api_path_prefix An API path prefix inserted between '&amp;lt;host&amp;gt;:&amp;lt;port&amp;gt;/' and '/api2/'. Can be useful if the InfluxDB service runs behind a reverse proxy.
+         * @param string $api_path_prefix An API path prefix inserted between '&lt;host&gt;:&lt;port&gt;/' and '/api2/'. Can be useful if the InfluxDB service runs behind a reverse proxy.
          * @param string $bucket The InfluxDB bucket/db. Only necessary when using the http v2 api.
          * @param bool $disable Flag to disable the plugin.
          * @param string $influxdbproto 
@@ -770,7 +770,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * Update metric server configuration.
          * @param int $port server network port
          * @param string $server server dns name or IP address
-         * @param string $api_path_prefix An API path prefix inserted between '&amp;lt;host&amp;gt;:&amp;lt;port&amp;gt;/' and '/api2/'. Can be useful if the InfluxDB service runs behind a reverse proxy.
+         * @param string $api_path_prefix An API path prefix inserted between '&lt;host&gt;:&lt;port&gt;/' and '/api2/'. Can be useful if the InfluxDB service runs behind a reverse proxy.
          * @param string $bucket The InfluxDB bucket/db. Only necessary when using the http v2 api.
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
@@ -858,7 +858,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $history Also return historic values. Returns full available metric history unless `start-time` is also set
          * @param bool $local_only Only return metrics for the current node instead of the whole cluster
          * @param string $node_list Only return metrics from nodes passed as comma-separated list
-         * @param int $start_time Only include metrics with a timestamp &amp;gt; start-time.
+         * @param int $start_time Only include metrics with a timestamp &gt; start-time.
          * @return Result
          */
 
@@ -1595,8 +1595,8 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $body HTTP body, base64 encoded
          * @param string $comment Comment
          * @param bool $disable Disable this target
-         * @param array $header HTTP headers to set. These have to be formatted as a property string in the format name=&amp;lt;name&amp;gt;,value=&amp;lt;base64 of value&amp;gt;
-         * @param array $secret Secrets to set. These have to be formatted as a property string in the format name=&amp;lt;name&amp;gt;,value=&amp;lt;base64 of value&amp;gt;
+         * @param array $header HTTP headers to set. These have to be formatted as a property string in the format name=&lt;name&gt;,value=&lt;base64 of value&gt;
+         * @param array $secret Secrets to set. These have to be formatted as a property string in the format name=&lt;name&gt;,value=&lt;base64 of value&gt;
          * @return Result
          */
 
@@ -1667,10 +1667,10 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param array $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
          * @param bool $disable Disable this target
-         * @param array $header HTTP headers to set. These have to be formatted as a property string in the format name=&amp;lt;name&amp;gt;,value=&amp;lt;base64 of value&amp;gt;
+         * @param array $header HTTP headers to set. These have to be formatted as a property string in the format name=&lt;name&gt;,value=&lt;base64 of value&gt;
          * @param string $method HTTP method
          *   Enum: post,put,get
-         * @param array $secret Secrets to set. These have to be formatted as a property string in the format name=&amp;lt;name&amp;gt;,value=&amp;lt;base64 of value&amp;gt;
+         * @param array $secret Secrets to set. These have to be formatted as a property string in the format name=&lt;name&gt;,value=&lt;base64 of value&gt;
          * @param string $url Server URL
          * @return Result
          */
@@ -1856,7 +1856,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $disable Disable this matcher
          * @param bool $invert_match Invert match of the whole matcher
          * @param array $match_calendar Match notification timestamp
-         * @param array $match_field Metadata fields to match (regex or exact match). Must be in the form (regex|exact):&amp;lt;field&amp;gt;=&amp;lt;value&amp;gt;
+         * @param array $match_field Metadata fields to match (regex or exact match). Must be in the form (regex|exact):&lt;field&gt;=&lt;value&gt;
          * @param array $match_severity Notification severities to match
          * @param string $mode Choose between 'all' and 'any' for when multiple properties are specified
          *   Enum: all,any
@@ -1933,7 +1933,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $disable Disable this matcher
          * @param bool $invert_match Invert match of the whole matcher
          * @param array $match_calendar Match notification timestamp
-         * @param array $match_field Metadata fields to match (regex or exact match). Must be in the form (regex|exact):&amp;lt;field&amp;gt;=&amp;lt;value&amp;gt;
+         * @param array $match_field Metadata fields to match (regex or exact match). Must be in the form (regex|exact):&lt;field&gt;=&lt;value&gt;
          * @param array $match_severity Notification severities to match
          * @param string $mode Choose between 'all' and 'any' for when multiple properties are specified
          *   Enum: all,any
@@ -2474,7 +2474,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Get information needed to join this cluster over the connected node.
-         * @param string $node The node for which the joinee gets the nodeinfo. 
+         * @param string $node The node for which the joinee gets the nodeinfo.
          * @return Result
          */
 
@@ -2821,7 +2821,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $log Log level for firewall rule.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
-         * @param int $pos Update rule at position &amp;lt;pos&amp;gt;.
+         * @param int $pos Update rule at position &lt;pos&gt;.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
          * @param string $source Restrict packet source address. This can refer to a single IP address, an IP set ('+ipsetname') or an IP alias definition. You can also specify an address range like '20.34.101.207-201.3.9.99', or a list of IP addresses and networks (entries are separated by comma). Please do not mix IPv4 and IPv6 addresses inside such lists.
          * @param string $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
@@ -2917,7 +2917,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $log Log level for firewall rule.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
-         * @param int $moveto Move rule to new position &amp;lt;moveto&amp;gt;. Other arguments are ignored.
+         * @param int $moveto Move rule to new position &lt;moveto&gt;. Other arguments are ignored.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
          * @param string $source Restrict packet source address. This can refer to a single IP address, an IP set ('+ipsetname') or an IP alias definition. You can also specify an address range like '20.34.101.207-201.3.9.99', or a list of IP addresses and networks (entries are separated by comma). Please do not mix IPv4 and IPv6 addresses inside such lists.
          * @param string $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
@@ -3005,7 +3005,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $log Log level for firewall rule.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
-         * @param int $pos Update rule at position &amp;lt;pos&amp;gt;.
+         * @param int $pos Update rule at position &lt;pos&gt;.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
          * @param string $source Restrict packet source address. This can refer to a single IP address, an IP set ('+ipsetname') or an IP alias definition. You can also specify an address range like '20.34.101.207-201.3.9.99', or a list of IP addresses and networks (entries are separated by comma). Please do not mix IPv4 and IPv6 addresses inside such lists.
          * @param string $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
@@ -3095,7 +3095,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $log Log level for firewall rule.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
-         * @param int $moveto Move rule to new position &amp;lt;moveto&amp;gt;. Other arguments are ignored.
+         * @param int $moveto Move rule to new position &lt;moveto&gt;. Other arguments are ignored.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
          * @param string $source Restrict packet source address. This can refer to a single IP address, an IP set ('+ipsetname') or an IP alias definition. You can also specify an address range like '20.34.101.207-201.3.9.99', or a list of IP addresses and networks (entries are separated by comma). Please do not mix IPv4 and IPv6 addresses inside such lists.
          * @param string $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
@@ -3660,7 +3660,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $pbs_change_detection_mode PBS mode used to detect file changes and switch encoding format for container backups.
          *   Enum: legacy,data,metadata
          * @param string $performance Other performance-related settings.
-         * @param int $pigz Use pigz instead of gzip when N&amp;gt;0. N=1 uses half of cores, N&amp;gt;1 uses N as thread count.
+         * @param int $pigz Use pigz instead of gzip when N&gt;0. N=1 uses half of cores, N&gt;1 uses N as thread count.
          * @param string $pool Backup all known guest systems included in the specified pool.
          * @param bool $protected If true, mark backup(s) as protected.
          * @param string $prune_backups Use these retention options instead of those from the storage configuration.
@@ -3810,7 +3810,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $pbs_change_detection_mode PBS mode used to detect file changes and switch encoding format for container backups.
          *   Enum: legacy,data,metadata
          * @param string $performance Other performance-related settings.
-         * @param int $pigz Use pigz instead of gzip when N&amp;gt;0. N=1 uses half of cores, N&amp;gt;1 uses N as thread count.
+         * @param int $pigz Use pigz instead of gzip when N&gt;0. N=1 uses half of cores, N&gt;1 uses N as thread count.
          * @param string $pool Backup all known guest systems included in the specified pool.
          * @param bool $protected If true, mark backup(s) as protected.
          * @param string $prune_backups Use these retention options instead of those from the storage configuration.
@@ -4511,11 +4511,11 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
         /**
          * Create HA rule.
-         * @param string $resources List of HA resource IDs. This consists of a list of resource types followed by a resource specific name separated with a colon (example: vm:100,ct:101).
          * @param string $rule HA rule identifier.
          * @param string $type HA rule type.
          *   Enum: node-affinity,resource-affinity
-         * @param string $affinity Describes whether the HA resources are supposed to be kept on the same node ('positive'), or are supposed to be kept on separate nodes ('negative').
+         * @param string $resources List of HA resource IDs. This consists of a list of resource types followed by a resource specific name separated with a colon (example: vm:100,ct:101).
+         * @param string $affinity Describes whether the HA resources are supposed to be placed on the given nodes ('positive'), or are supposed to be placed on any but the given nodes ('negative').
          *   Enum: positive,negative
          * @param string $comment HA rule description.
          * @param bool $disable Whether the HA rule is disabled.
@@ -4524,12 +4524,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
 
-        public function createRule($resources, $rule, $type, $affinity = null, $comment = null, $disable = null, $nodes = null, $strict = null)
+        public function createRule($rule, $type, $resources, $affinity = null, $comment = null, $disable = null, $nodes = null, $strict = null)
         {
             $params = [
-                'resources' => $resources,
                 'rule' => $rule,
                 'type' => $type,
+                'resources' => $resources,
                 'affinity' => $affinity,
                 'comment' => $comment,
                 'disable' => $disable,
@@ -4588,11 +4588,11 @@ namespace Corsinvest\ProxmoxVE\Api {
          * Update HA rule.
          * @param string $type HA rule type.
          *   Enum: node-affinity,resource-affinity
-         * @param string $affinity Describes whether the HA resources are supposed to be kept on the same node ('positive'), or are supposed to be kept on separate nodes ('negative').
-         *   Enum: positive,negative
-         * @param string $comment HA rule description.
          * @param string $delete A list of settings you want to delete.
          * @param string $digest Prevent changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
+         * @param string $affinity Describes whether the HA resources are supposed to be placed on the given nodes ('positive'), or are supposed to be placed on any but the given nodes ('negative').
+         *   Enum: positive,negative
+         * @param string $comment HA rule description.
          * @param bool $disable Whether the HA rule is disabled.
          * @param string $nodes List of cluster node names with optional priority.
          * @param string $resources List of HA resource IDs. This consists of a list of resource types followed by a resource specific name separated with a colon (example: vm:100,ct:101).
@@ -4600,14 +4600,14 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
 
-        public function updateRule($type, $affinity = null, $comment = null, $delete = null, $digest = null, $disable = null, $nodes = null, $resources = null, $strict = null)
+        public function updateRule($type, $delete = null, $digest = null, $affinity = null, $comment = null, $disable = null, $nodes = null, $resources = null, $strict = null)
         {
             $params = [
                 'type' => $type,
-                'affinity' => $affinity,
-                'comment' => $comment,
                 'delete' => $delete,
                 'digest' => $digest,
+                'affinity' => $affinity,
+                'comment' => $comment,
                 'disable' => $disable,
                 'nodes' => $nodes,
                 'resources' => $resources,
@@ -5385,6 +5385,18 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * @ignore
          */
+        private $restartBulk;
+        /**
+         * Get CephClusterRestartBulk
+         * @return PVECephClusterRestartBulk
+         */
+        public function getRestartBulk()
+        {
+            return $this->restartBulk ?: ($this->restartBulk = new PVECephClusterRestartBulk($this->client));
+        }
+        /**
+         * @ignore
+         */
         private $flags;
         /**
          * Get CephClusterFlags
@@ -5393,6 +5405,18 @@ namespace Corsinvest\ProxmoxVE\Api {
         public function getFlags()
         {
             return $this->flags ?: ($this->flags = new PVECephClusterFlags($this->client));
+        }
+        /**
+         * @ignore
+         */
+        private $healthMute;
+        /**
+         * Get CephClusterHealthMute
+         * @return PVECephClusterHealthMute
+         */
+        public function getHealthMute()
+        {
+            return $this->healthMute ?: ($this->healthMute = new PVECephClusterHealthMute($this->client));
         }
 
 
@@ -5472,6 +5496,52 @@ namespace Corsinvest\ProxmoxVE\Api {
         public function status()
         {
             return $this->client->get("/cluster/ceph/status");
+        }
+    }
+
+    /**
+     * Class PVECephClusterRestartBulk
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVECephClusterRestartBulk
+    {
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client)
+        {
+            $this->client = $client;
+        }
+
+
+
+        /**
+         * Cluster-wide rolling restart of all Ceph daemons of the given type. For MON/MGR/MDS each daemon is restarted only after Ceph reports the previous one is back up and the next one is safe to stop. For OSDs the cluster path orchestrates the per-node endpoint at /nodes/{node}/ceph/restart-bulk on each node in turn, inheriting that endpoint's per-OSD 'noout' handling and resume support. The 'noout' flag itself is not exposed by this endpoint as it is OSD-specific (and for OSDs handled by the per-node sub-tasks).
+         * @param string $service_type Ceph daemon type to restart cluster-wide.
+         *   Enum: mon,mgr,mds,osd
+         * @param bool $dry_run Log the plan (which daemons would be restarted, in what order) without actually doing anything.
+         * @param bool $force Proceed past a HEALTH_WARN with non-benign checks like PG_DEGRADED, SLOW_OPS, or MON_DOWN. A blocking HEALTH_ERR is fatal regardless of this flag. Checks that ceph reports as muted, and checks known to be harmless for a rolling restart, never block and are named in the task log. The cluster-wide OSD map flags are only ever evaluated for an OSD restart, since they govern nothing a mon, mgr or mds restart touches. The operator is responsible for confirming the cluster is stable enough to absorb a rolling restart.
+         * @param bool $only_outdated OSDs only: restart only OSDs whose running version differs from the locally-installed ceph-osd binary on their host. Forwarded to each per-node sub-task so the per-host installed version is used (a partial upgrade where one host is on a newer build is handled correctly).
+         * @param int $timeout Per-daemon timeout (in seconds) for the up-wait phase. Note: for daemons on remote nodes the same timeout also bounds the remote restart task, so the per-daemon budget can be up to 2x this value. Default sized for slow MDS journal replay or MON paxos settle on busy clusters; bump higher if the cluster routinely takes longer to stabilize after a daemon restart.
+         * @return Result
+         */
+
+        public function restartBulk($service_type, $dry_run = null, $force = null, $only_outdated = null, $timeout = null)
+        {
+            $params = [
+                'service-type' => $service_type,
+                'dry-run' => $dry_run,
+                'force' => $force,
+                'only-outdated' => $only_outdated,
+                'timeout' => $timeout
+            ];
+            return $this->client->create("/cluster/ceph/restart-bulk", $params);
         }
     }
 
@@ -5595,6 +5665,93 @@ namespace Corsinvest\ProxmoxVE\Api {
         {
             $params = ['value' => $value];
             return $this->client->set("/cluster/ceph/flags/{$this->flag}", $params);
+        }
+    }
+
+    /**
+     * Class PVECephClusterHealthMute
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVECephClusterHealthMute
+    {
+
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client)
+        {
+            $this->client = $client;
+        }
+
+
+        /**
+         * Get ItemHealthMuteCephClusterCode
+         * @param code
+         * @return PVEItemHealthMuteCephClusterCode
+         */
+        public function get($code)
+        {
+            return new PVEItemHealthMuteCephClusterCode($this->client, $code);
+        }
+
+        /**
+         * Get the currently muted Ceph health checks.
+         * @return Result
+         */
+
+        public function healthMuteIndex()
+        {
+            return $this->client->get("/cluster/ceph/health-mute");
+        }
+    }
+    /**
+     * Class PVEItemHealthMuteCephClusterCode
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVEItemHealthMuteCephClusterCode
+    {
+
+        /**
+         * @ignore
+         */
+        private $code;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $code)
+        {
+            $this->client = $client;
+            $this->code = $code;
+        }
+
+
+
+        /**
+         * Mute or unmute a Ceph health check. A muted check no longer counts towards the cluster status, but stays visible and keeps being evaluated.
+         * @param bool $value Whether to mute (true) or unmute (false) the check.
+         * @param bool $sticky Keep the mute even when the check gets worse. Without this a mute clears itself as soon as the number of affected items grows, which brings the check back to attention. Only used when muting.
+         * @param string $ttl How long the mute lasts, for example '2h', '3d' or '1w'. Without it the mute has no expiry. Only used when muting.
+         * @return Result
+         */
+
+        public function healthMute($value, $sticky = null, $ttl = null)
+        {
+            $params = [
+                'value' => $value,
+                'sticky' => $sticky,
+                'ttl' => $ttl
+            ];
+            return $this->client->set("/cluster/ceph/health-mute/{$this->code}", $params);
         }
     }
 
@@ -7085,7 +7242,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $log Log level for firewall rule.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
-         * @param int $pos Update rule at position &amp;lt;pos&amp;gt;.
+         * @param int $pos Update rule at position &lt;pos&gt;.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
          * @param string $source Restrict packet source address. This can refer to a single IP address, an IP set ('+ipsetname') or an IP alias definition. You can also specify an address range like '20.34.101.207-201.3.9.99', or a list of IP addresses and networks (entries are separated by comma). Please do not mix IPv4 and IPv6 addresses inside such lists.
          * @param string $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
@@ -7181,7 +7338,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $log Log level for firewall rule.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
-         * @param int $moveto Move rule to new position &amp;lt;moveto&amp;gt;. Other arguments are ignored.
+         * @param int $moveto Move rule to new position &lt;moveto&gt;. Other arguments are ignored.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
          * @param string $source Restrict packet source address. This can refer to a single IP address, an IP set ('+ipsetname') or an IP alias definition. You can also specify an address range like '20.34.101.207-201.3.9.99', or a list of IP addresses and networks (entries are separated by comma). Please do not mix IPv4 and IPv6 addresses inside such lists.
          * @param string $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
@@ -7333,7 +7490,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: subnet
          * @param string $dhcp_dns_server IP address for the DNS server
          * @param array $dhcp_range A list of DHCP ranges for this subnet
-         * @param string $dnszoneprefix dns domain zone prefix  ex: 'adm' -&amp;gt; &amp;lt;hostname&amp;gt;.adm.mydomain.com
+         * @param string $dnszoneprefix dns domain zone prefix  ex: 'adm' -&gt; &lt;hostname&gt;.adm.mydomain.com
          * @param string $gateway Subnet Gateway: Will be assign on vnet for layer3 zones
          * @param string $lock_token the token for unlocking the global SDN configuration
          * @param bool $snat enable masquerade for this subnet if pve-firewall
@@ -7420,7 +7577,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $dhcp_dns_server IP address for the DNS server
          * @param array $dhcp_range A list of DHCP ranges for this subnet
          * @param string $digest Prevent changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
-         * @param string $dnszoneprefix dns domain zone prefix  ex: 'adm' -&amp;gt; &amp;lt;hostname&amp;gt;.adm.mydomain.com
+         * @param string $dnszoneprefix dns domain zone prefix  ex: 'adm' -&gt; &lt;hostname&gt;.adm.mydomain.com
          * @param string $gateway Subnet Gateway: Will be assign on vnet for layer3 zones
          * @param string $lock_token the token for unlocking the global SDN configuration
          * @param bool $snat enable masquerade for this subnet if pve-firewall
@@ -9281,16 +9438,14 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * List all entries for a given Route Map
-         * @param string $route_map_id The SDN route map identifier
          * @param bool $pending Display pending config.
          * @param bool $running Display running config.
          * @return Result
          */
 
-        public function listRouteMapEntriesForRouteMap($route_map_id, $pending = null, $running = null)
+        public function listRouteMapEntriesForRouteMap($pending = null, $running = null)
         {
             $params = [
-                'route-map-id' => $route_map_id,
                 'pending' => $pending,
                 'running' => $running
             ];
@@ -9368,33 +9523,26 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Delete Route Map Entry
-         * @param string $route_map_id The SDN route map identifier
          * @param string $lock_token the token for unlocking the global SDN configuration
          * @return Result
          */
 
-        public function deleteRouteMapEntry($route_map_id, $lock_token = null)
+        public function deleteRouteMapEntry($lock_token = null)
         {
-            $params = [
-                'route-map-id' => $route_map_id,
-                'lock-token' => $lock_token
-            ];
+            $params = ['lock-token' => $lock_token];
             return $this->client->delete("/cluster/sdn/route-maps/entries/{$this->route_map_id}/entry/{$this->order}", $params);
         }
         /**
          * Get Route Map Entry
-         * @param string $route_map_id The SDN route map identifier
          * @return Result
          */
 
-        public function getRouteMapEntry($route_map_id)
+        public function getRouteMapEntry()
         {
-            $params = ['route-map-id' => $route_map_id];
-            return $this->client->get("/cluster/sdn/route-maps/entries/{$this->route_map_id}/entry/{$this->order}", $params);
+            return $this->client->get("/cluster/sdn/route-maps/entries/{$this->route_map_id}/entry/{$this->order}");
         }
         /**
          * Update Route Map Entry
-         * @param string $route_map_id The SDN route map identifier
          * @param string $action Matching policy of a route map entry.
          *   Enum: permit,deny
          * @param string $call The SDN route map identifier
@@ -9407,10 +9555,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @return Result
          */
 
-        public function updateRouteMapEntry($route_map_id, $action = null, $call = null, $delete = null, $digest = null, $exit_action = null, $lock_token = null, $match = null, $set = null)
+        public function updateRouteMapEntry($action = null, $call = null, $delete = null, $digest = null, $exit_action = null, $lock_token = null, $match = null, $set = null)
         {
             $params = [
-                'route-map-id' => $route_map_id,
                 'action' => $action,
                 'call' => $call,
                 'delete' => $delete,
@@ -9693,7 +9840,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $delete A list of settings you want to delete.
          * @param string $description Datacenter description. Shown in the web-interface datacenter notes panel. This is saved as comment inside the configuration file.
          * @param string $email_from Specify email address to send notification from (default is root@$hostname)
-         * @param string $fencing Set the fencing mode of the HA cluster. Hardware mode needs a valid configuration of fence devices in /etc/pve/ha/fence.cfg. With both all two modes are used.  WARNING: 'hardware' and 'both' are EXPERIMENTAL &amp; WIP
+         * @param string $fencing Set the fencing mode of the HA cluster. Hardware mode needs a valid configuration of fence devices in /etc/pve/ha/fence.cfg. With both all two modes are used. WARNING: 'hardware' and 'both' are EXPERIMENTAL &amp; WIP
          *   Enum: watchdog,hardware,both
          * @param string $ha Cluster wide HA settings.
          * @param string $http_proxy Specify external http proxy which is used for downloads (example: 'http://username:password@host:port/')
@@ -10497,13 +10644,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $ha_managed Add the VM as a HA resource after it was created.
          * @param string $hookscript Script that will be executed during various steps in the vms lifetime.
          * @param array $hostpciN Map host PCI devices into guest.
-         * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory', 'usb' and 'cloudinit'. Use '0' to disable hotplug completely. Using '1' as value is an alias for the default `network,disk,usb`. USB hotplugging is possible for guests with machine version &amp;gt;= 7.1 and ostype l26 or windows &amp;gt; 7.
-         * @param string $hugepages Enables hugepages memory.  Sets the size of hugepages in MiB. If the value is set to 'any' then 1 GiB hugepages will be used if possible, otherwise the size will fall back to 2 MiB.
+         * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory', 'usb' and 'cloudinit'. Use '0' to disable hotplug completely. Using '1' as value is an alias for the default `network,disk,usb`. USB hotplugging is possible for guests with machine version &gt;= 7.1 and ostype l26 or windows &gt; 7.
+         * @param string $hugepages Enables hugepages memory. Sets the size of hugepages in MiB. If the value is set to 'any' then 1 GiB hugepages will be used if possible, otherwise the size will fall back to 2 MiB.
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param string $import_working_storage A file-based storage with 'images' content-type enabled, which is used as an intermediary extraction storage during import. Defaults to the source storage.
          * @param string $intel_tdx Trusted Domain Extension (TDX) features by Intel CPUs
-         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration. This requires cloud-init 19.4 or newer.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4. 
+         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface. IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified. The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration. This requires cloud-init 19.4 or newer. If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
          * @param string $ivshmem Inter-VM shared memory. Useful for direct communication between VMs, or to the host.
          * @param bool $keephugepages Use together with hugepages. If enabled, hugepages will not not be deleted after VM shutdown and can be used for subsequent starts.
          * @param string $keyboard Keyboard layout for VNC server. This option is generally not required and is often better handled from within the guest OS.
@@ -10553,7 +10700,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $tpmstate0 Configure a Disk for storing TPM state. The format is fixed to 'raw'. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Note that SIZE_IN_GiB is ignored here and 4 MiB will be used instead. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param bool $unique Assign a unique random ethernet address.
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
-         * @param array $usbN Configure an USB device (n is 0 to 4, for machine version &amp;gt;= 7.1 and ostype l26 or windows &amp;gt; 7, n can be up to 14).
+         * @param array $usbN Configure an USB device (n is 0 to 4, for machine version &gt;= 7.1 and ostype l26 or windows &gt; 7, n can be up to 14).
          * @param int $vcpus Number of hotplugged vcpus.
          * @param string $vga Configure the VGA hardware.
          * @param array $virtioN Use volume as VIRTIO hard disk (n is 0 to 15). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
@@ -11216,7 +11363,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $log Log level for firewall rule.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
-         * @param int $pos Update rule at position &amp;lt;pos&amp;gt;.
+         * @param int $pos Update rule at position &lt;pos&gt;.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
          * @param string $source Restrict packet source address. This can refer to a single IP address, an IP set ('+ipsetname') or an IP alias definition. You can also specify an address range like '20.34.101.207-201.3.9.99', or a list of IP addresses and networks (entries are separated by comma). Please do not mix IPv4 and IPv6 addresses inside such lists.
          * @param string $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
@@ -11318,7 +11465,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $log Log level for firewall rule.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
-         * @param int $moveto Move rule to new position &amp;lt;moveto&amp;gt;. Other arguments are ignored.
+         * @param int $moveto Move rule to new position &lt;moveto&gt;. Other arguments are ignored.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
          * @param string $source Restrict packet source address. This can refer to a single IP address, an IP set ('+ipsetname') or an IP alias definition. You can also specify an address range like '20.34.101.207-201.3.9.99', or a list of IP addresses and networks (entries are separated by comma). Please do not mix IPv4 and IPv6 addresses inside such lists.
          * @param string $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
@@ -11789,7 +11936,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $dhcp Enable DHCP.
          * @param string $digest Prevent changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
          * @param bool $enable Enable/disable firewall rules.
-         * @param bool $ipfilter Enable default IP filters. This is equivalent to adding an empty ipfilter-net&amp;lt;id&amp;gt; ipset for every interface. Such ipsets implicitly contain sane default restrictions such as restricting IPv6 link local addresses to the one derived from the interface's MAC address. For containers the configured IP addresses will be implicitly added.
+         * @param bool $ipfilter Enable default IP filters. This is equivalent to adding an empty ipfilter-net&lt;id&gt; ipset for every interface. Such ipsets implicitly contain sane default restrictions such as restricting IPv6 link local addresses to the one derived from the interface's MAC address. For containers the configured IP addresses will be implicitly added.
          * @param string $log_level_in Log level for incoming traffic.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $log_level_out Log level for outgoing traffic.
@@ -13605,13 +13752,13 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $freeze Freeze CPU at startup (use 'c' monitor command to start execution).
          * @param string $hookscript Script that will be executed during various steps in the vms lifetime.
          * @param array $hostpciN Map host PCI devices into guest.
-         * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory', 'usb' and 'cloudinit'. Use '0' to disable hotplug completely. Using '1' as value is an alias for the default `network,disk,usb`. USB hotplugging is possible for guests with machine version &amp;gt;= 7.1 and ostype l26 or windows &amp;gt; 7.
-         * @param string $hugepages Enables hugepages memory.  Sets the size of hugepages in MiB. If the value is set to 'any' then 1 GiB hugepages will be used if possible, otherwise the size will fall back to 2 MiB.
+         * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory', 'usb' and 'cloudinit'. Use '0' to disable hotplug completely. Using '1' as value is an alias for the default `network,disk,usb`. USB hotplugging is possible for guests with machine version &gt;= 7.1 and ostype l26 or windows &gt; 7.
+         * @param string $hugepages Enables hugepages memory. Sets the size of hugepages in MiB. If the value is set to 'any' then 1 GiB hugepages will be used if possible, otherwise the size will fall back to 2 MiB.
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param string $import_working_storage A file-based storage with 'images' content-type enabled, which is used as an intermediary extraction storage during import. Defaults to the source storage.
          * @param string $intel_tdx Trusted Domain Extension (TDX) features by Intel CPUs
-         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration. This requires cloud-init 19.4 or newer.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4. 
+         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface. IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified. The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration. This requires cloud-init 19.4 or newer. If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
          * @param string $ivshmem Inter-VM shared memory. Useful for direct communication between VMs, or to the host.
          * @param bool $keephugepages Use together with hugepages. If enabled, hugepages will not not be deleted after VM shutdown and can be used for subsequent starts.
          * @param string $keyboard Keyboard layout for VNC server. This option is generally not required and is often better handled from within the guest OS.
@@ -13658,7 +13805,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $template Enable/disable Template.
          * @param string $tpmstate0 Configure a Disk for storing TPM state. The format is fixed to 'raw'. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Note that SIZE_IN_GiB is ignored here and 4 MiB will be used instead. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
-         * @param array $usbN Configure an USB device (n is 0 to 4, for machine version &amp;gt;= 7.1 and ostype l26 or windows &amp;gt; 7, n can be up to 14).
+         * @param array $usbN Configure an USB device (n is 0 to 4, for machine version &gt;= 7.1 and ostype l26 or windows &gt; 7, n can be up to 14).
          * @param int $vcpus Number of hotplugged vcpus.
          * @param string $vga Configure the VGA hardware.
          * @param array $virtioN Use volume as VIRTIO hard disk (n is 0 to 15). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
@@ -13799,12 +13946,12 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $freeze Freeze CPU at startup (use 'c' monitor command to start execution).
          * @param string $hookscript Script that will be executed during various steps in the vms lifetime.
          * @param array $hostpciN Map host PCI devices into guest.
-         * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory', 'usb' and 'cloudinit'. Use '0' to disable hotplug completely. Using '1' as value is an alias for the default `network,disk,usb`. USB hotplugging is possible for guests with machine version &amp;gt;= 7.1 and ostype l26 or windows &amp;gt; 7.
-         * @param string $hugepages Enables hugepages memory.  Sets the size of hugepages in MiB. If the value is set to 'any' then 1 GiB hugepages will be used if possible, otherwise the size will fall back to 2 MiB.
+         * @param string $hotplug Selectively enable hotplug features. This is a comma separated list of hotplug features: 'network', 'disk', 'cpu', 'memory', 'usb' and 'cloudinit'. Use '0' to disable hotplug completely. Using '1' as value is an alias for the default `network,disk,usb`. USB hotplugging is possible for guests with machine version &gt;= 7.1 and ostype l26 or windows &gt; 7.
+         * @param string $hugepages Enables hugepages memory. Sets the size of hugepages in MiB. If the value is set to 'any' then 1 GiB hugepages will be used if possible, otherwise the size will fall back to 2 MiB.
          *   Enum: any,2,1024
          * @param array $ideN Use volume as IDE hard disk or CD-ROM (n is 0 to 3). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param string $intel_tdx Trusted Domain Extension (TDX) features by Intel CPUs
-         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface.  IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified.  The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration. This requires cloud-init 19.4 or newer.  If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4. 
+         * @param array $ipconfigN cloud-init: Specify IP addresses and gateways for the corresponding interface. IP addresses use CIDR notation, gateways are optional but need an IP of the same type specified. The special string 'dhcp' can be used for IP addresses to use DHCP, in which case no explicit gateway should be provided. For IPv6 the special string 'auto' can be used to use stateless autoconfiguration. This requires cloud-init 19.4 or newer. If cloud-init is enabled and neither an IPv4 nor an IPv6 address is specified, it defaults to using dhcp on IPv4.
          * @param string $ivshmem Inter-VM shared memory. Useful for direct communication between VMs, or to the host.
          * @param bool $keephugepages Use together with hugepages. If enabled, hugepages will not not be deleted after VM shutdown and can be used for subsequent starts.
          * @param string $keyboard Keyboard layout for VNC server. This option is generally not required and is often better handled from within the guest OS.
@@ -13851,7 +13998,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $template Enable/disable Template.
          * @param string $tpmstate0 Configure a Disk for storing TPM state. The format is fixed to 'raw'. Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Note that SIZE_IN_GiB is ignored here and 4 MiB will be used instead. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
          * @param array $unusedN Reference to unused volumes. This is used internally, and should not be modified manually.
-         * @param array $usbN Configure an USB device (n is 0 to 4, for machine version &amp;gt;= 7.1 and ostype l26 or windows &amp;gt; 7, n can be up to 14).
+         * @param array $usbN Configure an USB device (n is 0 to 4, for machine version &gt;= 7.1 and ostype l26 or windows &gt; 7, n can be up to 14).
          * @param int $vcpus Number of hotplugged vcpus.
          * @param string $vga Configure the VGA hardware.
          * @param array $virtioN Use volume as VIRTIO hard disk (n is 0 to 15). Use the special syntax STORAGE_ID:SIZE_IN_GiB to allocate a new volume. Use STORAGE_ID:0 and the 'import-from' parameter to import from an existing volume.
@@ -14895,7 +15042,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Resume virtual machine.
-         * @param bool $nocheck 
+         * @param bool $nocheck Do not check whether the VM is running, used internally during migration. Only root may use this option.
          * @param bool $skiplock Ignore locks - only root is allowed to use this option.
          * @return Result
          */
@@ -15049,7 +15196,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $newid VMID for the clone.
          * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param string $description Description for the new VM.
-         * @param string $format Target format for file storage. Only valid for full clone.
+         * @param string $format Target disk format. Only valid for full clone. If the target storage does not support the format, the storage's default format is used instead.
          *   Enum: raw,qcow2,vmdk
          * @param bool $full Create a full copy of all disks. This is always done when you clone a normal VM. For VM templates, we try to create a linked clone by default.
          * @param string $name Set a name for the new VM.
@@ -15118,7 +15265,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param int $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param bool $delete Delete the original disk after successful copy. By default the original disk is kept as unused disk.
          * @param string $digest Prevent changes if current configuration file has different SHA1 digest. This can be used to prevent concurrent modifications.
-         * @param string $format Target Format.
+         * @param string $format Target disk format. Only used when moving to a different storage. If the target storage does not support the format, the storage's default format is used instead.
          *   Enum: raw,qcow2,vmdk
          * @param string $storage Target storage.
          * @param string $target_digest Prevent changes if the current config file of the target VM has a different SHA1 digest. This can be used to detect concurrent modifications.
@@ -15898,7 +16045,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: shell,console,tty
          * @param bool $console Attach a console device (/dev/console) to the container.
          * @param int $cores The number of cores assigned to the container. A container can use all available cores by default.
-         * @param float $cpulimit Limit of CPU usage.  NOTE: If the computer has 2 CPUs, it has a total of '2' CPU time. Value '0' indicates no CPU limit.
+         * @param float $cpulimit Limit of CPU usage. NOTE: If the computer has 2 CPUs, it has a total of '2' CPU time. Value '0' indicates no CPU limit.
          * @param int $cpuunits CPU weight for a container, will be clamped to [1, 10000] in cgroup v2.
          * @param bool $debug Try to be more verbose. For now this only enables debug log-level on start.
          * @param string $description Description for the Container. Shown in the web-interface CT's summary. This is saved as comment inside the configuration file.
@@ -15918,7 +16065,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $nameserver Sets DNS server IP address for a container. Create will automatically use the setting from the host if you neither set searchdomain nor nameserver.
          * @param array $netN Specifies network interfaces for the container.
          * @param bool $onboot Specifies whether a container will be started during system bootup.
-         * @param string $ostype OS type. This is used to setup configuration inside the container, and corresponds to lxc setup scripts in /usr/share/lxc/config/&amp;lt;ostype&amp;gt;.common.conf. Value 'unmanaged' can be used to skip and OS specific setup.
+         * @param string $ostype OS type. This is used to setup configuration inside the container, and corresponds to lxc setup scripts in /usr/share/lxc/config/&lt;ostype&gt;.common.conf. Value 'unmanaged' can be used to skip and OS specific setup.
          *   Enum: debian,devuan,ubuntu,centos,fedora,opensuse,archlinux,alpine,gentoo,nixos,unmanaged
          * @param string $password Sets root password inside container.
          * @param string $pool Add the VM to the specified pool.
@@ -16361,7 +16508,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: shell,console,tty
          * @param bool $console Attach a console device (/dev/console) to the container.
          * @param int $cores The number of cores assigned to the container. A container can use all available cores by default.
-         * @param float $cpulimit Limit of CPU usage.  NOTE: If the computer has 2 CPUs, it has a total of '2' CPU time. Value '0' indicates no CPU limit.
+         * @param float $cpulimit Limit of CPU usage. NOTE: If the computer has 2 CPUs, it has a total of '2' CPU time. Value '0' indicates no CPU limit.
          * @param int $cpuunits CPU weight for a container, will be clamped to [1, 10000] in cgroup v2.
          * @param bool $debug Try to be more verbose. For now this only enables debug log-level on start.
          * @param string $delete A list of settings you want to delete.
@@ -16380,7 +16527,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $nameserver Sets DNS server IP address for a container. Create will automatically use the setting from the host if you neither set searchdomain nor nameserver.
          * @param array $netN Specifies network interfaces for the container.
          * @param bool $onboot Specifies whether a container will be started during system bootup.
-         * @param string $ostype OS type. This is used to setup configuration inside the container, and corresponds to lxc setup scripts in /usr/share/lxc/config/&amp;lt;ostype&amp;gt;.common.conf. Value 'unmanaged' can be used to skip and OS specific setup.
+         * @param string $ostype OS type. This is used to setup configuration inside the container, and corresponds to lxc setup scripts in /usr/share/lxc/config/&lt;ostype&gt;.common.conf. Value 'unmanaged' can be used to skip and OS specific setup.
          *   Enum: debian,devuan,ubuntu,centos,fedora,opensuse,archlinux,alpine,gentoo,nixos,unmanaged
          * @param bool $protection Sets the protection flag of the container. This will prevent the CT or CT's disk remove/update operation.
          * @param string $revert Revert a pending change.
@@ -17340,7 +17487,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $log Log level for firewall rule.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
-         * @param int $pos Update rule at position &amp;lt;pos&amp;gt;.
+         * @param int $pos Update rule at position &lt;pos&gt;.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
          * @param string $source Restrict packet source address. This can refer to a single IP address, an IP set ('+ipsetname') or an IP alias definition. You can also specify an address range like '20.34.101.207-201.3.9.99', or a list of IP addresses and networks (entries are separated by comma). Please do not mix IPv4 and IPv6 addresses inside such lists.
          * @param string $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
@@ -17442,7 +17589,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $log Log level for firewall rule.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
-         * @param int $moveto Move rule to new position &amp;lt;moveto&amp;gt;. Other arguments are ignored.
+         * @param int $moveto Move rule to new position &lt;moveto&gt;. Other arguments are ignored.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
          * @param string $source Restrict packet source address. This can refer to a single IP address, an IP set ('+ipsetname') or an IP alias definition. You can also specify an address range like '20.34.101.207-201.3.9.99', or a list of IP addresses and networks (entries are separated by comma). Please do not mix IPv4 and IPv6 addresses inside such lists.
          * @param string $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
@@ -17913,7 +18060,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param bool $dhcp Enable DHCP.
          * @param string $digest Prevent changes if current configuration file has a different digest. This can be used to prevent concurrent modifications.
          * @param bool $enable Enable/disable firewall rules.
-         * @param bool $ipfilter Enable default IP filters. This is equivalent to adding an empty ipfilter-net&amp;lt;id&amp;gt; ipset for every interface. Such ipsets implicitly contain sane default restrictions such as restricting IPv6 link local addresses to the one derived from the interface's MAC address. For containers the configured IP addresses will be implicitly added.
+         * @param bool $ipfilter Enable default IP filters. This is equivalent to adding an empty ipfilter-net&lt;id&gt; ipset for every interface. Such ipsets implicitly contain sane default restrictions such as restricting IPv6 link local addresses to the one derived from the interface's MAC address. For containers the configured IP addresses will be implicitly added.
          * @param string $log_level_in Log level for incoming traffic.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $log_level_out Log level for outgoing traffic.
@@ -18731,9 +18878,9 @@ namespace Corsinvest\ProxmoxVE\Api {
          *   Enum: rootfs,mp0,mp1,mp2,mp3,mp4,mp5,mp6,mp7,mp8,mp9,mp10,mp11,mp12,mp13,mp14,mp15,mp16,mp17,mp18,mp19,mp20,mp21,mp22,mp23,mp24,mp25,mp26,mp27,mp28,mp29,mp30,mp31,mp32,mp33,mp34,mp35,mp36,mp37,mp38,mp39,mp40,mp41,mp42,mp43,mp44,mp45,mp46,mp47,mp48,mp49,mp50,mp51,mp52,mp53,mp54,mp55,mp56,mp57,mp58,mp59,mp60,mp61,mp62,mp63,mp64,mp65,mp66,mp67,mp68,mp69,mp70,mp71,mp72,mp73,mp74,mp75,mp76,mp77,mp78,mp79,mp80,mp81,mp82,mp83,mp84,mp85,mp86,mp87,mp88,mp89,mp90,mp91,mp92,mp93,mp94,mp95,mp96,mp97,mp98,mp99,mp100,mp101,mp102,mp103,mp104,mp105,mp106,mp107,mp108,mp109,mp110,mp111,mp112,mp113,mp114,mp115,mp116,mp117,mp118,mp119,mp120,mp121,mp122,mp123,mp124,mp125,mp126,mp127,mp128,mp129,mp130,mp131,mp132,mp133,mp134,mp135,mp136,mp137,mp138,mp139,mp140,mp141,mp142,mp143,mp144,mp145,mp146,mp147,mp148,mp149,mp150,mp151,mp152,mp153,mp154,mp155,mp156,mp157,mp158,mp159,mp160,mp161,mp162,mp163,mp164,mp165,mp166,mp167,mp168,mp169,mp170,mp171,mp172,mp173,mp174,mp175,mp176,mp177,mp178,mp179,mp180,mp181,mp182,mp183,mp184,mp185,mp186,mp187,mp188,mp189,mp190,mp191,mp192,mp193,mp194,mp195,mp196,mp197,mp198,mp199,mp200,mp201,mp202,mp203,mp204,mp205,mp206,mp207,mp208,mp209,mp210,mp211,mp212,mp213,mp214,mp215,mp216,mp217,mp218,mp219,mp220,mp221,mp222,mp223,mp224,mp225,mp226,mp227,mp228,mp229,mp230,mp231,mp232,mp233,mp234,mp235,mp236,mp237,mp238,mp239,mp240,mp241,mp242,mp243,mp244,mp245,mp246,mp247,mp248,mp249,mp250,mp251,mp252,mp253,mp254,mp255,unused0,unused1,unused2,unused3,unused4,unused5,unused6,unused7,unused8,unused9,unused10,unused11,unused12,unused13,unused14,unused15,unused16,unused17,unused18,unused19,unused20,unused21,unused22,unused23,unused24,unused25,unused26,unused27,unused28,unused29,unused30,unused31,unused32,unused33,unused34,unused35,unused36,unused37,unused38,unused39,unused40,unused41,unused42,unused43,unused44,unused45,unused46,unused47,unused48,unused49,unused50,unused51,unused52,unused53,unused54,unused55,unused56,unused57,unused58,unused59,unused60,unused61,unused62,unused63,unused64,unused65,unused66,unused67,unused68,unused69,unused70,unused71,unused72,unused73,unused74,unused75,unused76,unused77,unused78,unused79,unused80,unused81,unused82,unused83,unused84,unused85,unused86,unused87,unused88,unused89,unused90,unused91,unused92,unused93,unused94,unused95,unused96,unused97,unused98,unused99,unused100,unused101,unused102,unused103,unused104,unused105,unused106,unused107,unused108,unused109,unused110,unused111,unused112,unused113,unused114,unused115,unused116,unused117,unused118,unused119,unused120,unused121,unused122,unused123,unused124,unused125,unused126,unused127,unused128,unused129,unused130,unused131,unused132,unused133,unused134,unused135,unused136,unused137,unused138,unused139,unused140,unused141,unused142,unused143,unused144,unused145,unused146,unused147,unused148,unused149,unused150,unused151,unused152,unused153,unused154,unused155,unused156,unused157,unused158,unused159,unused160,unused161,unused162,unused163,unused164,unused165,unused166,unused167,unused168,unused169,unused170,unused171,unused172,unused173,unused174,unused175,unused176,unused177,unused178,unused179,unused180,unused181,unused182,unused183,unused184,unused185,unused186,unused187,unused188,unused189,unused190,unused191,unused192,unused193,unused194,unused195,unused196,unused197,unused198,unused199,unused200,unused201,unused202,unused203,unused204,unused205,unused206,unused207,unused208,unused209,unused210,unused211,unused212,unused213,unused214,unused215,unused216,unused217,unused218,unused219,unused220,unused221,unused222,unused223,unused224,unused225,unused226,unused227,unused228,unused229,unused230,unused231,unused232,unused233,unused234,unused235,unused236,unused237,unused238,unused239,unused240,unused241,unused242,unused243,unused244,unused245,unused246,unused247,unused248,unused249,unused250,unused251,unused252,unused253,unused254,unused255
          * @param float $bwlimit Override I/O bandwidth limit (in KiB/s).
          * @param bool $delete Delete the original volume after successful copy. By default the original is kept as an unused volume entry.
-         * @param string $digest Prevent changes if current configuration file has different SHA1 " . 		    "digest. This can be used to prevent concurrent modifications.
+         * @param string $digest Prevent changes if current configuration file has different SHA1 " . "digest. This can be used to prevent concurrent modifications.
          * @param string $storage Target Storage.
-         * @param string $target_digest Prevent changes if current configuration file of the target " . 		    "container has a different SHA1 digest. This can be used to prevent " . 		    "concurrent modifications.
+         * @param string $target_digest Prevent changes if current configuration file of the target " . "container has a different SHA1 digest. This can be used to prevent " . "concurrent modifications.
          * @param int $target_vmid The (unique) ID of the VM.
          * @param string $target_volume The config key the volume will be moved to. Default is the source volume key.
          *   Enum: rootfs,mp0,mp1,mp2,mp3,mp4,mp5,mp6,mp7,mp8,mp9,mp10,mp11,mp12,mp13,mp14,mp15,mp16,mp17,mp18,mp19,mp20,mp21,mp22,mp23,mp24,mp25,mp26,mp27,mp28,mp29,mp30,mp31,mp32,mp33,mp34,mp35,mp36,mp37,mp38,mp39,mp40,mp41,mp42,mp43,mp44,mp45,mp46,mp47,mp48,mp49,mp50,mp51,mp52,mp53,mp54,mp55,mp56,mp57,mp58,mp59,mp60,mp61,mp62,mp63,mp64,mp65,mp66,mp67,mp68,mp69,mp70,mp71,mp72,mp73,mp74,mp75,mp76,mp77,mp78,mp79,mp80,mp81,mp82,mp83,mp84,mp85,mp86,mp87,mp88,mp89,mp90,mp91,mp92,mp93,mp94,mp95,mp96,mp97,mp98,mp99,mp100,mp101,mp102,mp103,mp104,mp105,mp106,mp107,mp108,mp109,mp110,mp111,mp112,mp113,mp114,mp115,mp116,mp117,mp118,mp119,mp120,mp121,mp122,mp123,mp124,mp125,mp126,mp127,mp128,mp129,mp130,mp131,mp132,mp133,mp134,mp135,mp136,mp137,mp138,mp139,mp140,mp141,mp142,mp143,mp144,mp145,mp146,mp147,mp148,mp149,mp150,mp151,mp152,mp153,mp154,mp155,mp156,mp157,mp158,mp159,mp160,mp161,mp162,mp163,mp164,mp165,mp166,mp167,mp168,mp169,mp170,mp171,mp172,mp173,mp174,mp175,mp176,mp177,mp178,mp179,mp180,mp181,mp182,mp183,mp184,mp185,mp186,mp187,mp188,mp189,mp190,mp191,mp192,mp193,mp194,mp195,mp196,mp197,mp198,mp199,mp200,mp201,mp202,mp203,mp204,mp205,mp206,mp207,mp208,mp209,mp210,mp211,mp212,mp213,mp214,mp215,mp216,mp217,mp218,mp219,mp220,mp221,mp222,mp223,mp224,mp225,mp226,mp227,mp228,mp229,mp230,mp231,mp232,mp233,mp234,mp235,mp236,mp237,mp238,mp239,mp240,mp241,mp242,mp243,mp244,mp245,mp246,mp247,mp248,mp249,mp250,mp251,mp252,mp253,mp254,mp255,unused0,unused1,unused2,unused3,unused4,unused5,unused6,unused7,unused8,unused9,unused10,unused11,unused12,unused13,unused14,unused15,unused16,unused17,unused18,unused19,unused20,unused21,unused22,unused23,unused24,unused25,unused26,unused27,unused28,unused29,unused30,unused31,unused32,unused33,unused34,unused35,unused36,unused37,unused38,unused39,unused40,unused41,unused42,unused43,unused44,unused45,unused46,unused47,unused48,unused49,unused50,unused51,unused52,unused53,unused54,unused55,unused56,unused57,unused58,unused59,unused60,unused61,unused62,unused63,unused64,unused65,unused66,unused67,unused68,unused69,unused70,unused71,unused72,unused73,unused74,unused75,unused76,unused77,unused78,unused79,unused80,unused81,unused82,unused83,unused84,unused85,unused86,unused87,unused88,unused89,unused90,unused91,unused92,unused93,unused94,unused95,unused96,unused97,unused98,unused99,unused100,unused101,unused102,unused103,unused104,unused105,unused106,unused107,unused108,unused109,unused110,unused111,unused112,unused113,unused114,unused115,unused116,unused117,unused118,unused119,unused120,unused121,unused122,unused123,unused124,unused125,unused126,unused127,unused128,unused129,unused130,unused131,unused132,unused133,unused134,unused135,unused136,unused137,unused138,unused139,unused140,unused141,unused142,unused143,unused144,unused145,unused146,unused147,unused148,unused149,unused150,unused151,unused152,unused153,unused154,unused155,unused156,unused157,unused158,unused159,unused160,unused161,unused162,unused163,unused164,unused165,unused166,unused167,unused168,unused169,unused170,unused171,unused172,unused173,unused174,unused175,unused176,unused177,unused178,unused179,unused180,unused181,unused182,unused183,unused184,unused185,unused186,unused187,unused188,unused189,unused190,unused191,unused192,unused193,unused194,unused195,unused196,unused197,unused198,unused199,unused200,unused201,unused202,unused203,unused204,unused205,unused206,unused207,unused208,unused209,unused210,unused211,unused212,unused213,unused214,unused215,unused216,unused217,unused218,unused219,unused220,unused221,unused222,unused223,unused224,unused225,unused226,unused227,unused228,unused229,unused230,unused231,unused232,unused233,unused234,unused235,unused236,unused237,unused238,unused239,unused240,unused241,unused242,unused243,unused244,unused245,unused246,unused247,unused248,unused249,unused250,unused251,unused252,unused253,unused254,unused255
@@ -19056,6 +19203,18 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * @ignore
          */
+        private $releases;
+        /**
+         * Get CephNodeNodesReleases
+         * @return PVECephNodeNodesReleases
+         */
+        public function getReleases()
+        {
+            return $this->releases ?: ($this->releases = new PVECephNodeNodesReleases($this->client, $this->node));
+        }
+        /**
+         * @ignore
+         */
         private $init;
         /**
          * Get CephNodeNodesInit
@@ -19100,6 +19259,18 @@ namespace Corsinvest\ProxmoxVE\Api {
         public function getRestart()
         {
             return $this->restart ?: ($this->restart = new PVECephNodeNodesRestart($this->client, $this->node));
+        }
+        /**
+         * @ignore
+         */
+        private $restartBulk;
+        /**
+         * Get CephNodeNodesRestartBulk
+         * @return PVECephNodeNodesRestartBulk
+         */
+        public function getRestartBulk()
+        {
+            return $this->restartBulk ?: ($this->restartBulk = new PVECephNodeNodesRestartBulk($this->client, $this->node));
         }
         /**
          * @ignore
@@ -19351,7 +19522,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Get configured values from either ceph.conf or the mon config DB. Underscores in section and key names are normalised to hyphens in the response, regardless of how they're written in the source.
-         * @param string $config_keys List of &amp;lt;section&amp;gt;:&amp;lt;config key&amp;gt; items separated by semicolon, comma or space.
+         * @param string $config_keys List of &lt;section&gt;:&lt;config key&gt; items separated by semicolon, comma or space.
          * @return Result
          */
 
@@ -19864,7 +20035,7 @@ namespace Corsinvest\ProxmoxVE\Api {
         }
         /**
          * Create Ceph Metadata Server (MDS)
-         * @param bool $hotstandby Determines whether a ceph-mds daemon should poll and replay the log of an active MDS. Faster switch on MDS failure, but needs more idle resources.
+         * @param bool $hotstandby Determines whether a ceph-mds daemon should poll and replay the log of an active MDS. Faster switch on MDS failure, but needs more idle resources. Deprecated: the setting was removed in Ceph 14.1.1.
          * @return Result
          */
 
@@ -20419,6 +20590,44 @@ namespace Corsinvest\ProxmoxVE\Api {
     }
 
     /**
+     * Class PVECephNodeNodesReleases
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVECephNodeNodesReleases
+    {
+
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $node)
+        {
+            $this->client = $client;
+            $this->node = $node;
+        }
+
+
+
+        /**
+         * List all known Ceph releases, marking which ones can be installed on this node.
+         * @return Result
+         */
+
+        public function releases()
+        {
+            return $this->client->get("/nodes/{$this->node}/ceph/releases");
+        }
+    }
+
+    /**
      * Class PVECephNodeNodesInit
      * @package Corsinvest\VE\ProxmoxVE\Api
      */
@@ -20448,10 +20657,10 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Create the initial Ceph default configuration and set up symlinks. Idempotent on re-call: if a [global] section already exists in ceph.conf, the existing fsid / auth / pool defaults are preserved and most parameters are silently ignored.
          * @param string $cluster_network Declare a separate cluster network, OSDs will route heartbeat, object replication and recovery traffic over it
-         * @param bool $disable_cephx Disable cephx authentication.  WARNING: cephx is a security feature protecting against man-in-the-middle attacks. Only consider disabling cephx if your network is private!
+         * @param bool $disable_cephx Disable cephx authentication. WARNING: cephx is a security feature protecting against man-in-the-middle attacks. Only consider disabling cephx if your network is private!
          * @param int $min_size Minimum number of available replicas per object to allow I/O
          * @param string $network Use specific network for all ceph related traffic
-         * @param int $pg_bits Placement group bits, used to specify the default number of placement groups.  Depreacted. This setting was deprecated in recent Ceph versions.
+         * @param int $pg_bits Placement group bits, used to specify the default number of placement groups. Depreacted. This setting was deprecated in recent Ceph versions.
          * @param int $size Targeted number of replicas per object
          * @return Result
          */
@@ -20587,6 +20796,61 @@ namespace Corsinvest\ProxmoxVE\Api {
         {
             $params = ['service' => $service];
             return $this->client->create("/nodes/{$this->node}/ceph/restart", $params);
+        }
+    }
+
+    /**
+     * Class PVECephNodeNodesRestartBulk
+     * @package Corsinvest\VE\ProxmoxVE\Api
+     */
+    class PVECephNodeNodesRestartBulk
+    {
+
+        /**
+         * @ignore
+         */
+        private $node;
+        /**
+         * @ignore
+         */
+        private $client;
+
+        /**
+         * @ignore
+         */
+        public function __construct($client, $node)
+        {
+            $this->client = $client;
+            $this->node = $node;
+        }
+
+
+
+        /**
+         * Rolling restart of all Ceph OSDs on this node. Each OSD is restarted only after Ceph reports the previous one is back up and the next one is safe to stop. For non-OSD Ceph daemons, use the cluster-wide endpoint at /cluster/ceph/restart-bulk. The 'noout' flag is applied only to the OSDs targeted by this run, so unrelated OSDs on other nodes that fail during the restart window still get out-marked normally. Aborting the resulting task (for example via 'pvesh task stop') triggers a SIGTERM handler that unsets the per-OSD 'noout' if this endpoint set it. Per-daemon progress is checkpointed in Ceph's config-key store ('pve/ceph-bulk-restart/node/&lt;node&gt;'), so an aborted run can be resumed by re-issuing this endpoint with 'resume=1'.
+         * @param string $service_type Ceph daemon type to restart. Only OSDs can be rolling-restarted on a per-node basis.
+         *   Enum: osd
+         * @param bool $dry_run Log the plan (which OSDs would be restarted, in what order) without actually doing anything.
+         * @param bool $force Proceed past a HEALTH_WARN with non-benign checks like PG_DEGRADED, SLOW_OPS, or MON_DOWN. A blocking HEALTH_ERR is fatal regardless of this flag. Checks that ceph reports as muted, and checks known to be harmless for a rolling restart, never block and are named in the task log. The cluster-wide OSD map flags are only ever evaluated for an OSD restart, since they govern nothing a mon, mgr or mds restart touches. The operator is responsible for confirming the cluster is stable enough to absorb a rolling restart.
+         * @param bool $only_outdated Restart only OSDs whose running version differs from the locally-installed ceph-osd binary. Useful for post-upgrade rolling restarts that should touch only daemons that need it. Refuses if the local binary version cannot be determined. Ignored on resume (the saved plan is used as-is).
+         * @param bool $resume Resume an aborted bulk-restart from the checkpoint stored in Ceph's config-key store. The plan and noout decision from the prior run are honored; 'set-noout' is ignored. When false (default), the endpoint refuses to start if a checkpoint exists for this node, to avoid silently overwriting in-progress work.
+         * @param bool $set_noout Set the 'noout' flag on each OSD targeted by this run for the duration of the rolling restart, and unset it on completion. Per-OSD rather than cluster-wide so that unrelated OSDs failing on other nodes still trigger backfill normally.
+         * @param int $timeout Per-OSD timeout (in seconds). Bounds both the wait for a restarted OSD to come back up and the wait for recovery to quiesce enough that Ceph reports the next OSD safe to stop. Default sized for busy clusters where multi-TB OSDs with many PGs can need several minutes to clear peering after a restart; bump higher for very large or heavily-loaded OSDs.
+         * @return Result
+         */
+
+        public function restartBulk($service_type, $dry_run = null, $force = null, $only_outdated = null, $resume = null, $set_noout = null, $timeout = null)
+        {
+            $params = [
+                'service-type' => $service_type,
+                'dry-run' => $dry_run,
+                'force' => $force,
+                'only-outdated' => $only_outdated,
+                'resume' => $resume,
+                'set-noout' => $set_noout,
+                'timeout' => $timeout
+            ];
+            return $this->client->create("/nodes/{$this->node}/ceph/restart-bulk", $params);
         }
     }
 
@@ -20871,7 +21135,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $pbs_change_detection_mode PBS mode used to detect file changes and switch encoding format for container backups.
          *   Enum: legacy,data,metadata
          * @param string $performance Other performance-related settings.
-         * @param int $pigz Use pigz instead of gzip when N&amp;gt;0. N=1 uses half of cores, N&amp;gt;1 uses N as thread count.
+         * @param int $pigz Use pigz instead of gzip when N&gt;0. N=1 uses half of cores, N&gt;1 uses N as thread count.
          * @param string $pool Backup all known guest systems included in the specified pool.
          * @param bool $protected If true, mark backup(s) as protected.
          * @param string $prune_backups Use these retention options instead of those from the storage configuration.
@@ -22524,14 +22788,12 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Index of available pci methods
-         * @param string $pci_id_or_mapping 
          * @return Result
          */
 
-        public function pciIndex($pci_id_or_mapping)
+        public function pciIndex()
         {
-            $params = ['pci-id-or-mapping' => $pci_id_or_mapping];
-            return $this->client->get("/nodes/{$this->node}/hardware/pci/{$this->pci_id_or_mapping}", $params);
+            return $this->client->get("/nodes/{$this->node}/hardware/pci/{$this->pci_id_or_mapping}");
         }
     }
     /**
@@ -22569,14 +22831,12 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * List mediated device types for given PCI device.
-         * @param string $pci_id_or_mapping The PCI ID or mapping to list the mdev types for.
          * @return Result
          */
 
-        public function mdevscan($pci_id_or_mapping)
+        public function mdevscan()
         {
-            $params = ['pci-id-or-mapping' => $pci_id_or_mapping];
-            return $this->client->get("/nodes/{$this->node}/hardware/pci/{$this->pci_id_or_mapping}/mdev", $params);
+            return $this->client->get("/nodes/{$this->node}/hardware/pci/{$this->pci_id_or_mapping}/mdev");
         }
     }
 
@@ -22908,7 +23168,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
 
         /**
-         * Get node-specific QEMU migration capabilities of the node. Requires the 'Sys.Audit' permission on '/nodes/&amp;lt;node&amp;gt;'.
+         * Get node-specific QEMU migration capabilities of the node. Requires the 'Sys.Audit' permission on '/nodes/&lt;node&gt;'.
          * @return Result
          */
 
@@ -25168,7 +25428,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $log Log level for firewall rule.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
-         * @param int $pos Update rule at position &amp;lt;pos&amp;gt;.
+         * @param int $pos Update rule at position &lt;pos&gt;.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
          * @param string $source Restrict packet source address. This can refer to a single IP address, an IP set ('+ipsetname') or an IP alias definition. You can also specify an address range like '20.34.101.207-201.3.9.99', or a list of IP addresses and networks (entries are separated by comma). Please do not mix IPv4 and IPv6 addresses inside such lists.
          * @param string $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
@@ -25264,7 +25524,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $log Log level for firewall rule.
          *   Enum: emerg,alert,crit,err,warning,notice,info,debug,nolog
          * @param string $macro Use predefined standard macro.
-         * @param int $moveto Move rule to new position &amp;lt;moveto&amp;gt;. Other arguments are ignored.
+         * @param int $moveto Move rule to new position &lt;moveto&gt;. Other arguments are ignored.
          * @param string $proto IP protocol. You can use protocol names ('tcp'/'udp') or simple numbers, as defined in '/etc/protocols'.
          * @param string $source Restrict packet source address. This can refer to a single IP address, an IP set ('+ipsetname') or an IP alias definition. You can also specify an address range like '20.34.101.207-201.3.9.99', or a list of IP addresses and networks (entries are separated by comma). Please do not mix IPv4 and IPv6 addresses inside such lists.
          * @param string $sport Restrict TCP/UDP source port. You can use service names or simple numbers (0-65535), as defined in '/etc/services'. Port ranges can be specified with '\d+:\d+', for example '80:85', and you can use comma separated list to match several ports or ranges.
@@ -27145,20 +27405,34 @@ namespace Corsinvest\ProxmoxVE\Api {
         /**
          * Read Journal
          * @param string $endcursor End before the given Cursor. Conflicts with 'until'
+         * @param bool $identifiers Also return a record listing the distinct syslog identifiers present, for filter completion. Only honored together with 'structured'.
+         * @param bool $kernel Only print kernel messages.
          * @param int $lastentries Limit to the last X lines. Conflicts with a range.
+         * @param string $priority Only print messages of this syslog priority: a single level from 0 (emerg) to 7 (debug), selecting that level and everything more severe, or a 'LOW..HIGH' range. Empty means no priority filter.
+         * @param string $service Only print messages whose syslog identifier matches this glob, for example 'pve*' or 'postfix/*'.
          * @param int $since Display all log since this UNIX epoch. Conflicts with 'startcursor'.
          * @param string $startcursor Start after the given Cursor. Conflicts with 'since'
+         * @param bool $structured Return one JSON object per entry with separate fields (timestamp, identifier, message, priority, ...) instead of pre-rendered text lines.
+         * @param string $unit Only print messages of this systemd unit (the .service suffix is implied).
+         * @param bool $units Also return a record listing the distinct systemd units present, for filter completion. Only honored together with 'structured'.
          * @param int $until Display all log until this UNIX epoch. Conflicts with 'endcursor'.
          * @return Result
          */
 
-        public function journal($endcursor = null, $lastentries = null, $since = null, $startcursor = null, $until = null)
+        public function journal($endcursor = null, $identifiers = null, $kernel = null, $lastentries = null, $priority = null, $service = null, $since = null, $startcursor = null, $structured = null, $unit = null, $units = null, $until = null)
         {
             $params = [
                 'endcursor' => $endcursor,
+                'identifiers' => $identifiers,
+                'kernel' => $kernel,
                 'lastentries' => $lastentries,
+                'priority' => $priority,
+                'service' => $service,
                 'since' => $since,
                 'startcursor' => $startcursor,
+                'structured' => $structured,
+                'unit' => $unit,
+                'units' => $units,
                 'until' => $until
             ];
             return $this->client->get("/nodes/{$this->node}/journal", $params);
@@ -27756,7 +28030,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
         /**
          * Suspend all VMs.
-         * @param int $max_workers Maximal number of parallel migration job. If not set, uses'max_workers' from datacenter.cfg, and if that's not set the available'                     .' CPU threads, clamped to a maximum of 8, are used.
+         * @param int $max_workers Maximal number of parallel migration job. If not set, uses'max_workers' from datacenter.cfg, and if that's not set the available' .' CPU threads, clamped to a maximum of 8, are used.
          * @param string $vms Only consider Guests with these IDs.
          * @return Result
          */
@@ -27928,7 +28202,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $bwlimit Set I/O bandwidth limit for various operations (in KiB/s).
          * @param string $comstar_hg host group for comstar views
          * @param string $comstar_tg target group for comstar views
-         * @param string $content Allowed content types.  NOTE: the value 'rootdir' is used for Containers, and value 'images' for VMs. 
+         * @param string $content Allowed content types. NOTE: the value 'rootdir' is used for Containers, and value 'images' for VMs.
          * @param string $content_dirs Overrides for default content type directories.
          * @param bool $create_base_path Create the base directory if it doesn't exist.
          * @param bool $create_subdirs Populate the directory with the default structure.
@@ -28107,7 +28381,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $bwlimit Set I/O bandwidth limit for various operations (in KiB/s).
          * @param string $comstar_hg host group for comstar views
          * @param string $comstar_tg target group for comstar views
-         * @param string $content Allowed content types.  NOTE: the value 'rootdir' is used for Containers, and value 'images' for VMs. 
+         * @param string $content Allowed content types. NOTE: the value 'rootdir' is used for Containers, and value 'images' for VMs.
          * @param string $content_dirs Overrides for default content type directories.
          * @param bool $create_base_path Create the base directory if it doesn't exist.
          * @param bool $create_subdirs Populate the directory with the default structure.
@@ -29147,7 +29421,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $issuer_url OpenID Issuer Url
          * @param string $mode LDAP protocol mode.
          *   Enum: ldap,ldaps,ldap+starttls
-         * @param string $password LDAP bind password. Will be stored in '/etc/pve/priv/realm/&amp;lt;REALM&amp;gt;.pw'.
+         * @param string $password LDAP bind password. Will be stored in '/etc/pve/priv/realm/&lt;REALM&gt;.pw'.
          * @param int $port Server port.
          * @param string $prompt Specifies whether the Authorization Server prompts the End-User for reauthentication and consent.
          * @param bool $query_userinfo Enables querying the userinfo endpoint for claims values.
@@ -29304,7 +29578,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $issuer_url OpenID Issuer Url
          * @param string $mode LDAP protocol mode.
          *   Enum: ldap,ldaps,ldap+starttls
-         * @param string $password LDAP bind password. Will be stored in '/etc/pve/priv/realm/&amp;lt;REALM&amp;gt;.pw'.
+         * @param string $password LDAP bind password. Will be stored in '/etc/pve/priv/realm/&lt;REALM&gt;.pw'.
          * @param int $port Server port.
          * @param string $prompt Specifies whether the Authorization Server prompts the End-User for reauthentication and consent.
          * @param bool $query_userinfo Enables querying the userinfo endpoint for claims values.
@@ -29543,7 +29817,7 @@ namespace Corsinvest\ProxmoxVE\Api {
 
 
         /**
-         *  Verify OpenID authorization code and create a ticket.
+         * Verify OpenID authorization code and create a ticket.
          * @param string $code OpenId authorization code.
          * @param string $redirect_url Redirection Url. The client should set this to the used server url (location.origin).
          * @param string $state OpenId state.
@@ -29783,7 +30057,7 @@ namespace Corsinvest\ProxmoxVE\Api {
          * @param string $otp One-time password for Two-factor authentication.
          * @param string $path Verify ticket, and check if user have access 'privs' on 'path'
          * @param string $privs Verify ticket, and check if user have access 'privs' on 'path'
-         * @param string $realm You can optionally pass the realm using this parameter. Normally the realm is simply added to the username &amp;lt;username&amp;gt;@&amp;lt;realm&amp;gt;.
+         * @param string $realm You can optionally pass the realm using this parameter. Normally the realm is simply added to the username &lt;username&gt;@&lt;realm&gt;.
          * @param string $tfa_challenge The signed TFA challenge string the user wants to respond to.
          * @return Result
          */
