@@ -35,6 +35,9 @@ jobs:
           extensions: curl
           coverage: none
 
-      # offline tests of the hand-written classes (curl replaced by a fake): no cluster needed
-      - name: Run tests
+      # offline tests (curl replaced by a fake): no cluster needed
+      - name: Test the hand-written classes
         run: php tests/BaseTest.php
+
+      - name: Test the generated client
+        run: php tests/GeneratedClientTest.php
