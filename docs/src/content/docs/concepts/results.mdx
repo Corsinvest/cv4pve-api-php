@@ -1,0 +1,138 @@
+---
+title: Results
+description: "Every call returns a Result: the HTTP outcome and the Proxmox VE answer as objects or arrays. Reading objects, lists, optional members, and charts as PNG."
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Every method of the client returns a `Result`. It holds two things: how the HTTP request went, and what
+Proxmox VE answered.
+
+```php
+$result = $client->getNodes()->get('pve01')->getQemu()->get(100)->getStatus()->getCurrent()->vmStatus();
+
+if ($result->isSuccessStatusCode()) {
+    echo $result->getResponse()->data->status . "\n";
+}
+```
+
+## The Result
+
+| Method | What it is |
+|---|---|
+| `isSuccessStatusCode()` | `true` when the HTTP status is 200 |
+| `getStatusCode()`, `getReasonPhrase()` | HTTP status and its text. On a failure Proxmox VE puts the reason here |
+| `getResponse()` | The JSON answer, decoded: an object with the member `data`, which is what the API returns. `null` when there is no JSON answer |
+| `responseInError()` | `true` when the answer has an `errors` member: Proxmox VE refused one or more parameters |
+| `getError()` | The refused parameters, one per line, as `name : message` |
+| `getRequestResource()`, `getRequestParameters()`, `getMethodType()` | What was asked: path, parameters, and `GET`, `SET`, `CREATE` or `DELETE` |
+| `getResponseType()` | `json` or `png` |
+| `getResponseHeaders()` | The headers of the answer, as one string |
+
+A failed call does not throw: [Errors](/cv4pve-api-php/concepts/errors/) explains what to check.
+
+## Reading the data
+
+`getResponse()->data` is what the API viewer shows under *Returns*: an object, a list or a single
+value. Objects are `stdClass`, lists are arrays.
+
+```php
+// an object: its members by name
+$status = $result->getResponse()->data;
+echo "VM {$status->vmid}: {$status->status}, {$status->cpus} CPUs\n";
+
+// a list: usable with foreach
+$vms = $client->getNodes()->get('pve01')->getQemu()->vmlist()->getResponse()->data;
+foreach ($vms as $vm) {
+    if ($vm->status === 'running') {
+        echo $vm->vmid . ' ' . ($vm->name ?? '') . "\n";
+    }
+}
+
+// a single value, for example the id of a task
+$upid = $client->getNodes()->get('pve01')->getQemu()->get(100)->getStatus()->getStart()->vmStart()
+    ->getResponse()->data;
+```
+
+A member whose name is not a valid PHP name, such as `max-mem`, is read with braces:
+`$data->{'max-mem'}`.
+
+<Aside type="caution">
+Proxmox VE leaves out many members, and reading one that is not there raises a warning: for example
+`name`, `cores` and `description` in the configuration of a VM, which are not returned when they have
+no value or the default one. When the call got no JSON answer `getResponse()` itself is `null`. Check
+`isSuccessStatusCode()` first, and read optional members with `??`.
+</Aside>
+
+### Optional members
+
+`??` gives a default for a member that is not there, without a warning. `isset` tells whether the
+member is there.
+
+```php
+$config = $client->getNodes()->get('pve01')->getQemu()->get(100)->getConfig()->vmConfig()->getResponse()->data;
+
+// a missing member reads as the default
+$name = $config->name ?? '(no name)';
+$cores = $config->cores ?? 1;
+
+if (isset($config->net0)) {
+    echo $config->net0 . "\n";
+}
+```
+
+### Every member
+
+```php
+foreach ($config as $key => $value) {
+    echo "{$key} = {$value}\n";
+}
+```
+
+### Arrays instead of objects
+
+With `setResultIsObject(false)` the answers are decoded as associative arrays instead of objects:
+
+```php
+$client->setResultIsObject(false);
+
+$vms = $client->getNodes()->get('pve01')->getQemu()->vmlist()->getResponse()['data'];
+foreach ($vms as $vm) {
+    echo $vm['vmid'] . ' ' . ($vm['name'] ?? '') . ' ' . $vm['status'] . "\n";
+}
+
+$client->setResultIsObject(true);
+```
+
+The setting belongs to the client, not to the call: it holds for every call that follows. The other
+pages of this site read the answers as objects, the default.
+
+## Charts as PNG
+
+Proxmox VE can answer the `rrd` endpoints with a chart instead of data. Set the response type to
+`png` before the call: the answer is then a string with the image as a data URI, ready for the `src`
+of an `img` tag.
+
+```php
+$client->setResponseType('png');
+try {
+    $chart = $client->getNodes()->get('pve01')->getRrd()->rrd('cpu', 'day');
+} finally {
+    $client->setResponseType('json');
+}
+
+if ($chart->isSuccessStatusCode()) {
+    $dataUri = $chart->getResponse();   // data:image/png;base64,...
+
+    file_put_contents('cpu.png', base64_decode(substr($dataUri, strpos($dataUri, ',') + 1)));
+}
+```
+
+The response type belongs to the client, not to the call: set it back to `json`, the default, before
+the other calls. A PNG call that fails has the status and the errors of any other failed call.
+
+## The last result
+
+`$client->getLastResult()` is the `Result` of the last request, also when a helper made the call for
+you: a failed `login` returns `false`, and the reason is in
+`$client->getLastResult()->getReasonPhrase()`.

@@ -1,0 +1,133 @@
+---
+title: Tasks
+description: "Long operations in Proxmox VE run as tasks: how to get the UPID, wait for the task to finish and check whether it succeeded."
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Starting a VM, cloning, migrating, taking a backup or a snapshot: Proxmox VE runs these as **tasks** in
+the background and the API answers at once, with the id of the task, the **UPID**. The same tasks
+appear in the *Tasks* panel of the web interface.
+
+```php
+// newid, bwlimit, description, format, full, name
+$result = $client->getNodes()->get('pve01')->getQemu()->get(9000)->getClone()
+    ->cloneVm(121, null, null, null, true, 'web02');
+```
+
+The call returns when the task *started*. Before using the new VM the code has to wait for the task.
+
+## Wait for a task
+
+`waitForTaskToFinish` takes the UPID, the milliseconds between two checks and the longest time to
+wait, in milliseconds. Without them it checks every 500 milliseconds for up to 10 seconds.
+
+```php
+if (!$result->isSuccessStatusCode()) {
+    throw new RuntimeException("Clone not started: {$result->getReasonPhrase()}");
+}
+
+$upid = $result->getResponse()->data;
+// UPID:pve01:0012A3F4:05C1B2D3:6720F1A0:qmclone:9000:automation@pve!app:
+
+// check every 2 seconds, for up to 10 minutes
+$stillRunning = $client->waitForTaskToFinish($upid, 2000, 600000);
+```
+
+It reads the status of the task at each interval until the task stops. Set the time to the longest
+the task may take: seconds for a start or a snapshot, minutes for a clone, a migration or a backup.
+
+<Aside type="caution">
+`waitForTaskToFinish` returns `true` when it **timed out**, with the task still running, and `false`
+when the task stopped. This is the opposite of the same method in cv4pve-api-dotnet and
+cv4pve-api-java, where `true` means finished.
+</Aside>
+
+<Aside type="caution">
+Check `isSuccessStatusCode()` of the call before reading the UPID, as above: a call that failed has
+no task.
+</Aside>
+
+To check without waiting, `taskIsRunning($upid)` returns `true` while the task runs.
+
+The node of the task is read from the UPID, so none of these needs the node:
+`$client->getNodeFromTask($upid)` returns it.
+
+## Did it succeed?
+
+A finished task is not necessarily a successful one. `waitForTaskToFinish` only says whether the task
+stopped; `getExitStatusTask` says how: `OK`, `WARNINGS: <n>` when it ended with warnings in its log,
+or the error of the task.
+
+```php
+if ($client->waitForTaskToFinish($upid, 2000, 600000)) {
+    throw new RuntimeException("Task still running after 10 minutes: {$upid}");
+}
+
+$exitStatus = $client->getExitStatusTask($upid);
+if ($exitStatus !== 'OK' && strpos($exitStatus, 'WARNINGS') !== 0) {
+    throw new RuntimeException("Task failed: {$exitStatus}");
+}
+```
+
+For example a snapshot with a name already in use ends with an exit status such as
+`snapshot name 'before-update' already used`. For a task that is still running the exit status is
+`null`.
+
+## The log of a task
+
+The log, the same text the web interface shows, comes from the `log` endpoint of the task. Each entry
+has the line number in `n` and the text in `t`:
+
+```php
+$node = $client->getNodeFromTask($upid);
+
+// download, limit, start
+$log = $client->getNodes()->get($node)->getTasks()->get($upid)->getLog()->readTaskLog(null, 1000);
+foreach ($log->getResponse()->data as $line) {
+    echo $line->t . "\n";
+}
+```
+
+Without `limit` Proxmox VE returns the first 50 lines. For a longer log raise `limit`, or read it in
+pages with `start`.
+
+The other details of a task (type, user, start time) are in
+`$client->getNodes()->get($node)->getTasks()->get($upid)->getStatus()->readTaskStatus()`, and the
+tasks of a node in `$client->getNodes()->get($node)->getTasks()->nodeTasks()`.
+
+## Show progress
+
+Proxmox VE reports no percentage for a task: what can be shown is the time and the last lines of the
+log. Poll with `taskIsRunning`:
+
+```php
+$started = time();
+
+while ($client->taskIsRunning($upid)) {
+    echo "\rCloning... " . (time() - $started) . ' s';
+    sleep(2);
+}
+
+echo "\n" . $client->getExitStatusTask($upid) . "\n";
+```
+
+## When the status cannot be read
+
+`taskIsRunning`, `getExitStatusTask` and `waitForTaskToFinish` read the status of the task from its
+node. If they cannot (the node is down, or the account has no right to see the task), they **throw**
+`PveResultException` with the reason, for example
+`Read status of task 'UPID:…' failed (403 Permission check failed): …`, instead of reporting a
+finished task. The failed `Result` is in `getResult()` of the exception. A value that is not a UPID
+throws the same exception before any request.
+
+A token can always read the tasks it started itself; to read the tasks of other users it needs
+`Sys.Audit` on the node: see [Permissions](/cv4pve-api-php/permissions/#tasks).
+
+## Calls that return no task
+
+Not every call returns a UPID. Calls that finish immediately (reading, most configuration changes)
+return their result directly. The [API viewer](https://pve.proxmox.com/pve-docs/api-viewer/) shows
+what an endpoint returns: a UPID is a `string` described as the task id. Some endpoints exist in both
+forms: for the configuration of a VM, PUT applies the change and returns nothing, while POST returns
+a task, which is what you need when the change allocates a disk.

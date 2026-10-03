@@ -1,0 +1,123 @@
+---
+title: Troubleshooting
+description: "See what the client sends to Proxmox VE, and fix the errors met most often: authentication, permissions, certificates, timeouts, failed tasks."
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+## Debug output
+
+`setDebugLevel` makes the client print what it sends and receives. It writes with `echo`, so it is
+for a command line script: in a web application the text ends in the page.
+
+```php
+$client->setDebugLevel(1);
+```
+
+| Level | What is printed |
+|---|---|
+| 0 | Nothing, the default |
+| 1 | Method and URL of every request, without the query string, and the parameters of POST, PUT and DELETE |
+| 2 | Also the answer of every request, with status code and reason |
+
+Compare the URL and the parameters with the endpoint in the
+[Proxmox VE API viewer](https://pve.proxmox.com/pve-docs/api-viewer/): most problems are a parameter
+with the wrong name or value.
+
+The parameters whose name contains `password`, `token`, `ticket` or `otp` are printed as `****`, and
+so are the members of an answer whose name contains `password`, `token` or `ticket`, such as the
+ticket and the CSRF token of a login. Other values are printed as they are: check the output before
+you share it.
+
+## Your own log
+
+To send the requests to the logger of the application, add a function to `onActionExecuted`: it is
+called after every request with the `Result` and with what was sent.
+
+```php
+$client->onActionExecuted[] = function ($result, $request) {
+    error_log(sprintf(
+        '%s %s: %d %s',
+        $request['method'],
+        $result->getRequestResource(),
+        $result->getStatusCode(),
+        $result->getReasonPhrase()
+    ));
+};
+```
+
+`$request` has `url`, `method`, `parameters` and `headers`.
+
+<Aside type="caution">
+Nothing is masked here: `headers` carries the API token or the CSRF token, `parameters` the password
+of a login, and `url` the query string. Log only what you need, as in the example.
+</Aside>
+
+## Without a log
+
+Every call returns a `Result`, and the last one is also in `$client->getLastResult()`:
+
+```php
+$result = $client->getLastResult();
+echo "{$result->getMethodType()} {$result->getRequestResource()} "
+    . "{$result->getStatusCode()} {$result->getReasonPhrase()}\n";
+```
+
+## Status codes
+
+A failed call does not throw: it returns a `Result` with `isSuccessStatusCode()` `false`. What the
+status code means:
+
+| Status | Meaning | What to do |
+|---|---|---|
+| 0 | The request got no answer: name not resolved, connection refused, certificate refused, timeout of the client. `getReasonPhrase()` has the error of curl | Check host, port and network; for a certificate see [Connection](/cv4pve-api-php/connection/#certificate); for a timeout check that the node answers, and raise the timeout if the endpoint is slow |
+| 400 | Proxmox VE refused the parameters. `responseInError()` is `true` and `getError()` lists each parameter with its problem | Fix the parameter named in the error |
+| 401 | The token or the ticket was refused: the token is wrong or revoked, or the ticket is older than two hours | Check the token, or log in again |
+| 403 | Authenticated, but without the privilege the endpoint requires on that path | Check the roles of the user and, with privilege separation, of the token: [Permissions](/cv4pve-api-php/permissions/) |
+| 500 | Proxmox VE could not do what was asked. The reason is in `getReasonPhrase()`, for example `Configuration file 'nodes/pve01/qemu-server/999.conf' does not exist` for a VM id that does not exist | Read the reason |
+| 501 | The endpoint does not exist on that node: the cluster is older than the library | Check the Proxmox VE version: [Versions](/cv4pve-api-php/concepts/api-structure/#versions) |
+
+More in [Errors](/cv4pve-api-php/concepts/errors/).
+
+## `Attempt to read property "data" on null`
+
+`getResponse()` returns `null` when the call got no JSON answer: the request got no answer at all, or
+something that is not the Proxmox VE API answered (the page of a proxy, another service on that
+port). It happens most often when the call failed and the code reads its data anyway. Check
+`isSuccessStatusCode()` first: see [Results](/cv4pve-api-php/concepts/results/#reading-the-data).
+
+## `Undefined property`
+
+Proxmox VE leaves out the members that have no value or the default one, for example `name`, `cores`
+and `description` in the configuration of a VM. Read the optional members with `??`: see
+[Results](/cv4pve-api-php/concepts/results/#optional-members).
+
+## `PveExceptionAuthentication`: missing two-factor authentication
+
+The user has two-factor authentication and `login` was called without the second factor: see
+[Connection](/cv4pve-api-php/connection/#two-factor-authentication). An API token needs none.
+
+## A call that never returns
+
+Without a timeout a request waits for the node as long as it takes. Set one:
+[Connection](/cv4pve-api-php/connection/#timeout).
+
+## An empty list
+
+A list that comes back empty with status 200 may mean an account without privileges: Proxmox VE leaves
+out what the caller may not see instead of returning an error. See
+[Permissions](/cv4pve-api-php/permissions/#how-missing-privileges-are-reported).
+
+## The call succeeded but nothing changed
+
+Starting a VM, a clone, a backup or a snapshot only *starts a task*: the successful `Result` says the
+task was accepted, not that it ended well. Wait for the task and read its exit status: see
+[Tasks](/cv4pve-api-php/concepts/tasks/).
+
+## Reporting a problem
+
+Open an [issue](https://github.com/Corsinvest/cv4pve-api-php/issues) with:
+
+- the version of the library (`composer show corsinvest/cv4pve-api-php`) and of PHP (`php -v`)
+- the Proxmox VE version: `$client->getVersion()->version()->getResponse()->data->version`
+- the code of the call and the debug output of the request, without tokens or passwords
