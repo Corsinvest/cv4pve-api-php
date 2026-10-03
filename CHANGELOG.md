@@ -22,6 +22,7 @@ The major and minor version follow Proxmox VE (9.2.x targets Proxmox VE 9.2); th
 ### Changed
 - The timeout, when set, is also the connection timeout (`CURLOPT_CONNECTTIMEOUT`). Without a timeout nothing changes ([#50](https://github.com/Corsinvest/cv4pve-api-php/pull/50))
 - Api: the `<` and `>` characters in the comments of the methods are escaped once (`&lt;`), they were escaped twice (`&amp;lt;`) ([#51](https://github.com/Corsinvest/cv4pve-api-php/pull/51))
+- CI: the GitHub release body is the section of `CHANGELOG.md` for the tag version ([#52](https://github.com/Corsinvest/cv4pve-api-php/pull/52))
 - CI: workflow permissions and job timeouts declared ([#48](https://github.com/Corsinvest/cv4pve-api-php/pull/48))
 
 ### Fixed
