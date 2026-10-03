@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 The major and minor version follow Proxmox VE (9.2.x targets Proxmox VE 9.2); the patch number can include breaking changes, listed under "Changed (breaking)".
 
+## [Unreleased]
+
+### Fixed
+- Debug level 2 printed the value of a new API token, the answer of `POST /access/users/{userid}/token/{tokenid}`, unmasked ([#55](https://github.com/Corsinvest/cv4pve-api-php/pull/55))
+
 ## [9.2.3] - 2026-10-03
 
 ### Added

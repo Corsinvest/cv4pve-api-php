@@ -623,9 +623,12 @@ class PveClientBase
     {
         $sensitive = ['password', 'token', 'ticket'];
         $mask = function ($data) use ($sensitive) {
+            $data = (array) $data;
+            //the answer that creates an API token has its secret in 'value'
+            $isNewToken = isset($data['full-tokenid']);
             $masked = [];
-            foreach ((array) $data as $key => $value) {
-                $hide = false;
+            foreach ($data as $key => $value) {
+                $hide = $isNewToken && $key === 'value';
                 foreach ($sensitive as $name) {
                     $hide = $hide || stripos((string) $key, $name) !== false;
                 }
