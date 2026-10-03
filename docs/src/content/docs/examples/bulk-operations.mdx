@@ -1,0 +1,153 @@
+---
+title: Bulk operations
+description: "Act on many VMs and containers at once from PHP: select them by tag, start the tasks, wait for all of them and report which failed."
+---
+
+The same action on many guests: a snapshot of every production VM before an update, a shutdown of a
+lab every evening. The pattern is always select, start, wait, report.
+
+```php
+use Corsinvest\ProxmoxVE\Api\PveClient;
+use Corsinvest\ProxmoxVE\Api\Result;
+```
+
+## Select
+
+`/cluster/resources` returns every guest with its node and type, so the rest of the code needs no
+lookup. The function keeps the guests with a tag, as they come from the API:
+
+```php
+function selectGuests(PveClient $client, $tag)
+{
+    $guests = [];
+    foreach ($client->getCluster()->getResources()->resources('vm')->getResponse()->data as $vm) {
+        $tags = explode(';', $vm->tags ?? '');
+        if (in_array($tag, $tags) && ($vm->template ?? 0) == 0) {
+            $guests[] = $vm;
+        }
+    }
+    return $guests;
+}
+```
+
+```php
+// every guest with the tag "production", except the templates
+$guests = selectGuests($client, 'production');
+
+echo count($guests) . " guests selected\n";
+```
+
+Each guest has `vmid`, `node`, `type` (`qemu` or `lxc`) and `status`; `name` is read with `??`.
+
+The cluster resources come from the status daemon of each node,
+[pvestatd](https://pve.proxmox.com/pve-docs/pvestatd.8.html), which updates them every 10 seconds: a
+guest created or changed a moment before can still show its old status, or a name such as `VM 108` in
+place of its own.
+
+The examples below use this helper for the outcome of a task: `OK`, the reason of the failure, or that
+it is still running.
+
+```php
+function outcome(PveClient $client, Result $result, $timeout)
+{
+    if (!$result->isSuccessStatusCode()) {
+        return "{$result->getStatusCode()} {$result->getReasonPhrase()}";
+    }
+
+    $upid = $result->getResponse()->data;
+
+    // true when the time ran out with the task still running
+    return $client->waitForTaskToFinish($upid, 2000, $timeout)
+        ? 'still running after ' . ($timeout / 60000) . ' minutes'
+        : $client->getExitStatusTask($upid);
+}
+```
+
+## One at a time
+
+The simplest form, and the right one when the operations should not load the storage together: a
+snapshot of each guest, waiting for one before starting the next.
+
+```php
+$name = 'auto' . date('ymdHi');
+$failed = [];
+
+foreach ($guests as $guest) {
+    $node = $client->getNodes()->get($guest->node);
+    $result = $guest->type === 'qemu'
+        ? $node->getQemu()->get($guest->vmid)->getSnapshot()->snapshot($name, 'Before the update')
+        : $node->getLxc()->get($guest->vmid)->getSnapshot()->snapshot($name, 'Before the update');
+
+    $outcome = outcome($client, $result, 300000);
+
+    echo "{$guest->vmid} " . ($guest->name ?? '') . ": {$outcome}\n";
+    if ($outcome !== 'OK' && strpos($outcome, 'WARNINGS') !== 0) {
+        $failed[] = "{$guest->vmid} " . ($guest->name ?? '');
+    }
+}
+
+if (count($failed) > 0) {
+    echo 'Failed: ' . implode(', ', $failed);
+}
+```
+
+## All together
+
+To shut down many guests the waiting can overlap: start every task, then wait for all of them. The
+path is the same for a VM and a container except for the type, so a raw call covers both.
+
+```php
+// start: each call returns as soon as its task is accepted
+$started = [];
+foreach ($guests as $guest) {
+    if ($guest->status === 'running') {
+        $started[] = [
+            $guest,
+            $client->create("/nodes/{$guest->node}/{$guest->type}/{$guest->vmid}/status/shutdown"),
+        ];
+    }
+}
+
+// wait: the tasks are already running together, so the total time is the longest one
+foreach ($started as list($guest, $result)) {
+    echo "{$guest->vmid} " . ($guest->name ?? '') . ': ' . outcome($client, $result, 300000) . "\n";
+}
+```
+
+The tasks run on the nodes, not in the application: once started they go on together, and waiting for
+them one after the other takes as long as the slowest. Nothing has to run in parallel in PHP.
+
+## How many at once
+
+Proxmox VE accepts every task you start. To limit how many run at the same time (a rolling reboot, or
+operations that are heavy on disk and network) work in batches, and wait for a batch before starting
+the next:
+
+```php
+$running = array_filter($guests, function ($guest) {
+    return $guest->status === 'running';
+});
+
+foreach (array_chunk($running, 4) as $batch) {
+    // start the batch
+    $rebooting = [];
+    foreach ($batch as $guest) {
+        $rebooting[] = [
+            $guest,
+            $client->create("/nodes/{$guest->node}/{$guest->type}/{$guest->vmid}/status/reboot"),
+        ];
+    }
+
+    // wait for it, up to 10 minutes each
+    foreach ($rebooting as list($guest, $result)) {
+        echo "{$guest->vmid}: " . outcome($client, $result, 600000) . "\n";
+    }
+}
+```
+
+In a web application a bulk operation outlives the time limit of a request (`max_execution_time`):
+run it from a command line script or a queue worker.
+
+Backups need no batches: a node runs one backup at a time and the others wait for it. For backups on a
+schedule, a backup job of Proxmox VE itself is the better tool. For snapshots with retention see
+[cv4pve-autosnap](https://corsinvest.github.io/cv4pve-autosnap/).

@@ -1,0 +1,234 @@
+---
+title: Common tasks
+description: "Short PHP recipes for Proxmox VE: list VMs and containers, read a configuration, start and stop, snapshots, backup, nodes, storage and metrics."
+---
+
+Short recipes to copy. They assume a connected `$client` (see
+[Connection](/cv4pve-api-php/connection/)) and these imports:
+
+```php
+use Corsinvest\ProxmoxVE\Api\PveClient;
+use Corsinvest\ProxmoxVE\Api\Result;
+```
+
+The recipes that start a task use this helper: it checks the call, waits for the task and returns how
+it ended, `OK` or the reason of the failure. Why each step is needed is in
+[Errors](/cv4pve-api-php/concepts/errors/) and [Tasks](/cv4pve-api-php/concepts/tasks/).
+
+```php
+function run(PveClient $client, Result $result, $timeout)
+{
+    if (!$result->isSuccessStatusCode()) {
+        return "{$result->getStatusCode()} {$result->getReasonPhrase()}";
+    }
+
+    $upid = $result->getResponse()->data;
+
+    // true when the time ran out with the task still running
+    return $client->waitForTaskToFinish($upid, 1000, $timeout)
+        ? 'still running'
+        : $client->getExitStatusTask($upid);
+}
+```
+
+## List VMs and containers
+
+One call for the whole cluster, whatever the node:
+
+```php
+$result = $client->getCluster()->getResources()->resources('vm');
+foreach ($result->getResponse()->data as $vm) {
+    printf("%6d %-5s %-20s %-10s %s\n", $vm->vmid, $vm->type, $vm->name ?? '', $vm->node, $vm->status);
+}
+```
+
+`type` is `qemu` for a VM and `lxc` for a container. Only the running ones with a tag:
+
+```php
+foreach ($result->getResponse()->data as $vm) {
+    $tags = explode(';', $vm->tags ?? '');
+    if ($vm->status === 'running' && in_array('production', $tags)) {
+        echo $vm->vmid . ' ' . ($vm->name ?? '') . "\n";
+    }
+}
+```
+
+## Find a VM by name
+
+The API addresses a guest by node and id. The cluster resources give both from the name:
+
+```php
+$found = null;
+foreach ($client->getCluster()->getResources()->resources('vm')->getResponse()->data as $vm) {
+    if (($vm->name ?? '') === 'web01') {
+        $found = $vm;
+    }
+}
+
+if ($found !== null) {
+    echo "web01 is {$found->type} {$found->vmid} on {$found->node}";
+}
+```
+
+## Read the configuration of a VM
+
+```php
+$config = $client->getNodes()->get('pve01')->getQemu()->get(100)->getConfig()->vmConfig()->getResponse()->data;
+
+echo ($config->name ?? '') . ': ' . ($config->cores ?? 1) . ' cores, ' . ($config->memory ?? 512) . " MB\n";
+
+// disks and network devices
+foreach ($config as $key => $value) {
+    if (preg_match('/^(scsi|virtio|sata|ide|net)\d+$/', $key)) {
+        echo "{$key}: {$value}\n";
+    }
+}
+```
+
+Proxmox VE leaves out the settings that have their default value, so read them with `??`. For a
+container use `$client->getNodes()->get('pve01')->getLxc()->get(200)->getConfig()->vmConfig()`.
+
+## Change the configuration
+
+```php
+$result = $client->set('/nodes/pve01/qemu/100/config', [
+    'cores' => 4,
+    'memory' => 8192,
+    'description' => 'Web server',
+]);
+
+if (!$result->isSuccessStatusCode()) {
+    echo $result->getReasonPhrase();
+}
+```
+
+Only the parameters you send change. To remove a setting, name it in `delete`:
+`$client->set('/nodes/pve01/qemu/100/config', ['delete' => 'description'])`. The configuration is
+changed with a [raw call](/cv4pve-api-php/concepts/api-structure/#raw-calls) because the generated
+`updateVm` has about a hundred parameters. With PHP 8.0 or later it can be called with the parameters
+by name: `$vm->getConfig()->updateVm(cores: 4, memory: 8192)`.
+
+## Start, stop, reboot
+
+Each of these starts a task: wait for it and read how it ended.
+
+```php
+$vm = $client->getNodes()->get('pve01')->getQemu()->get(100);
+
+echo run($client, $vm->getStatus()->getStart()->vmStart(), 60000);
+```
+
+| Action | Call |
+|---|---|
+| Start | `$vm->getStatus()->getStart()->vmStart()` |
+| Shut down from inside the guest, waiting up to 120 seconds | `$vm->getStatus()->getShutdown()->vmShutdown(null, null, null, 120)` |
+| Stop at once, like pulling the plug | `$vm->getStatus()->getStop()->vmStop()` |
+| Reboot | `$vm->getStatus()->getReboot()->vmReboot()` |
+| Suspend, resume | `$vm->getStatus()->getSuspend()->vmSuspend()`, `$vm->getStatus()->getResume()->vmResume()` |
+
+## Current status of a VM
+
+```php
+$status = $vm->getStatus()->getCurrent()->vmStatus()->getResponse()->data;
+
+printf(
+    "%s, CPU %.1f%%, memory %.1f%%, up %d s\n",
+    $status->status,
+    ($status->cpu ?? 0) * 100,
+    ($status->mem ?? 0) * 100 / ($status->maxmem ?? 1),
+    $status->uptime ?? 0
+);
+```
+
+## Snapshots
+
+```php
+// take: snapname, description, vmstate
+$outcome = run($client, $vm->getSnapshot()->snapshot('before-update', 'Before the update'), 120000);
+
+// list
+foreach ($vm->getSnapshot()->snapshotList()->getResponse()->data as $snapshot) {
+    echo $snapshot->name . ' ' . ($snapshot->description ?? '') . "\n";
+}
+
+// roll back
+$outcome = run($client, $vm->getSnapshot()->get('before-update')->getRollback()->rollback(), 300000);
+
+// remove
+$outcome = run($client, $vm->getSnapshot()->get('before-update')->delsnapshot(), 120000);
+```
+
+The list includes an entry named `current`, which is the present state of the VM, not a snapshot.
+
+## Back up a VM
+
+```php
+$result = $client->create('/nodes/pve01/vzdump', [
+    'vmid' => '100',
+    'storage' => 'backup',
+    'mode' => 'snapshot',
+    'compress' => 'zstd',
+]);
+
+echo run($client, $result, 3600000);
+```
+
+The token needs `VM.Backup` on the guest and `Datastore.AllocateSpace` on the storage. A node runs one
+backup at a time: a backup started while another is running waits for it, so allow for that in the
+timeout.
+
+## Nodes and their load
+
+```php
+foreach ($client->getNodes()->index()->getResponse()->data as $node) {
+    printf(
+        "%-10s %-8s CPU %.1f%% memory %.1f%%\n",
+        $node->node,
+        $node->status,
+        ($node->cpu ?? 0) * 100,
+        ($node->mem ?? 0) * 100 / ($node->maxmem ?? 1)
+    );
+}
+```
+
+## Cluster status
+
+```php
+foreach ($client->getCluster()->getStatus()->getStatus()->getResponse()->data as $item) {
+    echo "{$item->type} {$item->name}" . (($item->online ?? 0) == 1 ? ' online' : '') . "\n";
+}
+```
+
+## Storage of a node
+
+```php
+foreach ($client->getNodes()->get('pve01')->getStorage()->index()->getResponse()->data as $storage) {
+    if (($storage->active ?? 0) == 1) {
+        printf(
+            "%-12s %-8s %s of %s GiB\n",
+            $storage->storage,
+            $storage->type,
+            number_format(($storage->used ?? 0) / 1073741824),
+            number_format(($storage->total ?? 0) / 1073741824)
+        );
+    }
+}
+```
+
+## Metrics of a VM
+
+The data behind the charts of the web interface, as numbers:
+
+```php
+$data = $client->getNodes()->get('pve01')->getQemu()->get(100)->getRrddata()->rrddata('day', 'AVERAGE')
+    ->getResponse()->data;
+foreach ($data as $item) {
+    printf("%s CPU %.1f%%\n", date('c', $item->time), ($item->cpu ?? 0) * 100);
+}
+```
+
+## The next free id
+
+```php
+$vmId = (int) $client->getCluster()->getNextid()->nextid()->getResponse()->data;
+```

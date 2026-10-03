@@ -1,0 +1,147 @@
+---
+title: Connection
+description: Connect to Proxmox VE from PHP with an API token or a user and password, two-factor authentication, certificate validation and timeout.
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+A `PveClient` talks to one node, on the port you give. The port is 8006 when left out:
+
+```php
+use Corsinvest\ProxmoxVE\Api\PveClient;
+
+$client = new PveClient('pve01');
+$other = new PveClient('pve02.example.com', 443);
+```
+
+Any node of a cluster answers for the whole cluster. The client is then authenticated in one of the
+ways below.
+
+## API token
+
+An [API token](https://pve.proxmox.com/pve-docs/chapter-pveum.html#pveum_tokens) is the way for
+applications and scheduled jobs: it does not expire unless you say so, it can be revoked without
+touching the user, and it can have fewer privileges than the user. Set it and call the API, there is
+no login:
+
+```php
+$client = new PveClient('pve01');
+$client->setApiToken('automation@pve!app=aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee');
+
+$version = $client->getVersion()->version();
+```
+
+The format is `USER@REALM!TOKENID=SECRET`. A wrong token is not reported when you set it: the first
+call returns a `Result` with status 401.
+
+## User and password
+
+`login` asks Proxmox VE for a ticket and returns `true` if it got one:
+
+```php
+$client = new PveClient('pve01');
+
+if (!$client->login('automation@pve', $password)) {
+    echo $client->getLastResult()->getReasonPhrase();
+}
+```
+
+The realm is the part after the last `@`. Without it the realm is `pam`: `login('root', $password)`
+logs in `root@pam`. The realm can also be a separate argument: `login('automation', $password, 'pve')`.
+
+<Aside>
+A ticket is valid for two hours and the client does not renew it. A process that runs longer calls
+`login` again, or uses an API token.
+</Aside>
+
+## Two-factor authentication
+
+For a user with two-factor authentication, pass the second factor as the fourth argument, after the
+realm:
+
+```php
+// the code of the authenticator app
+$client->login('admin', $password, 'pve', '123456');
+
+// a recovery key, or any other factor, as type:value
+$client->login('admin', $password, 'pve', 'recovery:abcd-1234-efgh-5678');
+```
+
+A value without a type is a TOTP code. If the user needs a second factor and none is given, `login`
+throws `PveExceptionAuthentication`. API tokens are not subject to two-factor authentication.
+
+## Certificate
+
+By default the certificate of the node is **not** validated, so the self-signed certificate of a new
+installation works. With a trusted certificate on the nodes, turn the validation on:
+
+```php
+$client = new PveClient('pve01.example.com');
+$client->setValidateCertificate(true);
+$client->setApiToken($apiToken);
+```
+
+With the validation on, the certificate is checked against the certificate authorities known to curl
+(`curl.cainfo` in `php.ini`, or the ones of the system) and the name of the host against the
+certificate. A refused certificate does not throw: the call returns a `Result` with status 0 and the
+error of curl in `getReasonPhrase()`.
+
+## Timeout
+
+`setTimeout` sets, in **seconds**, the longest wait to connect and the longest time of the whole
+request. The default is 0, **no limit**: a node that accepts the connection and then does not answer
+blocks the call. Set a timeout in every application that must not hang:
+
+```php
+$client->setTimeout(30);
+```
+
+A request that runs out of time does not throw: it returns a `Result` with status 0 and the error of
+curl in `getReasonPhrase()`. This is the time of the HTTP request, not of the operation it starts: a
+backup or a clone answers at once with the id of a [task](/cv4pve-api-php/concepts/tasks/).
+
+In a web application the time limit of PHP (`max_execution_time`) also applies to the script that
+makes the calls.
+
+## Settings in a chain
+
+The setters return the client, so they can be written in a chain:
+
+```php
+$client = new PveClient('pve01.example.com');
+$client->setValidateCertificate(true)
+    ->setTimeout(30)
+    ->setApiToken($apiToken);
+```
+
+## Several nodes
+
+A client is bound to one host. An application that must survive a node being down keeps a list of
+nodes and creates the client for the first that answers: a call to `getVersion()->version()` with a
+short timeout is enough to test one.
+
+```php
+$client = null;
+foreach (['pve01', 'pve02', 'pve03'] as $host) {
+    $candidate = new PveClient($host);
+    $candidate->setTimeout(5)->setApiToken($apiToken);
+
+    if ($candidate->getVersion()->version()->isSuccessStatusCode()) {
+        $client = $candidate;
+        break;
+    }
+}
+```
+
+## Secrets
+
+Keep tokens and passwords out of the source code: read them from the environment or from the secret
+store of your platform.
+
+```php
+$client = new PveClient(getenv('PVE_HOST'));
+$client->setApiToken(getenv('PVE_API_TOKEN'));
+```
+
+With the debug output on, the client masks the parameters that carry passwords, tickets and tokens:
+see [Troubleshooting](/cv4pve-api-php/troubleshooting/#debug-output).

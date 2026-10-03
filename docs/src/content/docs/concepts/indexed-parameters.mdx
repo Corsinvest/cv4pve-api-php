@@ -1,0 +1,154 @@
+---
+title: Indexed parameters
+description: "Parameters such as net0, scsi0 and ipconfig0: network, disks and cloud-init in the calls that create or change a VM or a container."
+---
+
+The Proxmox VE API has parameters that exist once per device: `net0`, `net1`, `scsi0`, `scsi1`,
+`ipconfig0`. The value of each is the configuration string that Proxmox VE expects.
+
+In a [raw call](/cv4pve-api-php/concepts/api-structure/#raw-calls) the names are those of the API:
+
+```php
+$result = $client->set('/nodes/pve01/qemu/100/config', [
+    'net0' => 'model=virtio,bridge=vmbr0,firewall=1',
+    'net1' => 'model=virtio,bridge=vmbr1,tag=100',
+]);
+```
+
+In the generated methods each family is **one** argument, named with an `N` at the end: an array
+whose key is the index. These arguments belong to the methods with about a hundred parameters
+(`createVm`, `updateVm`), so give them by name, which needs PHP 8.0 or later:
+
+```php
+$result = $client->getNodes()->get('pve01')->getQemu()->get(100)->getConfig()->updateVm(netN: [
+    0 => 'model=virtio,bridge=vmbr0,firewall=1',   // net0
+    1 => 'model=virtio,bridge=vmbr1,tag=100',      // net1
+]);
+```
+
+With the devices already in an array by index, `addIndexedParameter` adds them to the parameters of a
+raw call under the names of the API:
+
+```php
+$networks = [
+    0 => 'model=virtio,bridge=vmbr0,firewall=1',   // net0
+    1 => 'model=virtio,bridge=vmbr1,tag=100',      // net1
+];
+
+$parameters = ['cores' => 4];
+$client->addIndexedParameter($parameters, 'net', $networks);
+
+$result = $client->set('/nodes/pve01/qemu/100/config', $parameters);
+```
+
+Only the indexes you send change: the calls above leave `net2` as it is. The value of an index
+replaces the whole device: when you change an existing network device keep its `macaddr`, or Proxmox
+VE generates a new one. The most used families:
+
+| Family | Sent as | For |
+|---|---|---|
+| `netN` | `net0`, `net1`, ... | Network devices of VMs and containers |
+| `scsiN`, `virtioN`, `sataN`, `ideN` | `scsi0`, `virtio0`, ... | Disks and CD-ROM drives of VMs |
+| `ipconfigN` | `ipconfig0`, ... | Cloud-init IP configuration of VMs |
+| `hostpciN`, `usbN` | `hostpci0`, `usb0`, ... | Passthrough of host devices |
+| `mpN` | `mp0`, `mp1`, ... | Mount points of containers |
+
+The format of each value is in the description of the parameter in the
+[API viewer](https://pve.proxmox.com/pve-docs/api-viewer/), and in the pages of the Proxmox VE
+administration guide linked below. The client does not check the string: Proxmox VE does, and a wrong
+one gives status 400 with the reason in `getError()`.
+
+## Network of a VM
+
+`model=<model>,bridge=<bridge>` followed by options, as described in
+[Network Device](https://pve.proxmox.com/pve-docs/chapter-qm.html#qm_network_device).
+
+| Option | Meaning | Example |
+|---|---|---|
+| `model` | Emulated card | `virtio`, `e1000`, `vmxnet3` |
+| `bridge` | Bridge of the node to attach to | `vmbr0` |
+| `tag` | VLAN tag | `tag=100` |
+| `firewall` | Apply the Proxmox VE firewall | `firewall=1` |
+| `macaddr` | MAC address, generated when left out | `macaddr=BC:24:11:00:00:01` |
+| `rate` | Rate limit in MB/s | `rate=100` |
+| `mtu` | MTU, `virtio` only | `mtu=9000` |
+| `queues` | Multiqueue, `virtio` only | `queues=4` |
+| `link_down` | Create the device disconnected | `link_down=1` |
+
+## Disks of a VM
+
+To create a new disk give the storage and the size in GiB: `<storage>:<size>`. To attach an existing
+volume give its id: `<storage>:<volume>`. Options follow, as described in
+[Hard Disk](https://pve.proxmox.com/pve-docs/chapter-qm.html#qm_hard_disk).
+
+```php
+// POST: allocating a disk runs as a task
+$result = $client->create('/nodes/pve01/qemu/100/config', [
+    'scsi0' => 'local-lvm:32,discard=on,iothread=1',      // new 32 GiB disk
+    'scsi1' => 'local-lvm:100,backup=0',                  // new 100 GiB disk, left out of backups
+    'ide2' => 'local:iso/debian-13.1.0-amd64-netinst.iso,media=cdrom',
+]);
+```
+
+The configuration of a VM has two endpoints: PUT (`$client->set`) applies the change and returns
+nothing, POST (`$client->create`) returns a [task](/cv4pve-api-php/concepts/tasks/), which is what you
+need when the change allocates a disk.
+
+| Bus | Indexes | Notes |
+|---|---|---|
+| `scsiN` | 0 to 30 | The usual choice, with `scsihw` set to `virtio-scsi-single` |
+| `virtioN` | 0 to 15 | VirtIO block |
+| `sataN` | 0 to 5 | |
+| `ideN` | 0 to 3 | Mostly CD-ROM drives |
+
+| Option | Meaning | Values |
+|---|---|---|
+| `cache` | Cache mode | `none`, `writethrough`, `writeback`, `directsync`, `unsafe` |
+| `discard` | Pass TRIM to the storage | `on`, `ignore` |
+| `iothread` | Dedicated I/O thread | `0`, `1` |
+| `ssd` | Present the disk as SSD | `0`, `1` |
+| `backup` | Include the disk in backups | `0`, `1` |
+| `media` | Kind of drive | `disk`, `cdrom` |
+
+The EFI disk and the TPM state exist only once, so they are plain parameters, `efidisk0` and
+`tpmstate0`:
+
+```php
+$result = $client->create('/nodes/pve01/qemu/100/config', [
+    'bios' => 'ovmf',
+    'efidisk0' => 'local-lvm:1,efitype=4m,pre-enrolled-keys=1',
+]);
+```
+
+## Cloud-init
+
+`ipconfigN` configures the network device with the same index: `ipconfig0` is for `net0`. See
+[Cloud-Init Support](https://pve.proxmox.com/pve-docs/chapter-qm.html#qm_cloud_init).
+
+```php
+$result = $client->set('/nodes/pve01/qemu/100/config', [
+    'ciuser' => 'admin',
+    'sshkeys' => rawurlencode($publicKey),
+    'ipconfig0' => 'ip=192.168.1.100/24,gw=192.168.1.1',   // static
+    'ipconfig1' => 'ip=dhcp',                              // DHCP
+]);
+```
+
+The API wants `sshkeys` URL-encoded, with spaces as `%20`: encode it yourself with `rawurlencode`, as
+above.
+
+## Containers
+
+Containers use the same pattern with their own formats:
+[`netN`](https://pve.proxmox.com/pve-docs/chapter-pct.html#pct_container_network) carries name, bridge
+and addresses, [`mpN`](https://pve.proxmox.com/pve-docs/chapter-pct.html#pct_mount_points) a volume and
+its path in the container.
+
+```php
+$result = $client->set('/nodes/pve01/lxc/200/config', [
+    'net0' => 'name=eth0,bridge=vmbr0,ip=dhcp',
+    'mp0' => 'local-lvm:8,mp=/var/lib/data',   // new 8 GiB volume mounted at /var/lib/data
+]);
+```
+
+A complete VM, from nothing to started, is in [Create a VM](/cv4pve-api-php/examples/create-vm/).

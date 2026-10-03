@@ -1,0 +1,134 @@
+---
+title: API structure
+description: "How the client maps the Proxmox VE API tree: paths become getters and get(...), the methods of an endpoint become PHP methods, parameters become arguments."
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+`PveClient` is generated from the schema of the Proxmox VE API, the same one the
+[API viewer](https://pve.proxmox.com/pve-docs/api-viewer/) shows. It has a method for each method of the API, placed where the API has it. Knowing the path of an
+endpoint is enough to write the call.
+
+## From endpoint to method
+
+Three rules:
+
+1. Each fixed part of the path is a getter: `/cluster/resources` is
+   `$client->getCluster()->getResources()`.
+2. Each `{value}` of the path is a `get(value)`: `/nodes/{node}/qemu/{vmid}` is
+   `$client->getNodes()->get('pve01')->getQemu()->get(100)`.
+3. Each HTTP method of the endpoint is a PHP method named after the API method, with its parameters
+   as arguments.
+
+| Endpoint | Call |
+|---|---|
+| `GET /version` | `$client->getVersion()->version()` |
+| `GET /cluster/resources` | `$client->getCluster()->getResources()->resources('vm')` |
+| `GET /nodes` | `$client->getNodes()->index()` |
+| `GET /nodes/{node}/qemu` | `$client->getNodes()->get('pve01')->getQemu()->vmlist()` |
+| `POST /nodes/{node}/qemu` | `$client->getNodes()->get('pve01')->getQemu()->createVm(100)` |
+| `GET /nodes/{node}/qemu/{vmid}/config` | `$client->getNodes()->get('pve01')->getQemu()->get(100)->getConfig()->vmConfig()` |
+| `GET /nodes/{node}/qemu/{vmid}/status/current` | `$client->getNodes()->get('pve01')->getQemu()->get(100)->getStatus()->getCurrent()->vmStatus()` |
+| `POST /nodes/{node}/qemu/{vmid}/status/start` | `$client->getNodes()->get('pve01')->getQemu()->get(100)->getStatus()->getStart()->vmStart()` |
+| `GET /nodes/{node}/qemu/{vmid}/snapshot` | `$client->getNodes()->get('pve01')->getQemu()->get(100)->getSnapshot()->snapshotList()` |
+| `POST /nodes/{node}/qemu/{vmid}/snapshot` | `$client->getNodes()->get('pve01')->getQemu()->get(100)->getSnapshot()->snapshot('before-update')` |
+| `DELETE /nodes/{node}/qemu/{vmid}/snapshot/{snapname}` | `$client->getNodes()->get('pve01')->getQemu()->get(100)->getSnapshot()->get('before-update')->delsnapshot()` |
+| `DELETE /nodes/{node}/qemu/{vmid}` | `$client->getNodes()->get('pve01')->getQemu()->get(100)->destroyVm()` |
+
+Containers are the same under `getLxc()` instead of `getQemu()`.
+
+All of them return a `Result`: see [Results](/cv4pve-api-php/concepts/results/).
+
+## Method names
+
+The name of a method is the name Proxmox VE gives to that API method, in camel case: `vm_config`
+becomes `vmConfig`, `snapshot_list` becomes `snapshotList`. Lists are often called `index`, the others
+have names of their own, so there is no fixed name per HTTP method. In practice type the path and let
+the editor list what the endpoint offers: the comment of each method carries the description of the
+API, and of each parameter.
+
+```php
+$vm = $client->getNodes()->get('pve01')->getQemu()->get(100);
+
+$config = $vm->getConfig()->vmConfig();                  // GET
+$start = $vm->getStatus()->getStart()->vmStart();        // POST
+$stop = $vm->getStatus()->getShutdown()->vmShutdown();   // POST
+```
+
+<Aside>
+A node of the tree can be kept in a variable, as `$vm` above: it holds only the path, no call is made
+until a method is called.
+</Aside>
+
+## Parameters
+
+Each method has the required parameters of the API first, then the optional ones, each with `null` as
+its default. A parameter left as `null` is not sent, so Proxmox VE applies its own default.
+
+```php
+// required parameters only
+$snapshot = $vm->getSnapshot()->snapshot('before-update');
+
+// every parameter: snapname, description, vmstate
+$snapshot = $vm->getSnapshot()->snapshot('before-update', 'Before the update', true);
+
+// null for the ones to leave out
+$snapshot = $vm->getSnapshot()->snapshot('before-update', null, true);
+```
+
+With PHP 8.0 or later the optional parameters can be given by name, in any order:
+
+```php
+$snapshot = $vm->getSnapshot()->snapshot('before-update', vmstate: true);
+```
+
+- Names are those of the API. A `-` in a name becomes `_`: `force-cpu` is `$force_cpu`.
+- Booleans are sent as `1` or `0`.
+- Parameters that exist with an index (`net0`, `net1`, `scsi0`) are one array argument, `$netN`,
+  `$scsiN`, with the index as key: see
+  [Indexed parameters](/cv4pve-api-php/concepts/indexed-parameters/).
+- Type, format and allowed values of each parameter are in the API viewer; the client sends what you
+  give and Proxmox VE validates it. A refused parameter gives status 400: see
+  [Errors](/cv4pve-api-php/concepts/errors/).
+
+<Aside type="caution">
+By position, a value in the wrong place is sent under the wrong name without any error from PHP, and
+the order of the optional parameters can change when the library follows a new Proxmox VE version:
+the [changelog](https://github.com/Corsinvest/cv4pve-api-php/blob/master/CHANGELOG.md) lists these
+changes. Some methods have about a hundred parameters: the configuration of a VM (`createVm`,
+`updateVm`) is the main case. For those give the parameters by name, or use a raw call.
+</Aside>
+
+## Raw calls
+
+The generated methods end in four methods of the client, which you can call with any path and an
+array of parameters. They are the practical way for the calls with many optional parameters, for an
+endpoint added by a Proxmox VE version newer than the library, and when the path is built at run time:
+
+```php
+$update = $client->set('/nodes/pve01/qemu/100/config', [
+    'cores' => 4,
+    'memory' => 8192,
+    'description' => 'Web server',
+]);
+
+$read = $client->get('/nodes/pve01/qemu/100/config');
+```
+
+| Method | HTTP |
+|---|---|
+| `get($resource, $parameters)` | GET |
+| `create($resource, $parameters)` | POST |
+| `set($resource, $parameters)` | PUT |
+| `delete($resource, $parameters)` | DELETE |
+
+Here the parameter names are exactly those of the API, with `-` where the API has it. For GET and
+DELETE the parameters go in the query string, for POST and PUT in a JSON body. The array can be left
+out when there are none. They return the same `Result` as the generated methods.
+
+## Versions
+
+The first two numbers of the library version are the Proxmox VE version it was generated from: 9.2.x
+matches the API of Proxmox VE 9.2. A library newer than the cluster may offer endpoints and parameters
+the cluster does not know: the cluster answers an unknown endpoint with status 501 and an unknown
+parameter with status 400.

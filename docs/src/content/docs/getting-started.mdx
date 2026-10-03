@@ -1,0 +1,96 @@
+---
+title: Getting started
+description: Add cv4pve-api-php to a PHP project, connect to a Proxmox VE cluster and make the first calls.
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+cv4pve-api-php is one package on Packagist: a client with a method for every endpoint of the
+Proxmox VE API. It runs in your application (a web application, a scheduled job, a command line
+script) and talks only to the Proxmox VE REST API on port 8006. Nothing is installed on the nodes.
+
+## Requirements
+
+- PHP 5.5 or later with the `curl` extension. The tests of the library run on PHP 7.4, 8.3 and 8.4,
+  and the examples of these pages use the syntax of PHP 7.4.
+- Network access to port 8006 of at least one node.
+- A Proxmox VE API token, or a user and password, with the privileges your application needs: see
+  [Permissions](/cv4pve-api-php/permissions/).
+
+## Install
+
+<Steps>
+
+1. Add the package from
+   [Packagist](https://packagist.org/packages/corsinvest/cv4pve-api-php) with Composer:
+
+   ```bash
+   composer require corsinvest/cv4pve-api-php
+   ```
+
+   It brings no other package.
+
+2. Create the client with an API token. With a token there is no login call:
+
+   ```php
+   <?php
+
+   require __DIR__ . '/vendor/autoload.php';
+
+   use Corsinvest\ProxmoxVE\Api\PveClient;
+
+   $client = new PveClient('pve01', 8006);
+   $client->setApiToken('automation@pve!app=aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee');
+   ```
+
+   The certificate of the node is not validated unless you ask for it, so a new installation with its
+   self-signed certificate works as it is. All the ways to connect are in
+   [Connection](/cv4pve-api-php/connection/).
+
+3. Make the first call and check its outcome:
+
+   ```php
+   $result = $client->getVersion()->version();
+
+   if ($result->isSuccessStatusCode()) {
+       echo "Proxmox VE {$result->getResponse()->data->version}\n";
+   } else {
+       echo "{$result->getStatusCode()} {$result->getReasonPhrase()}\n";
+   }
+   ```
+
+4. Read some data. The path of the API is the path in the code:
+
+   ```php
+   // GET /nodes/{node}/qemu/{vmid}/status/current
+   $current = $client->getNodes()->get('pve01')->getQemu()->get(100)->getStatus()->getCurrent()->vmStatus();
+   echo $current->getResponse()->data->status . "\n";
+
+   // GET /cluster/resources?type=vm
+   $resources = $client->getCluster()->getResources()->resources('vm');
+   foreach ($resources->getResponse()->data as $item) {
+       echo "{$item->vmid} {$item->node} {$item->status}\n";
+   }
+   ```
+
+</Steps>
+
+Every call returns a `Result`: the HTTP outcome and, in `getResponse()`, what Proxmox VE answered,
+with the data of the API in its `data` member. A failed call does not throw, so check
+`isSuccessStatusCode()`: [Results](/cv4pve-api-php/concepts/results/) and
+[Errors](/cv4pve-api-php/concepts/errors/) explain why.
+
+## Find the method you need
+
+The client follows the tree of the Proxmox VE API: each part of a path is a getter, each `{value}` in
+the path is a `get(value)`, and each HTTP method of the endpoint is a PHP method. The
+[Proxmox VE API viewer](https://pve.proxmox.com/pve-docs/api-viewer/) is therefore the reference for
+parameters and returned data, and the comment of each method shows the same descriptions in your
+editor. The rule is in [API structure](/cv4pve-api-php/concepts/api-structure/).
+
+## Next
+
+- [Connection](/cv4pve-api-php/connection/): API token or password, two-factor authentication, certificates, timeout.
+- [Permissions](/cv4pve-api-php/permissions/): the user, the token and the privileges an application needs.
+- [Concepts](/cv4pve-api-php/concepts/api-structure/): API structure, results, tasks, errors.
+- [Common tasks](/cv4pve-api-php/examples/common-tasks/): short recipes to copy.

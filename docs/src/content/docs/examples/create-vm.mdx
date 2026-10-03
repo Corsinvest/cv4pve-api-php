@@ -1,0 +1,143 @@
+---
+title: Create a VM
+description: "Create a VM from PHP: an empty VM with an installer ISO, or a clone of a cloud-init template with its network and SSH key, waiting for each task."
+---
+
+Two complete ways to get a new VM. Both use a small helper that waits for a task and throws if the
+call or the task failed, so the steps read in sequence:
+
+```php
+use Corsinvest\ProxmoxVE\Api\PveClient;
+use Corsinvest\ProxmoxVE\Api\Result;
+
+function ensureDone(PveClient $client, Result $result, $timeoutSeconds)
+{
+    if (!$result->isSuccessStatusCode()) {
+        throw new RuntimeException($result->responseInError()
+            ? $result->getError()
+            : "{$result->getStatusCode()} {$result->getReasonPhrase()}");
+    }
+
+    // calls that finish at once return no task
+    $data = $result->getResponse()->data ?? null;
+    if (!is_string($data) || strpos($data, 'UPID:') !== 0) {
+        return;
+    }
+
+    // true when the time ran out with the task still running
+    if ($client->waitForTaskToFinish($data, 1000, $timeoutSeconds * 1000)) {
+        throw new RuntimeException("Task still running after {$timeoutSeconds} seconds: {$data}");
+    }
+
+    $exitStatus = $client->getExitStatusTask($data);
+    if ($exitStatus !== 'OK' && strpos($exitStatus, 'WARNINGS') !== 0) {
+        throw new RuntimeException("Task failed: {$exitStatus}");
+    }
+}
+```
+
+Why both checks are needed is in [Tasks](/cv4pve-api-php/concepts/tasks/).
+
+The parameters of a VM go in an array, sent with a
+[raw call](/cv4pve-api-php/concepts/api-structure/#raw-calls): the generated `createVm` and
+`updateVm` have about a hundred parameters.
+
+## An empty VM with an installer
+
+A VM with a new disk, a network card and the installer ISO in the CD-ROM drive, ready to be installed
+from the console.
+
+```php
+$node = 'pve01';
+
+$vmId = (int) $client->getCluster()->getNextid()->nextid()->getResponse()->data;
+
+ensureDone($client, $client->create("/nodes/{$node}/qemu", [
+    'vmid' => $vmId,
+    'name' => 'debian13',
+    'ostype' => 'l26',
+    'memory' => 4096,
+    'cores' => 2,
+    'cpu' => 'x86-64-v2-AES',
+    'scsihw' => 'virtio-scsi-single',
+    'scsi0' => 'local-lvm:32,discard=on,iothread=1',
+    'ide2' => 'local:iso/debian-13.1.0-amd64-netinst.iso,media=cdrom',
+    'net0' => 'model=virtio,bridge=vmbr0,firewall=1',
+    'boot' => 'order=scsi0;ide2',
+    'agent' => '1',
+]), 60);
+
+ensureDone($client, $client->getNodes()->get($node)->getQemu()->get($vmId)->getStatus()->getStart()->vmStart(), 60);
+
+echo "VM {$vmId} created and started";
+```
+
+The format of disks and network is in
+[Indexed parameters](/cv4pve-api-php/concepts/indexed-parameters/). The storage names (`local-lvm`,
+`local`), the bridge and the ISO are those of your node.
+
+## A clone of a cloud-init template
+
+The fast way to a working system: a template made once from a cloud image, with a cloud-init drive,
+cloned for each new VM. The template is prepared as described in
+[Cloud-Init Support](https://pve.proxmox.com/pve-docs/chapter-qm.html#qm_cloud_init); here it is VM
+9000.
+
+```php
+$node = 'pve01';
+$templateId = 9000;
+
+$vmId = (int) $client->getCluster()->getNextid()->nextid()->getResponse()->data;
+$publicKey = trim(file_get_contents('id_ed25519.pub'));
+
+// 1. clone: a full copy can take minutes
+//    newid, bwlimit, description, format, full, name
+$result = $client->getNodes()->get($node)->getQemu()->get($templateId)->getClone()
+    ->cloneVm($vmId, null, null, null, true, 'web02');
+ensureDone($client, $result, 900);
+
+$vm = $client->getNodes()->get($node)->getQemu()->get($vmId);
+
+// 2. resources and cloud-init: user, key, address
+ensureDone($client, $client->set("/nodes/{$node}/qemu/{$vmId}/config", [
+    'cores' => 2,
+    'memory' => 4096,
+    'ciuser' => 'admin',
+    'sshkeys' => rawurlencode($publicKey),
+    'ipconfig0' => 'ip=192.168.1.102/24,gw=192.168.1.1',
+    'nameserver' => '192.168.1.1',
+]), 60);
+
+// 3. grow the disk of the image to 32 GiB
+ensureDone($client, $vm->getResize()->resizeVm('scsi0', '32G'), 60);
+
+// 4. start
+ensureDone($client, $vm->getStatus()->getStart()->vmStart(), 60);
+
+echo "VM {$vmId} is starting at 192.168.1.102";
+```
+
+The source here is a template, so with `full` as `false` or `null` the clone is a linked clone: it is
+created at once and shares the disk of the template, which then cannot be removed. A VM that is not a
+template is always cloned in full.
+
+## Remove a VM
+
+```php
+$vm = $client->getNodes()->get('pve01')->getQemu()->get(121);
+
+ensureDone($client, $vm->getStatus()->getStop()->vmStop(), 60);
+
+// destroy_unreferenced_disks, purge, skiplock
+ensureDone($client, $vm->destroyVm(null, true), 60);
+```
+
+`purge` also removes the VM from backup jobs, replication and HA. There is no confirmation: the disks
+are deleted.
+
+## Permissions
+
+Creating and cloning need `VM.Allocate` on `/vms` (or on the pool), `Datastore.AllocateSpace` on the
+storage, `SDN.Use` on the bridge, and `VM.Clone` on the template for a clone. The options given when
+creating, and the configuration changes after it, need the matching `VM.Config.*` privileges: see
+[Permissions](/cv4pve-api-php/permissions/).

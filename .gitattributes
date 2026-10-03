@@ -24,3 +24,6 @@
 *.gif binary
 *.ico binary
 *.zip binary
+
+# The documentation site is not part of the Composer package
+/docs export-ignore

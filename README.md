@@ -1,4 +1,6 @@
-```text
+# <img src="https://raw.githubusercontent.com/Corsinvest/cv4pve-api-php/master/icon.svg" alt="" height="36" align="top"> cv4pve-api-php
+
+```
    ______                _                      __
   / ____/___  __________(_)___ _   _____  _____/ /_
  / /   / __ \/ ___/ ___/ / __ \ | / / _ \/ ___/ __/
@@ -8,180 +10,95 @@
 Proxmox VE API Client for PHP (Made in Italy)
 ```
 
-[![License](https://img.shields.io/github/license/Corsinvest/cv4pve-api-php.svg?style=flat-square)](LICENSE)
+[![License](https://img.shields.io/github/license/Corsinvest/cv4pve-api-php.svg?style=flat-square)](https://github.com/Corsinvest/cv4pve-api-php/blob/master/LICENSE)
 [![Packagist Version](https://img.shields.io/packagist/v/corsinvest/cv4pve-api-php.svg?style=flat-square&logo=packagist)](https://packagist.org/packages/corsinvest/cv4pve-api-php)
 [![Packagist Downloads](https://img.shields.io/packagist/dt/corsinvest/cv4pve-api-php?style=flat-square&logo=packagist)](https://packagist.org/packages/corsinvest/cv4pve-api-php)
 [![PHP Version](https://img.shields.io/packagist/php-v/corsinvest/cv4pve-api-php.svg?style=flat-square&logo=php)](https://packagist.org/packages/corsinvest/cv4pve-api-php)
 
+> **The Proxmox VE API from PHP**: a client with a method for every endpoint of the Proxmox VE API, running in your application and talking only to the API.
+>
+> **[Documentation](https://corsinvest.github.io/cv4pve-api-php/)**
+
 ---
 
-## Quick Start
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Corsinvest/cv4pve-api-php/master/docs/src/assets/php.svg" alt="PHP logo" width="110">
+</p>
 
-### Installation
+## Why
+
+An application that manages Proxmox VE (a customer portal, a scheduled job, a monitoring or billing tool) has to speak its REST API: tickets and tokens, paths, parameters, JSON, tasks that end later. Written by hand it is a layer of HTTP code to build and to keep up with every Proxmox VE release.
+
+cv4pve-api-php is that layer, generated from the API itself. The calls follow the tree of the API, so the [Proxmox VE API viewer](https://pve.proxmox.com/pve-docs/api-viewer/) is also the reference of the client.
+
+It **runs in your application and uses only the Proxmox VE API**: nothing to install on the nodes, no SSH.
+
+---
+
+## Features
+
+- **The whole API**: a method for every endpoint and HTTP method, generated from the Proxmox VE API schema; `/nodes/{node}/qemu/{vmid}/config` is `$client->getNodes()->get('pve01')->getQemu()->get(100)->getConfig()`.
+- **One Result for every call**: the HTTP outcome and the Proxmox VE data, read as objects or as arrays. A failed call does not throw.
+- **API token or password**: with two-factor authentication, certificate validation and timeout.
+- **Tasks**: start a backup, a clone or a migration, wait for its task and read whether it succeeded.
+- **Raw calls**: GET, POST, PUT and DELETE on any path with an array of parameters, for the calls with many options and for endpoints newer than the library.
+- **No dependency**: PHP with the curl extension, no other package.
+
+---
+
+## Quick start
 
 ```bash
 composer require corsinvest/cv4pve-api-php
 ```
 
-### Basic Usage
-
 ```php
 <?php
-require_once 'vendor/autoload.php';
+
+require __DIR__ . '/vendor/autoload.php';
 
 use Corsinvest\ProxmoxVE\Api\PveClient;
 
-// Create client instance
-$client = new PveClient("your-proxmox-host.com");
+// connect to any node of the cluster, with an API token
+$client = new PveClient('pve01', 8006);
+$client->setApiToken('automation@pve!app=aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee');
 
-// Authenticate
-if ($client->login('root@pam', 'password')) {
-    // Get cluster status
-    $status = $client->getCluster()->status();
-    echo "Cluster: {$status->getResponse()->data[0]->name}\n";
+// GET /nodes/{node}/qemu/{vmid}/status/current
+$result = $client->getNodes()->get('pve01')->getQemu()->get(100)->getStatus()->getCurrent()->vmStatus();
 
-    // List all VMs
-    $vms = $client->getNodes()->get("pve1")->getQemu()->vmlist();
-    foreach ($vms->getResponse()->data as $vm) {
-        echo "VM {$vm->vmid}: {$vm->name} - {$vm->status}\n";
-    }
-}
+echo $result->isSuccessStatusCode()
+    ? "VM {$result->getResponse()->data->vmid} is {$result->getResponse()->data->status}"
+    : "{$result->getStatusCode()} {$result->getReasonPhrase()}";
 ```
 
----
+What the token needs: [Permissions](https://corsinvest.github.io/cv4pve-api-php/permissions/).
 
-## Key Features
-
-### Developer Experience
-
-- **Intuitive API Structure** - Mirrors Proxmox VE API hierarchy with fluent interface
-- **Tree-Based Navigation** - Natural method chaining matching API paths
-- **Flexible Response Handling** - Choose between object or array response formats
-- **Comprehensive Documentation** - Detailed guides and practical examples
-- **Easy Integration** - Simple Composer installation with minimal dependencies
-
-### Core Functionality
-
-- **Complete API Coverage** - Full implementation of Proxmox VE REST API endpoints
-- **VM & Container Management** - Create, configure, start, stop, and monitor virtual machines and containers
-- **Cluster Operations** - Monitor cluster status, resources, and health
-- **Storage Management** - Handle storage pools, volumes, and content
-- **Network Configuration** - Manage network interfaces and firewall rules
-
-### Enterprise Ready
-
-- **Multiple Authentication Methods** - Username/password, API tokens, and two-factor authentication
-- **API Token Support** - Secure token-based authentication for automation
-- **SSL Certificate Validation** - Configurable certificate verification for production environments
-- **Task Management** - Monitor and wait for long-running async operations
-- **Timeout Configuration** - Customizable connection and request timeouts
-
-### Advanced Features
-
-- **Result Object Pattern** - Structured response handling with status codes and error checking
-- **Event Callbacks** - Hook into API actions for logging and monitoring
-- **Zero Dependencies** - Lightweight design using only native PHP cURL
-- **PHP 5.5+ Compatible** - Wide compatibility with modern and legacy environments
-- **Cross-Platform** - Works on Windows, Linux, and macOS
+The first two numbers of the version are the Proxmox VE version the client was generated from: 9.2.x is for Proxmox VE 9.2. Changes of each release: [CHANGELOG.md](https://github.com/Corsinvest/cv4pve-api-php/blob/master/CHANGELOG.md).
 
 ---
 
 ## Documentation
 
-### Getting Started
-
-- **[Authentication](./docs/authentication.md)** - Login methods, API tokens, and security best practices
-- **[Basic Examples](./docs/examples.md)** - Common operations and usage patterns
-- **[Advanced Usage](./docs/advanced.md)** - Production configurations and enterprise patterns
-- **[Common Issues](./docs/common-issues.md)** - Troubleshooting and configuration tips
-
-### API Reference
-
-- **[API Structure](./docs/apistructure.md)** - Understanding the tree-based API navigation
-- **[Result Handling](./docs/results.md)** - Working with responses and data
-- **[Error Handling](./docs/errorhandling.md)** - Exception management and error patterns
-- **[Task Management](./docs/tasks.md)** - Monitoring async operations
+| | |
+|---|---|
+| [Getting started](https://corsinvest.github.io/cv4pve-api-php/getting-started/) | Install, connect, first calls |
+| [Connection](https://corsinvest.github.io/cv4pve-api-php/connection/) | API token or password, two-factor authentication, certificates, timeout |
+| [Permissions](https://corsinvest.github.io/cv4pve-api-php/permissions/) | The user, the token and the privileges an application needs |
+| [Concepts](https://corsinvest.github.io/cv4pve-api-php/concepts/api-structure/) | API structure, results, indexed parameters, tasks, errors |
+| [Examples](https://corsinvest.github.io/cv4pve-api-php/examples/common-tasks/) | Common tasks, creating a VM, bulk operations |
+| [Troubleshooting](https://corsinvest.github.io/cv4pve-api-php/troubleshooting/) | Debug output and the common errors |
 
 ---
 
-## Examples
+## Related tools
 
-### VM Management
-
-```php
-<?php
-// Create and configure a new VM with individual parameters (PHP 8.1+)
-
-// Using named arguments (PHP 8.0+) for clarity
-$result = $client->getNodes()->get("pve1")->getQemu()->createVm(
-    vmid: 100,
-    name: 'production-web-server',
-    memory: 4096,
-    cores: 4,
-    net0: 'virtio,bridge=vmbr0',
-    scsi0: 'local-lvm:32',
-    acpi: true,
-    balloon: 0,
-    cpu: 'host',
-    numa: false,
-    hotplug: 'network,disk,cpu,memory',
-    tags: 'production,web',
-    template: false
-);
-
-if ($result->isSuccessStatusCode()) {
-    echo "VM created successfully!\n";
-
-    // Start the VM
-    $startResult = $client->getNodes()->get("pve1")->getQemu()->get(100)->getStatus()->getStart()->vmStart();
-    if ($startResult->isSuccessStatusCode()) {
-        echo "VM started successfully!\n";
-    }
-} else {
-    echo "Error creating VM: " . $result->getError() . "\n";
-}
-```
-
-### Cluster Monitoring
-
-```php
-<?php
-// Monitor cluster resources
-$resources = $client->getCluster()->resources();
-
-foreach ($resources->getResponse()->data as $resource) {
-    if ($resource->type === 'vm' && $resource->status === 'running') {
-        $cpuPercent = round($resource->cpu * 100, 2);
-        $memPercent = round(($resource->mem / $resource->maxmem) * 100, 2);
-
-        echo "VM {$resource->vmid}: CPU {$cpuPercent}%, RAM {$memPercent}%\n";
-    }
-}
-```
-
-### Automated Backup
-
-```php
-<?php
-// Create backup for multiple VMs
-$vmids = [100, 101, 102];
-
-$backup = $client->getNodes()->get("pve1")->getVzdump()->create(
-    vmid: implode(',', $vmids),  // Comma-separated VM IDs
-    storage: 'backup-storage',   // Storage target
-    mode: 'snapshot',            // Backup mode
-    compress: 'zstd'             // Compression algorithm
-);
-
-$taskId = $backup->getResponse()->data;
-echo "Backup started with task: {$taskId}\n";
-```
+Prefer a command line? [cv4pve-cli](https://github.com/Corsinvest/cv4pve-cli) calls the same API from any shell. The same client for .NET: [cv4pve-api-dotnet](https://github.com/Corsinvest/cv4pve-api-dotnet). For Java: [cv4pve-api-java](https://github.com/Corsinvest/cv4pve-api-java). From PowerShell: [cv4pve-api-powershell](https://github.com/Corsinvest/cv4pve-api-powershell). The whole suite: [corsinvest.it/cv4pve](https://www.corsinvest.it/en/cv4pve/).
 
 ---
 
 ## Support
 
-For professional consulting and enterprise support, visit [www.corsinvest.it](https://www.corsinvest.it)
+Professional support and consulting available through [Corsinvest](https://www.corsinvest.it/en/cv4pve/).
 
 ---
 
