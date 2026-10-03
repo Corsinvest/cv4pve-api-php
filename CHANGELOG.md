@@ -5,7 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 The major and minor version follow Proxmox VE (9.2.x targets Proxmox VE 9.2); the patch number can include breaking changes, listed under "Changed (breaking)".
 
-## [Unreleased]
+## [9.2.4] - 2026-10-03
+
+### Added
+- Documentation site at [corsinvest.github.io/cv4pve-api-php](https://corsinvest.github.io/cv4pve-api-php/), built with Astro Starlight and published by the new `Docs` workflow; the pages are rewritten on the current client and replace the Markdown files of `docs/` ([#53](https://github.com/Corsinvest/cv4pve-api-php/pull/53))
+- Icon of the project (`icon.svg`) ([#53](https://github.com/Corsinvest/cv4pve-api-php/pull/53))
+- Tests: offline tests of the generated client in `tests/GeneratedClientTest.php`, run by the `Test` workflow; tests on a real Proxmox VE in `tests/LiveTest.php` (`PVE_HOST`, `PVE_API_TOKEN`, `PVE_TEST_VMID`). The old `tests/test.php` is removed ([#54](https://github.com/Corsinvest/cv4pve-api-php/pull/54))
+
+### Changed
+- `README.md` rewritten, with links to the documentation site ([#53](https://github.com/Corsinvest/cv4pve-api-php/pull/53))
+- The Composer package no longer contains `docs/` ([#53](https://github.com/Corsinvest/cv4pve-api-php/pull/53))
 
 ### Fixed
 - Debug level 2 printed the value of a new API token, the answer of `POST /access/users/{userid}/token/{tokenid}`, unmasked ([#55](https://github.com/Corsinvest/cv4pve-api-php/pull/55))
