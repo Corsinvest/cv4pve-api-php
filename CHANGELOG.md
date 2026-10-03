@@ -8,7 +8,7 @@ The major and minor version follow Proxmox VE (9.2.x targets Proxmox VE 9.2); th
 ## [Unreleased]
 
 ### Fixed
-- Debug level 2 printed the value of a new API token, the answer of `POST /access/users/{userid}/token/{tokenid}`, unmasked
+- Debug level 2 printed the value of a new API token, the answer of `POST /access/users/{userid}/token/{tokenid}`, unmasked ([#55](https://github.com/Corsinvest/cv4pve-api-php/pull/55))
 
 ## [9.2.3] - 2026-10-03
 
