@@ -283,6 +283,32 @@ $tests = [
         same(true, strpos($output, 'root@pam') !== false, 'values that are not secret are still shown');
     },
 
+    'the debug output does not show the value of a new API token' => function () {
+        foreach ([true, false] as $resultIsObject) {
+            $client = new PveClientBase('pve01');
+            $client->setDebugLevel(2)->setResultIsObject($resultIsObject);
+            $show = function ($body) use ($client) {
+                FakeCurl::answer(function () use ($body) {
+                    return FakeCurl::http(200, 'OK', $body);
+                });
+                ob_start();
+                try {
+                    $client->create('/access/users/automation@pve/token/app');
+                } finally {
+                    return ob_get_clean();
+                }
+            };
+
+            $output = $show('{"data":{"full-tokenid":"automation@pve!app","info":{"privsep":1},"value":"SECRETVALUE"}}');
+            same(false, strpos($output, 'SECRETVALUE'), 'the output shows the value of the token:');
+            same(true, strpos($output, 'privsep') !== false, 'values that are not secret are still shown');
+
+            //a member named value of any other answer is not a secret
+            $output = $show('{"data":{"key":"keyboard","value":"PLAINVALUE"}}');
+            same(true, strpos($output, 'PLAINVALUE') !== false, 'a value that is not a token is shown');
+        }
+    },
+
     'debug level 1 prints a parameter that is an array' => function () {
         FakeCurl::answer(function () {
             return FakeCurl::http(200, 'OK', '{"data":null}');
