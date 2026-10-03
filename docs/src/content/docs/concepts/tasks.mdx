@@ -109,7 +109,7 @@ while ($client->taskIsRunning($upid)) {
     sleep(2);
 }
 
-echo "\n" . $client->getExitStatusTask($upid) . "\n";
+echo "\n" . $client->getExitStatusTask($upid);
 ```
 
 ## When the status cannot be read

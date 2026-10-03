@@ -42,7 +42,7 @@ call returns a `Result` with status 401.
 $client = new PveClient('pve01');
 
 if (!$client->login('automation@pve', $password)) {
-    echo $client->getLastResult()->getReasonPhrase() . "\n";
+    echo $client->getLastResult()->getReasonPhrase();
 }
 ```
 

@@ -12,7 +12,7 @@ Proxmox VE answered.
 $result = $client->getNodes()->get('pve01')->getQemu()->get(100)->getStatus()->getCurrent()->vmStatus();
 
 if ($result->isSuccessStatusCode()) {
-    echo $result->getResponse()->data->status . "\n";
+    echo $result->getResponse()->data->status;
 }
 ```
 
@@ -77,7 +77,7 @@ $name = $config->name ?? '(no name)';
 $cores = $config->cores ?? 1;
 
 if (isset($config->net0)) {
-    echo $config->net0 . "\n";
+    echo $config->net0;
 }
 ```
 

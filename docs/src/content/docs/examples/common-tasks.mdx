@@ -66,7 +66,7 @@ foreach ($client->getCluster()->getResources()->resources('vm')->getResponse()->
 }
 
 if ($found !== null) {
-    echo "web01 is {$found->type} {$found->vmid} on {$found->node}\n";
+    echo "web01 is {$found->type} {$found->vmid} on {$found->node}";
 }
 ```
 
@@ -98,7 +98,7 @@ $result = $client->set('/nodes/pve01/qemu/100/config', [
 ]);
 
 if (!$result->isSuccessStatusCode()) {
-    echo $result->getReasonPhrase() . "\n";
+    echo $result->getReasonPhrase();
 }
 ```
 
@@ -115,7 +115,7 @@ Each of these starts a task: wait for it and read how it ended.
 ```php
 $vm = $client->getNodes()->get('pve01')->getQemu()->get(100);
 
-echo run($client, $vm->getStatus()->getStart()->vmStart(), 60000) . "\n";
+echo run($client, $vm->getStatus()->getStart()->vmStart(), 60000);
 ```
 
 | Action | Call |
@@ -170,7 +170,7 @@ $result = $client->create('/nodes/pve01/vzdump', [
     'compress' => 'zstd',
 ]);
 
-echo run($client, $result, 3600000) . "\n";
+echo run($client, $result, 3600000);
 ```
 
 The token needs `VM.Backup` on the guest and `Datastore.AllocateSpace` on the storage. A node runs one

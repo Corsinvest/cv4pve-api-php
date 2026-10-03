@@ -69,7 +69,7 @@ ensureDone($client, $client->create("/nodes/{$node}/qemu", [
 
 ensureDone($client, $client->getNodes()->get($node)->getQemu()->get($vmId)->getStatus()->getStart()->vmStart(), 60);
 
-echo "VM {$vmId} created and started\n";
+echo "VM {$vmId} created and started";
 ```
 
 The format of disks and network is in
@@ -114,7 +114,7 @@ ensureDone($client, $vm->getResize()->resizeVm('scsi0', '32G'), 60);
 // 4. start
 ensureDone($client, $vm->getStatus()->getStart()->vmStart(), 60);
 
-echo "VM {$vmId} is starting at 192.168.1.102\n";
+echo "VM {$vmId} is starting at 192.168.1.102";
 ```
 
 The source here is a template, so with `full` as `false` or `null` the clone is a linked clone: it is

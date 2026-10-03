@@ -60,7 +60,7 @@ Every call returns a `Result`, and the last one is also in `$client->getLastResu
 ```php
 $result = $client->getLastResult();
 echo "{$result->getMethodType()} {$result->getRequestResource()} "
-    . "{$result->getStatusCode()} {$result->getReasonPhrase()}\n";
+    . "{$result->getStatusCode()} {$result->getReasonPhrase()}";
 ```
 
 ## Status codes

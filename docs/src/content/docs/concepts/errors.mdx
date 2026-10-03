@@ -12,7 +12,7 @@ node that cannot be reached: each returns a `Result`, and the code decides what 
 $result = $client->getNodes()->get('pve01')->getQemu()->get(100)->getStatus()->getStart()->vmStart();
 
 if (!$result->isSuccessStatusCode()) {
-    echo "Start failed: {$result->getStatusCode()} {$result->getReasonPhrase()}\n";
+    echo "Start failed: {$result->getStatusCode()} {$result->getReasonPhrase()}";
 }
 ```
 

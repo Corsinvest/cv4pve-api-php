@@ -67,8 +67,8 @@ $client->setApiToken('automation@pve!app=aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee');
 $result = $client->getNodes()->get('pve01')->getQemu()->get(100)->getStatus()->getCurrent()->vmStatus();
 
 echo $result->isSuccessStatusCode()
-    ? "VM {$result->getResponse()->data->vmid} is {$result->getResponse()->data->status}\n"
-    : "{$result->getStatusCode()} {$result->getReasonPhrase()}\n";
+    ? "VM {$result->getResponse()->data->vmid} is {$result->getResponse()->data->status}"
+    : "{$result->getStatusCode()} {$result->getReasonPhrase()}";
 ```
 
 <LinkCard
