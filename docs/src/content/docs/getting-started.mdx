@@ -21,7 +21,9 @@ script) and talks only to the Proxmox VE REST API on port 8006. Nothing is insta
 
 <Steps>
 
-1. Add the package from
+1. **Add the package**
+
+   Add the package from
    [Packagist](https://packagist.org/packages/corsinvest/cv4pve-api-php) with Composer:
 
    ```bash
@@ -30,7 +32,9 @@ script) and talks only to the Proxmox VE REST API on port 8006. Nothing is insta
 
    It brings no other package.
 
-2. Create the client with an API token. With a token there is no login call:
+2. **Create the client**
+
+   Create the client with an API token. With a token there is no login call:
 
    ```php
    <?php
@@ -47,7 +51,9 @@ script) and talks only to the Proxmox VE REST API on port 8006. Nothing is insta
    self-signed certificate works as it is. All the ways to connect are in
    [Connection](/cv4pve-api-php/connection/).
 
-3. Make the first call and check its outcome:
+3. **Make the first call**
+
+   Make the first call and check its outcome:
 
    ```php
    $result = $client->getVersion()->version();
@@ -59,7 +65,9 @@ script) and talks only to the Proxmox VE REST API on port 8006. Nothing is insta
    }
    ```
 
-4. Read some data. The path of the API is the path in the code:
+4. **Read some data**
+
+   Read some data. The path of the API is the path in the code:
 
    ```php
    // GET /nodes/{node}/qemu/{vmid}/status/current
